@@ -35,7 +35,7 @@ export const authOption: AuthOptions = {
             credentials: credentials // Or provide a default value here as well
         })
     ],
-    secret: 'hhhh'
+    secret: 'ZUSytDzLavIUuiWumSbjtRsdDWZKRlPRIbpgFWpwkvColKTLvrKUhjB'
 }
 
 const handler = NextAuth(authOption);
