@@ -95,7 +95,7 @@ div > .input_form:focus-visible {
     gap: 5rem;
     flex: 1;
     background-color: purple;
-    background-image: url("../../public/galaxy-7040416.png");
+    /* background-image: url("../../public/galaxy-7040416.png"); */
     background-size: cover;
     background-position: center;
     border-radius: 4px;

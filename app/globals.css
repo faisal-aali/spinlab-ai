@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=K2D:wght@400;500;600;700&display=swap');
+
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -6,6 +9,11 @@
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
+  --primary-color: 50, 225, 0; 
+  --background-color: 50, 225, 0;
+  --hover-color: 0px 0px 44px 0px #3CE10A5C;
+  --primary-border: 1px solid #FFFFFF26;
+
 }
 
 @media (prefers-color-scheme: dark) {
@@ -13,6 +21,8 @@
     --foreground-rgb: 255, 255, 255;
     --background-start-rgb: 0, 0, 0;
     --background-end-rgb: 0, 0, 0;
+    --primary-color: 50, 225, 0; 
+    --background-color: 50, 225, 0;
   }
 }
 
@@ -24,10 +34,28 @@ body {
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb));
+    font-family: 'K2D', sans-serif !important;
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
+
+  .bg-primary {
+    background-color: rgb(var(--background-color));
+  }
+
+  .text-primary {
+    color: rgb(var(--primary-color));
+  }
+  
+  .hover-shadow:hover {
+    box-shadow: var(--hover-color);
+  }
+
+  .primary-border {
+    border: var(--primary-border);
+  }
+  
 }
