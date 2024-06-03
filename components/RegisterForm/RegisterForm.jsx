@@ -1,58 +1,53 @@
-'use client';
-import styles from "./RegisterForm.module.css";
-import Link from "next/link";
-import { useState } from "react";
+"use client";
+import SelectRole from "../../components/RegisterForm/SelectRole/SelectRole";
+import EmailConfirmed from "../../components/RegisterForm/EmailConfirmed/EmailConfirmed";
+import { useState } from 'react';
+import PickPlan from "../../components/RegisterForm/PickPlan/PickPlan";
 
+const registerForm = () => {
+    const [step, setStep] = useState(1);
+    const [values, setValues] = useState({ role: '', email: '', plan: '' });
 
+    const handleChange = (field) => (e) => {
+        setValues({ ...values, [field]: e.target.value });
+      };
 
-const RegisterForm = () => {
-    const [user, setUser] = useState({ username:"", email: "", password: ""});
+    const nextStep = () => {
+        setStep(step + 1);
+        console.log(values);
+      };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (user) {
-            const response = await fetch('/api/auth/register', {
-                method: "POST",
-                body: JSON.stringify(user)
-            });
-            
-            return response;
-        }
-        return null;
-    }
-    
-    return (
-        <div className={styles.register_section}>
-        <div className={styles.register_section_warp}>
-            <div className={styles.register_section_left}>
-                <Link className={`${styles.login_button} ${styles.button_effect}`} href="/login">LOG IN</Link>
-            </div>
-            <div className={styles.register_section_right}>
-                <h2>OPEN ACCOUNT</h2>
-                <form className={styles.form} onSubmit={handleSubmit}>
-                    <div className={styles.firstName}>
-                        <input className={styles.input_form} type="text" name="username" value={user.username} onChange={e => setUser(p => ({ ...p, username: e.target.value }))} required placeholder="Jhon" autoComplete="off"/>
-                        <label className={styles.label_form}>Username</label>
-                    </div>
-                    <div className="email">
-                        <input className={styles.input_form} type="email" name="email" value={user.email} onChange={e => setUser(p => ({ ...p, email: e.target.value }))} required placeholder="Jhondeo@gamil.com" autoComplete="off"/>
-                        <label className={styles.label_form}>Email</label>
-                    </div>
-                    <div className="password">
-                        <input className={styles.input_form} type="password" name="password" value={user.password} onChange={e => setUser(p => ({ ...p, password: e.target.value }))} required autoComplete="off" placeholder="Xbshsd$##@31!"/>
-                        <label className={styles.label_form}>Password</label>
-                    </div>
-                    <div className="error">
-                        {/*addUserResults.isError? addUserResults.error.data: ''*/}
-                    </div>
-                    <button type="submit" className={styles.button_effect}>Submit</button>
-                    <p className={styles.login_desc}>Have An Account Please Log In</p>
-                    <Link className={`${styles.login_button} ${styles.button_effect}`} href="/login">LOG IN</Link>
-                </form>
-            </div>
+      return (
+        <div>
+          <div className="flex justify-center mb-12">
+            <div className={`h-2 w-14 ${step === 1 ? 'bg-primary' : 'backgroundDisabledColor'} rounded-sm mr-2`}></div>
+            <div className={`h-2 w-14 ${step === 2 ? 'bg-primary' : 'backgroundDisabledColor'} rounded-sm mr-2`}></div>
+            <div className={`h-2 w-14 ${step === 3 ? 'bg-primary' : 'backgroundDisabledColor'} rounded-sm mr-2`}></div>
+            <div className={`h-2 w-14 ${step === 4 ? 'bg-primary' : 'backgroundDisabledColor'} rounded-sm mr-2`}></div>
+            <div className={`h-2 w-14 ${step === 5 ? 'bg-primary' : 'backgroundDisabledColor'} rounded-sm mr-2`}></div>
+            <div className={`h-2 w-14 ${step === 6 ? 'bg-primary' : 'backgroundDisabledColor'} rounded-sm`}></div>
+          </div>
+          {step === 1 && (
+            <SelectRole
+              nextStep={nextStep}
+              handleChange={handleChange}
+              values={values}
+            />
+          )}
+          {step === 2 && (
+            <EmailConfirmed
+              nextStep={nextStep}
+            />
+          )}
+          {step === 3 && (
+          <PickPlan
+            nextStep={nextStep}
+            handleChange={handleChange}
+            values={values}
+          />
+        )}
         </div>
-    </div>
-    );
+      );
 }
 
-export default RegisterForm;
+export default registerForm;

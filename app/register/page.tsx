@@ -1,9 +1,11 @@
-import styles from "./register.module.css";
-import RegisterForm from "@/components/RegisterForm/RegisterForm";
+import RegisterForm from "../../components/RegisterForm/RegisterForm";
+import '../globals.css';
 
 const register = () => {
     return (
-        <RegisterForm />
+        <div className="min-h-screen flex items-center justify-center backgroundOverlay">
+            <RegisterForm />
+        </div>
     );
 }
 

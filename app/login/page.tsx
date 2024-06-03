@@ -1,13 +1,14 @@
 import Image from 'next/image';
 import LoginForm from "@/components/LoginForm/LoginForm";
 import styles from './login.module.css';
+import '../globals.css';
 
 
 const login = async () => {
 
   return (
     <div className={`min-h-screen w-full flex items-center justify-center bg-zinc-900`}>
-      <div className={`${styles.backgroundOverlay}`}></div>
+      <div className="backgroundOverlay"></div>
       <div className={`flex w-full`}>
         <div className={`flex items-center justify-center w-2/5 ${styles.loginBackground}`}>
           <div className={`z-10`}>
