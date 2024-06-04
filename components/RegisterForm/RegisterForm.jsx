@@ -4,6 +4,7 @@ import EmailConfirmed from "../../components/RegisterForm/EmailConfirmed/EmailCo
 import PickPlan from "../../components/RegisterForm/PickPlan/PickPlan";
 import CreateAccount from "../../components/RegisterForm/CreateAccount/CreateAccount";
 import LoginToPortal from "../../components/RegisterForm/LoginToPortal/LoginToPortal";
+import StripeAccount from "../../components/RegisterForm/StripeAccount/StripeAccount";
 import { useState } from "react";
 
 const registerForm = () => {
@@ -85,6 +86,12 @@ const registerForm = () => {
           values={values}
         />
       )}
+      {step === 5 && (
+        <StripeAccount
+          nextStep={nextStep}
+        />
+      )}
+
         {step === 6 && (
         <LoginToPortal
         />
