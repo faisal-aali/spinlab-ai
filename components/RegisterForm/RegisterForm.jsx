@@ -3,6 +3,7 @@ import SelectRole from "../../components/RegisterForm/SelectRole/SelectRole";
 import EmailConfirmed from "../../components/RegisterForm/EmailConfirmed/EmailConfirmed";
 import PickPlan from "../../components/RegisterForm/PickPlan/PickPlan";
 import CreateAccount from "../../components/RegisterForm/CreateAccount/CreateAccount";
+import LoginToPortal from "../../components/RegisterForm/LoginToPortal/LoginToPortal";
 import { useState } from "react";
 
 const registerForm = () => {
@@ -84,7 +85,10 @@ const registerForm = () => {
           values={values}
         />
       )}
-      {/* Add more steps as needed */}
+        {step === 6 && (
+        <LoginToPortal
+        />
+      )}
     </div>
   );
 };
