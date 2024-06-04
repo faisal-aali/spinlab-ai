@@ -15,7 +15,7 @@
   --primary-border: 1px solid #FFFFFF26;
   --background-disabled: rgba(50, 225, 0, 0.15);
   --hover-shadow-light: 0px 0px 7px 3px #3CE10A5C;
-
+  --hover-shadow-dark: 0px 0px 1px 4px #3CE10A5C;
 
 }
 
@@ -80,8 +80,13 @@ h4{
   .hover-shadow:hover {
     box-shadow: var(--hover-color);
   }
+
   .hover-shadow-light:hover{
     box-shadow: var(--hover-shadow-light);
+  }
+
+  .hover-shadow-dark{
+    box-shadow: var(--hover-shadow-dark);
   }
 
   .primary-border {

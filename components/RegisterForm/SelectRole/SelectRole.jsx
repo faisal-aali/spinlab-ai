@@ -14,8 +14,8 @@ const SelectRole = ({ nextStep, handleChange, values }) => {
       initialValues={values}
       validationSchema={roleSchema}
       onSubmit={(values) => {
-        handleChange('role')({ target: { value: values.role } });
-        handleChange('email')({ target: { value: values.email } });
+        handleChange("role")({ target: { value: values.role } });
+        handleChange("email")({ target: { value: values.email } });
         nextStep();
       }}
     >
@@ -27,21 +27,21 @@ const SelectRole = ({ nextStep, handleChange, values }) => {
               <button
                 type="button"
                 className={`w-full py-2 mr-4 px-4 rounded-md ${values.role === 'Player' ? 'bg-primary text-black' : 'backgroundDisabledColor text-white'}`}
-                onClick={() => setFieldValue('role', 'Player')}
+                onClick={() => setFieldValue("role", "Player")}
               >
                 Player
               </button>
               <button
                 type="button"
                 className={`w-full py-2 mr-4 px-4 rounded-md ${values.role === 'Trainer' ? 'bg-primary text-black' : 'backgroundDisabledColor text-white'}`}
-                onClick={() => setFieldValue('role', 'Trainer')}
+                onClick={() => setFieldValue("role", "Trainer")}
               >
                 Trainer
               </button>
               <button
                 type="button"
                 className={`w-full py-2 rounded-md px-4 ${values.role === 'Coach' ? 'bg-primary text-black' : 'backgroundDisabledColor text-white'}`}
-                onClick={() => setFieldValue('role', 'Coach')}
+                onClick={() => setFieldValue("role", "Coach")}
               >
                 Coach
               </button>

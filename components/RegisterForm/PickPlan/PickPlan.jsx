@@ -8,6 +8,9 @@ const planSchema = Yup.object().shape({
 });
 
 const PickPlan = ({ nextStep, handleChange, values }) => {
+
+  const checkmark = '/assets/checkmark.png'; 
+  
   return (
     <Formik
       initialValues={values}
@@ -18,7 +21,7 @@ const PickPlan = ({ nextStep, handleChange, values }) => {
         console.log("Selected Plan:", values.plan);
       }}
     >
-      {({ errors, touched, setFieldValue }) => (
+      {({ errors, touched, setFieldValue, values  }) => (
         <div className="bg-transparent border primary-border rounded-lg max-w-7xl">
           <Form className="w-full">
             <div className="w-full p-8">
@@ -30,11 +33,18 @@ const PickPlan = ({ nextStep, handleChange, values }) => {
               </p>
               <div className="mb-6">
                 <div
-                  className={`p-4 mb-8 flex items-center hover-shadow-light gap-12 cursor-pointer border primary-border rounded-lg ${
-                    values.plan === "Monthly" ? "bg-green-900" : "bg-transparent"
+                  className={`relative p-4 mb-8 flex items-center gap-12 cursor-pointer border primary-border rounded-lg ${
+                    values.plan === "Monthly" ? "hover-shadow-dark" : "hover-shadow-light"
                   }`}
                   onClick={() => setFieldValue("plan", "Monthly")}
                 >
+                  {values.plan === "Monthly" && (
+                    <img
+                      src={checkmark}
+                      alt="Selected"
+                      className={`absolute ${styles.checkmarkPosition} w-16 h-16`}
+                    />
+                  )}
                   <div className={`blueBackground ${styles.priceTotalWrapper}  py-10 px-12`}>
                     <h3 className="text-white text-2xl mt-2">Monthly</h3>
                     <p className="text-primary text-3xl font-bold">$99.99</p>
@@ -65,11 +75,18 @@ const PickPlan = ({ nextStep, handleChange, values }) => {
                   </div>
                 </div>
                 <div
-                  className={`p-4 flex items-center gap-12 hover-shadow-light cursor-pointer border primary-border rounded-lg ${
-                    values.plan === "Annual" ? "bg-green-900" : "bg-transparent"
+                  className={`relative p-4 flex items-center gap-12 cursor-pointer border primary-border rounded-lg ${
+                    values.plan === "Annual" ? "hover-shadow-dark" : "hover-shadow-light"
                   }`}
                   onClick={() => setFieldValue("plan", "Annual")}
                 >
+                  {values.plan === "Annual" && (
+                    <img
+                      src={checkmark}
+                      alt="Selected"
+                      className={`absolute ${styles.checkmarkPosition} w-16 h-16`}
+                    />
+                  )}
                   <div className={`blueBackground ${styles.priceTotalWrapper}  py-10 px-12`}>
                     <h3 className="text-white text-2xl mt-2">Annual</h3>
                     <p className="text-primary text-3xl font-bold">$460</p>
@@ -106,7 +123,7 @@ const PickPlan = ({ nextStep, handleChange, values }) => {
               <div className="text-center">
               <button
                 type="submit"
-                className="bg-green-500 bg-primary rounded-lg w-80 text-black font-normal px-3 py-3 rounded hover-shadow focus:outline-none"
+                className="bg-primary rounded-lg w-80 text-black font-normal px-3 py-3 rounded hover-shadow focus:outline-none"
               >
                 CONTINUE: SELECT PLAN
               </button>
