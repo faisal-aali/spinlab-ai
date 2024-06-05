@@ -1,25 +1,33 @@
 "use client";
+import React, { useEffect, useState } from "react";
 import SelectRole from "../../components/RegisterForm/SelectRole/SelectRole";
 import EmailConfirmed from "../../components/RegisterForm/EmailConfirmed/EmailConfirmed";
 import PickPlan from "../../components/RegisterForm/PickPlan/PickPlan";
 import CreateAccount from "../../components/RegisterForm/CreateAccount/CreateAccount";
 import LoginToPortal from "../../components/RegisterForm/LoginToPortal/LoginToPortal";
 import StripeAccount from "../../components/RegisterForm/StripeAccount/StripeAccount";
-import { useState } from "react";
 
-const registerForm = () => {
+const RegisterForm = () => {
   const [step, setStep] = useState(1);
   const [values, setValues] = useState({
     firstName: "",
     lastName: "",
-    email:"",
-    role:"",
+    email: "",
+    role: "",
     city: "",
     country: "",
     password: "",
     confirmPassword: "",
     plan: "",
   });
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const setStepParam = params.get("set");
+    if (setStepParam) {
+      setStep(Number(setStepParam));
+    }
+  }, []);
 
   const handleChange = (field) => (e) => {
     setValues({ ...values, [field]: e.target.value });
@@ -29,7 +37,10 @@ const registerForm = () => {
     setStep(step + 1);
   };
 
-  console.log(values);
+  const handlePaymentSuccess = () => {
+    setStep(6); // Move to the next step when payment is successful
+  };
+
   return (
     <div>
       <div className="flex justify-center mb-12">
@@ -89,15 +100,12 @@ const registerForm = () => {
       {step === 5 && (
         <StripeAccount
           nextStep={nextStep}
+          onPaymentSuccess={handlePaymentSuccess} // Pass the callback to update the step
         />
       )}
-
-        {step === 6 && (
-        <LoginToPortal
-        />
-      )}
+      {step === 6 && <LoginToPortal />}
     </div>
   );
 };
 
-export default registerForm;
+export default RegisterForm;

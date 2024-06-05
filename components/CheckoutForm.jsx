@@ -3,13 +3,12 @@ import {
   PaymentElement,
   AddressElement,
   useStripe,
-  useElements
+  useElements,
 } from "@stripe/react-stripe-js";
 
-export default function CheckoutForm() {
+export default function CheckoutForm({ onPaymentSuccess }) {
   const stripe = useStripe();
   const elements = useElements();
-
 
   const [message, setMessage] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(false);
@@ -31,6 +30,7 @@ export default function CheckoutForm() {
       switch (paymentIntent.status) {
         case "succeeded":
           setMessage("Payment succeeded!");
+          onPaymentSuccess();  // Call the passed-in callback to update the state
           break;
         case "processing":
           setMessage("Your payment is processing.");
@@ -43,7 +43,7 @@ export default function CheckoutForm() {
           break;
       }
     });
-  }, [stripe]);
+  }, [stripe, onPaymentSuccess]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -57,10 +57,11 @@ export default function CheckoutForm() {
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        return_url: "http://localhost:3000",
+        return_url: "http://localhost:3000/register?set=6", // URL that Stripe will redirect to after payment
       },
     });
-    if (error.type === "card_error" || error.type === "validation_error") {
+
+    if (error) {
       setMessage(error.message);
     } else {
       setMessage("An unexpected error occurred.");
@@ -73,9 +74,8 @@ export default function CheckoutForm() {
     layout: "tabs",
   };
   const addressElementOptions = {
-    mode: 'shipping',
-  }
-
+    mode: "shipping",
+  };
 
   return (
     <form id="payment-form" onSubmit={handleSubmit}>
@@ -87,7 +87,6 @@ export default function CheckoutForm() {
           {isLoading ? <div className="spinner" id="spinner"></div> : "START YOUR FREE TRIAL"}
         </span>
       </button>
-      {/* Show any error or success messages */}
       {message && <div id="payment-message">{message}</div>}
     </form>
   );
