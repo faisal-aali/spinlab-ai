@@ -76,9 +76,9 @@ const CreateAccount = ({ nextStep, handleChange, values  , onSubmit}) => {
                   as="select"
                   className="w-full py-3 px-3 bg-transparent primary-border rounded text-white rounded-lg focus:outline-none focus:outline-none focus:border-green-500 placeholder:opacity-45"
                 >
-                  <option value="" label="Select Country" />
+                  <option className="bg-black" value="" label="Select Country" />
                   {countries.map((country) => (
-                    <option key={country} value={country} label={country} />
+                    <option className="bg-black" key={country} value={country} label={country} />
                   ))}
                 </Field>
                 {errors.country && touched.country ? (

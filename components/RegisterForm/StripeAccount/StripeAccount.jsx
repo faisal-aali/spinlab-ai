@@ -5,37 +5,16 @@ import CheckoutForm from "../../CheckoutForm";
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
 
-const StripeAccount = ({ onPaymentSuccess }) => {
-  const [clientSecret, setClientSecret] = React.useState("");
-
-  React.useEffect(() => {
-    // Create PaymentIntent as soon as the page loads
-    fetch("/api/stripe", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ items: [{ id: "" }] }),
-    })
-      .then((res) => res.json())
-      .then((data) => setClientSecret(data.clientSecret));
-  }, []);
-
-  const appearance = {
-    theme: "stripe",
-  };
-  const options = {
-    clientSecret,
-    appearance,
+const StripePayment = ({ nextStep }) => {
+  const handlePaymentSuccess = () => {
+    nextStep();
   };
 
   return (
-    <div className="App">
-      {clientSecret && (
-        <Elements options={options} stripe={stripePromise}>
-          <CheckoutForm onPaymentSuccess={onPaymentSuccess} />
-        </Elements>
-      )}
-    </div>
+    <Elements stripe={stripePromise}>
+      <CheckoutForm onPaymentSuccess={handlePaymentSuccess} />
+    </Elements>
   );
 };
 
-export default StripeAccount;
+export default StripePayment;

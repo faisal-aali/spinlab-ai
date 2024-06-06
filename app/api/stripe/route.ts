@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
-import { string } from 'yup';
 const stripeSecretKey: string = process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY || '';
 
 const stripe = new Stripe(stripeSecretKey, {
@@ -9,21 +8,24 @@ const stripe = new Stripe(stripeSecretKey, {
 
 export async function POST(req: NextRequest) {
   try {
-    const { items, customerEmail } = await req.json();
+    const { items, customerEmail, paymentMethodId } = await req.json();
 
     // Create a customer
     const customer = await stripe.customers.create({
       email: customerEmail,
+      payment_method: paymentMethodId,
+      invoice_settings: {
+        default_payment_method: paymentMethodId
+      }
     });
 
     // Assuming you have a predefined price ID for your subscription plan
-    const priceId = 'price_1PNc6ADZteG0WmTiznMgUlTQ'; // Replace with your actual price ID
+    const priceId = process.env.PRICE_ID;
 
     // Create a subscription
     const subscription = await stripe.subscriptions.create({
       customer: customer.id,
       items: [{ price: priceId }],
-      payment_behavior: 'default_incomplete', // To handle failed payments more gracefully
       expand: ['latest_invoice.payment_intent'],
     });
 
