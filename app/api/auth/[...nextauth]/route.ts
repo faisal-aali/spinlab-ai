@@ -26,11 +26,15 @@ export const authOption: AuthOptions = {
                 user = user[0];
 
                 if (!user) {
+                   throw new Error("wrong credentials");
                     return null;
                 }
                 if (user.password) {
+                    console.log(user.password);
                     return user.password === credentials.password ? user : null;
+                  
                 }
+              
             },
             credentials: credentials // Or provide a default value here as well
         })

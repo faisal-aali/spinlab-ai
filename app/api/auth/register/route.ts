@@ -4,15 +4,22 @@ import db from "../../../../util/db";
 
 const query = util.promisify(db.query).bind(db);
 
-
-export const POST = async (req: { json: () => any; }) => {
-    const user = await req.json();
+export const POST = async (req: { json: () => any }) => {
+    const values = await req.json();
     try {
-        const results = await query(`INSERT INTO users (uniqID,username, email, password )
-        VALUES (UUID(), '${user.username}','${user.email}', '${user.password}')`)
-        if (results) return new NextResponse(user, { status: 201 });
-    } catch (error :any) {
-        console.log(error)
+        const results = await query(`
+            INSERT INTO users 
+            (uniqID, firstName, lastName, email, city, country, password, confirmPassword, plan) 
+            VALUES 
+            (UUID(), '${values.firstName}', '${values.lastName}', '${values.email}', '${values.city}', 
+            '${values.country}', '${values.password}', '${values.confirmPassword}', '${values.plan}')
+        `);
+        if (results) {
+            // Return the inserted data along with the response
+            return new NextResponse(values, { status: 201 });
+        }
+    } catch (error: any) {
+        console.log(error);
         return new NextResponse(error, { status: 400 });
     }
-}
+};

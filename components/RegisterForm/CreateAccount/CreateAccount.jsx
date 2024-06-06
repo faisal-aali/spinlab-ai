@@ -14,7 +14,7 @@ const accountSchema = Yup.object().shape({
     .required("Confirm password is required"),
 });
 
-const CreateAccount = ({ nextStep, handleChange, values }) => {
+const CreateAccount = ({ nextStep, handleChange, values  , onSubmit}) => {
   const countries = getNames();
 
   return (
@@ -22,14 +22,7 @@ const CreateAccount = ({ nextStep, handleChange, values }) => {
       initialValues={values}
       validationSchema={accountSchema}
       onSubmit={(values) => {
-        handleChange("firstName")({ target: { value: values.firstName } });
-        handleChange("lastName")({ target: { value: values.lastName } });
-        handleChange("city")({ target: { value: values.city } });
-        handleChange("country")({ target: { value: values.country } });
-        handleChange("password")({ target: { value: values.password } });
-        handleChange("confirmPassword")({
-          target: { value: values.confirmPassword },
-        });
+        onSubmit(values); // Pass form values to the onSubmit function
         nextStep();
         console.log("Account Details:", values);
       }}

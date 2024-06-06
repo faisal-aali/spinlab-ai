@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
     });
 
     // Assuming you have a predefined price ID for your subscription plan
-    const priceId = process.env.PRICE_ID; // Replace with your actual price ID
+    const priceId = 'price_1PNc6ADZteG0WmTiznMgUlTQ'; // Replace with your actual price ID
 
     // Create a subscription
     const subscription = await stripe.subscriptions.create({
