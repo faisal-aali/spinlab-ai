@@ -1,14 +1,15 @@
 'use client';
 import React, { useState } from "react";
-import styles from "../../app/login/login.module.css"
+import styles from "../../app/login/login.module.css";
 
 const ForgetPassword = () => {
   const [email, setEmail] = useState(""); // State to store the email input
+  const [message, setMessage] = useState(""); // State to store the response message
 
   const handleResetPassword = async () => {
     try {
       // Send a POST request to the forget password endpoint with the email
-      const response = await fetch("/api/forgetpassword", {
+      const response = await fetch("/api/auth/forgetpassword", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -16,16 +17,16 @@ const ForgetPassword = () => {
         body: JSON.stringify({ email })
       });
       const data = await response.json();
-      console.log(data); // Log response data
-      // Optionally, you can show a message to the user indicating that an email has been sent
+      setMessage(data.message); // Set response message
     } catch (error) {
       console.error("Error sending forget password email:", error);
-      // Optionally, you can show an error message to the user
+      setMessage("An error occurred while sending the email.");
     }
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-between p-24">
+    <div className="flex min-h-screen flex-col items-center justify-center p-24">
+      <h1 className={styles.title}>Forget Password</h1>
       <input
         type="email"
         placeholder="Enter your email"
@@ -36,6 +37,7 @@ const ForgetPassword = () => {
       <button onClick={handleResetPassword} className={styles.button}>
         Reset Password
       </button>
+      {message && <p className={styles.message}>{message}</p>}
     </div>
   );
 };

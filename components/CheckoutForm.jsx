@@ -109,7 +109,7 @@ const CheckoutForm = ({ onPaymentSuccess }) => {
               <h2 className="text-white font-bold mb-4 text-2xl">
                 Billing Details
               </h2>
-              <p>
+              <p className="text-white">
                 Data is protected under the PCI DSS standard. We do not store
                 your data and do not share it with the merchant.
               </p>
