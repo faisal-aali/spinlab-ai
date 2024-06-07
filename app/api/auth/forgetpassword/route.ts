@@ -1,39 +1,39 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import pool from '../../../../util/db';
-import bcrypt from 'bcrypt';
-import { promisify } from 'util';
+import { NextRequest, NextResponse } from "next/server";
+import { createTransport } from "nodemailer";
+import crypto from "crypto";
+import db from "../../../../util/db";
 
-const query = promisify(pool.query).bind(pool);
-
-export const POST = async (req: NextApiRequest, res: NextApiResponse) => {
-  if (req.method !== 'POST') {
-    return res.json({ message: 'Reset URL logged in console.' });
-
-  }
+export async function POST(request: NextRequest) {
   try {
-    const { email } = req.body;
-    if (!email) {
-      return res.status(400).json({ message: 'Email is required.' });
-    }
-    const rows: any = await query('SELECT * FROM users WHERE email = ?', [email]);
-    const user = rows[0];
-
-    if (!user) {
-      return res.status(400).json({ message: 'Email does not exist.' });
-    }
-
-    // Generate JWT token with bcrypt
-    const saltRounds = 10; // You can adjust the number of salt rounds as needed
-    bcrypt.hash(user.id.toString(), saltRounds, async (err, hash) => {
-      if (err) {
-        return res.status(500).json({ message: 'Error hashing user ID.' });
-      }
-      const resetUrl = `http://localhost:3000/reset/${hash}`; // Construct the reset URL with localhost:3000
-      console.log('Reset URL:', resetUrl); // Log the reset URL
-      res.json({ message: 'Reset URL logged in console.' });
+    const { email } = await request.json();
+    console.log("Received email for password reset:", email);
+    const token = crypto.randomBytes(32).toString("hex");
+    const expiration = Date.now() + 3600000;
+    await db.query(`
+      UPDATE users 
+      SET resetPasswordToken='${token}', resetPasswordExpires=${expiration}
+      WHERE email='${email}'
+    `);
+    const transporter = createTransport({
+      host: "smtp.ethereal.email", 
+      port: 587,
+      auth: {
+        user: "morgan31@ethereal.email",
+        pass: "aggUGt5g8hq9uCZUwr",
+      },
     });
+    const resetUrl = `http://localhost:3000/reset-password?token=${token}&email=${email}`;
+    const mailOptions = {
+      from: "morgan31@ethereal.email", 
+      to: email,
+      subject: "Password Reset",
+      text: `You are receiving this email because you (or someone else) have requested a password reset. Please click on the following link, or paste this into your browser to complete the process: ${resetUrl}`,
+    };
 
-  } catch (error:any) {
-    res.status(500).json({ message: error.message });
+    await transporter.sendMail(mailOptions);
+    return NextResponse.json({ message: "Password reset email sent" });
+  } catch (error) {
+    console.error("Error processing request:", error);
+    return NextResponse.json({ message: "An error occurred" }, { status: 500 });
   }
-};
+}
