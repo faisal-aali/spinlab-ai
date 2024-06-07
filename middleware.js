@@ -1,27 +1,23 @@
 import { NextResponse } from "next/server";
 
-export default function middleware(req){
+export default function middleware(req) {
     let verify = req.cookies.get("loggedin");
     let url = req.url
-    
-    if(!verify && url.includes('/dashboard')){
+
+    if (!verify && url.includes('/dashboard')) {
         return NextResponse.redirect("http://localhost:3000/login");
     }
 
     if (verify && url === "http://localhost:3000/") {
-       return NextResponse.redirect("http://localhost:3000/dashboard");
-    }
-    if(verify && url.includes("/login")){
         return NextResponse.redirect("http://localhost:3000/dashboard");
     }
-    if(verify && url.includes("/register")){
+    if (verify && url.includes("/login")) {
         return NextResponse.redirect("http://localhost:3000/dashboard");
     }
-    if(url === "http://localhost:3000/")
-    {
-       return NextResponse.redirect("http://localhost:3000/login");
+    if (verify && url.includes("/register")) {
+        return NextResponse.redirect("http://localhost:3000/dashboard");
     }
-  
-
-
+    if (url === "http://localhost:3000/") {
+        return NextResponse.redirect("http://localhost:3000/login");
+    }
 }

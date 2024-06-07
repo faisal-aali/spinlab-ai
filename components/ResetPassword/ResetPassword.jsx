@@ -42,7 +42,7 @@ const ResetPassword = () => {
       if (response.ok) {
         setTimeout(() => {
           window.location.href = "/login";
-        }, 5000); 
+        }, 5000);
       }
     } catch (error) {
       console.error("Error resetting password:", error);

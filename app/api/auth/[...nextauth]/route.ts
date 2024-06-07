@@ -8,7 +8,7 @@ import { AuthOptions } from "next-auth";
 const query = util.promisify(db.query).bind(db);
 
 interface CredentialInput {
-    // Define properties of CredentialInput if needed
+    
 }
 const credentials: Record<string, CredentialInput> = {};
 
@@ -36,7 +36,7 @@ export const authOption: AuthOptions = {
                 }
               
             },
-            credentials: credentials // Or provide a default value here as well
+            credentials: credentials 
         })
     ],
     secret: 'ZUSytDzLavIUuiWumSbjtRsdDWZKRlPRIbpgFWpwkvColKTLvrKUhjB'

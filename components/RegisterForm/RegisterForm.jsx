@@ -29,7 +29,6 @@ const RegisterForm = () => {
     }
   }, []);
 
-
   const handleChange = (field) => (e) => {
     setValues({ ...values, [field]: e.target.value });
   };
@@ -38,28 +37,27 @@ const RegisterForm = () => {
     console.log("Submitting form with values:", values);
     await handleSubmitRegister(values);
   };
-  
+
   const handleSubmitRegister = async (values) => {
     console.log(values);
     if (values) {
-       
-        const response = await fetch('/api/auth/register', {
-            method: "POST",
-            body: JSON.stringify(values)
-        });
-        console.log(response);
-        
-        return response;
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        body: JSON.stringify(values),
+      });
+      console.log(response);
+
+      return response;
     }
     return null;
-}
+  };
 
   const nextStep = () => {
     setStep(step + 1);
   };
 
   const handlePaymentSuccess = () => {
-    setStep(6); // Move to the next step when payment is successful
+    setStep(6);
   };
 
   return (
@@ -111,23 +109,21 @@ const RegisterForm = () => {
           values={values}
         />
       )}
-       {step === 4 && (
+      {step === 4 && (
         <CreateAccount
           nextStep={nextStep}
           handleChange={handleChange}
-          onSubmit={handleSubmit} // Pass handleSubmit function to CreateAccount
+          onSubmit={handleSubmit}
           values={values}
         />
       )}
       {step === 5 && (
         <StripeAccount
           nextStep={nextStep}
-          onPaymentSuccess={handlePaymentSuccess} // Pass the callback to update the step
+          onPaymentSuccess={handlePaymentSuccess}
         />
       )}
-      {step === 6 && <LoginToPortal 
-      //  handleSubmitRegister={handleSubmitRegister}
-      />}
+      {step === 6 && <LoginToPortal />}
     </div>
   );
 };

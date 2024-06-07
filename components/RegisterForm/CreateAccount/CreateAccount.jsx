@@ -5,10 +5,16 @@ import { getNames } from "country-list";
 
 const accountSchema = Yup.object().shape({
   firstName: Yup.string()
-    .matches(/^(?=.*[a-zA-Z])[a-zA-Z0-9\s]*$/, "First name must contain at least one letter and can only contain letters and numbers")
+    .matches(
+      /^(?=.*[a-zA-Z])[a-zA-Z0-9\s]*$/,
+      "First name must contain at least one letter and can only contain letters and numbers"
+    )
     .required("First name is required"),
   lastName: Yup.string()
-    .matches(/^(?=.*[a-zA-Z])[a-zA-Z0-9\s]*$/, "Last name must contain at least one letter and can only contain letters and numbers")
+    .matches(
+      /^(?=.*[a-zA-Z])[a-zA-Z0-9\s]*$/,
+      "Last name must contain at least one letter and can only contain letters and numbers"
+    )
     .required("Last name is required"),
   city: Yup.string()
     .matches(/^[a-zA-Z\s]*$/, "City must contain only alphabets")
@@ -22,7 +28,7 @@ const accountSchema = Yup.object().shape({
     .required("Confirm password is required"),
 });
 
-const CreateAccount = ({ nextStep, handleChange, values  , onSubmit}) => {
+const CreateAccount = ({ nextStep, handleChange, values, onSubmit }) => {
   const countries = getNames();
 
   return (
@@ -30,7 +36,7 @@ const CreateAccount = ({ nextStep, handleChange, values  , onSubmit}) => {
       initialValues={values}
       validationSchema={accountSchema}
       onSubmit={(values) => {
-        onSubmit(values); // Pass form values to the onSubmit function
+        onSubmit(values);
         nextStep();
         console.log("Account Details:", values);
       }}
@@ -84,9 +90,18 @@ const CreateAccount = ({ nextStep, handleChange, values  , onSubmit}) => {
                   as="select"
                   className="w-full py-3 px-3 bg-transparent primary-border rounded text-white rounded-lg focus:outline-none focus:outline-none focus:border-green-500 placeholder:opacity-45"
                 >
-                  <option className="bg-black" value="" label="Select Country" />
+                  <option
+                    className="bg-black"
+                    value=""
+                    label="Select Country"
+                  />
                   {countries.map((country) => (
-                    <option className="bg-black" key={country} value={country} label={country} />
+                    <option
+                      className="bg-black"
+                      key={country}
+                      value={country}
+                      label={country}
+                    />
                   ))}
                 </Field>
                 {errors.country && touched.country ? (

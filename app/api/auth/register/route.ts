@@ -15,7 +15,6 @@ export const POST = async (req: { json: () => any }) => {
             '${values.country}', '${values.password}', '${values.confirmPassword}', '${values.plan}')
         `);
         if (results) {
-            // Return the inserted data along with the response
             return new NextResponse(values, { status: 201 });
         }
     } catch (error: any) {

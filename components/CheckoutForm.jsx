@@ -78,18 +78,17 @@ const CheckoutForm = ({ onPaymentSuccess }) => {
     }
   };
 
-
   const customStyles = {
     style: {
       base: {
-        color: "#ffffff", 
+        color: "#ffffff",
         fontSize: "16px",
         "::placeholder": {
           color: "#ffffff45",
         },
       },
       invalid: {
-        color: "#fa755a", 
+        color: "#fa755a",
       },
     },
   };
@@ -163,13 +162,19 @@ const CheckoutForm = ({ onPaymentSuccess }) => {
                 <div className="mb-2 opacity-45">
                   <label htmlFor="">Credit Card Number</label>
                 </div>
-                <CardNumberElement options={customStyles} className="w-full py-4 px-3 bg-transparent primary-border rounded rounded-lg focus:outline-none focus:outline-none focus:border-green-500 placeholder:opacity-45" />
+                <CardNumberElement
+                  options={customStyles}
+                  className="w-full py-4 px-3 bg-transparent primary-border rounded rounded-lg focus:outline-none focus:outline-none focus:border-green-500 placeholder:opacity-45"
+                />
               </div>
               <div className="w-1/2">
                 <div className="mb-2 opacity-45">
                   <label htmlFor="">CVV</label>
                 </div>
-                <CardCvcElement options={customStyles} className="w-full py-4 px-3 bg-transparent primary-border rounded text-white rounded-lg focus:outline-none focus:outline-none focus:border-green-500 placeholder:opacity-45" />
+                <CardCvcElement
+                  options={customStyles}
+                  className="w-full py-4 px-3 bg-transparent primary-border rounded text-white rounded-lg focus:outline-none focus:outline-none focus:border-green-500 placeholder:opacity-45"
+                />
               </div>
             </div>
             <div className="flex mb-4 gap-6">
@@ -177,7 +182,10 @@ const CheckoutForm = ({ onPaymentSuccess }) => {
                 <div className="mb-2 opacity-45">
                   <label htmlFor="">Expiry Date</label>
                 </div>
-                <CardExpiryElement options={customStyles} className="w-full py-4 px-3 bg-transparent primary-border rounded text-white rounded-lg focus:outline-none focus:outline-none focus:border-green-500 placeholder:opacity-45" />
+                <CardExpiryElement
+                  options={customStyles}
+                  className="w-full py-4 px-3 bg-transparent primary-border rounded text-white rounded-lg focus:outline-none focus:outline-none focus:border-green-500 placeholder:opacity-45"
+                />
               </div>
               <div className="w-1/2">
                 <div className="mb-2 opacity-45">
@@ -218,24 +226,24 @@ const CheckoutForm = ({ onPaymentSuccess }) => {
                 </div>
               </div>
               <div className="my-12">
-              <div className="mb-4">
-                <div className="flex justify-between">
-                  <h3 className="text-xl">SubTotal</h3>
-                  <h3 className="text-xl">$460.00</h3>
+                <div className="mb-4">
+                  <div className="flex justify-between">
+                    <h3 className="text-xl">SubTotal</h3>
+                    <h3 className="text-xl">$460.00</h3>
+                  </div>
                 </div>
-              </div>
-              <div className="mb-4">
-                <div className="flex justify-between">
-                  <h3 className="text-xl">Total</h3>
-                  <h3 className="text-xl">$460.00</h3>
+                <div className="mb-4">
+                  <div className="flex justify-between">
+                    <h3 className="text-xl">Total</h3>
+                    <h3 className="text-xl">$460.00</h3>
+                  </div>
                 </div>
-              </div>
-              <div className="mb-4">
-                <div className="flex justify-between">
-                  <h3 className="text-xl">Due Today</h3>
-                  <h3 className="text-xl">$0.00</h3>
+                <div className="mb-4">
+                  <div className="flex justify-between">
+                    <h3 className="text-xl">Due Today</h3>
+                    <h3 className="text-xl">$0.00</h3>
+                  </div>
                 </div>
-              </div>
               </div>
               <p className="text-zinc-400 mb-4">
                 Your free trial begins on May 21, 2024 and will end on May 28,
