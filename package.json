@@ -26,6 +26,7 @@
     "nodemailer": "^6.9.13",
     "react": "^18",
     "react-dom": "^18",
+    "react-icons": "^5.2.1",
     "stripe": "^15.9.0",
     "util": "^0.12.5",
     "yup": "^1.4.0"

@@ -12,18 +12,21 @@ import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import Image from "next/image";
 
+const postalCodeRegex = /^[A-Za-z0-9\s\-]{3,10}$/;
+
 const billingSchema = Yup.object().shape({
   firstName: Yup.string().required("First Name is required"),
   lastName: Yup.string().required("Last Name is required"),
   address: Yup.string().required("Address is required"),
-  postalCode: Yup.string().required("Postal Code is required"),
+  postalCode: Yup.string()
+    .matches(postalCodeRegex, "Invalid postal code format")
+    .required("Postal Code is required"),
 });
 
 const CheckoutForm = ({ onPaymentSuccess }) => {
   const stripe = useStripe();
   const elements = useElements();
   const [paymentError, setPaymentError] = useState(null);
-  //   const [paymentSuccess, setPaymentSuccess] = useState(false);
 
   const handleSubmit = async (values, { setSubmitting }) => {
     setPaymentError(null);

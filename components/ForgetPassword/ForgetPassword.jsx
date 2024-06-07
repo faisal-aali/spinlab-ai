@@ -1,43 +1,81 @@
-'use client';
+"use client";
 import React, { useState } from "react";
+import { Formik, Form, Field, ErrorMessage } from "formik";
 import styles from "../../app/login/login.module.css";
+import * as Yup from "yup";
+
+const ForgetPasswordSchema = Yup.object().shape({
+  email: Yup.string()
+    .email("Invalid email address")
+    .required("Email is required"),
+});
 
 const ForgetPassword = () => {
-  const [email, setEmail] = useState(""); // State to store the email input
-  const [message, setMessage] = useState(""); // State to store the response message
+  const [message, setMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleResetPassword = async () => {
+  const handleResetPassword = async (values, { resetForm }) => {
+    if (isSubmitting) return;
+    setIsSubmitting(true);
     try {
-      // Send a POST request to the forget password endpoint with the email
+      await ForgetPasswordSchema.validate(values, { abortEarly: false });
       const response = await fetch("/api/auth/forgetpassword", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email })
+        body: JSON.stringify({ email: values.email }),
       });
       const data = await response.json();
-      setMessage(data.message); // Set response message
+      setMessage(data.message);
+      resetForm();
+      setTimeout(() => {
+        setMessage("");
+      }, 5000);
     } catch (error) {
       console.error("Error sending forget password email:", error);
       setMessage("An error occurred while sending the email.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center p-24">
-      <h1 className={styles.title}>Forget Password</h1>
-      <input
-        type="email"
-        placeholder="Enter your email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        className={styles.input}
-      />
-      <button onClick={handleResetPassword} className={styles.button}>
-        Reset Password
-      </button>
-      {message && <p className={styles.message}>{message}</p>}
+    <div className="bg-transparent border primary-border rounded-lg max-w-7xl p-8">
+      <h2 className="text-white text-3xl font-bold mb-6 text-center">
+        Forget Password
+      </h2>
+      <Formik
+        initialValues={{ email: "" }}
+        validationSchema={ForgetPasswordSchema}
+        onSubmit={handleResetPassword}
+      >
+        <Form>
+          <div className="mb-4 mt-4">
+            <Field
+              type="email"
+              name="email"
+              placeholder="Enter your email"
+              className={`w-full py-3 px-3 bg-transparent primary-border rounded text-white rounded-lg focus:outline-none focus:outline-none focus:border-green-500 placeholder:opacity-45 ${
+                styles.fieldError ? "border-red-500" : ""
+              }`}
+            />
+            <ErrorMessage
+              name="email"
+              component="div"
+              className="text-red-500 text-sm pl-2 pt-2"
+            />
+          </div>
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="mt-4 bg-green-500 bg-primary rounded-lg w-80 text-black font-normal px-3 py-3 rounded hover-shadow focus:outline-none"
+          >
+            {isSubmitting ? "Processing..." : "Reset Password"}
+          </button>
+          {message && <p className="mt-4">{message}</p>}
+        </Form>
+      </Formik>
     </div>
   );
 };

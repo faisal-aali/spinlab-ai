@@ -8,7 +8,9 @@ const accountSchema = Yup.object().shape({
   lastName: Yup.string().required("Last name is required"),
   city: Yup.string().required("City is required"),
   country: Yup.string().required("Country is required"),
-  password: Yup.string().required("Password is required"),
+  password: Yup.string()
+    .min(8, "Password must be at least 8 characters long")
+    .required("Password is required"),
   confirmPassword: Yup.string()
     .oneOf([Yup.ref("password"), null], "Passwords must match")
     .required("Confirm password is required"),

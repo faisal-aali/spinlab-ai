@@ -3,34 +3,26 @@ import { useState } from "react";
 import { signIn } from "next-auth/react";
 import styles from "./LoginForm.module.css";
 import Link from "next/link";
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
-// Define LoginForm component
 const LoginForm = () => {
-  // Initialize state variables
   const [user, setUser] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
-  
-  // Handle form submission
-  const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevent default form submission behavior
+  const [showPassword, setShowPassword] = useState(false);
 
-    // Call signIn function to authenticate user
+  const handleSubmit = async (e) => {
+    e.preventDefault(); 
     const result = await signIn("credentials", {
       email: user.email,
       password: user.password,
-      redirect: false // Disable default redirect behavior
+      redirect: false 
     });
-
-    // Check if authentication is successful
     if (!result.error) {
-      // Redirect to success page
       window.location.href = "/success";
     } else {
-      // Handle authentication error
-      setError("Invalid email or password."); // Display error message
+      setError("Invalid email or password."); 
     }
   };
-
 
   return (
     <div className={`min-h-screen flex items-center justify-center ${styles.formWidth}`}>
@@ -41,8 +33,11 @@ const LoginForm = () => {
             <div className="mb-4">
               <input className="w-full bg-transparent px-3 rounded-lg py-3 text-white primary-border rounded focus:outline-none focus:border-green-500 placeholder:opacity-45" type="email" name="email" value={user.email} onChange={e => setUser(prevUser => ({ ...prevUser, email: e.target.value }))} required placeholder="Email"/>
             </div>
-            <div className="mb-6">
-              <input className="w-full px-3 bg-transparent rounded-lg py-3 text-white primary-border rounded focus:outline-none focus:border-green-500 placeholder:opacity-45	" type="password" name="password" value={user.password} onChange={e => setUser(prevUser => ({ ...prevUser, password: e.target.value }))} required placeholder="Password"/>
+            <div className="mb-6 relative">
+              <input className="w-full px-3 bg-transparent rounded-lg py-3 text-white primary-border rounded focus:outline-none focus:border-green-500 placeholder:opacity-45" type={showPassword ? "text" : "password"} name="password" value={user.password} onChange={e => setUser(prevUser => ({ ...prevUser, password: e.target.value }))} required placeholder="Password"/>
+              <span className="absolute inset-y-0 right-3 flex items-center cursor-pointer text-white" onClick={() => setShowPassword(!showPassword)}>
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </span>
             </div>
             <div className="text-red-500 mb-4">{error}</div>
             <div className="flex justify-between items-center mb-6">
