@@ -4,9 +4,15 @@ import * as Yup from "yup";
 import { getNames } from "country-list";
 
 const accountSchema = Yup.object().shape({
-  firstName: Yup.string().required("First name is required"),
-  lastName: Yup.string().required("Last name is required"),
-  city: Yup.string().required("City is required"),
+  firstName: Yup.string()
+    .matches(/^(?=.*[a-zA-Z])[a-zA-Z0-9\s]*$/, "First name must contain at least one letter and can only contain letters and numbers")
+    .required("First name is required"),
+  lastName: Yup.string()
+    .matches(/^(?=.*[a-zA-Z])[a-zA-Z0-9\s]*$/, "Last name must contain at least one letter and can only contain letters and numbers")
+    .required("Last name is required"),
+  city: Yup.string()
+    .matches(/^[a-zA-Z\s]*$/, "City must contain only alphabets")
+    .required("City is required"),
   country: Yup.string().required("Country is required"),
   password: Yup.string()
     .min(8, "Password must be at least 8 characters long")
