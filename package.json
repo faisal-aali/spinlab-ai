@@ -19,6 +19,7 @@
     "country-list": "^2.3.0",
     "crypto": "^1.0.1",
     "formik": "^2.4.6",
+    "js-cookie": "^3.0.5",
     "jsonwebtoken": "^9.0.2",
     "mysql": "^2.18.1",
     "next": "^14.2.3",

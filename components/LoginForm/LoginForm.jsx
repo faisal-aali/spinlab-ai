@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import styles from "./LoginForm.module.css";
@@ -22,6 +23,7 @@ const LoginForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    Cookies.set("loggedin", "true");
 
     const result = await signIn("credentials", {
       email: user.email,
@@ -53,7 +55,7 @@ const LoginForm = () => {
       <div className="w-full flex items-center justify-center">
         <div className="bg-transparent border primary-border py-12 px-6 rounded-lg w-full max-w-md">
           <h2 className="text-white text-2xl mb-6 text-center">Login</h2>
-          <form className="mt-11" onSubmit={handleSubmit}>
+          <form className="mt-11" onSubmit={(e) => handleSubmit(e)} >
             <div className="mb-4">
               <input
                 className="w-full bg-transparent px-3 rounded-lg py-3 text-white primary-border rounded focus:outline-none focus:border-green-500 placeholder:opacity-45"
