@@ -3,6 +3,7 @@ import { signOut } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import Cookies from "js-cookie";
 
 const Dashboard = () => {
   const router = useRouter();
@@ -24,6 +25,7 @@ const Dashboard = () => {
     localStorage.removeItem("userSession");
     localStorage.removeItem("sessionExpiry");
     router.push("/login");
+    Cookies.remove("loggedin");
   };
 
   return (
