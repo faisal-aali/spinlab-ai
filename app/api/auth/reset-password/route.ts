@@ -33,10 +33,10 @@ export async function POST(request: NextRequest) {
     const updateResult = await db.query(
       `
       UPDATE users 
-      SET password = ? , confirmPassword = ?
+      SET password = ?
       WHERE email = ?
     `,
-      [newPassword, newPassword, email]
+      [newPassword, email]
     );
     console.log("Update result:", updateResult);
     return NextResponse.json({ message: "Password has been reset" });
