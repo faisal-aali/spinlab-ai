@@ -38,13 +38,6 @@ const SelectRole = ({ nextStep, handleChange, values }) => {
               >
                 Trainer
               </button>
-              <button
-                type="button"
-                className={`w-full py-2 rounded-md px-4 ${values.role === 'Coach' ? 'bg-primary text-black' : 'backgroundDisabledColor text-white'}`}
-                onClick={() => setFieldValue("role", "Coach")}
-              >
-                Coach
-              </button>
             </div>
             <div className="mb-8">
               <Field

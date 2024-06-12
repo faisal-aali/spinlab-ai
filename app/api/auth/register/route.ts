@@ -9,9 +9,9 @@ export const POST = async (req: { json: () => any }) => {
     try {
         const results = await query(`
             INSERT INTO users 
-            (uniqID, firstName, lastName, email, city, country, password, plan) 
+            (firstName, lastName, email, city, country, password, plan) 
             VALUES 
-            (UUID(), '${values.firstName}', '${values.lastName}', '${values.email}', '${values.city}', 
+            ('${values.firstName}', '${values.lastName}', '${values.email}', '${values.city}', 
             '${values.country}', '${values.password}', '${values.plan}')
         `);
         if (results) {
