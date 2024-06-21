@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import LoginForm from "@/components/LoginForm/LoginForm";
+import LoginForm from "../../components/LoginForm/LoginForm";
 import styles from './login.module.css';
 import '../globals.css';
 

@@ -9,7 +9,7 @@
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
-  --primary-color: 50, 225, 0; 
+  --primary-color: 50, 225, 0;
   --background-color: 50, 225, 0;
   --hover-color: 0px 0px 44px 0px #3CE10A5C;
   --primary-border: 1px solid #FFFFFF26;
@@ -24,43 +24,40 @@
     --foreground-rgb: 255, 255, 255;
     --background-start-rgb: 0, 0, 0;
     --background-end-rgb: 0, 0, 0;
-    --primary-color: 50, 225, 0; 
+    --primary-color: 50, 225, 0;
     --background-color: 50, 225, 0;
   }
 }
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
+  background: linear-gradient(to bottom,
       transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
-    font-family: 'K2D', sans-serif !important;
+      rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb));
+  font-family: 'K2D', sans-serif !important;
 }
 
-h1{
+h1 {
   font-size: 64px;
-  line-height: 76px; 
+  line-height: 76px;
   font-weight: 600;
 }
 
-h2{
+h2 {
   font-size: 36px;
-  line-height: 44px; 
+  line-height: 44px;
   font-weight: 600;
 }
 
-h3{
+h3 {
   font-size: 28px;
-  line-height: 36px; 
+  line-height: 36px;
   font-weight: 600;
 }
 
-h4{
+h4 {
   font-size: 20px;
-  line-height: 28px; 
+  line-height: 28px;
   font-weight: 600;
 }
 
@@ -76,16 +73,16 @@ h4{
   .text-primary {
     color: rgb(var(--primary-color));
   }
-  
+
   .hover-shadow:hover {
     box-shadow: var(--hover-color);
   }
 
-  .hover-shadow-light:hover{
+  .hover-shadow-light:hover {
     box-shadow: var(--hover-shadow-light);
   }
 
-  .hover-shadow-dark{
+  .hover-shadow-dark {
     box-shadow: var(--hover-shadow-dark);
   }
 
@@ -93,24 +90,28 @@ h4{
     border: var(--primary-border);
   }
 
-  .backgroundOverlay{
+  .backgroundOverlay {
     background: radial-gradient(528.36% 576.9% at 75.52% 33.22%, #020716 0%, #32E100 100%);
     width: 100%;
     height: 100%;
     position: absolute;
     opacity: 0.9;
     z-index: 0;
-}  
-  
-  .backgroundDisabledColor{
+  }
+
+  .dashboard-background {
+    background: radial-gradient(528.36% 576.9% at 75.52% 33.22%, #020716 0%, #32E100 100%);
+  }
+
+  .backgroundDisabledColor {
     background: var(--background-disabled);
   }
 
-  .RegisterFormWidth{
+  .RegisterFormWidth {
     width: 440px;
   }
 
-  .blueBackground{
+  .blueBackground {
     background: rgba(9, 15, 33, 1);
   }
 }
