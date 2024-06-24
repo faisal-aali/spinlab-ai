@@ -89,6 +89,9 @@ h4 {
   .primary-border {
     border: var(--primary-border);
   }
+  .primary-border-green{
+    border: 1px solid #32E10026
+  }
 
   .backgroundOverlay {
     background: radial-gradient(528.36% 576.9% at 75.52% 33.22%, #020716 0%, #32E100 100%);
@@ -114,4 +117,16 @@ h4 {
   .blueBackground {
     background: rgba(9, 15, 33, 1);
   }
+  .dark-blue-background{
+    background: #020716D6;
+  }
+
+  .search-background{
+    background-image: url('/assets/search-icon.png');
+    background-repeat: no-repeat;
+    padding-left: 2.5rem;
+    background-position: 6% 51%;
+    background-size: 22px;
+  }
+
 }
