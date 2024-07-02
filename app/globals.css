@@ -37,6 +37,21 @@ body {
   font-family: 'K2D', sans-serif !important;
 }
 
+td,
+th,
+tr,
+button,
+span,
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'K2D', sans-serif !important;
+}
+
 h1 {
   font-size: 64px;
   line-height: 76px;
@@ -78,6 +93,10 @@ h4 {
     box-shadow: var(--hover-color);
   }
 
+  .hover-shadow-light-box {
+    box-shadow: var(--hover-shadow-light);
+  }
+
   .hover-shadow-light:hover {
     box-shadow: var(--hover-shadow-light);
   }
@@ -89,8 +108,13 @@ h4 {
   .primary-border {
     border: var(--primary-border);
   }
-  .primary-border-green{
+
+  .primary-border-green {
     border: 1px solid #32E10026
+  }
+
+  .bg-primary-light {
+    background: #32E1004D;
   }
 
   .backgroundOverlay {
@@ -117,11 +141,16 @@ h4 {
   .blueBackground {
     background: rgba(9, 15, 33, 1);
   }
-  .dark-blue-background{
+
+  .dark-blue-background {
     background: #020716D6;
   }
 
-  .search-background{
+  .dark-blue-color{
+    color: #020716;
+  }
+
+  .search-background {
     background-image: url('/assets/search-icon.png');
     background-repeat: no-repeat;
     padding-left: 2.5rem;
@@ -129,4 +158,44 @@ h4 {
     background-size: 22px;
   }
 
+  .leaderboard-table-body tr {
+    border-bottom: 2px solid #DFE1E626;
+  }
+
+  .leaderboard-table-body td {
+    padding-top: 12px;
+    padding-bottom: 11px;
+  }
+  .leaderboard-table-body .css-8atqhb{
+    display: flex;
+    flex-direction: column-reverse;
+  }
+  .leaderboard-table-body .css-e784if-MuiTypography-root{
+    margin-bottom: 5px;
+  }
+  .leaderboard-table-head th{
+    font-size: 11px;
+    padding-top: 14px;
+    padding-bottom: 6px;
+  }
+  .search-bar input{
+    height: 60px;
+    background-color: #6363633D;
+  }
+  .search-bar .search-background{
+    background-position: 4% 51%;
+    padding-left: 3.5rem;
+  }
+  .watch-youtube-wrapper{
+    position: absolute;
+    top: 180px;
+    left: 0;
+    background-color: rgb(0, 0, 0);
+    padding: 4px 10px;
+    display: flex;
+    align-items: center;
+  }
+  .h-500{
+    height: 500px;
+  }
 }
