@@ -100,19 +100,19 @@ const Purchases = () => {
           )}
           {step === 2 && (
             <>
-              <div className="text-center p-8 rounded-lg dark-blue-background w-4/5 mx-auto h-500 flex flex-col justify-center items-center">
-                <h2 className="text-green-500 text-3xl mb-4 font-semibold">
+              <div className="text-center p-8 primary-border rounded-lg dark-blue-background w-4/6 mx-auto h-450 flex flex-col justify-center items-center">
+                <h2 className="text-primary text-3xl mb-4 font-semibold border-b border-solid pb-4">
                   Purchase Successful!
                 </h2>
-                <p className="text-xl mb-2 text-gray-300">
+                <p className="text-3xl mb-2 text-white">
                   Your Current Balance
                 </p>
                 <p className="text-5xl mb-6 text-primary">
-                  {selectedCredits} Credits
+                  {selectedCredits} <span className="text-zinc-400">Credits</span>
                 </p>
                 <button
                   variant="contained"
-                  className="bg-white dark-blue-color px-8 py-1 rounded font-bold"
+                  className="bg-white dark-blue-color px-12 mt-4 py-1 rounded font-bold"
                   onClick={handleBack}
                 >
                   Back
