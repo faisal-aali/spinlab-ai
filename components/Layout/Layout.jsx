@@ -26,7 +26,8 @@ const Layout = ({ children }) => {
       <Sidebar />
       <div className="flex-1 py-4 px-8 dashboard-background">
         {((user.role === 'trainer' && ['/dashboard', '/add-player', '/players-history', '/players-metrics', '/metrics'].includes(pathname))
-          || (user.role === 'player' && ['/dashboard'].includes(pathname)))
+          || (user.role === 'player' && ['/dashboard'].includes(pathname))
+          || (user.role === 'coach' && ['/dashboard', '/players'].includes(pathname)))
           && <div>
             <HeaderProfile />
           </div>}
