@@ -108,6 +108,9 @@ h4 {
   .primary-border {
     border: var(--primary-border);
   }
+  .primary-border-color{
+    border-color: #32E100;
+  }
 
   .primary-border-green {
     border: 1px solid #32E10026

@@ -12,7 +12,7 @@ const Dashboard = () => {
 
   // dummy variable. need to get actual user obj from db
   const user = {
-    role: 'trainer'
+    role: 'player'
   }
 
   const handleOpenModal = () => {
