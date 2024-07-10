@@ -66,7 +66,7 @@ const PlayerCard = ({ player, playersMetrics }) => {
                   </button>
                 </Grid>
                 <Grid item xs>
-                  <button onClick={() => router.replace('/metrics')} style={{ width: playersMetrics && '100%' }} className="bg-primary text-black rounded w-36 h-8 flex items-center justify-center text-base">
+                  <button onClick={() => router.replace('/metrics')} style={{ width: playersMetrics && '100%' }} className="bg-primary text-black rounded w-36 h-9 flex items-center justify-center text-base">
                     VIEW METRICS
                   </button>
                 </Grid>
@@ -118,7 +118,7 @@ const AddPlayer = () => {
               <PlayerCard player={player} playersMetrics={playersMetrics} />
             </Grid>
           ))}
-          <Grid item onClick={() => setShowModal(true)} className="border primary-border rounded" xs={3.9} alignItems={'center'} justifyContent={'center'} display={playersMetrics ? 'none' : 'flex'} sx={{ ':hover': { bgcolor: green[900], cursor: 'pointer' } }} minHeight={175}>
+          <Grid item onClick={() => setShowModal(true)} className="border primary-border rounded" alignItems={'center'} justifyContent={'center'} display={playersMetrics ? 'none' : 'flex'} sx={{ ':hover': { bgcolor: green[900], cursor: 'pointer' } }} minHeight={175} width={485}>
             <IconButton>
               <Add className="text-primary" fontSize="large" />
             </IconButton>

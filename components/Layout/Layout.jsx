@@ -7,15 +7,11 @@ import Cookies from "js-cookie";
 import { FiLogOut } from "react-icons/fi";
 import { IoNotificationsOutline } from "react-icons/io5";
 import HeaderProfile from '../Common/HeaderProfile/HeaderProfile'
+import user from "@/util/user";
 
 const Layout = ({ children }) => {
   const router = useRouter();
   const pathname = usePathname()
-
-  // dummy variable. need to get actual user obj from db
-  const user = {
-    role: 'trainer'
-  }
 
   const handleLogout = async () => {
     await signOut({ redirect: false });
@@ -30,7 +26,8 @@ const Layout = ({ children }) => {
       <Sidebar />
       <div className="flex-1 py-4 px-8 dashboard-background">
         {((user.role === 'trainer' && ['/dashboard', '/add-player', '/players-history', '/players-metrics', '/metrics'].includes(pathname))
-          || (user.role === 'player' && ['/dashboard'].includes(pathname)))
+          || (user.role === 'player' && ['/dashboard'].includes(pathname))
+          || (user.role === 'coach' && ['/dashboard', '/players'].includes(pathname)))
           && <div>
             <HeaderProfile />
           </div>}

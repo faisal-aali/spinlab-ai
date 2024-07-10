@@ -3,17 +3,13 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import UploadModal from "../Dashboard/DashboardComponents/UploadVideoModal/UploadModal";
 import AddNewPlayerModal from "../Dashboard/DashboardComponents/AddNewPlayerModal/AddNewPlayerModal";
+import user from "@/util/user";
 
 const Dashboard = () => {
   const router = useRouter();
   const [userEmail, setUserEmail] = useState("");
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [showPlayerModal, setShowPlayerModal] = useState(false);
-
-  // dummy variable. need to get actual user obj from db
-  const user = {
-    role: 'player'
-  }
 
   const handleOpenModal = () => {
     setShowUploadModal(true);
