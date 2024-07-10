@@ -66,7 +66,7 @@ const PlayerCard = ({ player, playersMetrics }) => {
                   </button>
                 </Grid>
                 <Grid item xs>
-                  <button onClick={() => router.replace('/metrics')} style={{ width: playersMetrics && '100%' }} className="bg-primary text-black rounded w-36 h-8 flex items-center justify-center text-base">
+                  <button onClick={() => router.replace('/metrics')} style={{ width: playersMetrics && '100%' }} className="bg-primary text-black rounded w-36 h-9 flex items-center justify-center text-base">
                     VIEW METRICS
                   </button>
                 </Grid>

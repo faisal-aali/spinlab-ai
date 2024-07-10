@@ -113,6 +113,10 @@ h4 {
     border: 1px solid #32E10026
   }
 
+  .primary-border-parrot {
+    border: 1px solid #32E100
+  }
+
   .bg-primary-light {
     background: #32E1004D;
   }
@@ -146,7 +150,7 @@ h4 {
     background: #020716D6;
   }
 
-  .dark-blue-color{
+  .dark-blue-color {
     color: #020716;
   }
 
@@ -166,27 +170,33 @@ h4 {
     padding-top: 12px;
     padding-bottom: 11px;
   }
-  .leaderboard-table-body .css-8atqhb{
+
+  .leaderboard-table-body .css-8atqhb {
     display: flex;
     flex-direction: column-reverse;
   }
-  .leaderboard-table-body .css-e784if-MuiTypography-root{
+
+  .leaderboard-table-body .css-e784if-MuiTypography-root {
     margin-bottom: 5px;
   }
-  .leaderboard-table-head th{
+
+  .leaderboard-table-head th {
     font-size: 11px;
     padding-top: 14px;
     padding-bottom: 6px;
   }
-  .search-bar input{
+
+  .search-bar input {
     height: 60px;
     background-color: #6363633D;
   }
-  .search-bar .search-background{
+
+  .search-bar .search-background {
     background-position: 4% 51%;
     padding-left: 3.5rem;
   }
-  .watch-youtube-wrapper{
+
+  .watch-youtube-wrapper {
     position: absolute;
     top: 180px;
     left: 0;
@@ -195,13 +205,16 @@ h4 {
     display: flex;
     align-items: center;
   }
-  .h-500{
+
+  .h-500 {
     height: 500px;
   }
-  .h-450{
+
+  .h-450 {
     height: 450px;
   }
-  .w-48-percent{
+
+  .w-48-percent {
     width: 48%;
   }
 }
