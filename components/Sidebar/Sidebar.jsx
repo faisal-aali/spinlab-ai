@@ -15,13 +15,13 @@ const links = [
     url: '/leaderboard',
     icon: '/assets/dashboard-icon.svg',
     label: 'Leaderboard',
-    roles: ['player', 'trainer', 'coach']
+    roles: ['player', 'trainer', 'coach', 'admin']
   },
   {
     url: '/drill-library',
     icon: '/assets/drill-library-icon.svg',
     label: 'Drill Library',
-    roles: ['player', 'trainer', 'coach']
+    roles: ['player', 'trainer', 'coach', 'admin']
   },
   {
     url: '/add-player',
@@ -55,15 +55,27 @@ const links = [
   },
   {
     url: '/players',
-    icon: '/assets/dashboard-icon.svg',
-    label: 'Players Database',
-    roles: ['coach']
+    icon: `/assets/${user.role === 'coach' ? 'dashboard-icon.svg' : user.role === 'admin' ? 'add-player-icon.svg' : ''}`,
+    label: user.role === 'coach' ? 'Players Database' : user.role === 'admin' ? 'Manage Player Database' : 'Invalid role',
+    roles: ['coach', 'admin']
+  },
+  {
+    url: '/coaches',
+    icon: '/assets/add-player-icon.svg',
+    label: 'Manage Coach Database',
+    roles: ['admin']
+  },
+  {
+    url: '/trainers',
+    icon: '/assets/add-player-icon.svg',
+    label: 'Manage Trainer Database',
+    roles: ['admin']
   },
   {
     url: '/calender',
     icon: '/assets/calender-icon.svg',
-    label: 'My Calender',
-    roles: ['coach']
+    label: user.role === 'coach' ? 'My Calender' : user.role === 'admin' ? 'Coach Calender' : 'Invalid role',
+    roles: ['coach', 'admin']
   },
   {
     url: '/coaching-call',
@@ -87,7 +99,7 @@ const links = [
     url: '/settings',
     icon: '/assets/setting-icon.svg',
     label: 'Settings',
-    roles: ['player', 'trainer', 'coach']
+    roles: ['player', 'trainer', 'coach', 'admin']
   },
 ]
 
@@ -108,7 +120,7 @@ const Sidebar = () => {
         <div className="flex items-center mb-6">
           <img src="/assets/spinlab-log.png" alt="Logo" className="w-48	" />
         </div>
-        <div className={`${user.role === 'coach' && profileStyle.profile} flex items-center space-x-2 mb-8 rounded-lg ${pathname === '/profile' && `bg-primary p-2`}`} onClick={user.role === 'coach' && (() => route.replace('/profile'))}>
+        <div className={`${(user.role === 'coach' || user.role === 'admin') && profileStyle.profile} flex items-center space-x-2 mb-8 rounded-lg ${pathname === '/profile' && `bg-primary p-2`}`} onClick={(user.role === 'coach' || user.role === 'admin') && (() => route.replace('/profile'))}>
           <img
             src="https://placehold.co/40x40"
             alt="User Avatar"
@@ -137,110 +149,6 @@ const Sidebar = () => {
               <span className="flex items-center p-2">{link.label}</span>
             </Link>
           ))}
-          {/* <Link href="/dashboard" className={linkClasses("/dashboard")}>
-            <img
-              src="/assets/dashboard-icon.svg"
-              className={svgClasses("/dashboard")}
-              alt=""
-            />
-            <span className="flex items-center p-2">Dashboard</span>
-          </Link>
-          <Link href="/leaderboard" className={linkClasses("/leaderboard")}>
-            <img
-              src="/assets/dashboard-icon.svg"
-              className={svgClasses("/leaderboard")}
-              alt=""
-            />
-            <span className="flex items-center p-2">Leaderboard</span>
-          </Link>
-          <Link href="/drill-library" className={linkClasses("/drill-library")}>
-            <img
-              src="/assets/drill-library-icon.svg"
-              className={svgClasses("/drill-library")}
-              alt=""
-            />
-            <span className="flex items-center p-2">Drill Library</span>
-          </Link>
-          {user.role === 'trainer' &&
-            <Link href="/add-player" className={linkClasses("/add-player")}>
-              <img
-                src="/assets/add-player-icon.svg"
-                className={svgClasses("/add-player")}
-                alt=""
-              />
-              <span className="flex items-center p-2">Add Player</span>
-            </Link>
-          }
-          {user.role === 'player' &&
-            <Link href="/metrics" className={linkClasses("/metrics")}>
-              <img
-                src="/assets/metrics-icon.svg"
-                className={svgClasses("/metrics")}
-                alt=""
-              />
-              <span className="flex items-center p-2">My Metrics</span>
-            </Link>}
-          {user.role === 'trainer' &&
-            <Link href="/players-metrics" className={linkClasses("/players-metrics")}>
-              <img
-                src="/assets/metrics-icon.svg"
-                className={svgClasses("/players-metrics")}
-                alt=""
-              />
-              <span className="flex items-center p-2">My Player Metrics</span>
-            </Link>}
-          {user.role === 'player' &&
-            <Link href="/history" className={linkClasses("/history")}>
-              <img
-                src="/assets/history-icon.svg"
-                className={svgClasses("/history")}
-                alt=""
-              />
-              <span className="flex items-center p-2">History</span>
-            </Link>}
-          {user.role === 'trainer' &&
-            <Link href="/players-history" className={linkClasses("/players-history")}>
-              <img
-                src="/assets/history-icon.svg"
-                className={svgClasses("/players-history")}
-                alt=""
-              />
-              <span className="flex items-center p-2">My Players History</span>
-            </Link>}
-          {user.role === 'player' &&
-            <Link href="/coaching-call" className={linkClasses("/coaching-call")}>
-              <img
-                src="/assets/phone-call-icon.svg"
-                className={svgClasses("/coaching-call")}
-                alt=""
-              />
-              <span className="flex items-center p-2">Coaching Call</span>
-            </Link>
-          }
-          <Link href="/purchases" className={linkClasses("/purchases")}>
-            <img
-              src="/assets/purchase-icon.svg"
-              className={svgClasses("/purchases")}
-              alt=""
-            />
-            <span className="flex items-center p-2">Purchases</span>
-          </Link>
-          <Link href="/subscriptions" className={linkClasses("/subscriptions")}>
-            <img
-              src="/assets/subscription-icon.svg"
-              className={svgClasses("/subscriptions")}
-              alt=""
-            />
-            <span className="flex items-center p-2">Subscriptions</span>
-          </Link>
-          <Link href="/settings" className={linkClasses("/settings")}>
-            <img
-              src="/assets/setting-icon.svg"
-              className={svgClasses("/settings")}
-              alt=""
-            />
-            <span className="flex items-center p-2">Settings</span>
-          </Link> */}
         </div>
       </div>
     </div>

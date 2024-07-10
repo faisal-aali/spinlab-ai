@@ -12,6 +12,7 @@ import {
   Box,
   Typography,
   LinearProgress,
+  IconButton,
 } from "@mui/material";
 import Pagination from '../../../Common/Pagination/Pagination'
 
@@ -117,6 +118,9 @@ const Players = () => {
                       </Typography>
                     </TableCell>
                     <TableCell className="text-white">
+                      <IconButton>
+                        <img src="/assets/open.svg" />
+                      </IconButton>
                     </TableCell>
                   </TableRow>
                 ))}
