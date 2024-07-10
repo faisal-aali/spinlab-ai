@@ -40,8 +40,8 @@ const PlayerCard = ({ player, playersMetrics }) => {
   const router = useRouter()
 
   return (
-    <Card className="bg-transparent p-1 border border-green-900">
-      <Grid container gap={1} padding={1}>
+    <Card className="bg-transparent p-1 border primary-border">
+      <Grid container gap={1} padding={1} className="gap-4">
         <Grid item>
           <CardMedia component={'img'} image={player.imageUrl} />
         </Grid>
@@ -52,21 +52,21 @@ const PlayerCard = ({ player, playersMetrics }) => {
                 <Typography className="text-white text-2xl">{player.firstName} {player.lastName}</Typography>
               </Grid>
               <Grid item container gap={2}>
-                <Grid item className="blueBackground py-1 px-8 primary-border rounded">
-                  <Typography className="text-white text-2xl">{player.height}</Typography>
+                <Grid item className="blueBackground w-36	text-center py-2 px-8 primary-border-green rounded">
+                  <Typography className="text-white text-lg	">{player.height}</Typography>
                 </Grid>
-                <Grid item className="blueBackground py-1 px-8 primary-border rounded">
-                  <Typography className="text-white text-2xl">{player.weight}</Typography>
+                <Grid item className="blueBackground w-36	text-center py-2 px-8 primary-border-green rounded">
+                  <Typography className="text-white text-lg	">{player.weight}</Typography>
                 </Grid>
               </Grid>
               <Grid item container gap={2} justifyContent={'space-between'}>
                 <Grid item display={playersMetrics ? 'none' : 'block'}>
-                  <button className="bg-white text-black rounded w-36 h-8 flex items-center justify-center text-base">
+                  <button className="bg-white dark-blue-color font-bold rounded w-32 h-9  flex items-center justify-center text-base">
                     UPLOAD
                   </button>
                 </Grid>
                 <Grid item xs={playersMetrics ? 12 : 'auto'}>
-                  <button onClick={() => router.replace('/metrics')} style={{ width: playersMetrics && '100%' }} className="bg-primary text-black rounded w-36 h-8 flex items-center justify-center text-base">
+                  <button onClick={() => router.replace('/metrics')} style={{ width: playersMetrics && '100%' }} className="bg-primary dark-blue-color font-bold rounded w-40	 h-9 flex items-center justify-center text-base">
                     VIEW METRICS
                   </button>
                 </Grid>
@@ -118,7 +118,7 @@ const AddPlayer = () => {
               <PlayerCard player={player} playersMetrics={playersMetrics} />
             </Grid>
           ))}
-          <Grid item onClick={() => setShowModal(true)} className="border border-green-900 rounded" xs={3.9} alignItems={'center'} justifyContent={'center'} display={playersMetrics ? 'none' : 'flex'} sx={{ ':hover': { bgcolor: green[900], cursor: 'pointer' } }} minHeight={175}>
+          <Grid item onClick={() => setShowModal(true)} className="border primary-border rounded" xs={3.9} alignItems={'center'} justifyContent={'center'} display={playersMetrics ? 'none' : 'flex'} sx={{ ':hover': { bgcolor: green[900], cursor: 'pointer' } }} minHeight={175}>
             <IconButton>
               <Add className="text-primary" fontSize="large" />
             </IconButton>

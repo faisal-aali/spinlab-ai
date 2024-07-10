@@ -22,17 +22,38 @@ const Settings = () => {
           </div>
         </div>
       </div>
-      <div className="">
+      <div className="p-8 pt-0">
         <div className="">
-          <Tabs value={tabIndex} onChange={handleTabChange} className="mb-8">
-            <Tab
-              label="Account"
-              className={tabIndex === 0 ? "text-green-500" : ""}
-            />
-            <Tab
-              label="Billing"
-              className={tabIndex === 1 ? "text-green-500" : ""}
-            />
+          <Tabs
+            value={tabIndex}
+            onChange={handleTabChange}
+            indicatorColor="none"
+            aria-label="category tabs"
+            className="blueBackground py-2.5 rounded-lg w-56"
+            sx={{
+              backgroundColor: "#001f3f",
+              ".MuiTabs-flexContainer button": {
+                minHeight: "40px",
+                backgroundColor: "#32E10026",
+                borderRadius: "6px",
+                fontWeight: 500,
+                fontSize: "15px",
+                textTransform: "capitalize",
+                padding: " 0 10px",
+                color: "#fff",
+              },
+              ".MuiTabs-flexContainer": {
+                justifyContent: "center",
+                gap: "10px",
+              },
+              ".Mui-selected": {
+                backgroundColor: "#00ff00 !important",
+                color: "#000 !important",
+              },
+            }}
+          >
+            <Tab label="Account" />
+            <Tab label="Billing" />
           </Tabs>
 
           {tabIndex === 0 && <AccountSettings />}

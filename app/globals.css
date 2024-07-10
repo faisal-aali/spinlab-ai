@@ -201,4 +201,7 @@ h4 {
   .h-450{
     height: 450px;
   }
+  .w-48-percent{
+    width: 48%;
+  }
 }

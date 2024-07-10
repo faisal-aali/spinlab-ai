@@ -114,7 +114,7 @@ const DrillLibrary = () => {
                 </span>
               </h2>
               <p className="text-white text-sm">
-                Please choose any category below to see the desired media.
+                Please choose any category beslow to see the desired media.
               </p>
             </div>
           </div>

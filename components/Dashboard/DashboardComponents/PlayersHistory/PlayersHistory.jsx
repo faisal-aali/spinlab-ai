@@ -124,10 +124,10 @@ const PlayersHistory = () => {
                                     </TableCell>
                                     <TableCell className="text-white">
                                         <div className="grid grid-cols-2 items-center gap-4">
-                                            <button className="bg-white text-black px-5 py-1 rounded-lg">
+                                            <button className="bg-white text-black px-5 py-3 rounded-lg">
                                                 DOWNLOAD PDF
                                             </button>
-                                            <button className="bg-white text-black px-5 py-1 rounded-lg">
+                                            <button className="bg-white text-black px-5 py-3 rounded-lg">
                                                 VIEW HERE
                                             </button>
                                         </div>
