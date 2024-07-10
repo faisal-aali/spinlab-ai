@@ -1,17 +1,102 @@
 "use client";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
+import user from '../../util/user'
+import profileStyle from './sidebar.module.css'
+
+const links = [
+  {
+    url: '/dashboard',
+    icon: '/assets/dashboard-icon.svg',
+    label: 'Dashboard',
+    roles: ['player', 'trainer', 'coach']
+  },
+  {
+    url: '/leaderboard',
+    icon: '/assets/dashboard-icon.svg',
+    label: 'Leaderboard',
+    roles: ['player', 'trainer', 'coach']
+  },
+  {
+    url: '/drill-library',
+    icon: '/assets/drill-library-icon.svg',
+    label: 'Drill Library',
+    roles: ['player', 'trainer', 'coach']
+  },
+  {
+    url: '/add-player',
+    icon: '/assets/add-player-icon.svg',
+    label: 'Add Player',
+    roles: ['trainer']
+  },
+  {
+    url: '/metrics',
+    icon: '/assets/metrics-icon.svg',
+    label: 'My Metrics',
+    roles: ['player']
+  },
+  {
+    url: '/players-metrics',
+    icon: '/assets/metrics-icon.svg',
+    label: 'My Player Metrics',
+    roles: ['trainer']
+  },
+  {
+    url: '/history',
+    icon: '/assets/history-icon.svg',
+    label: 'History',
+    roles: ['player']
+  },
+  {
+    url: '/players-history',
+    icon: '/assets/history-icon.svg',
+    label: 'My Player History',
+    roles: ['trainer']
+  },
+  {
+    url: '/players',
+    icon: '/assets/dashboard-icon.svg',
+    label: 'Players Database',
+    roles: ['coach']
+  },
+  {
+    url: '/calender',
+    icon: '/assets/calender-icon.svg',
+    label: 'My Calender',
+    roles: ['coach']
+  },
+  {
+    url: '/coaching-call',
+    icon: '/assets/phone-call-icon.svg',
+    label: 'Coaching Call',
+    roles: ['player']
+  },
+  {
+    url: '/purchases',
+    icon: '/assets/purchase-icon.svg',
+    label: 'Purchases',
+    roles: ['player', 'trainer']
+  },
+  {
+    url: '/subscriptions',
+    icon: '/assets/subscription-icon.svg',
+    label: 'Subscriptions',
+    roles: ['player', 'trainer']
+  },
+  {
+    url: '/settings',
+    icon: '/assets/setting-icon.svg',
+    label: 'Settings',
+    roles: ['player', 'trainer', 'coach']
+  },
+]
 
 const Sidebar = () => {
   const pathname = usePathname();
-
-  // dummy variable. need to get actual user obj from db
-  const user = {
-    role: 'trainer'
-  }
+  const route = useRouter()
 
   const linkClasses = (path) =>
-    `flex pl-2 py-1 ${pathname === path ? "bg-primary rounded-lg w-10/12 items-center" : ""
+    `flex pl-2 py-1 ${pathname === path ? "bg-primary rounded-lg w-10/12 items-center text-black" : ""
     }`;
 
   const svgClasses = (path) =>
@@ -23,7 +108,7 @@ const Sidebar = () => {
         <div className="flex items-center mb-6">
           <img src="/assets/spinlab-log.png" alt="Logo" className="w-48	" />
         </div>
-        <div className="flex items-center space-x-2 mb-8">
+        <div className={`${user.role === 'coach' && profileStyle.profile} flex items-center space-x-2 mb-8 rounded-lg ${pathname === '/profile' && `bg-primary p-2`}`} onClick={user.role === 'coach' && (() => route.replace('/profile'))}>
           <img
             src="https://placehold.co/40x40"
             alt="User Avatar"
@@ -42,7 +127,17 @@ const Sidebar = () => {
           />
         </div>
         <div className="flex flex-col space-y-2">
-          <Link href="/dashboard" className={linkClasses("/dashboard")}>
+          {links.filter(link => link.roles.includes(user.role)).map(link => (
+            <Link href={link.url} className={linkClasses(link.url)}>
+              <img
+                src={link.icon}
+                className={svgClasses(link.url)}
+                alt=""
+              />
+              <span className="flex items-center p-2">{link.label}</span>
+            </Link>
+          ))}
+          {/* <Link href="/dashboard" className={linkClasses("/dashboard")}>
             <img
               src="/assets/dashboard-icon.svg"
               className={svgClasses("/dashboard")}
@@ -145,7 +240,7 @@ const Sidebar = () => {
               alt=""
             />
             <span className="flex items-center p-2">Settings</span>
-          </Link>
+          </Link> */}
         </div>
       </div>
     </div>

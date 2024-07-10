@@ -1,5 +1,6 @@
 'use client'
 
+import user from "@/util/user";
 import { East } from "@mui/icons-material";
 import { Card, CardContent, CardMedia, Grid, LinearProgress, Typography, Box, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, IconButton, SvgIcon } from "@mui/material"
 import { useRouter } from "next/navigation";
@@ -175,11 +176,6 @@ const HistoryTable = () => {
 
 export default function Metrics() {
     const router = useRouter()
-
-    // dummy variable. need to get actual user obj from db
-    const user = {
-        role: 'trainer'
-    }
 
     const player = {
         firstName: 'James',
