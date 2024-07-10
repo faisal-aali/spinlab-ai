@@ -45,7 +45,7 @@ const PlayerCard = ({ player, playersMetrics }) => {
         <Grid item>
           <CardMedia component={'img'} image={player.imageUrl} />
         </Grid>
-        <Grid item alignItems={'center'} display={'flex'}>
+        <Grid item alignItems={'center'} display={'flex'} xs>
           <CardContent style={{ padding: 0 }}>
             <Grid container flexDirection={'column'} gap={2}>
               <Grid item>
@@ -65,8 +65,8 @@ const PlayerCard = ({ player, playersMetrics }) => {
                     UPLOAD
                   </button>
                 </Grid>
-                <Grid item xs={playersMetrics ? 12 : 'auto'}>
-                  <button onClick={() => router.replace('/metrics')} style={{ width: playersMetrics && '100%' }} className="bg-primary dark-blue-color font-bold rounded w-40	 h-9 flex items-center justify-center text-base">
+                <Grid item xs>
+                  <button onClick={() => router.replace('/metrics')} style={{ width: playersMetrics && '100%' }} className="bg-primary text-black rounded w-36 h-8 flex items-center justify-center text-base">
                     VIEW METRICS
                   </button>
                 </Grid>
@@ -113,8 +113,8 @@ const AddPlayer = () => {
       </div>
       <div>
         <Grid container gap={2}>
-          {filteredPlayers.map(player => (
-            <Grid item xs={3.9} key={player.id}>
+          {filteredPlayers.concat(filteredPlayers).map(player => (
+            <Grid item key={player.id}>
               <PlayerCard player={player} playersMetrics={playersMetrics} />
             </Grid>
           ))}
