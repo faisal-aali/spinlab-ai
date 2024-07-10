@@ -14,6 +14,7 @@ const SelectRole = ({ nextStep, handleChange, values }) => {
       initialValues={values}
       validationSchema={roleSchema}
       onSubmit={(values) => {
+        console.log('selectrole submit',values);
         handleChange("role")({ target: { value: values.role } });
         handleChange("email")({ target: { value: values.email } });
         nextStep();
@@ -26,15 +27,17 @@ const SelectRole = ({ nextStep, handleChange, values }) => {
             <div className="flex justify-between mb-8">
               <button
                 type="button"
-                className={`w-full py-2 mr-4 px-4 rounded-md ${values.role === 'Player' ? 'bg-primary text-black' : 'backgroundDisabledColor text-white'}`}
-                onClick={() => setFieldValue("role", "Player")}
+                name='role'
+                className={`w-full py-2 mr-4 px-4 rounded-md ${values.role === 'player' ? 'bg-primary text-black' : 'backgroundDisabledColor text-white'}`}
+                onClick={() => setFieldValue("role", "player")}
               >
                 Player
               </button>
               <button
                 type="button"
-                className={`w-full py-2 mr-4 px-4 rounded-md ${values.role === 'Trainer' ? 'bg-primary text-black' : 'backgroundDisabledColor text-white'}`}
-                onClick={() => setFieldValue("role", "Trainer")}
+                name='role'
+                className={`w-full py-2 mr-4 px-4 rounded-md ${values.role === 'trainer' ? 'bg-primary text-black' : 'backgroundDisabledColor text-white'}`}
+                onClick={() => setFieldValue("role", "trainer")}
               >
                 Trainer
               </button>

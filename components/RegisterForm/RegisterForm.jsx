@@ -30,7 +30,8 @@ const RegisterForm = () => {
   }, []);
 
   const handleChange = (field) => (e) => {
-    setValues({ ...values, [field]: e.target.value });
+    // console.log('handlechange called',field,e)
+    setValues(v => ({ ...v, [field]: e.target.value }));
   };
 
   const handleSubmit = async (values) => {

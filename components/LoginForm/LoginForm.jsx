@@ -31,10 +31,11 @@ const LoginForm = () => {
     });
 
     if (!result.error) {
+      console.log('sign in success',result)
       localStorage.setItem(
         "userSession",
         JSON.stringify({
-          email: user.email,
+          email: user.email
         })
       );
       const expiryTime = new Date().getTime() + 3600000;

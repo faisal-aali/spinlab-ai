@@ -1,18 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
 import util from 'util';
 import db from '../../../../util/db';
+import { randomUUID } from 'crypto';
 
 const query = util.promisify(db.query).bind(db);
 
 export const POST = async (req: NextRequest) => {
+    const uniqID = randomUUID()
+
     const values = await req.json();
     try {
         const results = await query(`
             INSERT INTO users 
-            (firstName, lastName, email, city, country, password, plan) 
+            (uniqID, firstName, lastName, email, city, country, password, plan, role) 
             VALUES 
-            ('${values.firstName}', '${values.lastName}', '${values.email}', '${values.city}', 
-            '${values.country}', '${values.password}', '${values.plan}')
+            ('${uniqID}','${values.firstName}', '${values.lastName}', '${values.email}', '${values.city}', 
+            '${values.country}', '${values.password}', '${values.plan}', '${values.role}')
         `);
         if (results) {
             return new NextResponse(JSON.stringify(values), { status: 201 });

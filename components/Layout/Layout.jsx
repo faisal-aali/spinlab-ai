@@ -2,13 +2,20 @@
 "use client";
 import Sidebar from "../Sidebar/Sidebar";
 import { signOut } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { FiLogOut } from "react-icons/fi";
 import { IoNotificationsOutline } from "react-icons/io5";
+import HeaderProfile from '../Common/HeaderProfile/HeaderProfile'
 
 const Layout = ({ children }) => {
   const router = useRouter();
+  const pathname = usePathname()
+
+  // dummy variable. need to get actual user obj from db
+  const user = {
+    role: 'trainer'
+  }
 
   const handleLogout = async () => {
     await signOut({ redirect: false });
@@ -22,6 +29,11 @@ const Layout = ({ children }) => {
     <div className="flex">
       <Sidebar />
       <div className="flex-1 py-4 px-8 dashboard-background">
+        {((user.role === 'trainer' && ['/dashboard', '/add-player', '/players-history', '/players-metrics', '/metrics'].includes(pathname))
+          || (user.role === 'player' && ['/dashboard'].includes(pathname)))
+          && <div>
+            <HeaderProfile />
+          </div>}
         <div className="flex justify-between items-center mb-8 absolute right-10 top-12	">
           <div className="flex space-x-4 items-center">
             <button className="bg-white text-black px-5 py-1 rounded-lg">
