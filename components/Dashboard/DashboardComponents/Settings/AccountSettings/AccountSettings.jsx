@@ -3,7 +3,6 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
-
 const AccountSettings = () => {
   const [imageSrc, setImageSrc] = useState("https://placehold.co/100x100");
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
@@ -25,10 +24,12 @@ const AccountSettings = () => {
     firstName: Yup.string().required("Required"),
     lastName: Yup.string().required("Required"),
     email: Yup.string().email("Invalid email address").required("Required"),
+    bio: Yup.string().required("Required"),
     age: Yup.number().required("Required"),
     height: Yup.string().required("Required"),
     handedness: Yup.string().required("Required"),
     weight: Yup.string().required("Required"),
+    location: Yup.string().required("Required"),
     currentPassword: Yup.string().required("Required"),
     newPassword: Yup.string().required("Required"),
     confirmPassword: Yup.string()
@@ -43,10 +44,12 @@ const AccountSettings = () => {
           firstName: "",
           lastName: "",
           email: "",
+          bio: "",
           age: "",
           height: "",
           handedness: "",
           weight: "",
+          location: "",
           currentPassword: "",
           newPassword: "",
           confirmPassword: "",
@@ -89,8 +92,12 @@ const AccountSettings = () => {
                       <img src="assets/upload-icon.svg" alt="" />
                     </label>
                     <div>
-                    <span className="text-primary text-lg	">Click to Upload</span>
-                    <span className="text-white mx-2 text-lg	">or drag and drop</span>
+                      <span className="text-primary text-lg	">
+                        Click to Upload
+                      </span>
+                      <span className="text-white mx-2 text-lg	">
+                        or drag and drop
+                      </span>
                     </div>
                     <p className="text-white">
                       JPG, PNG, or GIF (Recommended size 1000x1000px)
@@ -171,6 +178,52 @@ const AccountSettings = () => {
                     }`}
                     placeholder="Email"
                   />
+                </div>
+                <div className="mb-4">
+                  <div className="mb-1 opacity-45">
+                    <label htmlFor="">Bio</label>
+                  </div>
+                  <Field
+                    name="bio"
+                    type="textarea"
+                    className={`w-full py-3 px-3 dark-blue-background rounded-lg text-white focus:outline-none placeholder:opacity-45 ${
+                      errors.bio && touched.bio
+                        ? "border-red-900	border"
+                        : "primary-border focus:border-green-500"
+                    }`}
+                    placeholder="Enter your bio"
+                  />
+                </div>
+                <div className="flex items-center mb-4 gap-6">
+                  <div className="w-1/2">
+                    <div className="mb-1 opacity-45">
+                      <label htmlFor="">Email</label>
+                    </div>
+                    <Field
+                      name="email"
+                      type="email"
+                      className={`w-full py-3 px-3 dark-blue-background rounded-lg text-white focus:outline-none placeholder:opacity-45 ${
+                        errors.Email && touched.Email
+                          ? "border-red-900	border"
+                          : "primary-border focus:border-green-500"
+                      }`}
+                      placeholder="Age"
+                    />
+                  </div>
+                  <div className="w-1/2">
+                    <div className="mb-1 opacity-45">
+                      <label htmlFor="">Location</label>
+                    </div>
+                    <Field
+                      name="location"
+                      className={`w-full py-3 px-3 dark-blue-background rounded-lg text-white focus:outline-none placeholder:opacity-45 ${
+                        errors.location && touched.location
+                          ? "border-red-900	border"
+                          : "primary-border focus:border-green-500"
+                      }`}
+                      placeholder="Height"
+                    />
+                  </div>
                 </div>
                 <div className="flex items-center mb-4 gap-6">
                   <div className="w-1/2">

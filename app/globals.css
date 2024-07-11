@@ -124,6 +124,10 @@ h4 {
     background: #32E1004D;
   }
 
+  .button-danger{
+    background-color: #F52323;
+  }
+
   .backgroundOverlay {
     background: radial-gradient(528.36% 576.9% at 75.52% 33.22%, #020716 0%, #32E100 100%);
     width: 100%;
