@@ -12,8 +12,13 @@ import {
   Box,
   Typography,
   LinearProgress,
+  IconButton,
 } from "@mui/material";
 import Pagination from '../../../Common/Pagination/Pagination'
+import DeleteUserModal from '../DeleteUserModal/DeleteUserModal'
+import AddUserModal from '../AddUserModal/AddUserModal'
+import user from "@/util/user";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const data = Array.from({ length: 6 }).map((_, index) => ({
   id: index + 1,
@@ -22,41 +27,30 @@ const data = Array.from({ length: 6 }).map((_, index) => ({
   email: 'faisalali.ux@gmail.com',
   imageUrl: "/assets/player.png",
   date: "04/29/2024",
+  joiningDate: '05/03/2024',
+  expiryDate: '05/03/2024',
   balance: 60,
   plan: 'Monthly'
 }));
 
-const CustomLinearProgress = ({ value, color }) => {
-  return (
-    <Box sx={{ width: "100%" }}>
-      <LinearProgress
-        variant="determinate"
-        value={value}
-        sx={{
-          height: 3,
-          borderRadius: 0,
-          backgroundColor: "#E0E0E0",
-          "& .MuiLinearProgress-bar": {
-            backgroundColor: color,
-          },
-        }}
-      />
-      <Typography variant="body2" color="textSecondary">
-        {`${Math.round(value)}%`}
-      </Typography>
-    </Box>
-  );
-};
 
-const Players = () => {
+const Users = () => {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+
   const [page, setPage] = useState(1);
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [showAddModal, setShowAddModal] = useState(false)
+  const [searchQuery, setSearchQuery] = useState("")
   const rowsPerPage = 5;
+
+  const role = searchParams.get('role')
 
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
   };
 
-  const paginatedData = data.slice(
+  const paginatedData = data.filter(p => `${p.firstName} ${p.lastName}`.toLowerCase().match(searchQuery)).slice(
     (page - 1) * rowsPerPage,
     page * rowsPerPage
   );
@@ -64,8 +58,25 @@ const Players = () => {
   return (
     <>
       <div className="flex flex-col py-8 gap-8">
-        <div>
-          <h6 className="text-4xl">Players Database</h6>
+        <div className="flex justify-between">
+          <div>
+            <p className="text-4xl">{role === 'player' ? 'Players' : role === 'coach' ? 'Staff' : role === 'trainer' ? 'Trainers' : 'Invalid Role'} Database</p>
+          </div>
+          <div className="flex flex-row gap-4 w-2/5">
+            <div className="search-bar flex-1">
+              <input
+                placeholder="Search..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-2 py-1 rounded-lg h-full text-white search-background focus:outline-none focus:ring-1 focus:ring-green-500"
+              />
+            </div>
+            <div className={`${user.role !== 'admin' && 'hidden'}`}>
+              <button className="bg-primary dark-blue-color rounded w-48 h-14 flex items-center justify-center text-lg font-bold" onClick={() => setShowAddModal(true)}>
+                ADD NEW {role === 'player' ? 'PLAYER' : role === 'coach' ? 'STAFF' : role === 'trainer' ? 'TRAINER' : 'Invalid Role'}
+              </button>
+            </div>
+          </div>
         </div>
         <div className="">
           <TableContainer component={Paper} className="bg-transparent">
@@ -78,7 +89,8 @@ const Players = () => {
                   <TableCell className="text-white">Date of Joining</TableCell>
                   <TableCell className="text-white">Remaining Credits</TableCell>
                   <TableCell className="text-white">Subscription Plan</TableCell>
-                  <TableCell className="text-white">Action</TableCell>
+                  {user.role === 'admin' && <TableCell className="text-white">Delete {role === 'player' ? 'Player' : role === 'coach' ? 'Staff' : role === 'trainer' ? 'Trainer' : 'Invalid Role'}</TableCell>}
+                  <TableCell className="text-white">{user.role !== 'admin' && 'Action'}</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody className="leaderboard-table-body">
@@ -116,7 +128,16 @@ const Players = () => {
                         {row.plan}
                       </Typography>
                     </TableCell>
+                    {user.role === 'admin' &&
+                      <TableCell className="text-white">
+                        <IconButton onClick={() => setShowDeleteModal(true)}>
+                          <img src="/assets/delete-icon.svg" />
+                        </IconButton>
+                      </TableCell>}
                     <TableCell className="text-white">
+                      <IconButton onClick={() => router.push('/users/view?role=' + role)}>
+                        <img src="/assets/open.svg" />
+                      </IconButton>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -128,10 +149,12 @@ const Players = () => {
             count={Math.ceil(data.length / rowsPerPage)}
             onChange={handlePageChange}
           />
+          <DeleteUserModal open={showDeleteModal} onClose={() => setShowDeleteModal(false)} />
+          <AddUserModal open={showAddModal} onClose={() => setShowAddModal(false)} role={role} />
         </div>
       </div>
     </>
   );
 };
 
-export default Players;
+export default Users;

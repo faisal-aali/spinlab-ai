@@ -1,6 +1,6 @@
 
 const user = {
-    role: 'player'
+    role: 'admin'
 }
 
 export default user

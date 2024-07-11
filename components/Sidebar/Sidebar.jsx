@@ -1,8 +1,9 @@
 "use client";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import user from '../../util/user'
 import profileStyle from './sidebar.module.css'
+import { useEffect } from "react";
 
 const links = [
   {
@@ -15,13 +16,13 @@ const links = [
     url: '/leaderboard',
     icon: '/assets/dashboard-icon.svg',
     label: 'Leaderboard',
-    roles: ['player', 'trainer', 'coach']
+    roles: ['player', 'trainer', 'coach', 'admin']
   },
   {
     url: '/drill-library',
     icon: '/assets/drill-library-icon.svg',
     label: 'Drill Library',
-    roles: ['player', 'trainer', 'coach']
+    roles: ['player', 'trainer', 'coach', 'admin']
   },
   {
     url: '/add-player',
@@ -54,16 +55,47 @@ const links = [
     roles: ['trainer']
   },
   {
-    url: '/players',
-    icon: '/assets/dashboard-icon.svg',
-    label: 'Players Database',
-    roles: ['coach']
+    url: '/users',
+    query: '?role=player',
+    icon: `/assets/${user.role === 'coach' ? 'dashboard-icon.svg' : user.role === 'admin' ? 'add-player-icon.svg' : ''}`,
+    label: user.role === 'coach' ? 'Players Database' : user.role === 'admin' ? 'Manage Player Database' : 'Invalid role',
+    roles: ['coach', 'admin'],
+    pathValidator: function (pathname) {
+      return pathname.startsWith(this.url) && pathname.endsWith(this.query)
+    }
+  },
+  {
+    url: '/users',
+    query: '?role=coach',
+    icon: '/assets/add-player-icon.svg',
+    label: 'Manage Coach Database',
+    roles: ['admin'],
+    pathValidator: function (pathname) {
+      return pathname.startsWith(this.url) && pathname.endsWith(this.query)
+    }
+  },
+  {
+    url: '/users',
+    query: '?role=trainer',
+    icon: '/assets/add-player-icon.svg',
+    label: 'Manage Trainer Database',
+    roles: ['admin'],
+    pathValidator: function (pathname) {
+      console.log('in pathvalidator', window.location.href);
+      return pathname.startsWith(this.url) && pathname.endsWith(this.query)
+    }
   },
   {
     url: '/calender',
     icon: '/assets/calender-icon.svg',
-    label: 'My Calender',
+    label: 'My Calendar',
     roles: ['coach']
+  },
+  {
+    url: '/coaches-calendar',
+    icon: '/assets/calender-icon.svg',
+    label: 'Coach Calendar',
+    roles: ['admin']
   },
   {
     url: '/coaching-call',
@@ -87,20 +119,25 @@ const links = [
     url: '/settings',
     icon: '/assets/setting-icon.svg',
     label: 'Settings',
-    roles: ['player', 'trainer', 'coach']
+    roles: ['player', 'trainer', 'coach', 'admin']
   },
 ]
 
 const Sidebar = () => {
   const pathname = usePathname();
   const route = useRouter()
+  const searchParams = useSearchParams()
 
-  const linkClasses = (path) =>
-    `flex pl-2 py-1 ${pathname === path ? "bg-primary rounded-lg w-10/12 items-center text-black" : ""
+  useEffect(() => {
+    console.log('pathname changed to', pathname, searchParams.getAll);
+  }, [pathname])
+
+  const linkClasses = (path, pathValidator) =>
+    `flex pl-2 py-1 ${pathValidator ? pathValidator(pathname) : pathname.startsWith(path) ? "bg-primary rounded-lg min-w-44 w-fit items-center text-black" : ""
     }`;
 
-  const svgClasses = (path) =>
-    `${pathname === path ? "mix-blend-difference" : "fill-current text-white"}`;
+  const svgClasses = (path, pathValidator) =>
+    `${pathValidator ? pathValidator(pathname) : pathname.startsWith(path) ? "mix-blend-difference" : "fill-current text-white"}`;
 
   return (
     <div className="bg-gray-900 text-white w-80 pt-8 pl-12 min-h-screen p-4">
@@ -108,15 +145,15 @@ const Sidebar = () => {
         <div className="flex items-center mb-6">
           <img src="/assets/spinlab-log.png" alt="Logo" className="w-48	" />
         </div>
-        <div className={`${user.role === 'coach' && profileStyle.profile} flex items-center space-x-2 mb-8 rounded-lg ${pathname === '/profile' && `bg-primary p-2`}`} onClick={user.role === 'coach' && (() => route.replace('/profile'))}>
+        <div className={`${(user.role === 'coach' || user.role === 'admin') && profileStyle.profile} flex items-center space-x-2 mb-8 rounded-lg ${pathname === '/profile' && `bg-primary p-2`}`} onClick={(user.role === 'coach' || user.role === 'admin') && (() => route.replace('/profile'))}>
           <img
             src="https://placehold.co/40x40"
             alt="User Avatar"
             className="w-10 h-10 rounded-full"
           />
           <div>
-            <p className="font-semibold">Faisal Ali</p>
-            <p className="text-zinc-400 text-sm">FaisalAli.us@gmail.com</p>
+            <p className={`font-semibold ${pathname === '/profile' && 'text-black'}`}>Faisal Ali</p>
+            <p className={`text-sm ${pathname === '/profile' ? 'text-black' : 'text-zinc-400'}`}>FaisalAli.us@gmail.com</p>
           </div>
         </div>
         <div className="mb-8">
@@ -128,119 +165,15 @@ const Sidebar = () => {
         </div>
         <div className="flex flex-col space-y-2">
           {links.filter(link => link.roles.includes(user.role)).map(link => (
-            <Link href={link.url} className={linkClasses(link.url)}>
+            <Link href={`${link.url}${link.query || ''}`} className={linkClasses(link.url, link.pathValidator?.bind(link))}>
               <img
                 src={link.icon}
-                className={svgClasses(link.url)}
+                className={svgClasses(link.url, link.pathValidator?.bind(link))}
                 alt=""
               />
               <span className="flex items-center p-2">{link.label}</span>
             </Link>
           ))}
-          {/* <Link href="/dashboard" className={linkClasses("/dashboard")}>
-            <img
-              src="/assets/dashboard-icon.svg"
-              className={svgClasses("/dashboard")}
-              alt=""
-            />
-            <span className="flex items-center p-2">Dashboard</span>
-          </Link>
-          <Link href="/leaderboard" className={linkClasses("/leaderboard")}>
-            <img
-              src="/assets/dashboard-icon.svg"
-              className={svgClasses("/leaderboard")}
-              alt=""
-            />
-            <span className="flex items-center p-2">Leaderboard</span>
-          </Link>
-          <Link href="/drill-library" className={linkClasses("/drill-library")}>
-            <img
-              src="/assets/drill-library-icon.svg"
-              className={svgClasses("/drill-library")}
-              alt=""
-            />
-            <span className="flex items-center p-2">Drill Library</span>
-          </Link>
-          {user.role === 'trainer' &&
-            <Link href="/add-player" className={linkClasses("/add-player")}>
-              <img
-                src="/assets/add-player-icon.svg"
-                className={svgClasses("/add-player")}
-                alt=""
-              />
-              <span className="flex items-center p-2">Add Player</span>
-            </Link>
-          }
-          {user.role === 'player' &&
-            <Link href="/metrics" className={linkClasses("/metrics")}>
-              <img
-                src="/assets/metrics-icon.svg"
-                className={svgClasses("/metrics")}
-                alt=""
-              />
-              <span className="flex items-center p-2">My Metrics</span>
-            </Link>}
-          {user.role === 'trainer' &&
-            <Link href="/players-metrics" className={linkClasses("/players-metrics")}>
-              <img
-                src="/assets/metrics-icon.svg"
-                className={svgClasses("/players-metrics")}
-                alt=""
-              />
-              <span className="flex items-center p-2">My Player Metrics</span>
-            </Link>}
-          {user.role === 'player' &&
-            <Link href="/history" className={linkClasses("/history")}>
-              <img
-                src="/assets/history-icon.svg"
-                className={svgClasses("/history")}
-                alt=""
-              />
-              <span className="flex items-center p-2">History</span>
-            </Link>}
-          {user.role === 'trainer' &&
-            <Link href="/players-history" className={linkClasses("/players-history")}>
-              <img
-                src="/assets/history-icon.svg"
-                className={svgClasses("/players-history")}
-                alt=""
-              />
-              <span className="flex items-center p-2">My Players History</span>
-            </Link>}
-          {user.role === 'player' &&
-            <Link href="/coaching-call" className={linkClasses("/coaching-call")}>
-              <img
-                src="/assets/phone-call-icon.svg"
-                className={svgClasses("/coaching-call")}
-                alt=""
-              />
-              <span className="flex items-center p-2">Coaching Call</span>
-            </Link>
-          }
-          <Link href="/purchases" className={linkClasses("/purchases")}>
-            <img
-              src="/assets/purchase-icon.svg"
-              className={svgClasses("/purchases")}
-              alt=""
-            />
-            <span className="flex items-center p-2">Purchases</span>
-          </Link>
-          <Link href="/subscriptions" className={linkClasses("/subscriptions")}>
-            <img
-              src="/assets/subscription-icon.svg"
-              className={svgClasses("/subscriptions")}
-              alt=""
-            />
-            <span className="flex items-center p-2">Subscriptions</span>
-          </Link>
-          <Link href="/settings" className={linkClasses("/settings")}>
-            <img
-              src="/assets/setting-icon.svg"
-              className={svgClasses("/settings")}
-              alt=""
-            />
-            <span className="flex items-center p-2">Settings</span>
-          </Link> */}
         </div>
       </div>
     </div>

@@ -54,6 +54,13 @@ const Dashboard = () => {
           >
             ADD NEW PLAYER
           </button>
+          <button
+            className="bg-primary text-black rounded w-48 h-8 flex items-center justify-center text-base ml-4"
+            style={{ display: user.role === 'coach' ? 'block' : 'none' }}
+            onClick={() => router.push('/users?role=player')}
+          >
+            VIEW PLAYERS
+          </button>
         </div>
         <p className="font-light text-sm mb-2">
           Discover essential formats and metrics for optimal video results
