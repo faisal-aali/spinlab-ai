@@ -183,7 +183,7 @@ const DrillLibrary = () => {
               />
             </div>
             <div className={`${user.role !== 'admin' && 'hidden'}`}>
-              <button className="bg-white dark-blue-color rounded w-44 h-14 flex items-center justify-center text-lg font-bold" onClick={() => setShowAddModal(true)}>
+              <button className="bg-white dark-blue-color rounded w-44 h-14 flex items-center justify-center text-lg" onClick={() => setShowAddModal(true)}>
                 ADD NEW DRILL
               </button>
             </div>
@@ -214,7 +214,7 @@ const DrillLibrary = () => {
                             </button>
                           </Grid>
                           <Grid item>
-                            <button onClick={() => setShowDeleteModal(true)} className="bg-red-500 flex justify-center items-center w-8 h-8 rounded p-2 focus:outline-none">
+                            <button onClick={() => setShowDeleteModal(true)} className="button-danger flex justify-center items-center w-8 h-8 rounded p-2 focus:outline-none">
                               <img src="/assets/delete-icon-white.svg" alt="" />
                             </button>
                           </Grid>

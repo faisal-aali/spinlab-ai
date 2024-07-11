@@ -139,7 +139,7 @@ const AccountSettings = () => {
                     <div>
                       <Field
                         name="firstName"
-                        className={`w-full py-3 px-3 dark-blue-background rounded-lg text-white focus:outline-none placeholder:opacity-45 ${errors.firstName && touched.firstName
+                        className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${errors.firstName && touched.firstName
                           ? "border-red-900	border"
                           : "primary-border focus:border-green-500"
                           }`}
@@ -154,7 +154,7 @@ const AccountSettings = () => {
                     <div>
                       <Field
                         name="lastName"
-                        className={`w-full py-3 px-3 dark-blue-background rounded-lg text-white focus:outline-none placeholder:opacity-45 ${errors.lastName && touched.lastName
+                        className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${errors.lastName && touched.lastName
                           ? "border-red-900	border"
                           : "primary-border focus:border-green-500"
                           }`}
@@ -170,7 +170,7 @@ const AccountSettings = () => {
                   <Field
                     name="email"
                     type="email"
-                    className={`w-full py-3 px-3 dark-blue-background rounded-lg text-white focus:outline-none placeholder:opacity-45 ${errors.email && touched.email
+                    className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${errors.email && touched.email
                       ? "border-red-900	border"
                       : "primary-border focus:border-green-500"
                       }`}
@@ -184,7 +184,7 @@ const AccountSettings = () => {
                   <Field
                     name="bio"
                     as="textarea"
-                    className={`w-full py-3 px-3 dark-blue-background rounded-lg text-white focus:outline-none placeholder:opacity-45 ${errors.bio && touched.bio
+                    className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${errors.bio && touched.bio
                       ? "border-red-900	border"
                       : "primary-border focus:border-green-500"
                       }`}
@@ -199,7 +199,7 @@ const AccountSettings = () => {
                     <Field
                       name="email"
                       type="email"
-                      className={`w-full py-3 px-3 dark-blue-background rounded-lg text-white focus:outline-none placeholder:opacity-45 ${errors.email && touched.email
+                      className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${errors.email && touched.email
                         ? "border-red-900	border"
                         : "primary-border focus:border-green-500"
                         }`}
@@ -212,7 +212,7 @@ const AccountSettings = () => {
                     </div>
                     <Field
                       name="location"
-                      className={`w-full py-3 px-3 dark-blue-background rounded-lg text-white focus:outline-none placeholder:opacity-45 ${errors.location && touched.location
+                      className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${errors.location && touched.location
                         ? "border-red-900	border"
                         : "primary-border focus:border-green-500"
                         }`}
@@ -227,7 +227,7 @@ const AccountSettings = () => {
                     </div>
                     <Field
                       name="age"
-                      className={`w-full py-3 px-3 dark-blue-background rounded-lg text-white focus:outline-none placeholder:opacity-45 ${errors.age && touched.age
+                      className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${errors.age && touched.age
                         ? "border-red-900	border"
                         : "primary-border focus:border-green-500"
                         }`}
@@ -240,7 +240,7 @@ const AccountSettings = () => {
                     </div>
                     <Field
                       name="height"
-                      className={`w-full py-3 px-3 dark-blue-background rounded-lg text-white focus:outline-none placeholder:opacity-45 ${errors.height && touched.height
+                      className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${errors.height && touched.height
                         ? "border-red-900	border"
                         : "primary-border focus:border-green-500"
                         }`}
@@ -255,7 +255,7 @@ const AccountSettings = () => {
                     </div>
                     <Field
                       name="handedness"
-                      className={`w-full py-3 px-3 dark-blue-background rounded-lg text-white focus:outline-none placeholder:opacity-45 ${errors.handedness && touched.handedness
+                      className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${errors.handedness && touched.handedness
                         ? "border-red-900	border"
                         : "primary-border focus:border-green-500"
                         }`}
@@ -268,7 +268,7 @@ const AccountSettings = () => {
                     </div>
                     <Field
                       name="weight"
-                      className={`w-full py-3 px-3 dark-blue-background rounded-lg text-white focus:outline-none placeholder:opacity-45 ${errors.weight && touched.weight
+                      className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${errors.weight && touched.weight
                         ? "border-red-900	border"
                         : "primary-border focus:border-green-500"
                         }`}
@@ -297,7 +297,7 @@ const AccountSettings = () => {
                       <Field
                         name="currentPassword"
                         type={showCurrentPassword ? "text" : "password"}
-                        className={`w-full py-3 px-3 dark-blue-background rounded-lg text-white focus:outline-none placeholder:opacity-45 ${errors.currentPassword && touched.currentPassword
+                        className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${errors.currentPassword && touched.currentPassword
                           ? "border-red-900 border"
                           : "primary-border focus:border-green-500"
                           }`}
@@ -324,7 +324,7 @@ const AccountSettings = () => {
                       <Field
                         name="newPassword"
                         type={showNewPassword ? "text" : "password"}
-                        className={`w-full py-3 px-3 dark-blue-background rounded-lg text-white focus:outline-none placeholder:opacity-45 ${errors.newPassword && touched.newPassword
+                        className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${errors.newPassword && touched.newPassword
                           ? "border-red-900 border"
                           : "primary-border focus:border-green-500"
                           }`}
@@ -346,7 +346,7 @@ const AccountSettings = () => {
                       <Field
                         name="confirmPassword"
                         type={showConfirmPassword ? "text" : "password"}
-                        className={`w-full py-3 px-3 dark-blue-background rounded-lg text-white focus:outline-none placeholder:opacity-45 ${errors.confirmPassword && touched.confirmPassword
+                        className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${errors.confirmPassword && touched.confirmPassword
                           ? "border-red-900 border"
                           : "primary-border focus:border-green-500"
                           }`}

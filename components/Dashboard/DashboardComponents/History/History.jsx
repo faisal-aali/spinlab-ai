@@ -38,7 +38,7 @@ const CustomLinearProgress = ({ value, color }) => {
           },
         }}
       />
-      <Typography variant="body2" color="textSecondary">
+      <Typography variant="body2">
         {`${Math.round(value)}%`}
       </Typography>
     </Box>
@@ -75,55 +75,55 @@ const History = () => {
           </div>
         </div>
         <div className="">
-          <TableContainer component={Paper} className="bg-transparent">
+          <TableContainer component={Paper} className="!bg-transparent">
             <Table>
               <TableHead className="leaderboard-table-head bg-primary-light uppercase">
                 <TableRow>
-                  <TableCell className="text-white">Videos</TableCell>
-                  <TableCell className="text-white">Date</TableCell>
-                  <TableCell className="text-white">Efficiency</TableCell>
-                  <TableCell className="text-white">Sequencing</TableCell>
-                  <TableCell className="text-white">Reports</TableCell>
+                  <TableCell className="!text-white">Videos</TableCell>
+                  <TableCell className="!text-white">Date</TableCell>
+                  <TableCell className="!text-white">Efficiency</TableCell>
+                  <TableCell className="!text-white">Sequencing</TableCell>
+                  <TableCell className="!text-white">Reports</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody className="leaderboard-table-body">
                 {paginatedData.map((row) => (
                   <TableRow key={row.id}>
-                    <TableCell className="text-white">
+                    <TableCell className="!text-white">
                       <img
-                          src={row.thumbnail}
-                          alt={row.name}
-                          style={{ width: 50, height: 50 }}
-                        />
+                        src={row.thumbnail}
+                        alt={row.name}
+                        style={{ width: 50, height: 50 }}
+                      />
                     </TableCell>
                     <TableCell>
-                        <Typography variant="body2" className="text-white">
-                          {row.name}
-                        </Typography>
-                        <Typography variant="caption" className="text-white">
-                          {row.date}
-                        </Typography>
+                      <Typography variant="body2" className="!text-white">
+                        {row.name}
+                      </Typography>
+                      <Typography variant="caption" className="!text-white">
+                        {row.date}
+                      </Typography>
                     </TableCell>
-                    <TableCell className="text-white">
+                    <TableCell className="!text-white">
                       <CustomLinearProgress
                         value={row.efficiency}
                         color="#00FF00"
                       />
                     </TableCell>
-                    <TableCell className="text-white">
+                    <TableCell className="!text-white">
                       <CustomLinearProgress
                         value={row.sequencing}
                         color="#00BFFF"
                       />
                     </TableCell>
                     <TableCell className="text-white">
-                      <div className="flex items-center justify-between ">
-                      <button className="bg-white text-black px-5 py-1 rounded-lg">
-                        DOWNLOAD PDF
-                      </button>
-                      <button className="bg-white text-black px-5 py-1 rounded-lg">
-                        VIEW HERE
-                      </button>
+                      <div className="grid grid-cols-2 items-center gap-4">
+                        <button className="bg-white text-black px-5 py-3 rounded-lg">
+                          DOWNLOAD PDF
+                        </button>
+                        <button className="bg-white text-black px-5 py-3 rounded-lg">
+                          VIEW HERE
+                        </button>
                       </div>
                     </TableCell>
                   </TableRow>

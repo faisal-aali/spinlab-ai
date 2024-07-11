@@ -59,7 +59,7 @@ const BillingTab = () => {
                         <Field
                           name="firstName"
                           placeholder="First Name"
-                          className={`w-full py-3 px-3 dark-blue-background rounded-lg text-white focus:outline-none placeholder:opacity-45 ${
+                          className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${
                             errors.firstName && touched.firstName
                               ? "border-red-900 border"
                               : "primary-border focus:border-green-500"
@@ -73,7 +73,7 @@ const BillingTab = () => {
                         <Field
                           name="lastName"
                           placeholder="Last Name"
-                          className={`w-full py-3 px-3 dark-blue-background rounded-lg text-white focus:outline-none placeholder:opacity-45 ${
+                          className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${
                             errors.lastName && touched.lastName
                               ? "border-red-900 border"
                               : "primary-border focus:border-green-500"
@@ -88,7 +88,7 @@ const BillingTab = () => {
                       <Field
                         name="address"
                         placeholder="Address"
-                        className={`w-full py-3 px-3 dark-blue-background rounded-lg text-white focus:outline-none placeholder:opacity-45 ${
+                        className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${
                           errors.address && touched.address
                             ? "border-red-900 border"
                             : "primary-border focus:border-green-500"
@@ -105,7 +105,7 @@ const BillingTab = () => {
                         <Field
                           name="creditCardNumber"
                           placeholder="Credit Card Number"
-                          className={`w-full py-3 px-3 dark-blue-background rounded-lg text-white focus:outline-none placeholder:opacity-45 ${
+                          className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${
                             errors.creditCardNumber && touched.creditCardNumber
                               ? "border-red-900 border"
                               : "primary-border focus:border-green-500"
@@ -119,7 +119,7 @@ const BillingTab = () => {
                         <Field
                           name="cvv"
                           placeholder="CVV"
-                          className={`w-full py-3 px-3 dark-blue-background rounded-lg text-white focus:outline-none placeholder:opacity-45 ${
+                          className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${
                             errors.cvv && touched.cvv
                               ? "border-red-900 border"
                               : "primary-border focus:border-green-500"
@@ -135,7 +135,7 @@ const BillingTab = () => {
                         <Field
                           name="expiryDate"
                           placeholder="Expiry Date"
-                          className={`w-full py-3 px-3 dark-blue-background rounded-lg text-white focus:outline-none placeholder:opacity-45 ${
+                          className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${
                             errors.expiryDate && touched.expiryDate
                               ? "border-red-900 border"
                               : "primary-border focus:border-green-500"
@@ -149,7 +149,7 @@ const BillingTab = () => {
                         <Field
                           name="postalCode"
                           placeholder="Postal Code"
-                          className={`w-full py-3 px-3 dark-blue-background rounded-lg text-white focus:outline-none placeholder:opacity-45 ${
+                          className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${
                             errors.postalCode && touched.postalCode
                               ? "border-red-900 border"
                               : "primary-border focus:border-green-500"
