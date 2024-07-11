@@ -60,8 +60,10 @@ const links = [
     icon: `/assets/${user.role === 'coach' ? 'dashboard-icon.svg' : user.role === 'admin' ? 'add-player-icon.svg' : ''}`,
     label: user.role === 'coach' ? 'Players Database' : user.role === 'admin' ? 'Manage Player Database' : 'Invalid role',
     roles: ['coach', 'admin'],
-    pathValidator: function (pathname) {
-      return pathname.startsWith(this.url) && pathname.endsWith(this.query)
+    pathValidator: function (pathname, searchParams) {
+      const query = Object.fromEntries(searchParams.entries())
+      const path = pathname + `?${Object.keys(query).map(k => `${k}=${query[k]}`).join('&')}`
+      return (path.startsWith(this.url) && path.endsWith(this.query))
     }
   },
   {
@@ -70,8 +72,10 @@ const links = [
     icon: '/assets/add-player-icon.svg',
     label: 'Manage Coach Database',
     roles: ['admin'],
-    pathValidator: function (pathname) {
-      return pathname.startsWith(this.url) && pathname.endsWith(this.query)
+    pathValidator: function (pathname, searchParams) {
+      const query = Object.fromEntries(searchParams.entries())
+      const path = pathname + `?${Object.keys(query).map(k => `${k}=${query[k]}`).join('&')}`
+      return (path.startsWith(this.url) && path.endsWith(this.query))
     }
   },
   {
@@ -80,9 +84,11 @@ const links = [
     icon: '/assets/add-player-icon.svg',
     label: 'Manage Trainer Database',
     roles: ['admin'],
-    pathValidator: function (pathname) {
-      console.log('in pathvalidator', window.location.href);
-      return pathname.startsWith(this.url) && pathname.endsWith(this.query)
+    pathValidator: function (pathname, searchParams) {
+      const query = Object.fromEntries(searchParams.entries())
+      const path = pathname + `?${Object.keys(query).map(k => `${k}=${query[k]}`).join('&')}`
+      console.log('path in trainer', path, (path.startsWith(this.url) && path.endsWith(this.query)));
+      return (path.startsWith(this.url) && path.endsWith(this.query))
     }
   },
   {
@@ -129,15 +135,15 @@ const Sidebar = () => {
   const searchParams = useSearchParams()
 
   useEffect(() => {
-    console.log('pathname changed to', pathname, searchParams.getAll);
+    console.log('pathname changed to', pathname, Array.from(searchParams.entries()));
   }, [pathname])
 
   const linkClasses = (path, pathValidator) =>
-    `flex pl-2 py-1 ${pathValidator ? pathValidator(pathname) : pathname.startsWith(path) ? "bg-primary rounded-lg min-w-44 w-fit items-center text-black" : ""
+    `flex pl-2 py-1 ${(pathValidator ? pathValidator(pathname, searchParams) : pathname.startsWith(path)) ? "bg-primary rounded-lg min-w-44 w-fit items-center text-black" : ""
     }`;
 
   const svgClasses = (path, pathValidator) =>
-    `${pathValidator ? pathValidator(pathname) : pathname.startsWith(path) ? "mix-blend-difference" : "fill-current text-white"}`;
+    `${(pathValidator ? pathValidator(pathname, searchParams) : pathname.startsWith(path)) ? "mix-blend-difference" : "fill-current text-white"}`;
 
   return (
     <div className="bg-gray-900 text-white w-80 pt-8 pl-12 min-h-screen p-4">

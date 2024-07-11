@@ -116,7 +116,7 @@ const CoachesCalendar = () => {
                                             </Typography>
                                         </TableCell>
                                         <TableCell className="text-white">
-                                            <IconButton onClick={() => { }}>
+                                            <IconButton onClick={() => router.push('/calender')}>
                                                 <img src="/assets/open.svg" />
                                             </IconButton>
                                         </TableCell>

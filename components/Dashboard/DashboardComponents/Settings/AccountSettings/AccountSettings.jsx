@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import user from "@/util/user";
 
 const AccountSettings = () => {
   const [imageSrc, setImageSrc] = useState("https://placehold.co/100x100");
@@ -138,11 +139,10 @@ const AccountSettings = () => {
                     <div>
                       <Field
                         name="firstName"
-                        className={`w-full py-3 px-3 dark-blue-background rounded-lg text-white focus:outline-none placeholder:opacity-45 ${
-                          errors.firstName && touched.firstName
-                            ? "border-red-900	border"
-                            : "primary-border focus:border-green-500"
-                        }`}
+                        className={`w-full py-3 px-3 dark-blue-background rounded-lg text-white focus:outline-none placeholder:opacity-45 ${errors.firstName && touched.firstName
+                          ? "border-red-900	border"
+                          : "primary-border focus:border-green-500"
+                          }`}
                         placeholder="First Name"
                       />
                     </div>
@@ -154,47 +154,44 @@ const AccountSettings = () => {
                     <div>
                       <Field
                         name="lastName"
-                        className={`w-full py-3 px-3 dark-blue-background rounded-lg text-white focus:outline-none placeholder:opacity-45 ${
-                          errors.lastName && touched.lastName
-                            ? "border-red-900	border"
-                            : "primary-border focus:border-green-500"
-                        }`}
+                        className={`w-full py-3 px-3 dark-blue-background rounded-lg text-white focus:outline-none placeholder:opacity-45 ${errors.lastName && touched.lastName
+                          ? "border-red-900	border"
+                          : "primary-border focus:border-green-500"
+                          }`}
                         placeholder="Last Name"
                       />
                     </div>
                   </div>
                 </div>
-                <div className="mb-4">
+                <div className={`mb-4 ${user.role === 'coach' && 'hidden'}`}>
                   <div className="mb-1 opacity-45">
                     <label htmlFor="">Email</label>
                   </div>
                   <Field
                     name="email"
                     type="email"
-                    className={`w-full py-3 px-3 dark-blue-background rounded-lg text-white focus:outline-none placeholder:opacity-45 ${
-                      errors.email && touched.email
-                        ? "border-red-900	border"
-                        : "primary-border focus:border-green-500"
-                    }`}
+                    className={`w-full py-3 px-3 dark-blue-background rounded-lg text-white focus:outline-none placeholder:opacity-45 ${errors.email && touched.email
+                      ? "border-red-900	border"
+                      : "primary-border focus:border-green-500"
+                      }`}
                     placeholder="Email"
                   />
                 </div>
-                <div className="mb-4">
+                <div className={`mb-4 ${user.role === 'player' && 'hidden'}`}>
                   <div className="mb-1 opacity-45">
                     <label htmlFor="">Bio</label>
                   </div>
                   <Field
                     name="bio"
-                    type="textarea"
-                    className={`w-full py-3 px-3 dark-blue-background rounded-lg text-white focus:outline-none placeholder:opacity-45 ${
-                      errors.bio && touched.bio
-                        ? "border-red-900	border"
-                        : "primary-border focus:border-green-500"
-                    }`}
+                    as="textarea"
+                    className={`w-full py-3 px-3 dark-blue-background rounded-lg text-white focus:outline-none placeholder:opacity-45 ${errors.bio && touched.bio
+                      ? "border-red-900	border"
+                      : "primary-border focus:border-green-500"
+                      }`}
                     placeholder="Enter your bio"
                   />
                 </div>
-                <div className="flex items-center mb-4 gap-6">
+                <div className={`flex items-center mb-4 gap-6 ${user.role !== 'coach' && 'hidden'}`}>
                   <div className="w-1/2">
                     <div className="mb-1 opacity-45">
                       <label htmlFor="">Email</label>
@@ -202,11 +199,10 @@ const AccountSettings = () => {
                     <Field
                       name="email"
                       type="email"
-                      className={`w-full py-3 px-3 dark-blue-background rounded-lg text-white focus:outline-none placeholder:opacity-45 ${
-                        errors.Email && touched.Email
-                          ? "border-red-900	border"
-                          : "primary-border focus:border-green-500"
-                      }`}
+                      className={`w-full py-3 px-3 dark-blue-background rounded-lg text-white focus:outline-none placeholder:opacity-45 ${errors.email && touched.email
+                        ? "border-red-900	border"
+                        : "primary-border focus:border-green-500"
+                        }`}
                       placeholder="Age"
                     />
                   </div>
@@ -216,27 +212,25 @@ const AccountSettings = () => {
                     </div>
                     <Field
                       name="location"
-                      className={`w-full py-3 px-3 dark-blue-background rounded-lg text-white focus:outline-none placeholder:opacity-45 ${
-                        errors.location && touched.location
-                          ? "border-red-900	border"
-                          : "primary-border focus:border-green-500"
-                      }`}
+                      className={`w-full py-3 px-3 dark-blue-background rounded-lg text-white focus:outline-none placeholder:opacity-45 ${errors.location && touched.location
+                        ? "border-red-900	border"
+                        : "primary-border focus:border-green-500"
+                        }`}
                       placeholder="Height"
                     />
                   </div>
                 </div>
-                <div className="flex items-center mb-4 gap-6">
+                <div className={`flex items-center mb-4 gap-6 ${user.role !== 'player' && 'hidden'}`}>
                   <div className="w-1/2">
                     <div className="mb-1 opacity-45">
                       <label htmlFor="">Age</label>
                     </div>
                     <Field
                       name="age"
-                      className={`w-full py-3 px-3 dark-blue-background rounded-lg text-white focus:outline-none placeholder:opacity-45 ${
-                        errors.age && touched.age
-                          ? "border-red-900	border"
-                          : "primary-border focus:border-green-500"
-                      }`}
+                      className={`w-full py-3 px-3 dark-blue-background rounded-lg text-white focus:outline-none placeholder:opacity-45 ${errors.age && touched.age
+                        ? "border-red-900	border"
+                        : "primary-border focus:border-green-500"
+                        }`}
                       placeholder="Age"
                     />
                   </div>
@@ -246,27 +240,25 @@ const AccountSettings = () => {
                     </div>
                     <Field
                       name="height"
-                      className={`w-full py-3 px-3 dark-blue-background rounded-lg text-white focus:outline-none placeholder:opacity-45 ${
-                        errors.height && touched.height
-                          ? "border-red-900	border"
-                          : "primary-border focus:border-green-500"
-                      }`}
+                      className={`w-full py-3 px-3 dark-blue-background rounded-lg text-white focus:outline-none placeholder:opacity-45 ${errors.height && touched.height
+                        ? "border-red-900	border"
+                        : "primary-border focus:border-green-500"
+                        }`}
                       placeholder="Height"
                     />
                   </div>
                 </div>
-                <div className="flex items-center mb-4 gap-6">
+                <div className={`flex items-center mb-4 gap-6 ${user.role !== 'player' && 'hidden'}`}>
                   <div className="w-1/2">
                     <div className="mb-1 opacity-45">
                       <label htmlFor="">Handedness</label>
                     </div>
                     <Field
                       name="handedness"
-                      className={`w-full py-3 px-3 dark-blue-background rounded-lg text-white focus:outline-none placeholder:opacity-45 ${
-                        errors.handedness && touched.handedness
-                          ? "border-red-900	border"
-                          : "primary-border focus:border-green-500"
-                      }`}
+                      className={`w-full py-3 px-3 dark-blue-background rounded-lg text-white focus:outline-none placeholder:opacity-45 ${errors.handedness && touched.handedness
+                        ? "border-red-900	border"
+                        : "primary-border focus:border-green-500"
+                        }`}
                       placeholder="Handedness"
                     />
                   </div>
@@ -276,11 +268,10 @@ const AccountSettings = () => {
                     </div>
                     <Field
                       name="weight"
-                      className={`w-full py-3 px-3 dark-blue-background rounded-lg text-white focus:outline-none placeholder:opacity-45 ${
-                        errors.weight && touched.weight
-                          ? "border-red-900	border"
-                          : "primary-border focus:border-green-500"
-                      }`}
+                      className={`w-full py-3 px-3 dark-blue-background rounded-lg text-white focus:outline-none placeholder:opacity-45 ${errors.weight && touched.weight
+                        ? "border-red-900	border"
+                        : "primary-border focus:border-green-500"
+                        }`}
                       placeholder="Weight"
                     />
                   </div>
@@ -306,11 +297,10 @@ const AccountSettings = () => {
                       <Field
                         name="currentPassword"
                         type={showCurrentPassword ? "text" : "password"}
-                        className={`w-full py-3 px-3 dark-blue-background rounded-lg text-white focus:outline-none placeholder:opacity-45 ${
-                          errors.currentPassword && touched.currentPassword
-                            ? "border-red-900 border"
-                            : "primary-border focus:border-green-500"
-                        }`}
+                        className={`w-full py-3 px-3 dark-blue-background rounded-lg text-white focus:outline-none placeholder:opacity-45 ${errors.currentPassword && touched.currentPassword
+                          ? "border-red-900 border"
+                          : "primary-border focus:border-green-500"
+                          }`}
                         placeholder="Enter current password"
                       />
                       <div
@@ -334,11 +324,10 @@ const AccountSettings = () => {
                       <Field
                         name="newPassword"
                         type={showNewPassword ? "text" : "password"}
-                        className={`w-full py-3 px-3 dark-blue-background rounded-lg text-white focus:outline-none placeholder:opacity-45 ${
-                          errors.newPassword && touched.newPassword
-                            ? "border-red-900 border"
-                            : "primary-border focus:border-green-500"
-                        }`}
+                        className={`w-full py-3 px-3 dark-blue-background rounded-lg text-white focus:outline-none placeholder:opacity-45 ${errors.newPassword && touched.newPassword
+                          ? "border-red-900 border"
+                          : "primary-border focus:border-green-500"
+                          }`}
                         placeholder="Enter new password"
                       />
                       <div
@@ -357,11 +346,10 @@ const AccountSettings = () => {
                       <Field
                         name="confirmPassword"
                         type={showConfirmPassword ? "text" : "password"}
-                        className={`w-full py-3 px-3 dark-blue-background rounded-lg text-white focus:outline-none placeholder:opacity-45 ${
-                          errors.confirmPassword && touched.confirmPassword
-                            ? "border-red-900 border"
-                            : "primary-border focus:border-green-500"
-                        }`}
+                        className={`w-full py-3 px-3 dark-blue-background rounded-lg text-white focus:outline-none placeholder:opacity-45 ${errors.confirmPassword && touched.confirmPassword
+                          ? "border-red-900 border"
+                          : "primary-border focus:border-green-500"
+                          }`}
                         placeholder="Confirm"
                       />
                       <div
