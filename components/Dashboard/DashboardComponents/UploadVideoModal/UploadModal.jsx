@@ -21,7 +21,7 @@ const style = {
   borderRadius: "8px",
 };
 
-const UploadModal = ({ open, onClose }) => {
+const UploadModal = ({ open, onClose, onSuccess }) => {
   const [recordModalOpen, setRecordModalOpen] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
@@ -121,7 +121,7 @@ const UploadModal = ({ open, onClose }) => {
           style={{ backgroundColor: "rgba(9, 15, 33, 1)" }}
           className="max-w-4xl w-full !py-16 min-h-96	flex items-center justify-center"
         >
-          <IconButton className="!primary-border-parrot" 
+          <IconButton className="!primary-border-parrot"
             style={{ position: "absolute", top: 20, right: 20, color: "#fff", padding: "3px" }}
             onClick={handleRecordModalClose}
           >
@@ -173,7 +173,10 @@ const UploadModal = ({ open, onClose }) => {
                 </button>
                 <button
                   className="px-4 py-1 rounded font-bold bg-primary dark-blue-color ml-4 uppercase"
-                  onClick={handleRecordModalClose}
+                  onClick={() => {
+                    handleRecordModalClose()
+                    onSuccess()
+                  }}
                 >
                   Submit
                 </button>

@@ -6,6 +6,8 @@ import {
   CloudUpload as CloudUploadIcon,
 } from "@mui/icons-material";
 import { blueGrey } from "@mui/material/colors";
+import { Formik, Form, Field } from "formik";
+import * as Yup from "yup";
 
 const style = {
   position: "absolute",
@@ -16,6 +18,13 @@ const style = {
   p: 4,
   borderRadius: "8px",
 };
+
+const validationSchema = Yup.object({
+  firstName: Yup.string().required("Required"),
+  lastName: Yup.string().required("Required"),
+  height: Yup.string().required("Required"),
+  weight: Yup.string().required("Required"),
+});
 
 const AddNewPlayerModal = ({ open, onClose }) => {
   useEffect(() => {
@@ -34,7 +43,7 @@ const AddNewPlayerModal = ({ open, onClose }) => {
     <Modal open={open} onClose={onClose} aria-labelledby="upload-modal-title">
       <Box sx={style} className="w-full max-w-2xl blueBackground">
         <IconButton
-          style={{ position: "absolute", top: 10, right: 10, color:'#fff' }}
+          style={{ position: "absolute", top: 10, right: 10, color: '#fff' }}
           onClick={onClose}
         >
           <CloseIcon />
@@ -42,69 +51,104 @@ const AddNewPlayerModal = ({ open, onClose }) => {
         <h2 className="text-2xl font-bold mb-8 text-center flex flex-col">
           <span>To Add a New Player, </span>Please enter the details below.
         </h2>
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <div className="grid gap-2">
-            <div className="opacity-45">
-              <label htmlFor="">First Name</label>
-            </div>
-            <input
-              className="w-full bg-transparent px-3 rounded-lg py-3 text-white primary-border rounded focus:outline-none focus:border-green-500 placeholder:opacity-45"
-              type="text"
-              name="firstName"
-              required
-            />
-          </div>
-          <div className="grid gap-2">
-            <div className="opacity-45">
-              <label htmlFor="">Last Name</label>
-            </div>
-            <input
-              className="w-full bg-transparent px-3 rounded-lg py-3 text-white primary-border rounded focus:outline-none focus:border-green-500 placeholder:opacity-45"
-              type="text"
-              name="lastName"
-              required
-            />
-          </div>
-          <div className="grid gap-2">
-            <div className="opacity-45">
-              <label htmlFor="">Height</label>
-            </div>
-            <input
-              className="w-full bg-transparent px-3 rounded-lg py-3 text-white primary-border rounded focus:outline-none focus:border-green-500 placeholder:opacity-45"
-              type="text"
-              name="height"
-              required
-            />
-          </div>
-          <div className="grid gap-2">
-            <div className="opacity-45">
-              <label htmlFor="">Weight</label>
-            </div>
-            <input
-              className="w-full bg-transparent px-3 rounded-lg py-3 text-white primary-border rounded focus:outline-none focus:border-green-500 placeholder:opacity-45"
-              type="text"
-              name="weight"
-              required
-            />
-          </div>
-        </div>
-        <div className="grid grid-cols-1 gap-4">
-          <div className="p-8 flex items-center justify-center flex-col dark-blue-background rounded-lg w-full gap-4 border-dashed border-2 border-slate-800">
-            <label className="cursor-pointer flex items-center justify-center">
-              <input type="file" accept="image/*" className="hidden" />
-              <img src="assets/upload-icon.svg" alt="" />
-            </label>
-            <div>
-              <span className="text-primary text-2xl">Click to Upload</span>
-              <span className="text-white mx-2 text-2xl">or drag and drop</span>
-            </div>
-          </div>
-          <div className="flex justify-center mb-10">
-            <button className="bg-primary dark-blue-color rounded w-28 h-9 flex items-center justify-center text-base font-bold">
-              SUBMIT
-            </button>
-          </div>
-        </div>
+        <Formik
+          initialValues={{
+            firstName: "",
+            lastName: "",
+            height: "",
+            weight: "",
+            plan: "",
+            role: "",
+          }}
+          validationSchema={validationSchema}
+          onSubmit={(values) => {
+            console.log(values);
+          }}
+        >
+          {({ errors, touched }) => (
+            <Form>
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid gap-2">
+                  <div className="opacity-45">
+                    <label htmlFor="">First Name</label>
+                  </div>
+                  <Field
+                    className={`w-full bg-transparent px-3 rounded-lg py-3 text-white rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
+                    ${errors.firstName && touched.firstName
+                        ? "border-red-900	border"
+                        : "primary-border focus:border-green-500"
+                      }`}
+                    type="text"
+                    name="firstName"
+                    required
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <div className="opacity-45">
+                    <label htmlFor="">Last Name</label>
+                  </div>
+                  <Field
+                    className={`w-full bg-transparent px-3 rounded-lg py-3 text-white rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
+                    ${errors.lastName && touched.lastName
+                        ? "border-red-900	border"
+                        : "primary-border focus:border-green-500"
+                      }`}
+                    type="text"
+                    name="lastName"
+                    required
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <div className="opacity-45">
+                    <label htmlFor="">Height</label>
+                  </div>
+                  <Field
+                    className={`w-full bg-transparent px-3 rounded-lg py-3 text-white rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
+                    ${errors.height && touched.height
+                        ? "border-red-900	border"
+                        : "primary-border focus:border-green-500"
+                      }`}
+                    type="text"
+                    name="height"
+                    required
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <div className="opacity-45">
+                    <label htmlFor="">Weight</label>
+                  </div>
+                  <Field
+                    className={`w-full bg-transparent px-3 rounded-lg py-3 text-white rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
+                    ${errors.weight && touched.weight
+                        ? "border-red-900	border"
+                        : "primary-border focus:border-green-500"
+                      }`}
+                    type="text"
+                    name="weight"
+                    required
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-1 gap-4">
+                <div className="p-8 flex items-center justify-center flex-col dark-blue-background rounded-lg w-full gap-4 border-dashed border-2 border-slate-800">
+                  <label className="cursor-pointer flex items-center justify-center">
+                    <input type="file" accept="image/*" className="hidden" />
+                    <img src="assets/upload-icon.svg" alt="" />
+                  </label>
+                  <div>
+                    <span className="text-primary text-2xl">Click to Upload</span>
+                    <span className="text-white mx-2 text-2xl">or drag and drop</span>
+                  </div>
+                </div>
+                <div className="flex justify-center mb-10">
+                  <button className="bg-primary dark-blue-color rounded w-28 h-9 flex items-center justify-center text-base font-bold">
+                    SUBMIT
+                  </button>
+                </div>
+              </div>
+            </Form>
+          )}
+        </Formik>
       </Box>
     </Modal>
   );

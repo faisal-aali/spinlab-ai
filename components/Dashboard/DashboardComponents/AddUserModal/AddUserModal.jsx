@@ -57,14 +57,10 @@ const AddUserModal = ({ open, onClose, role }) => {
           initialValues={{
             firstName: "",
             lastName: "",
-            email: "",
-            age: "",
             height: "",
-            handedness: "",
             weight: "",
-            currentPassword: "",
-            newPassword: "",
-            confirmPassword: "",
+            plan: "",
+            role: "",
           }}
           validationSchema={validationSchema}
           onSubmit={(values) => {
@@ -95,8 +91,12 @@ const AddUserModal = ({ open, onClose, role }) => {
                   <div className="opacity-45">
                     <label htmlFor="">First Name</label>
                   </div>
-                  <input
-                    className="w-full bg-transparent px-3 rounded-lg py-3 text-white primary-border rounded focus:outline-none focus:border-green-500 placeholder:opacity-45"
+                  <Field
+                    className={`w-full bg-transparent px-3 rounded-lg py-3 text-white rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
+                    ${errors.firstName && touched.firstName
+                        ? "border-red-900	border"
+                        : "primary-border focus:border-green-500"
+                      }`}
                     type="text"
                     name="firstName"
                     required
@@ -106,8 +106,12 @@ const AddUserModal = ({ open, onClose, role }) => {
                   <div className="opacity-45">
                     <label htmlFor="">Last Name</label>
                   </div>
-                  <input
-                    className="w-full bg-transparent px-3 rounded-lg py-3 text-white primary-border rounded focus:outline-none focus:border-green-500 placeholder:opacity-45"
+                  <Field
+                    className={`w-full bg-transparent px-3 rounded-lg py-3 text-white rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
+                    ${errors.lastName && touched.lastName
+                        ? "border-red-900	border"
+                        : "primary-border focus:border-green-500"
+                      }`}
                     type="text"
                     name="lastName"
                     required
@@ -117,8 +121,12 @@ const AddUserModal = ({ open, onClose, role }) => {
                   <div className="opacity-45">
                     <label htmlFor="">Height</label>
                   </div>
-                  <input
-                    className="w-full bg-transparent px-3 rounded-lg py-3 text-white primary-border rounded focus:outline-none focus:border-green-500 placeholder:opacity-45"
+                  <Field
+                    className={`w-full bg-transparent px-3 rounded-lg py-3 text-white rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
+                    ${errors.height && touched.height
+                        ? "border-red-900	border"
+                        : "primary-border focus:border-green-500"
+                      }`}
                     type="text"
                     name="height"
                     required
@@ -128,8 +136,12 @@ const AddUserModal = ({ open, onClose, role }) => {
                   <div className="opacity-45">
                     <label htmlFor="">Weight</label>
                   </div>
-                  <input
-                    className="w-full bg-transparent px-3 rounded-lg py-3 text-white primary-border rounded focus:outline-none focus:border-green-500 placeholder:opacity-45"
+                  <Field
+                    className={`w-full bg-transparent px-3 rounded-lg py-3 text-white rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
+                    ${errors.weight && touched.weight
+                        ? "border-red-900	border"
+                        : "primary-border focus:border-green-500"
+                      }`}
                     type="text"
                     name="weight"
                     required
@@ -139,10 +151,11 @@ const AddUserModal = ({ open, onClose, role }) => {
                   <div className="opacity-45">
                     <label htmlFor="">Subscription Plan</label>
                   </div>
-                  <select
-                    name="country"
+                  <Field
+                    as='select'
+                    name="plan"
                     label
-                    className="w-full py-3 px-3 bg-transparent primary-border rounded text-primary rounded-lg focus:outline-none focus:outline-none focus:border-green-500 placeholder:opacity-45"
+                    className={`w-full py-3 px-3 bg-transparent rounded text-primary primary-border rounded-lg focus:outline-none focus:outline-none focus:border-green-500 placeholder:opacity-45`}
                   >
                     <option
                       className="bg-black"
@@ -154,16 +167,17 @@ const AddUserModal = ({ open, onClose, role }) => {
                       value={'annual'}
                       label={'Annual'}
                     />
-                  </select>
+                  </Field>
                 </div>
                 <div className="grid gap-2">
                   <div className="opacity-45">
                     <label htmlFor="">User Type</label>
                   </div>
-                  <select
-                    name="country"
+                  <Field
+                    as='select'
+                    name="role"
                     label
-                    className="w-full py-3 px-3 bg-transparent primary-border rounded text-primary rounded-lg focus:outline-none focus:outline-none focus:border-green-500 placeholder:opacity-45"
+                    className={`w-full py-3 px-3 bg-transparent rounded text-primary rounded-lg primary-border focus:outline-none focus:outline-none focus:border-green-500 placeholder:opacity-45`}
                   >
                     <option
                       className="bg-black"
@@ -180,11 +194,11 @@ const AddUserModal = ({ open, onClose, role }) => {
                       value={'trianer'}
                       label={'Trianer'}
                     />
-                  </select>
+                  </Field>
                 </div>
               </div>
               <div className="flex justify-end mb-10">
-                <button className="bg-primary dark-blue-color rounded w-28 h-9 flex items-center justify-center text-lg font-bold">
+                <button type="submit" className="bg-primary dark-blue-color rounded w-28 h-9 flex items-center justify-center text-lg font-bold">
                   ADD
                 </button>
               </div>
