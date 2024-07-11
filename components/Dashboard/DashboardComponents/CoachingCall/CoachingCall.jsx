@@ -5,12 +5,8 @@ import { StaticDateTimePicker } from '@mui/x-date-pickers/StaticDateTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
-import user from '@/util/user';
-import { IconButton } from '@mui/material';
-import { useRouter } from 'next/navigation';
 
-export default function Calender() {
-    const router = useRouter()
+export default function CoachingCall() {
 
     return (
         <div className="flex flex-col gap-8">
@@ -21,15 +17,14 @@ export default function Calender() {
                     </div>
                 </div>
             </div>
-            <div className={`${user.role !== 'admin' && 'hidden'}`}>
-                <IconButton className="border primary-border-parrot rounded" onClick={() => router.back()}>
-                    <img src="/assets/back-icon.svg" />
-                </IconButton>
-            </div>
-            <div className='w-1/2'>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <StaticDateTimePicker className='rounded-lg' defaultValue={dayjs('2022-04-17T15:30')} />
-                </LocalizationProvider>
+            <div className='grid grid-cols-2 gap-8'>
+                {[1, 2, 3, 4].map((_, i) => (
+                    <div key={i} >
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <StaticDateTimePicker className='rounded-lg' defaultValue={dayjs('2022-04-17T15:30')} />
+                        </LocalizationProvider>
+                    </div>
+                ))}
             </div>
         </div>
     )
