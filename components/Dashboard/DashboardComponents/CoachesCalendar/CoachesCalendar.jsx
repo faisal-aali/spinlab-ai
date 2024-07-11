@@ -73,22 +73,22 @@ const CoachesCalendar = () => {
                     </div>
                 </div>
                 <div className="">
-                    <TableContainer component={Paper} className="bg-transparent">
+                    <TableContainer component={Paper} className="!bg-transparent">
                         <Table>
                             <TableHead className="leaderboard-table-head bg-primary-light uppercase">
                                 <TableRow>
-                                    <TableCell className="text-white"></TableCell>
-                                    <TableCell className="text-white">Name</TableCell>
-                                    <TableCell className="text-white">Email</TableCell>
-                                    <TableCell className="text-white">Location</TableCell>
-                                    <TableCell className="text-white">Monthly Calls</TableCell>
-                                    <TableCell className="text-white">View Calender</TableCell>
+                                    <TableCell className="!text-white"></TableCell>
+                                    <TableCell className="!text-white">Name</TableCell>
+                                    <TableCell className="!text-white">Email</TableCell>
+                                    <TableCell className="!text-white">Location</TableCell>
+                                    <TableCell className="!text-white">Monthly Calls</TableCell>
+                                    <TableCell className="!text-white">View Calender</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody className="leaderboard-table-body">
                                 {paginatedData.map((row) => (
                                     <TableRow key={row.id}>
-                                        <TableCell className="text-white">
+                                        <TableCell className="!text-white">
                                             <img
                                                 src={row.imageUrl}
                                                 alt={row.firstName}
@@ -96,26 +96,26 @@ const CoachesCalendar = () => {
                                             />
                                         </TableCell>
                                         <TableCell>
-                                            <Typography variant="body2" className="text-white text-lg font-bold">
+                                            <Typography variant="body2" className="!text-white text-lg font-bold">
                                                 {row.firstName} {row.lastName}
                                             </Typography>
                                         </TableCell>
                                         <TableCell>
-                                            <Typography variant="body2" className="text-white text-lg">
+                                            <Typography variant="body2" className="!text-white text-lg">
                                                 {row.email}
                                             </Typography>
                                         </TableCell>
                                         <TableCell>
-                                            <Typography variant="body2" className="text-white text-lg">
+                                            <Typography variant="body2" className="!text-white text-lg">
                                                 {row.location}
                                             </Typography>
                                         </TableCell>
                                         <TableCell>
-                                            <Typography variant="body2" className="text-primary text-xl">
+                                            <Typography variant="body2" className="!text-primary text-xl">
                                                 {row.calls}
                                             </Typography>
                                         </TableCell>
-                                        <TableCell className="text-white">
+                                        <TableCell className="!text-white">
                                             <IconButton onClick={() => { }}>
                                                 <img src="/assets/open.svg" />
                                             </IconButton>

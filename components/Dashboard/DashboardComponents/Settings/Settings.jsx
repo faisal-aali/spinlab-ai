@@ -29,7 +29,7 @@ const Settings = () => {
             onChange={handleTabChange}
             indicatorColor="none"
             aria-label="category tabs"
-            className="blueBackground py-2.5 rounded-lg w-56"
+            className="!blueBackground py-2.5 rounded-lg w-56"
             sx={{
               backgroundColor: "#001f3f",
               ".MuiTabs-flexContainer button": {

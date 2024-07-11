@@ -137,7 +137,7 @@ const DrillLibrary = () => {
                 variant="scrollable"
                 scrollButtons="auto"
                 aria-label="category tabs"
-                className="blueBackground py-2.5 rounded-lg"
+                className="!blueBackground py-2.5 rounded-lg"
                 sx={{
                   backgroundColor: "#001f3f",
                   ".css-1wsiv9x-MuiButtonBase-root-MuiTab-root": {

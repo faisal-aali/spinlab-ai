@@ -79,24 +79,24 @@ const Users = () => {
           </div>
         </div>
         <div className="">
-          <TableContainer component={Paper} className="bg-transparent">
+          <TableContainer component={Paper} className="!bg-transparent">
             <Table>
               <TableHead className="leaderboard-table-head bg-primary-light uppercase">
                 <TableRow>
-                  <TableCell className="text-white"></TableCell>
-                  <TableCell className="text-white">Name</TableCell>
-                  <TableCell className="text-white">Email</TableCell>
-                  <TableCell className="text-white">Date of Joining</TableCell>
-                  <TableCell className="text-white">Remaining Credits</TableCell>
-                  <TableCell className="text-white">Subscription Plan</TableCell>
-                  {user.role === 'admin' && <TableCell className="text-white">Delete {role === 'player' ? 'Player' : role === 'coach' ? 'Staff' : role === 'trainer' ? 'Trainer' : 'Invalid Role'}</TableCell>}
-                  <TableCell className="text-white">{user.role !== 'admin' && 'Action'}</TableCell>
+                  <TableCell className="!text-white"></TableCell>
+                  <TableCell className="!text-white">Name</TableCell>
+                  <TableCell className="!text-white">Email</TableCell>
+                  <TableCell className="!text-white">Date of Joining</TableCell>
+                  <TableCell className="!text-white">Remaining Credits</TableCell>
+                  <TableCell className="!text-white">Subscription Plan</TableCell>
+                  {user.role === 'admin' && <TableCell className="!text-white">Delete {role === 'player' ? 'Player' : role === 'coach' ? 'Staff' : role === 'trainer' ? 'Trainer' : 'Invalid Role'}</TableCell>}
+                  <TableCell className="!text-white">{user.role !== 'admin' && 'Action'}</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody className="leaderboard-table-body">
                 {paginatedData.map((row) => (
                   <TableRow key={row.id}>
-                    <TableCell className="text-white">
+                    <TableCell className="!text-white">
                       <img
                         src={row.imageUrl}
                         alt={row.firstName}
@@ -104,37 +104,37 @@ const Users = () => {
                       />
                     </TableCell>
                     <TableCell>
-                      <Typography variant="body2" className="text-white text-lg font-bold">
+                      <Typography variant="body2" className="!text-white text-lg font-bold">
                         {row.firstName} {row.lastName}
                       </Typography>
                     </TableCell>
                     <TableCell>
-                      <Typography variant="body2" className="text-white text-lg">
+                      <Typography variant="body2" className="!text-white text-lg">
                         {row.email}
                       </Typography>
                     </TableCell>
                     <TableCell>
-                      <Typography variant="body2" className="text-white text-lg">
+                      <Typography variant="body2" className="!text-white text-lg">
                         {row.date}
                       </Typography>
                     </TableCell>
                     <TableCell>
-                      <Typography variant="body2" className="text-primary text-xl">
+                      <Typography variant="body2" className="!text-primary text-xl">
                         {row.balance}
                       </Typography>
                     </TableCell>
                     <TableCell>
-                      <Typography variant="body2" className="text-primary text-xl">
+                      <Typography variant="body2" className="!text-primary text-xl">
                         {row.plan}
                       </Typography>
                     </TableCell>
                     {user.role === 'admin' &&
-                      <TableCell className="text-white">
+                      <TableCell className="!text-white">
                         <IconButton onClick={() => setShowDeleteModal(true)}>
                           <img src="/assets/delete-icon.svg" />
                         </IconButton>
                       </TableCell>}
-                    <TableCell className="text-white">
+                    <TableCell className="!text-white">
                       <IconButton onClick={() => router.push('/users/view?role=' + role)}>
                         <img src="/assets/open.svg" />
                       </IconButton>

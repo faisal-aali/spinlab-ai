@@ -81,44 +81,44 @@ const Leaderboard = () => {
           </div>
         </div>
         <div className="rounded-lg">
-          <TableContainer component={Paper} className="bg-transparent">
+          <TableContainer component={Paper} className="!bg-transparent">
             <Table>
               <TableHead className="leaderboard-table-head bg-primary-light uppercase">
                 <TableRow>
-                  <TableCell className="text-white">#</TableCell>
-                  <TableCell className="text-white">Name</TableCell>
-                  <TableCell className="text-white">Date</TableCell>
-                  <TableCell className="text-white">Arm Speed</TableCell>
-                  <TableCell className="text-white">Release Time</TableCell>
-                  <TableCell className="text-white">Kinetic Sequence Score</TableCell>
-                  <TableCell className="text-white">Acceleration Score</TableCell>
-                  <TableCell className="text-white">Deceleration Score</TableCell>
-                  <TableCell className="text-white">Velocity Efficiency Score</TableCell>
+                  <TableCell className="!text-white">#</TableCell>
+                  <TableCell className="!text-white">Name</TableCell>
+                  <TableCell className="!text-white">Date</TableCell>
+                  <TableCell className="!text-white">Arm Speed</TableCell>
+                  <TableCell className="!text-white">Release Time</TableCell>
+                  <TableCell className="!text-white">Kinetic Sequence Score</TableCell>
+                  <TableCell className="!text-white">Acceleration Score</TableCell>
+                  <TableCell className="!text-white">Deceleration Score</TableCell>
+                  <TableCell className="!text-white">Velocity Efficiency Score</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody className="leaderboard-table-body">
                 {displayedData.map((row) => (
                   <TableRow key={row.id}>
-                    <TableCell className="text-white">{row.id}</TableCell>
-                    <TableCell className="text-white text-base">
+                    <TableCell className="!text-white">{row.id}</TableCell>
+                    <TableCell className="!text-white text-base">
                       {row.name}
                       <div className="text-primary text-xs">
                         {row.age} | {row.location}
                       </div>
                     </TableCell>
-                    <TableCell className="text-white">{row.date}</TableCell>
-                    <TableCell className="text-white">{row.armSpeed}</TableCell>
-                    <TableCell className="text-white">{row.releaseTime}</TableCell>
-                    <TableCell className="text-white">
+                    <TableCell className="!text-white">{row.date}</TableCell>
+                    <TableCell className="!text-white">{row.armSpeed}</TableCell>
+                    <TableCell className="!text-white">{row.releaseTime}</TableCell>
+                    <TableCell className="!text-white">
                       <CustomLinearProgress value={row.kineticScore} color="#00FF00" />
                     </TableCell>
-                    <TableCell className="text-white">
+                    <TableCell className="!text-white">
                       <CustomLinearProgress value={row.accelerationScore} color="#00BFFF" />
                     </TableCell>
-                    <TableCell className="text-white">
+                    <TableCell className="!text-white">
                       <CustomLinearProgress value={row.decelerationScore} color="#8A2BE2" />
                     </TableCell>
-                    <TableCell className="text-white flex-col-reverse">
+                    <TableCell className="!text-white flex-col-reverse">
                       <CustomLinearProgress value={row.velocityScore} color="#FF4500" />
                     </TableCell>
                   </TableRow>
