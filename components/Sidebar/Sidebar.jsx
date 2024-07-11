@@ -1,8 +1,9 @@
 "use client";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import user from '../../util/user'
 import profileStyle from './sidebar.module.css'
+import { useEffect } from "react";
 
 const links = [
   {
@@ -54,28 +55,47 @@ const links = [
     roles: ['trainer']
   },
   {
-    url: '/players',
+    url: '/users',
+    query: '?role=player',
     icon: `/assets/${user.role === 'coach' ? 'dashboard-icon.svg' : user.role === 'admin' ? 'add-player-icon.svg' : ''}`,
     label: user.role === 'coach' ? 'Players Database' : user.role === 'admin' ? 'Manage Player Database' : 'Invalid role',
-    roles: ['coach', 'admin']
+    roles: ['coach', 'admin'],
+    pathValidator: function (pathname) {
+      return pathname.startsWith(this.url) && pathname.endsWith(this.query)
+    }
   },
   {
-    url: '/coaches',
+    url: '/users',
+    query: '?role=coach',
     icon: '/assets/add-player-icon.svg',
     label: 'Manage Coach Database',
-    roles: ['admin']
+    roles: ['admin'],
+    pathValidator: function (pathname) {
+      return pathname.startsWith(this.url) && pathname.endsWith(this.query)
+    }
   },
   {
-    url: '/trainers',
+    url: '/users',
+    query: '?role=trainer',
     icon: '/assets/add-player-icon.svg',
     label: 'Manage Trainer Database',
-    roles: ['admin']
+    roles: ['admin'],
+    pathValidator: function (pathname) {
+      console.log('in pathvalidator', window.location.href);
+      return pathname.startsWith(this.url) && pathname.endsWith(this.query)
+    }
   },
   {
     url: '/calender',
     icon: '/assets/calender-icon.svg',
-    label: user.role === 'coach' ? 'My Calender' : user.role === 'admin' ? 'Coach Calender' : 'Invalid role',
-    roles: ['coach', 'admin']
+    label: 'My Calendar',
+    roles: ['coach']
+  },
+  {
+    url: '/coaches-calendar',
+    icon: '/assets/calender-icon.svg',
+    label: 'Coach Calendar',
+    roles: ['admin']
   },
   {
     url: '/coaching-call',
@@ -106,13 +126,18 @@ const links = [
 const Sidebar = () => {
   const pathname = usePathname();
   const route = useRouter()
+  const searchParams = useSearchParams()
 
-  const linkClasses = (path) =>
-    `flex pl-2 py-1 ${pathname === path ? "bg-primary rounded-lg w-10/12 items-center text-black" : ""
+  useEffect(() => {
+    console.log('pathname changed to', pathname, searchParams.getAll);
+  }, [pathname])
+
+  const linkClasses = (path, pathValidator) =>
+    `flex pl-2 py-1 ${pathValidator ? pathValidator(pathname) : pathname.startsWith(path) ? "bg-primary rounded-lg min-w-44 w-fit items-center text-black" : ""
     }`;
 
-  const svgClasses = (path) =>
-    `${pathname === path ? "mix-blend-difference" : "fill-current text-white"}`;
+  const svgClasses = (path, pathValidator) =>
+    `${pathValidator ? pathValidator(pathname) : pathname.startsWith(path) ? "mix-blend-difference" : "fill-current text-white"}`;
 
   return (
     <div className="bg-gray-900 text-white w-80 pt-8 pl-12 min-h-screen p-4">
@@ -127,8 +152,8 @@ const Sidebar = () => {
             className="w-10 h-10 rounded-full"
           />
           <div>
-            <p className="font-semibold">Faisal Ali</p>
-            <p className="text-zinc-400 text-sm">FaisalAli.us@gmail.com</p>
+            <p className={`font-semibold ${pathname === '/profile' && 'text-black'}`}>Faisal Ali</p>
+            <p className={`text-sm ${pathname === '/profile' ? 'text-black' : 'text-zinc-400'}`}>FaisalAli.us@gmail.com</p>
           </div>
         </div>
         <div className="mb-8">
@@ -140,10 +165,10 @@ const Sidebar = () => {
         </div>
         <div className="flex flex-col space-y-2">
           {links.filter(link => link.roles.includes(user.role)).map(link => (
-            <Link href={link.url} className={linkClasses(link.url)}>
+            <Link href={`${link.url}${link.query || ''}`} className={linkClasses(link.url, link.pathValidator?.bind(link))}>
               <img
                 src={link.icon}
-                className={svgClasses(link.url)}
+                className={svgClasses(link.url, link.pathValidator?.bind(link))}
                 alt=""
               />
               <span className="flex items-center p-2">{link.label}</span>

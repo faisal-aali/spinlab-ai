@@ -10,6 +10,10 @@ import {
   Typography,
 } from "@mui/material";
 import YouTubeIcon from "@mui/icons-material/YouTube";
+import user from "@/util/user";
+import AddVideoModal from '../AddVideoModal/AddVideoModal'
+import EditVideoModal from '../EditVideoModal/EditVideoModal'
+import DeleteVideoModal from '../DeleteVideoModal/DeleteVideoModal'
 
 const videos = [
   {
@@ -82,6 +86,9 @@ const categories = [
 const DrillLibrary = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
+  const [showAddModal, setShowAddModal] = useState(false)
+  const [showEditModal, setShowEditModal] = useState(false)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
 
   const handleCategoryChange = (event, newValue) => {
     setSelectedCategory(newValue);
@@ -108,7 +115,7 @@ const DrillLibrary = () => {
           <div className="flex gap-5 items-center">
             <div className="ml-4">
               <h2 className="font-normal">
-                Here’s your 
+                Here’s your
                 <span className="ml-2 text-primary font-semibold">
                   Drill Library
                 </span>
@@ -120,7 +127,7 @@ const DrillLibrary = () => {
           </div>
         </div>
         <div className="rounded-lg">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-8">
             <div className="tabs-wrapper w-1/2">
               <Tabs
                 value={selectedCategory}
@@ -139,8 +146,8 @@ const DrillLibrary = () => {
                     borderRadius: "6px",
                     fontWeight: 500,
                     fontSize: "15px",
-                    textTransform:"capitalize",
-                    padding:" 0 10px"
+                    textTransform: "capitalize",
+                    padding: " 0 10px"
                   },
                   ".MuiTabs-flexContainer": {
                     justifyContent: "space-around",
@@ -175,12 +182,17 @@ const DrillLibrary = () => {
                 className="w-full pl-2 py-1 rounded-lg text-white h-12 search-background focus:outline-none focus:ring-1 focus:ring-green-500"
               />
             </div>
+            <div className={`${user.role !== 'admin' && 'hidden'}`}>
+              <button className="bg-white dark-blue-color rounded w-44 h-14 flex items-center justify-center text-lg font-bold" onClick={() => setShowAddModal(true)}>
+                ADD NEW DRILL
+              </button>
+            </div>
           </div>
           <Grid container spacing={2} sx={{ marginTop: 2 }}>
             {filteredVideos.length > 0 ? (
               filteredVideos.map((video, index) => (
                 <Grid item xs={12} sm={6} md={4} lg={4} key={index}>
-                  <Card sx={{ borderRadius: '10px', backgroundColor: 'transparent' , boxShadow: 'none'}} className="relative">
+                  <Card sx={{ borderRadius: '10px', backgroundColor: 'transparent', boxShadow: 'none' }} className="relative">
                     <CardMedia
                       component="iframe"
                       height="238"
@@ -189,15 +201,31 @@ const DrillLibrary = () => {
                       className="rounded-lg"
                     />
                     <CardContent className="pl-1 pt-2	">
-                      <Typography variant="body2" className="text-white">
-                        {video.description}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary" className="text-white watch-youtube-wrapper ">
+                      <Grid container gap={1}>
+                        <Grid item xs>
+                          <Typography variant="body2" className="text-white">
+                            {video.description}
+                          </Typography>
+                        </Grid>
+                        <Grid item container xs='auto' gap={2} sx={{ display: user.role === 'admin' ? 'flex' : 'none' }}>
+                          <Grid item>
+                            <button onClick={() => setShowEditModal(true)} className="bg-white flex justify-center items-center w-8 h-8 text-green-600 rounded p-2 focus:outline-none">
+                              <img src="/assets/edit-icon.svg" alt="" />
+                            </button>
+                          </Grid>
+                          <Grid item>
+                            <button onClick={() => setShowDeleteModal(true)} className="bg-red-500 flex justify-center items-center w-8 h-8 rounded p-2 focus:outline-none">
+                              <img src="/assets/delete-icon-white.svg" alt="" />
+                            </button>
+                          </Grid>
+                        </Grid>
+                      </Grid>
+                      <Typography variant="body2" className="text-white watch-youtube-wrapper ">
                         Watch on
                         <YouTubeIcon className="ml-2 mr-0"
                           sx={{ verticalAlign: "middle", marginRight: "5px" }}
                         />
-                         <span className="font-semibold">YouTube</span>
+                        <span className="font-semibold">YouTube</span>
                       </Typography>
                     </CardContent>
                   </Card>
@@ -211,6 +239,9 @@ const DrillLibrary = () => {
           </Grid>
         </div>
       </div>
+      <AddVideoModal open={showAddModal} onClose={() => setShowAddModal(false)} />
+      <EditVideoModal open={showEditModal} onClose={() => setShowEditModal(false)} />
+      <DeleteVideoModal open={showDeleteModal} onClose={() => setShowDeleteModal(false)} />
     </>
   );
 };
