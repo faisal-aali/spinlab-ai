@@ -5,9 +5,10 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import EditUserModal from "../EditUserModal/EditUserModal";
 import DeleteUserModal from "../DeleteUserModal/DeleteUserModal";
-import user from "@/util/user";
+import { useSession } from "next-auth/react";
 
 const UserProfile = () => {
+    const user = useSession().data?.user || {}
     const router = useRouter()
     const searchParams = useSearchParams()
 

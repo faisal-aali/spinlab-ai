@@ -8,13 +8,33 @@ import { AuthOptions } from "next-auth";
 const query = util.promisify(db.query).bind(db);
 
 interface CredentialInput {
-    
+
 }
 const credentials: Record<string, CredentialInput> = {};
 
 export const authOption: AuthOptions = {
     session: {
         strategy: 'jwt'
+    },
+    callbacks: {
+        async jwt({ token, user }) {
+            if (user) {
+                token.firstName = user.firstName
+                token.lastName = user.lastName
+                token.role = user.role
+                token.plan = user.plan
+            }
+            return token
+        },
+        async session({ session, token }) {
+            session.user.firstName = token.firstName as string;
+            session.user.lastName = token.lastName as string;
+            session.user.role = token.role as string;
+            session.user.plan = token.plan as string;
+
+            // user object returned from above jwt callback.
+            return session;
+        }
     },
     providers: [
         CredentialsProvider({
@@ -26,17 +46,17 @@ export const authOption: AuthOptions = {
                 user = user[0];
 
                 if (!user) {
-                   throw new Error("wrong credentials");
+                    throw new Error("wrong credentials");
                     return null;
                 }
                 if (user.password) {
                     console.log(user.password);
                     return user.password === credentials.password ? user : null;
-                  
+
                 }
-              
+
             },
-            credentials: credentials 
+            credentials: credentials
         })
     ],
     secret: 'ZUSytDzLavIUuiWumSbjtRsdDWZKRlPRIbpgFWpwkvColKTLvrKUhjB'

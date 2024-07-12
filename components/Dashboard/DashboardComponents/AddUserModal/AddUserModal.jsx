@@ -154,7 +154,6 @@ const AddUserModal = ({ open, onClose, role }) => {
                   <Field
                     as='select'
                     name="plan"
-                    label
                     className={`w-full py-3 px-3 bg-transparent rounded text-primary primary-border rounded-lg focus:outline-none focus:outline-none focus:border-green-500 placeholder:opacity-45`}
                   >
                     <option
@@ -176,7 +175,6 @@ const AddUserModal = ({ open, onClose, role }) => {
                   <Field
                     as='select'
                     name="role"
-                    label
                     className={`w-full py-3 px-3 bg-transparent rounded text-primary rounded-lg primary-border focus:outline-none focus:outline-none focus:border-green-500 placeholder:opacity-45`}
                   >
                     <option

@@ -17,7 +17,6 @@ import {
 import Pagination from '../../../Common/Pagination/Pagination'
 import DeleteUserModal from '../DeleteUserModal/DeleteUserModal'
 import AddUserModal from '../AddUserModal/AddUserModal'
-import user from "@/util/user";
 import { useRouter, useSearchParams } from "next/navigation";
 
 const data = Array.from({ length: 6 }).map((_, index) => ({

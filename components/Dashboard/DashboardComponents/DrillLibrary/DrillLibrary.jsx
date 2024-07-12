@@ -10,10 +10,10 @@ import {
   Typography,
 } from "@mui/material";
 import YouTubeIcon from "@mui/icons-material/YouTube";
-import user from "@/util/user";
 import AddVideoModal from '../AddVideoModal/AddVideoModal'
 import EditVideoModal from '../EditVideoModal/EditVideoModal'
 import DeleteVideoModal from '../DeleteVideoModal/DeleteVideoModal'
+import { useSession } from "next-auth/react";
 
 const videos = [
   {
@@ -84,6 +84,8 @@ const categories = [
 ];
 
 const DrillLibrary = () => {
+  const user = useSession().data?.user || {}
+
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [showAddModal, setShowAddModal] = useState(false)

@@ -1,6 +1,6 @@
 
 const user = {
-    role: 'trainer'
+    role: 'player'
 }
 
 export default user

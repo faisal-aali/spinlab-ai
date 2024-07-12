@@ -2,9 +2,11 @@ import { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import user from "@/util/user";
+import { useSession } from "next-auth/react";
 
 const AccountSettings = () => {
+  const user = useSession().data?.user || {}
+
   const [imageSrc, setImageSrc] = useState("https://placehold.co/100x100");
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);

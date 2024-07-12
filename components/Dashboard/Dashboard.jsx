@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import UploadModal from "../Dashboard/DashboardComponents/UploadVideoModal/UploadModal";
 import AddNewPlayerModal from "../Dashboard/DashboardComponents/AddNewPlayerModal/AddNewPlayerModal";
-import user from "@/util/user";
+import { useSession } from "next-auth/react";
 
 const VideoSubmittedScreen = () => {
   return (
@@ -22,6 +22,7 @@ const VideoSubmittedScreen = () => {
 }
 
 const Dashboard = () => {
+  const user = useSession().data?.user || {}
   const router = useRouter();
   const [userEmail, setUserEmail] = useState("");
   const [showUploadModal, setShowUploadModal] = useState(false);
@@ -38,6 +39,8 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
+    if (user.role === 'admin') router.replace('/profile')
+
     const userSession = JSON.parse(localStorage.getItem("userSession"));
     console.log(userSession);
     if (userSession) {
@@ -62,6 +65,7 @@ const Dashboard = () => {
             </button>
             <button
               className="bg-primary text-black rounded w-36 h-8 flex items-center justify-center text-base ml-4"
+              onClick={handleOpenModal}
               style={{ display: user.role === 'player' ? 'block' : 'none' }}
             >
               RECORD VIDEO

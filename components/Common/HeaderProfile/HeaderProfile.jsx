@@ -1,7 +1,8 @@
-import user from "@/util/user";
+import { useSession } from "next-auth/react"
 
 
 export default function HeaderProfile() {
+    const user = useSession().data?.user || {}
 
     return (
         <div className="blueBackground p-4 primary-border rounded-lg flex items-center justify-between w-3/5 mb-4 h-32">

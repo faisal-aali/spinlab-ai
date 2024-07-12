@@ -1,15 +1,15 @@
 // components/Layout.js
 "use client";
 import Sidebar from "../Sidebar/Sidebar";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { FiLogOut } from "react-icons/fi";
 import { IoNotificationsOutline } from "react-icons/io5";
 import HeaderProfile from '../Common/HeaderProfile/HeaderProfile'
-import user from "@/util/user";
 
 const Layout = ({ children }) => {
+  const user = useSession().data?.user || {}
   const router = useRouter();
   const pathname = usePathname()
 
@@ -34,7 +34,7 @@ const Layout = ({ children }) => {
           </div>}
         <div className="flex justify-between items-center mb-8 absolute right-10 top-12	">
           <div className="flex space-x-4 items-center">
-            <button className="bg-white text-black px-5 py-1 rounded-lg">
+            <button className={`bg-white text-black px-5 py-1 rounded-lg ${user.role === 'trainer' && 'hidden'}`}>
               UPLOAD
             </button>
             <button className="bg-white text-black px-5 py-1 rounded-lg">

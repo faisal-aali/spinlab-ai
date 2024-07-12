@@ -17,8 +17,8 @@ import {
 import Pagination from '../../../Common/Pagination/Pagination'
 import DeleteUserModal from '../DeleteUserModal/DeleteUserModal'
 import AddUserModal from '../AddUserModal/AddUserModal'
-import user from "@/util/user";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 const data = Array.from({ length: 6 }).map((_, index) => ({
   id: index + 1,
@@ -35,6 +35,7 @@ const data = Array.from({ length: 6 }).map((_, index) => ({
 
 
 const Users = () => {
+  const user = useSession().data?.user || {}
   const router = useRouter()
   const searchParams = useSearchParams()
 

@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { authOption } from "@/app/api/auth/[...nextauth]/route";
+import AuthProvider from './AuthProvider'
+import { getServerSession } from "next-auth";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -9,14 +12,18 @@ export const metadata: Metadata = {
   description: "A Generative ai tool",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await getServerSession(authOption)
+
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <AuthProvider session={session}>
+        <body className={inter.className}>{children}</body>
+      </AuthProvider>
     </html>
   );
 }

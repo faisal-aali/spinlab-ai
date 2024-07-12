@@ -1,9 +1,10 @@
 "use client"
 
-import user from "@/util/user";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 const ProfilePage = () => {
+  const user = useSession().data?.user || {}
   const route = useRouter()
 
   return (
