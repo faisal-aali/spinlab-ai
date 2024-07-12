@@ -40,21 +40,24 @@ export const authOption: AuthOptions = {
         CredentialsProvider({
             async authorize(credentials) {
                 if (!credentials?.email || !credentials?.password) {
-                    return null;
+                    throw new Error("Missing email or password");
                 }
-                let user = await query(`SELECT * FROM users WHERE email = '${credentials.email}'`);
-                user = user[0];
+                try {
+                    let user = await query(`SELECT * FROM users WHERE email = '${credentials.email}'`);
+                    user = user[0];
 
-                if (!user) {
-                    throw new Error("wrong credentials");
-                    return null;
+                    if (!user) {
+                        throw new Error("Wrong credentials");
+                    }
+                    if (user.password) {
+                        return user.password === credentials.password ? user : null;
+                    } else {
+                        throw new Error("No password found for user");
+                    }
+                } catch (error) {
+                    console.error("Database query error:", error);
+                    throw new Error("Database error");
                 }
-                if (user.password) {
-                    console.log(user.password);
-                    return user.password === credentials.password ? user : null;
-
-                }
-
             },
             credentials: credentials
         })
