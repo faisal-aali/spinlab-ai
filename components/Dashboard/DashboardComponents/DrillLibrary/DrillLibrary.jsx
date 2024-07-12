@@ -113,7 +113,7 @@ const DrillLibrary = () => {
   return (
     <>
       <div className="flex-1 py-8">
-        <div className="blueBackground p-4 primary-border rounded-lg flex items-center justify-between w-3/5 mb-4 h-32">
+        <div className="blueBackground p-4 primary-border rounded-lg flex items-center justify-between mb-4 h-32 mt-20 w-full xl:mt-8 xl:w-3/5">
           <div className="flex gap-5 items-center">
             <div className="ml-4">
               <h2 className="font-normal">
@@ -142,22 +142,22 @@ const DrillLibrary = () => {
                 className="!blueBackground py-2.5 rounded-lg"
                 sx={{
                   backgroundColor: "#001f3f",
-                  ".css-1wsiv9x-MuiButtonBase-root-MuiTab-root": {
+                  ".MuiButtonBase-root.MuiTab-root": {
                     minHeight: "40px",
                     backgroundColor: "#32E10026",
                     borderRadius: "6px",
                     fontWeight: 500,
                     fontSize: "15px",
                     textTransform: "capitalize",
-                    padding: " 0 10px"
+                    padding: " 0 10px",
                   },
                   ".MuiTabs-flexContainer": {
                     justifyContent: "space-around",
                     gap: "10px",
                   },
-                  ".Mui-selected": {
-                    backgroundColor: "#00ff00",
-                    color: "#000",
+                  ".MuiButtonBase-root.MuiTab-root.Mui-selected": {
+                    color: "#fff",
+                    backgroundColor: "#32E100",
                   },
                 }}
               >

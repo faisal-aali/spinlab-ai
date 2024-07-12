@@ -28,6 +28,9 @@ const data = Array.from({ length: 8 }).map((_, index) => ({
 const CustomLinearProgress = ({ value, color }) => {
     return (
         <Box sx={{ width: "100%" }}>
+            <Typography variant="body2">
+                {`${value.toFixed(2)}%`}
+            </Typography>
             <LinearProgress
                 variant="determinate"
                 value={value}
@@ -40,9 +43,6 @@ const CustomLinearProgress = ({ value, color }) => {
                     },
                 }}
             />
-            <Typography variant="body2">
-                {`${value.toFixed(2)}%`}
-            </Typography>
         </Box>
     );
 };

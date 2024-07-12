@@ -34,7 +34,7 @@ const CustomLinearProgress = ({ value, color, textSize }) => {
 const PlayerCard = ({ player }) => {
 
     return (
-        <Card className="bg-transparent p-1 border primary-border-parrot rounded-lg">
+        <Card className="!bg-transparent p-1 border primary-border-parrot rounded-lg">
             <Grid container gap={1} padding={1} display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
                 <Grid item container xs='auto' gap={4} alignItems={'center'}>
                     <Grid item>
@@ -114,22 +114,22 @@ const HistoryTable = () => {
 
 
     return (
-        <TableContainer component={Paper} className="bg-transparent">
+        <TableContainer component={Paper} className="!bg-transparent">
             <Table>
                 <TableHead className="leaderboard-table-head bg-primary-light uppercase">
                     <TableRow>
-                        <TableCell className="text-white">Videos</TableCell>
-                        <TableCell className="text-white">Date</TableCell>
-                        <TableCell className="text-white">Efficiency</TableCell>
-                        <TableCell className="text-white">Sequencing</TableCell>
-                        <TableCell className="text-white">Tags</TableCell>
-                        <TableCell className="text-white"></TableCell>
+                        <TableCell className="!text-white">Videos</TableCell>
+                        <TableCell className="!text-white">Date</TableCell>
+                        <TableCell className="!text-white">Efficiency</TableCell>
+                        <TableCell className="!text-white">Sequencing</TableCell>
+                        <TableCell className="!text-white">Tags</TableCell>
+                        <TableCell className="!text-white"></TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody className="leaderboard-table-body">
                     {paginatedData.map((row) => (
                         <TableRow key={row.id}>
-                            <TableCell className="text-white">
+                            <TableCell className="!text-white">
                                 <img
                                     src={row.thumbnail}
                                     alt={row.name}
@@ -137,30 +137,30 @@ const HistoryTable = () => {
                                 />
                             </TableCell>
                             <TableCell>
-                                <Typography variant="caption" className="text-white">
+                                <Typography variant="caption" className="!text-white">
                                     {row.date}
                                 </Typography>
                             </TableCell>
-                            <TableCell className="text-white">
+                            <TableCell className="!text-white">
                                 <CustomLinearProgress
                                     value={row.efficiency}
                                     color="#00FF00"
                                     textSize={'text-sm'}
                                 />
                             </TableCell>
-                            <TableCell className="text-white">
+                            <TableCell className="!text-white">
                                 <CustomLinearProgress
                                     value={row.sequencing}
                                     color="#00BFFF"
                                     textSize={'text-sm'}
                                 />
                             </TableCell>
-                            <TableCell className="text-white">
+                            <TableCell className="!text-white">
                                 <Typography variant="caption" className="text-white">
                                     {row.tags}
                                 </Typography>
                             </TableCell>
-                            <TableCell className="text-white" align="right">
+                            <TableCell className="!text-white" align="right">
                                 <IconButton>
                                     <East className="text-primary" />
                                 </IconButton>
@@ -216,16 +216,16 @@ export default function Metrics() {
     },]
 
     return (
-        <div className="flex flex-col gap-6 mt-6">
+        <div className="flex flex-col gap-6 mt-8">
             <div>
-                <IconButton className="border primary-border-parrot rounded" onClick={() => router.replace('/players-metrics')}>
+                <IconButton className="!border !primary-border-parrot !rounded" onClick={() => router.replace('/players-metrics')}>
                     <img src="/assets/back-icon.svg" />
                 </IconButton>
             </div>
             <div>
                 <PlayerCard player={player} />
             </div>
-            <div className="grid grid-cols-3 gap-7">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-7">
                 {KPIs.map((kpi) => (
                     <div>
                         <KPICard {...kpi} />

@@ -44,7 +44,7 @@ const UserProfile = () => {
                                 <button onClick={() => setShowEditModal(true)} className="bg-white flex justify-center items-center w-12 text-green-600 rounded-lg p-2 focus:outline-none">
                                     <img src="/assets/edit-icon.svg" alt="" />
                                 </button>
-                                <button onClick={() => setShowDeleteModal(true)} className="bg-red-500 flex justify-center items-center w-12 rounded-lg p-2 focus:outline-none">
+                                <button onClick={() => setShowDeleteModal(true)} className="button-danger flex justify-center items-center w-12 rounded-lg p-2 focus:outline-none">
                                     <img src="/assets/delete-icon-white.svg" alt="" />
                                 </button>
                             </div>

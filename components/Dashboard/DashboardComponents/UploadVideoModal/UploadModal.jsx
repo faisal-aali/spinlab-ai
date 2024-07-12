@@ -135,19 +135,17 @@ const UploadModal = ({ open, onClose, onSuccess }) => {
               <LinearProgress
                 variant="determinate"
                 value={uploadProgress}
-                style={{
+                sx={{
                   width: "100%",
-                  marginBottom: 20,
+                  marginBottom: 2,
                   borderRadius: "10px",
                   backgroundColor: "#32E1004D",
                   height: "10px",
-                }}
-                className="bg-primary"
-                sx={{
-                  ".css-5xe99f-MuiLinearProgress-bar1": {
+                  ".MuiLinearProgress-bar": {
                     backgroundColor: "#32e100",
                   },
                 }}
+                className="bg-primary"
               />
               <button
                 className="button-danger text-white px-4 py-1 rounded uppercase"

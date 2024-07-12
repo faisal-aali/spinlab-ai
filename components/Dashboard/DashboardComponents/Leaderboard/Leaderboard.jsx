@@ -11,7 +11,7 @@ import {
   Box,
   Typography,
 } from "@mui/material";
-import Pagination from "../../../Common/Pagination/Pagination"; 
+import Pagination from "../../../Common/Pagination/Pagination";
 
 const CustomLinearProgress = ({ value, color }) => {
   const progressStyle = {
@@ -30,10 +30,10 @@ const CustomLinearProgress = ({ value, color }) => {
 
   return (
     <Box sx={{ width: "100%" }}>
+      <Typography variant="body2">{`${Math.round(value)}%`}</Typography>
       <Box sx={progressStyle}>
         <Box sx={barStyle} />
       </Box>
-      <Typography variant="body2">{`${Math.round(value)}%`}</Typography>
     </Box>
   );
 };
@@ -55,8 +55,8 @@ const data = Array.from({ length: 100 }).map((_, index) => ({
 
 const Leaderboard = () => {
   const [page, setPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(10); 
-  const [displayedData, setDisplayedData] = useState(data.slice(0, rowsPerPage)); 
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [displayedData, setDisplayedData] = useState(data.slice(0, rowsPerPage));
 
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
@@ -72,7 +72,7 @@ const Leaderboard = () => {
   return (
     <>
       <div className="flex-1 py-8">
-        <div className="blueBackground p-4 primary-border rounded-lg flex items-center justify-between w-3/5 mb-4 h-32">
+        <div className="blueBackground p-4 primary-border rounded-lg flex items-center justify-between mb-4 h-32 mt-14 w-full xl:mt-0 xl:w-3/5">
           <div className="flex gap-5 items-center">
             <div className="ml-4">
               <h2 className="font-normal">Leaderboard</h2>
@@ -80,7 +80,7 @@ const Leaderboard = () => {
             </div>
           </div>
         </div>
-        <div className="rounded-lg">
+        <div className="rounded-lg" style={{ overflow: 'auto', maxWidth: 700 }}>
           <TableContainer component={Paper} className="!bg-transparent">
             <Table>
               <TableHead className="leaderboard-table-head bg-primary-light uppercase">
