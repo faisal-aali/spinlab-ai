@@ -2,6 +2,7 @@
 
 import { East } from "@mui/icons-material";
 import { Card, CardContent, CardMedia, Grid, LinearProgress, Typography, Box, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, IconButton, SvgIcon } from "@mui/material"
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -174,6 +175,7 @@ const HistoryTable = () => {
 };
 
 export default function Metrics() {
+    const user = useSession().data?.user
     const router = useRouter()
 
     const player = {
@@ -216,12 +218,14 @@ export default function Metrics() {
     },]
 
     return (
-        <div className="flex flex-col gap-6 mt-8">
-            <div>
-                <IconButton className="!border !primary-border-parrot !rounded" onClick={() => router.replace('/players-metrics')}>
-                    <img src="/assets/back-icon.svg" />
-                </IconButton>
-            </div>
+        <div className="flex flex-col gap-6 mt-14">
+            {user.role === 'trainer' &&
+                <div>
+                    <IconButton className="!border !primary-border-parrot !rounded" onClick={() => router.replace('/players-metrics')}>
+                        <img src="/assets/back-icon.svg" />
+                    </IconButton>
+                </div>
+            }
             <div>
                 <PlayerCard player={player} />
             </div>

@@ -23,7 +23,7 @@ const Purchases = () => {
 
   return (
     <>
-      <div className="flex-1 py-8">
+      <div className="flex-1">
         <div className="blueBackground p-4 primary-border rounded-lg flex items-center justify-between w-3/5 mb-4 h-32">
           <div className="flex gap-5 items-center">
             <div className="ml-4">
@@ -53,11 +53,10 @@ const Purchases = () => {
                   {[50, 100, 150].map((credits, index) => (
                     <div
                       key={index}
-                      className={`flex flex-col items-center p-4 py-6 rounded-lg cursor-pointer basis-1/3 h-44 justify-center dark-blue-background ${
-                        selectedCredits === credits
+                      className={`flex flex-col items-center p-4 py-6 rounded-lg cursor-pointer basis-1/3 h-44 justify-center dark-blue-background ${selectedCredits === credits
                           ? "hover-shadow-light-box"
                           : "border primary-border"
-                      }`}
+                        }`}
                       onClick={() => handleSelectCredits(credits)}
                     >
                       <h3 className="text-4xl mb-2">{credits} </h3>
@@ -65,11 +64,10 @@ const Purchases = () => {
                         Credits
                       </h4>
                       <button
-                        className={`font-bold px-8 py-1 rounded mt-4 ${
-                          selectedCredits === credits
+                        className={`font-bold px-8 py-1 rounded mt-4 ${selectedCredits === credits
                             ? "bg-primary dark-blue-color"
                             : "bg-white dark-blue-color"
-                        }`}
+                          }`}
                       >
                         ${credits * 2}
                       </button>
@@ -84,11 +82,10 @@ const Purchases = () => {
                     Back
                   </button>
                   <button
-                    className={`px-4 py-1 rounded font-bold ${
-                      selectedCredits
+                    className={`px-4 py-1 rounded font-bold ${selectedCredits
                         ? "bg-primary dark-blue-color"
                         : "bg-primary-light dark-blue-color"
-                    }`}
+                      }`}
                     onClick={handleContinue}
                     disabled={!selectedCredits}
                   >

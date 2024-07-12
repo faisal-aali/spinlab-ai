@@ -71,8 +71,8 @@ const Leaderboard = () => {
 
   return (
     <>
-      <div className="flex-1 py-8">
-        <div className="blueBackground p-4 primary-border rounded-lg flex items-center justify-between mb-4 h-32 mt-14 w-full xl:mt-0 xl:w-3/5">
+      <div className="flex flex-col">
+        <div className="blueBackground p-4 primary-border rounded-lg flex items-center justify-between mb-4 h-32 w-full xl:mt-0 xl:w-3/5">
           <div className="flex gap-5 items-center">
             <div className="ml-4">
               <h2 className="font-normal">Leaderboard</h2>
@@ -80,7 +80,7 @@ const Leaderboard = () => {
             </div>
           </div>
         </div>
-        <div className="rounded-lg" style={{ overflow: 'auto', maxWidth: 700 }}>
+        <div className="rounded-lg">
           <TableContainer component={Paper} className="!bg-transparent">
             <Table>
               <TableHead className="leaderboard-table-head bg-primary-light uppercase">

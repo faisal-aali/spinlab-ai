@@ -15,7 +15,7 @@ export default function Calender() {
 
     return (
         <div className="flex flex-col gap-8">
-            <div className="blueBackground p-4 primary-border rounded-lg flex items-center justify-between mb-4 h-32 mt-20 w-full xl:mt-8 xl:w-3/5">
+            <div className="blueBackground p-4 primary-border rounded-lg flex items-center justify-between mb-4 h-32 w-full xl:w-3/5">
                 <div className="flex gap-5 items-center">
                     <div className="ml-4">
                         <h2 className="font-normal">Your Calender</h2>
