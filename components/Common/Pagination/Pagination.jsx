@@ -10,18 +10,20 @@ const CustomPagination = ({ page, count, onChange }) => {
         onChange={onChange}
         color="primary"
         sx={{
-          ".css-1to7aaw-MuiButtonBase-root-MuiPaginationItem-root.Mui-selected": {
+          ".MuiButtonBase-root.MuiPaginationItem-root.Mui-selected": {
             backgroundColor: "#32e100",
             borderRadius: "4px",
             color: "#000000 !important"
           },
-          ".css-1to7aaw-MuiButtonBase-root-MuiPaginationItem-root": {
+          ".MuiButtonBase-root.MuiPaginationItem-root": {
             color: "#89939E !important",
+            fontSize: "16px",
+            marginBottom: "0px",
           },
-          ".css-1to7aaw-MuiButtonBase-root-MuiPaginationItem-root.Mui-selected:hover": {
-            backgroundColor: "#32e100"
+          ".MuiButtonBase-root.MuiPaginationItem-root.Mui-selected:hover": {
+            backgroundColor: "#32e100",
           },
-          ".css-1v2lvtn-MuiPaginationItem-root": {
+          ".MuiPaginationItem-root": {
             color: "#32e100",
             fontSize: "20px",
             marginBottom: "7px"

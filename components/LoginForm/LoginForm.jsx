@@ -2,27 +2,28 @@
 import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import styles from "./LoginForm.module.css";
 import Link from "next/link";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const LoginForm = () => {
+  const userSession = useSession().data?.user
   const router = useRouter();
   const [user, setUser] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
-    const userSession = JSON.parse(localStorage.getItem("userSession"));
-    if (userSession) {
-      router.push("/dashboard");
-    }
-  }, []);
+    // const userSession = JSON.parse(localStorage.getItem("userSession"));
+    // if (userSession) {
+    //   router.push("/dashboard");
+    // }
+    if (userSession) router.push('/dashboard')
+  }, [userSession]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    Cookies.set("loggedin", "true");
 
     const result = await signIn("credentials", {
       email: user.email,
@@ -31,7 +32,7 @@ const LoginForm = () => {
     });
 
     if (!result.error) {
-      console.log('sign in success',result)
+      console.log('sign in success', result)
       localStorage.setItem(
         "userSession",
         JSON.stringify({
@@ -40,7 +41,8 @@ const LoginForm = () => {
       );
       const expiryTime = new Date().getTime() + 3600000;
       localStorage.setItem("sessionExpiry", expiryTime);
-      router.push("/dashboard");
+      Cookies.set("loggedin", "true");
+      // router.push("/dashboard");
     } else {
       setError("Invalid email or password.");
     }
@@ -72,7 +74,7 @@ const LoginForm = () => {
             </div>
             <div className="mb-6 relative">
               <input
-                className="w-full px-3 bg-transparent rounded-lg py-3 text-white primary-border rounded focus:outline-none focus:border-green-500 placeholder:opacity-45"
+                className="w-full px-3 bg-transparent bg-opacity-20 rounded-lg py-3 text-white primary-border rounded focus:outline-none focus:border-green-500 placeholder:opacity-45"
                 type={showPassword ? "text" : "password"}
                 name="password"
                 value={user.password}

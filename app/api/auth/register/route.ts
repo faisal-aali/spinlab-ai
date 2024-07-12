@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import util from 'util';
-import db from '../../../../util/db';
+import db from '../../../lib/db';
 import { randomUUID } from 'crypto';
 
 const query = util.promisify(db.query).bind(db);

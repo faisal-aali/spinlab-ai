@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import util from "util";
-import db from "../../../../util/db";
+import db from "../../../lib/db";
 import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { AuthOptions } from "next-auth";
@@ -32,7 +32,6 @@ export const authOption: AuthOptions = {
             session.user.role = token.role as string;
             session.user.plan = token.plan as string;
 
-            // user object returned from above jwt callback.
             return session;
         }
     },

@@ -40,15 +40,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (user.role === 'admin') router.replace('/profile')
-
-    const userSession = JSON.parse(localStorage.getItem("userSession"));
-    console.log(userSession);
-    if (userSession) {
-      setUserEmail(userSession.email);
-    } else if (!userSession) {
-      router.push("/login");
-    }
-  }, []);
+  }, [user]);
 
   return (
     videoSubmitted ? <VideoSubmittedScreen /> :

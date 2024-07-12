@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createTransport } from "nodemailer";
 import crypto from "crypto";
-import db from "../../../../util/db";
+import db from "../../../lib/db";
+import util from 'util'
+
+const query = util.promisify(db.query).bind(db);
 
 export async function POST(request: NextRequest) {
   try {
@@ -9,13 +12,13 @@ export async function POST(request: NextRequest) {
     console.log("Received email for password reset:", email);
     const token = crypto.randomBytes(32).toString("hex");
     const expiration = Date.now() + 3600000;
-    await db.query(`
+    await query(`
       UPDATE users 
       SET resetPasswordToken='${token}', resetPasswordExpires=${expiration}
       WHERE email='${email}'
     `);
     const transporter = createTransport({
-      host: process.env.SMTP_HOST, 
+      host: process.env.SMTP_HOST,
       port: 587,
       auth: {
         user: process.env.SMTP_USER,
@@ -24,7 +27,7 @@ export async function POST(request: NextRequest) {
     });
     const resetUrl = `${process.env.LOCALHOST_URL}/reset-password?token=${token}&email=${email}`;
     const mailOptions = {
-      from: process.env.SMTP_USER, 
+      from: process.env.SMTP_USER,
       to: email,
       subject: "Password Reset",
       html: `
@@ -34,7 +37,7 @@ export async function POST(request: NextRequest) {
         <p>If you didn't request this, you can safely ignore this email.</p>
       `,
     };
-    
+
 
     await transporter.sendMail(mailOptions);
     return NextResponse.json({ message: "Password reset email sent" });

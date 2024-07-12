@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
-import db from "../../../../util/db";
+import db from "../../../lib/db";
+import util from 'util'
+
+const query = util.promisify(db.query).bind(db);
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,7 +16,7 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-    const queryResult = await db.query(
+    const queryResult = await query(
       `
       SELECT * FROM users 
       WHERE email = ?
@@ -30,7 +33,7 @@ export async function POST(request: NextRequest) {
     const hashedPassword = crypto
       .pbkdf2Sync(newPassword, salt, 1000, 64, "sha512")
       .toString("hex");
-    const updateResult = await db.query(
+    const updateResult = await query(
       `
       UPDATE users 
       SET password = ?

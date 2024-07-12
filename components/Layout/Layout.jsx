@@ -7,17 +7,22 @@ import Cookies from "js-cookie";
 import { FiLogOut } from "react-icons/fi";
 import { IoNotificationsOutline } from "react-icons/io5";
 import HeaderProfile from '../Common/HeaderProfile/HeaderProfile'
+import { useEffect } from "react";
 
 const Layout = ({ children }) => {
   const user = useSession().data?.user || {}
   const router = useRouter();
   const pathname = usePathname()
 
+  useEffect(() => {
+    if (!user.role) router.replace('/login')
+  }, [user]);
+
   const handleLogout = async () => {
     await signOut({ redirect: false });
     localStorage.removeItem("userSession");
     localStorage.removeItem("sessionExpiry");
-    router.push("/login");
+    router.replace("/login");
     Cookies.remove("loggedin");
   };
 
