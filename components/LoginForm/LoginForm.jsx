@@ -44,7 +44,7 @@ const LoginForm = () => {
       Cookies.set("loggedin", "true");
       // router.push("/dashboard");
     } else {
-      setError("Invalid email or password.");
+      setError(result.status === 401 ? "Invalid email or password" : result.error);
     }
   };
 
