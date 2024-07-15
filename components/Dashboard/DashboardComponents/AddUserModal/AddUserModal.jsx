@@ -189,8 +189,8 @@ const AddUserModal = ({ open, onClose, role }) => {
                     />
                     <option
                       className="bg-black"
-                      value={'trianer'}
-                      label={'Trianer'}
+                      value={'trainer'}
+                      label={'Trainer'}
                     />
                   </Field>
                 </div>

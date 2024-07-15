@@ -59,11 +59,10 @@ const BillingTab = () => {
                         <Field
                           name="firstName"
                           placeholder="First Name"
-                          className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${
-                            errors.firstName && touched.firstName
+                          className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${errors.firstName && touched.firstName
                               ? "border-red-900 border"
                               : "primary-border focus:border-green-500"
-                          }`}
+                            }`}
                         />
                       </div>
                       <div className="w-1/2">
@@ -73,11 +72,10 @@ const BillingTab = () => {
                         <Field
                           name="lastName"
                           placeholder="Last Name"
-                          className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${
-                            errors.lastName && touched.lastName
+                          className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${errors.lastName && touched.lastName
                               ? "border-red-900 border"
                               : "primary-border focus:border-green-500"
-                          }`}
+                            }`}
                         />
                       </div>
                     </div>
@@ -88,11 +86,10 @@ const BillingTab = () => {
                       <Field
                         name="address"
                         placeholder="Address"
-                        className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${
-                          errors.address && touched.address
+                        className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${errors.address && touched.address
                             ? "border-red-900 border"
                             : "primary-border focus:border-green-500"
-                        }`}
+                          }`}
                       />
                     </div>
                     <div className="flex justify-between mb-4 gap-6">
@@ -105,11 +102,10 @@ const BillingTab = () => {
                         <Field
                           name="creditCardNumber"
                           placeholder="Credit Card Number"
-                          className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${
-                            errors.creditCardNumber && touched.creditCardNumber
+                          className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${errors.creditCardNumber && touched.creditCardNumber
                               ? "border-red-900 border"
                               : "primary-border focus:border-green-500"
-                          }`}
+                            }`}
                         />
                       </div>
                       <div className="w-1/2">
@@ -119,11 +115,10 @@ const BillingTab = () => {
                         <Field
                           name="cvv"
                           placeholder="CVV"
-                          className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${
-                            errors.cvv && touched.cvv
+                          className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${errors.cvv && touched.cvv
                               ? "border-red-900 border"
                               : "primary-border focus:border-green-500"
-                          }`}
+                            }`}
                         />
                       </div>
                     </div>
@@ -135,11 +130,10 @@ const BillingTab = () => {
                         <Field
                           name="expiryDate"
                           placeholder="Expiry Date"
-                          className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${
-                            errors.expiryDate && touched.expiryDate
+                          className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${errors.expiryDate && touched.expiryDate
                               ? "border-red-900 border"
                               : "primary-border focus:border-green-500"
-                          }`}
+                            }`}
                         />
                       </div>
                       <div className="w-1/2">
@@ -149,11 +143,10 @@ const BillingTab = () => {
                         <Field
                           name="postalCode"
                           placeholder="Postal Code"
-                          className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${
-                            errors.postalCode && touched.postalCode
+                          className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${errors.postalCode && touched.postalCode
                               ? "border-red-900 border"
                               : "primary-border focus:border-green-500"
-                          }`}
+                            }`}
                         />
                       </div>
                     </div>
@@ -215,10 +208,10 @@ const BillingTab = () => {
             <p>
               before contacting our support team at
               <a
-                href="mailto:support@spinlabai.com"
+                href="mailto:team@spinlabai.com"
                 className="text-primary underline ml-1 font-bold"
               >
-                support@spinlabai.com
+                team@spinlabai.com
               </a>
             </p>
           </div>

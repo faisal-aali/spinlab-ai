@@ -4,8 +4,10 @@ import { useState } from "react";
 import { Tabs, Tab } from "@mui/material";
 import AccountSettings from "./AccountSettings/AccountSettings";
 import BillingTab from "./Billings/Billings";
+import { useSession } from "next-auth/react";
 
 const Settings = () => {
+  const user = useSession().data?.user || {}
   const [tabIndex, setTabIndex] = useState(0);
 
   const handleTabChange = (event, newValue) => {
@@ -29,7 +31,7 @@ const Settings = () => {
             onChange={handleTabChange}
             indicatorColor="none"
             aria-label="category tabs"
-            className="!blueBackground py-2.5 rounded-lg w-56"
+            className={`!blueBackground py-2.5 rounded-lg w-fit px-3`}
             sx={{
               backgroundColor: "#001f3f",
               ".MuiTabs-flexContainer button": {
@@ -39,8 +41,10 @@ const Settings = () => {
                 fontWeight: 500,
                 fontSize: "15px",
                 textTransform: "capitalize",
-                padding: " 0 10px",
+                padding: "10px",
                 color: "#fff",
+                minWidth: 0,
+                height: '44px'
               },
               ".MuiTabs-flexContainer": {
                 justifyContent: "center",
@@ -53,7 +57,7 @@ const Settings = () => {
             }}
           >
             <Tab label="Account" />
-            <Tab label="Billing" />
+            {['player', 'trainer'].includes(user.role) && <Tab label="Billing" />}
           </Tabs>
 
           {tabIndex === 0 && <AccountSettings />}

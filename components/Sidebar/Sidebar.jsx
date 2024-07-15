@@ -110,12 +110,6 @@ const Sidebar = ({ showSidebar, setShowSidebar }) => {
       }
     },
     {
-      url: '/calender',
-      icon: '/assets/calender-icon.svg',
-      label: 'My Calendar',
-      roles: ['coach']
-    },
-    {
       url: '/coaches-calendar',
       icon: '/assets/calender-icon.svg',
       label: 'Coach Calendar',
