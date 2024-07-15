@@ -18,13 +18,9 @@ export default function CoachingCall() {
                 </div>
             </div>
             <div className='grid grid-cols-2 gap-8'>
-                {[1, 2, 3, 4].map((_, i) => (
-                    <div key={i} >
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <StaticDateTimePicker className='rounded-lg' defaultValue={dayjs('2022-04-17T15:30')} />
-                        </LocalizationProvider>
-                    </div>
-                ))}
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <StaticDateTimePicker className='rounded-lg' defaultValue={dayjs('2022-04-17T15:30')} />
+                </LocalizationProvider>
             </div>
         </div>
     )

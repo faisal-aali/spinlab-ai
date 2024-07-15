@@ -105,6 +105,7 @@ const HistoryTable = () => {
         date: "April 07, 2024",
         efficiency: 85.9,
         sequencing: 85.9,
+        overallQBRating: 86,
         tags: 'April 07, 2024'
     }));
 
@@ -121,8 +122,7 @@ const HistoryTable = () => {
                     <TableRow>
                         <TableCell className="!text-white">Videos</TableCell>
                         <TableCell className="!text-white">Date</TableCell>
-                        <TableCell className="!text-white">Efficiency</TableCell>
-                        <TableCell className="!text-white">Sequencing</TableCell>
+                        <TableCell className="!text-white">Overall QB Rating</TableCell>
                         <TableCell className="!text-white">Tags</TableCell>
                         <TableCell className="!text-white"></TableCell>
                     </TableRow>
@@ -144,15 +144,8 @@ const HistoryTable = () => {
                             </TableCell>
                             <TableCell className="!text-white">
                                 <CustomLinearProgress
-                                    value={row.efficiency}
+                                    value={row.overallQBRating}
                                     color="#00FF00"
-                                    textSize={'text-sm'}
-                                />
-                            </TableCell>
-                            <TableCell className="!text-white">
-                                <CustomLinearProgress
-                                    value={row.sequencing}
-                                    color="#00BFFF"
                                     textSize={'text-sm'}
                                 />
                             </TableCell>
@@ -181,7 +174,7 @@ export default function Metrics() {
     const player = {
         firstName: 'James',
         lastName: 'Anderson',
-        height: '170 cm',
+        height: '5\'11\"',
         weight: '200 lbs',
         imageUrl: '/assets/player.png'
     }

@@ -21,8 +21,7 @@ const data = Array.from({ length: 8 }).map((_, index) => ({
     firstName: index == 1 ? 'Drake' : 'James',
     lastName: index == 1 ? 'Johnson' : 'Anderson',
     date: "04/29/2024",
-    efficiency: 85.9,
-    sequencing: 85.9,
+    overallQBRating: 86,
 }));
 
 const CustomLinearProgress = ({ value, color }) => {
@@ -85,8 +84,7 @@ const PlayersHistory = () => {
                                 <TableCell className="text-white"></TableCell>
                                 <TableCell className="text-white">Name</TableCell>
                                 <TableCell className="text-white">Date</TableCell>
-                                <TableCell className="text-white">Efficiency</TableCell>
-                                <TableCell className="text-white">Sequencing</TableCell>
+                                <TableCell className="text-white">Overall QB Rating</TableCell>
                                 <TableCell className="text-white">Reports</TableCell>
                             </TableRow>
                         </TableHead>
@@ -112,14 +110,8 @@ const PlayersHistory = () => {
                                     </TableCell>
                                     <TableCell className="text-white">
                                         <CustomLinearProgress
-                                            value={row.efficiency}
+                                            value={row.overallQBRating}
                                             color="#00FF00"
-                                        />
-                                    </TableCell>
-                                    <TableCell className="text-white">
-                                        <CustomLinearProgress
-                                            value={row.sequencing}
-                                            color="#00BFFF"
                                         />
                                     </TableCell>
                                     <TableCell className="text-white">

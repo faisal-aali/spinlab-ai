@@ -22,7 +22,7 @@ const players = [
     id: 1,
     firstName: 'James',
     lastName: 'Anderson',
-    height: '170 cm',
+    height: '5\'11\"',
     weight: '200 lbs',
     imageUrl: '/assets/player.png',
   },
@@ -113,7 +113,7 @@ const AddPlayer = () => {
       </div>
       <div>
         <Grid container gap={2}>
-          {filteredPlayers.concat(filteredPlayers).map(player => (
+          {filteredPlayers.map(player => (
             <Grid item key={player.id}>
               <PlayerCard player={player} playersMetrics={playersMetrics} />
             </Grid>
