@@ -43,7 +43,7 @@ export const authOption: AuthOptions = {
                 if (!credentials?.email || !credentials?.password) {
                     throw new Error("Missing email or password");
                 }
-                return User.findOne({ email: credentials.email })
+                return User.findOne({ email: credentials.email.toLowerCase() })
                     .then((user) => {
                         if (!user) {
                             throw new Error("Wrong credentials");

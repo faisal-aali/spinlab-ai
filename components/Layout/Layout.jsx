@@ -62,7 +62,7 @@ const Layout = ({ children }) => {
         <div className="-mt-0 lg:-mt-[65px]">
           {((user.role === 'trainer' && ['/dashboard', '/add-player', '/players-history', '/players-metrics', '/metrics'].includes(pathname))
             || (user.role === 'player' && ['/dashboard'].includes(pathname))
-            || (user.role === 'coach' && ['/dashboard', '/users', '/users/view'].includes(pathname))
+            || (user.role === 'staff' && ['/dashboard', '/users', '/users/view'].includes(pathname))
             || (user.role === 'admin' && ['/dashboard', '/users', '/users/view'].includes(pathname)))
             && <div>
               <HeaderProfile />

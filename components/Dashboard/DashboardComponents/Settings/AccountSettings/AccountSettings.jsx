@@ -165,7 +165,7 @@ const AccountSettings = () => {
                     </div>
                   </div>
                 </div>
-                <div className={`mb-4 ${user.role === 'coach' && 'hidden'}`}>
+                <div className={`mb-4 ${user.role === 'staff' && 'hidden'}`}>
                   <div className="mb-1 opacity-45">
                     <label htmlFor="">Email</label>
                   </div>
@@ -193,7 +193,7 @@ const AccountSettings = () => {
                     placeholder="Enter your bio"
                   />
                 </div>
-                <div className={`flex items-center mb-4 gap-6 ${user.role !== 'coach' && 'hidden'}`}>
+                <div className={`flex items-center mb-4 gap-6 ${user.role !== 'staff' && 'hidden'}`}>
                   <div className="w-1/2">
                     <div className="mb-1 opacity-45">
                       <label htmlFor="">Email</label>
@@ -205,7 +205,7 @@ const AccountSettings = () => {
                         ? "border-red-900	border"
                         : "primary-border focus:border-green-500"
                         }`}
-                      placeholder="Age"
+                      placeholder="Email"
                     />
                   </div>
                   <div className="w-1/2">
@@ -218,7 +218,7 @@ const AccountSettings = () => {
                         ? "border-red-900	border"
                         : "primary-border focus:border-green-500"
                         }`}
-                      placeholder="Height"
+                      placeholder="Location"
                     />
                   </div>
                 </div>

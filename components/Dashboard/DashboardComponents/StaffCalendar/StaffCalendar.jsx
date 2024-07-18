@@ -30,7 +30,7 @@ const data = Array.from({ length: 6 }).map((_, index) => ({
 }));
 
 
-const CoachesCalendar = () => {
+const StaffCalendar = () => {
     const router = useRouter()
     const searchParams = useSearchParams()
 
@@ -57,7 +57,7 @@ const CoachesCalendar = () => {
                 <div className="blueBackground p-4 primary-border rounded-lg flex items-center justify-between mb-4 h-32 w-full xl:w-3/5">
                     <div className="flex gap-5 items-center">
                         <div className="ml-4">
-                            <h2 className="font-normal">Coaches Calendar</h2>
+                            <h2 className="font-normal">Staff Calendar</h2>
                         </div>
                     </div>
                 </div>
@@ -137,4 +137,4 @@ const CoachesCalendar = () => {
     );
 };
 
-export default CoachesCalendar;
+export default StaffCalendar;

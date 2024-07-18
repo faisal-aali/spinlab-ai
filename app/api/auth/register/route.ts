@@ -4,35 +4,52 @@ import util from 'util';
 import { randomUUID } from 'crypto';
 import { User } from '../../../lib/models'
 import bcrypt from 'bcrypt'
+import * as Yup from 'yup'
 
 // const query = util.promisify(db.query).bind(db);
 
 export const POST = async (req: NextRequest) => {
-    console.log('/api/register')
-    const uniqID = randomUUID()
+    const schema = Yup.object({
+        firstName: Yup.string().required("First Name is required"),
+        lastName: Yup.string().required("Last Name is required"),
+        email: Yup.string().email().required("Email is required"),
+        password: Yup.string().required("Password is required").min(8, "Password must be at least 8 characters"),
+        city: Yup.string().required("City is required"),
+        country: Yup.string().required("Country is required"),
+        plan: Yup.string().oneOf(['monthly', 'annual'], "Plan must be a valid string").required("Plan is required"),
+        role: Yup.string().oneOf(['player', 'trainer'], "Role must be a valid string").required("Role is required"),
+    });
 
-    const values = await req.json();
+    const data = await req.json();
+    data.email = data.email.toLowerCase()
 
-    console.log(values)
+    return schema.validate(data).then(async () => {
+        const { _id, firstName, lastName, email, city, country, password, plan, role } = data
 
-    const { _id, firstName, lastName, email, city, country, password, plan, role } = values
-    console.log('salt is', process.env.BCRYPT_SALT)
-    return User.create({
-        _id,
-        firstName,
-        lastName,
-        email,
-        city,
-        country,
-        password: bcrypt.hashSync(password, process.env.BCRYPT_SALT as string),
-        plan,
-        role
-    }).then((doc) => {
-        console.log('created doc', doc)
-        return new NextResponse(JSON.stringify(values), { status: 201 });
+        if (await User.findOne({ email }))
+            return new NextResponse(JSON.stringify({ error: 'Email already exists' }), { status: 400 });
+
+        return User.create({
+            _id,
+            firstName,
+            lastName,
+            email,
+            city,
+            country,
+            password: bcrypt.hashSync(password, process.env.BCRYPT_SALT as string),
+            plan,
+            role
+        }).then((doc) => {
+            console.log('created doc', doc)
+            return new NextResponse(JSON.stringify(data), { status: 201 });
+        }).catch((err) => {
+            console.log(err)
+            return new NextResponse(JSON.stringify({ error: err.errmsg }), { status: 400 });
+        })
+
     }).catch((err) => {
         console.log(err)
-        return new NextResponse(JSON.stringify({ error: err.errmsg }), { status: 400 });
+        return new NextResponse(JSON.stringify({ error: err.errors }), { status: 400 });
     })
 
     // try {

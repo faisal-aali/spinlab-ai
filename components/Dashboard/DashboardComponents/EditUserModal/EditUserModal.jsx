@@ -184,8 +184,8 @@ const EditUserModal = ({ open, onClose, role }) => {
                     />
                     <option
                       className="bg-black"
-                      value={'coach'}
-                      label={'Coach'}
+                      value={'staff'}
+                      label={'Staff'}
                     />
                     <option
                       className="bg-black"

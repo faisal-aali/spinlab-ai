@@ -61,7 +61,7 @@ const Users = () => {
       <div className="flex flex-col py-8 gap-8">
         <div className="flex justify-between">
           <div>
-            <p className="text-4xl">{role === 'player' ? 'Players' : role === 'coach' ? 'Staff' : role === 'trainer' ? 'Trainers' : 'Invalid Role'} Database</p>
+            <p className="text-4xl">{role === 'player' ? 'Players' : role === 'staff' ? 'Staff' : role === 'trainer' ? 'Trainers' : 'Invalid Role'} Database</p>
           </div>
           <div className="flex flex-row gap-4 w-2/5">
             <div className="search-bar flex-1">
@@ -74,7 +74,7 @@ const Users = () => {
             </div>
             <div className={`${user.role !== 'admin' && 'hidden'}`}>
               <button className="bg-primary dark-blue-color rounded w-48 h-14 flex items-center justify-center text-lg font-bold" onClick={() => setShowAddModal(true)}>
-                ADD NEW {role === 'player' ? 'PLAYER' : role === 'coach' ? 'STAFF' : role === 'trainer' ? 'TRAINER' : 'Invalid Role'}
+                ADD NEW {role === 'player' ? 'PLAYER' : role === 'staff' ? 'STAFF' : role === 'trainer' ? 'TRAINER' : 'Invalid Role'}
               </button>
             </div>
           </div>
@@ -90,7 +90,7 @@ const Users = () => {
                   <TableCell className="!text-white">Date of Joining</TableCell>
                   <TableCell className="!text-white">Remaining Credits</TableCell>
                   <TableCell className="!text-white">Subscription Plan</TableCell>
-                  {user.role === 'admin' && <TableCell className="!text-white">Delete {role === 'player' ? 'Player' : role === 'coach' ? 'Staff' : role === 'trainer' ? 'Trainer' : 'Invalid Role'}</TableCell>}
+                  {user.role === 'admin' && <TableCell className="!text-white">Delete {role === 'player' ? 'Player' : role === 'staff' ? 'Staff' : role === 'trainer' ? 'Trainer' : 'Invalid Role'}</TableCell>}
                   <TableCell className="!text-white">{user.role !== 'admin' && 'Action'}</TableCell>
                 </TableRow>
               </TableHead>

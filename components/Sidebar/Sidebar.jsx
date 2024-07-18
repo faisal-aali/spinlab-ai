@@ -28,19 +28,19 @@ const Sidebar = ({ showSidebar, setShowSidebar }) => {
       url: '/dashboard',
       icon: '/assets/dashboard-icon.svg',
       label: 'Dashboard',
-      roles: ['player', 'trainer', 'coach']
+      roles: ['player', 'trainer', 'staff']
     },
     {
       url: '/leaderboard',
       icon: '/assets/dashboard-icon.svg',
       label: 'Leaderboard',
-      roles: ['player', 'trainer', 'coach', 'admin']
+      roles: ['player', 'trainer', 'staff', 'admin']
     },
     {
       url: '/drill-library',
       icon: '/assets/drill-library-icon.svg',
       label: 'Drill Library',
-      roles: ['player', 'trainer', 'coach', 'admin']
+      roles: ['player', 'trainer', 'staff', 'admin']
     },
     {
       url: '/add-player',
@@ -75,9 +75,9 @@ const Sidebar = ({ showSidebar, setShowSidebar }) => {
     {
       url: '/users',
       query: '?role=player',
-      icon: `/assets/${user.role === 'coach' ? 'dashboard-icon.svg' : user.role === 'admin' ? 'add-player-icon.svg' : ''}`,
-      label: user.role === 'coach' ? 'Players Database' : user.role === 'admin' ? 'Manage Player Database' : 'Invalid role',
-      roles: ['coach', 'admin'],
+      icon: `/assets/${user.role === 'staff' ? 'dashboard-icon.svg' : user.role === 'admin' ? 'add-player-icon.svg' : ''}`,
+      label: user.role === 'staff' ? 'Players Database' : user.role === 'admin' ? 'Manage Player Database' : 'Invalid role',
+      roles: ['staff', 'admin'],
       pathValidator: function (pathname, searchParams) {
         const query = Object.fromEntries(searchParams.entries())
         const path = pathname + `?${Object.keys(query).map(k => `${k}=${query[k]}`).join('&')}`
@@ -86,9 +86,9 @@ const Sidebar = ({ showSidebar, setShowSidebar }) => {
     },
     {
       url: '/users',
-      query: '?role=coach',
+      query: '?role=staff',
       icon: '/assets/add-player-icon.svg',
-      label: 'Manage Coach Database',
+      label: 'Manage Staff Database',
       roles: ['admin'],
       pathValidator: function (pathname, searchParams) {
         const query = Object.fromEntries(searchParams.entries())
@@ -110,9 +110,9 @@ const Sidebar = ({ showSidebar, setShowSidebar }) => {
       }
     },
     {
-      url: '/coaches-calendar',
+      url: '/staff-calendar',
       icon: '/assets/calender-icon.svg',
-      label: 'Coach Calendar',
+      label: 'Staff Calendar',
       roles: ['admin']
     },
     {
@@ -137,7 +137,7 @@ const Sidebar = ({ showSidebar, setShowSidebar }) => {
       url: '/settings',
       icon: '/assets/setting-icon.svg',
       label: 'Settings',
-      roles: ['player', 'trainer', 'coach', 'admin']
+      roles: ['player', 'trainer', 'staff', 'admin']
     },
   ]
 
@@ -151,7 +151,7 @@ const Sidebar = ({ showSidebar, setShowSidebar }) => {
           <div className="flex items-center mb-6">
             <img src="/assets/spinlab-log.png" alt="Logo" className="w-48	" />
           </div>
-          <div className={`${(user.role === 'coach' || user.role === 'admin') && profileStyle.profile} flex items-center space-x-2 mb-8 rounded-lg ${pathname === '/profile' && `bg-primary p-2`}`} onClick={(user.role === 'coach' || user.role === 'admin') && (() => route.replace('/profile')) || undefined}>
+          <div className={`${(user.role === 'staff' || user.role === 'admin') && profileStyle.profile} flex items-center space-x-2 mb-8 rounded-lg ${pathname === '/profile' && `bg-primary p-2`}`} onClick={(user.role === 'staff' || user.role === 'admin') && (() => route.replace('/profile')) || undefined}>
             <img
               src="https://placehold.co/40x40"
               alt="User Avatar"
