@@ -1,4 +1,5 @@
 import NextAuth, { DefaultSession } from "next-auth"
+import { IUser } from '../lib/interfaces/users'
 
 declare module "next-auth" {
     /**
@@ -13,10 +14,5 @@ declare module "next-auth" {
             role: string,
         } & DefaultSession["user"]
     }
-    interface User {
-        firstName: string,
-        lastName: string,
-        plan: string,
-        role: string,
-    }
+    interface User<IUser> { }
 }

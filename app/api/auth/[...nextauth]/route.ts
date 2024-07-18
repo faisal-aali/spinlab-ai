@@ -1,11 +1,13 @@
 import { NextResponse } from "next/server";
 import util from "util";
-import db from "../../../lib/db";
+// import db from "../../../lib/db";
 import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { AuthOptions } from "next-auth";
+import { User } from "@/app/lib/models";
+import bcrypt from 'bcrypt'
 
-const query = util.promisify(db.query).bind(db);
+// const query = util.promisify(db.query).bind(db);
 
 interface CredentialInput {
 
@@ -41,22 +43,20 @@ export const authOption: AuthOptions = {
                 if (!credentials?.email || !credentials?.password) {
                     throw new Error("Missing email or password");
                 }
-                try {
-                    let user = await query(`SELECT * FROM users WHERE email = '${credentials.email}'`);
-                    user = user[0];
-
-                    if (!user) {
-                        throw new Error("Wrong credentials");
-                    }
-                    if (user.password) {
-                        return user.password === credentials.password ? user : null;
-                    } else {
-                        throw new Error("No password found for user");
-                    }
-                } catch (error) {
-                    console.error("Database query error:", error);
-                    throw new Error("Database error");
-                }
+                return User.findOne({ email: credentials.email })
+                    .then((user) => {
+                        if (!user) {
+                            throw new Error("Wrong credentials");
+                        }
+                        if (user.password) {
+                            return user.password === bcrypt.hashSync(credentials.password, process.env.BCRYPT_SALT as string) ? user : null;
+                        } else {
+                            throw new Error("No password found for user");
+                        }
+                    }).catch(err => {
+                        console.error("Database query error:", err);
+                        throw new Error("Database error");
+                    })
             },
             credentials: credentials
         })

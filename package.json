@@ -27,6 +27,7 @@
     "formik": "^2.4.6",
     "js-cookie": "^3.0.5",
     "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.5.1",
     "mysql": "^2.18.1",
     "next": "^14.2.3",
     "next-auth": "^4.24.7",

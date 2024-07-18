@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createTransport } from "nodemailer";
 import crypto from "crypto";
-import db from "../../../lib/db";
+// import db from "../../../lib/db";
 import util from 'util'
 
-const query = util.promisify(db.query).bind(db);
+// const query = util.promisify(db.query).bind(db);
 
 export async function POST(request: NextRequest) {
   try {
@@ -12,11 +12,11 @@ export async function POST(request: NextRequest) {
     console.log("Received email for password reset:", email);
     const token = crypto.randomBytes(32).toString("hex");
     const expiration = Date.now() + 3600000;
-    await query(`
-      UPDATE users 
-      SET resetPasswordToken='${token}', resetPasswordExpires=${expiration}
-      WHERE email='${email}'
-    `);
+    // await query(`
+    //   UPDATE users 
+    //   SET resetPasswordToken='${token}', resetPasswordExpires=${expiration}
+    //   WHERE email='${email}'
+    // `);
     const transporter = createTransport({
       host: process.env.SMTP_HOST,
       port: 587,
