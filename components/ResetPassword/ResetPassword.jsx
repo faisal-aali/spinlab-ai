@@ -22,6 +22,8 @@ const ResetPassword = () => {
   const email = searchParams.get("email");
 
   const handleResetPassword = async (values) => {
+    if (values.newPassword !== values.confirmNewPassword)
+      return setMessage('Passwords mismatch')
     setIsSubmitting(true);
     try {
       await ResetPasswordSchema.validate(values, { abortEarly: false });
@@ -31,10 +33,8 @@ const ResetPassword = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          email,
           token,
-          newPassword: values.newPassword,
-          confirmNewPassword: values.confirmNewPassword,
+          password: values.newPassword,
         }),
       });
       const data = await response.json();
@@ -72,9 +72,8 @@ const ResetPassword = () => {
                 type="password"
                 name="newPassword"
                 placeholder="Enter your new password"
-                className={`w-full py-3 px-3 bg-transparent primary-border rounded text-white rounded-lg focus:outline-none focus:outline-none focus:border-green-500 placeholder:opacity-45 ${
-                  styles.fieldError ? "border-red-500" : ""
-                }`}
+                className={`w-full py-3 px-3 bg-transparent primary-border rounded text-white rounded-lg focus:outline-none focus:outline-none focus:border-green-500 placeholder:opacity-45 ${styles.fieldError ? "border-red-500" : ""
+                  }`}
               />
               <ErrorMessage
                 name="newPassword"
@@ -87,9 +86,8 @@ const ResetPassword = () => {
                 type="password"
                 name="confirmNewPassword"
                 placeholder="Confirm your new password"
-                className={`w-full py-3 px-3 bg-transparent primary-border rounded text-white rounded-lg focus:outline-none focus:outline-none focus:border-green-500 placeholder:opacity-45 ${
-                  styles.fieldError ? "border-red-500" : ""
-                }`}
+                className={`w-full py-3 px-3 bg-transparent primary-border rounded text-white rounded-lg focus:outline-none focus:outline-none focus:border-green-500 placeholder:opacity-45 ${styles.fieldError ? "border-red-500" : ""
+                  }`}
               />
               <ErrorMessage
                 name="confirmNewPassword"

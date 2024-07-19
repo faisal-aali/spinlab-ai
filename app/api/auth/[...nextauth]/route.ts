@@ -21,6 +21,7 @@ export const authOption: AuthOptions = {
     callbacks: {
         async jwt({ token, user }) {
             if (user) {
+                token._id = user._id
                 token.firstName = user.firstName
                 token.lastName = user.lastName
                 token.role = user.role
@@ -29,6 +30,7 @@ export const authOption: AuthOptions = {
             return token
         },
         async session({ session, token }) {
+            session.user._id = token._id as string;
             session.user.firstName = token.firstName as string;
             session.user.lastName = token.lastName as string;
             session.user.role = token.role as string;

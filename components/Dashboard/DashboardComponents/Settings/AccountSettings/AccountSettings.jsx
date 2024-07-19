@@ -11,6 +11,7 @@ const AccountSettings = () => {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [pwMsg, setPwMsg] = useState()
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
@@ -23,6 +24,27 @@ const AccountSettings = () => {
     }
   };
 
+  const handleChangePassword = ({ currentPassword, newPassword }) => {
+    console.error('handleChangePassword')
+    fetch("/api/auth/change-password", {
+      method: "POST",
+      body: JSON.stringify({
+        currentPassword,
+        newPassword,
+      }),
+    }).then(r => r.json().then(data => ({ status: r.status, ...data }))).then((res => {
+      setPwMsg({
+        message: res.message || JSON.stringify(res),
+        status: res.status
+      })
+    })).catch(err => {
+      setPwMsg({
+        message: err.message || JSON.stringify(res),
+        status: err.status
+      })
+    })
+  }
+
   const validationSchema = Yup.object({
     firstName: Yup.string().required("Required"),
     lastName: Yup.string().required("Required"),
@@ -33,6 +55,9 @@ const AccountSettings = () => {
     handedness: Yup.string().required("Required"),
     weight: Yup.string().required("Required"),
     location: Yup.string().required("Required"),
+  });
+
+  const passwordValidationSchema = Yup.object({
     currentPassword: Yup.string().required("Required"),
     newPassword: Yup.string().required("Required"),
     confirmPassword: Yup.string()
@@ -278,8 +303,36 @@ const AccountSettings = () => {
                     />
                   </div>
                 </div>
+                <div className="flex justify-end gap-4 mt-4">
+                  <button
+                    type="button"
+                    className="bg-white dark-blue-color px-4 py-1 rounded font-bold uppercase text-sm"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="bg-primary dark-blue-color px-4 py-1 rounded font-bold uppercase text-sm"
+                  >
+                    Confirm
+                  </button>
+                </div>
               </div>
             </div>
+          </Form>
+        )}
+      </Formik>
+      <Formik
+        initialValues={{
+          currentPassword: "",
+          newPassword: "",
+          confirmPassword: "",
+        }}
+        validationSchema={passwordValidationSchema}
+        onSubmit={handleChangePassword}
+      >
+        {({ errors, touched, values }) => (
+          <Form>
             <div className="space-y-4 primary-border rounded-lg flex items-center p-4 mt-8">
               <div className="basis-2/5 flex items-center justify-between flex-col">
                 <div>
@@ -365,21 +418,19 @@ const AccountSettings = () => {
                     </div>
                   </div>
                 </div>
+                <div className={`flex justify-end text-${pwMsg?.status == 200 ? 'green-500' : 'red-500'} ${!pwMsg && 'hidden'} `}>
+                  <p>{pwMsg?.message}</p>
+                </div>
+                <div className="flex justify-end gap-4 mt-4">
+                  <button
+                    disabled={!values.currentPassword || !values.newPassword || !values.confirmPassword}
+                    type="submit"
+                    className="bg-primary dark-blue-color px-4 py-1 rounded font-bold uppercase text-sm"
+                  >
+                    Update Password
+                  </button>
+                </div>
               </div>
-            </div>
-            <div className="flex justify-end gap-4 mt-4">
-              <button
-                type="button"
-                className="bg-white dark-blue-color px-4 py-1 rounded font-bold uppercase text-sm"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className="bg-primary dark-blue-color px-4 py-1 rounded font-bold uppercase text-sm"
-              >
-                Confirm
-              </button>
             </div>
           </Form>
         )}

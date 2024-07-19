@@ -12,10 +12,6 @@ const Sidebar = ({ showSidebar, setShowSidebar }) => {
   const route = useRouter()
   const searchParams = useSearchParams()
 
-  useEffect(() => {
-    console.log('pathname changed to', pathname, Array.from(searchParams.entries()));
-  }, [pathname])
-
   const linkClasses = (path, pathValidator) =>
     `flex pl-2 py-1 ${(pathValidator ? pathValidator(pathname, searchParams) : pathname.startsWith(path)) ? "bg-primary rounded-lg min-w-44 w-fit items-center text-black" : ""
     }`;
@@ -170,8 +166,8 @@ const Sidebar = ({ showSidebar, setShowSidebar }) => {
             />
           </div>
           <div className="flex flex-col space-y-2">
-            {links.filter(link => link.roles.includes(user.role)).map(link => (
-              <Link href={`${link.url}${link.query || ''}`} className={linkClasses(link.url, link.pathValidator?.bind(link))}>
+            {links.filter(link => link.roles.includes(user.role)).map((link, index) => (
+              <Link key={index} href={`${link.url}${link.query || ''}`} className={linkClasses(link.url, link.pathValidator?.bind(link))}>
                 <img
                   src={link.icon}
                   className={svgClasses(link.url, link.pathValidator?.bind(link))}

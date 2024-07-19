@@ -19,7 +19,7 @@ const ForgetPassword = () => {
     setIsSubmitting(true);
     try {
       await ForgetPasswordSchema.validate(values, { abortEarly: false });
-      const response = await fetch("/api/auth/forgetpassword", {
+      const response = await fetch("/api/auth/forgot-password", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -56,9 +56,8 @@ const ForgetPassword = () => {
               type="email"
               name="email"
               placeholder="Enter your email"
-              className={`w-full py-3 px-3 bg-transparent primary-border rounded text-white rounded-lg focus:outline-none focus:outline-none focus:border-green-500 placeholder:opacity-45 ${
-                styles.fieldError ? "border-red-500" : ""
-              }`}
+              className={`w-full py-3 px-3 bg-transparent primary-border rounded text-white rounded-lg focus:outline-none focus:outline-none focus:border-green-500 placeholder:opacity-45 ${styles.fieldError ? "border-red-500" : ""
+                }`}
             />
             <ErrorMessage
               name="email"
