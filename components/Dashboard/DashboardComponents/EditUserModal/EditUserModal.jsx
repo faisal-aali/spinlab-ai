@@ -8,6 +8,7 @@ import {
 import { blueGrey } from "@mui/material/colors";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
+import schemaValidators from "@/schema-validators";
 
 const style = {
   position: "absolute",
@@ -22,7 +23,8 @@ const style = {
 const validationSchema = Yup.object({
   firstName: Yup.string().required("Required"),
   lastName: Yup.string().required("Required"),
-  height: Yup.string().required("Required"),
+  height: schemaValidators.user.height,
+  handedness: schemaValidators.user.handedness,
   weight: Yup.string().required("Required"),
   plan: Yup.string().required("Required"),
   role: Yup.string().required("Required"),
@@ -59,8 +61,9 @@ const EditUserModal = ({ open, onClose, role }) => {
             lastName: "",
             height: "",
             weight: "",
+            handedness: "",
             plan: "",
-            role: "",
+            role: role,
           }}
           validationSchema={validationSchema}
           onSubmit={(values) => {
@@ -117,7 +120,7 @@ const EditUserModal = ({ open, onClose, role }) => {
                     required
                   />
                 </div>
-                <div className={`grid gap-2 ${role !== 'player' && 'hidden'}`}>
+                <div className={`grid gap-2 relative ${role !== 'player' && 'hidden'}`}>
                   <div className="opacity-45">
                     <label htmlFor="">Height</label>
                   </div>
@@ -131,8 +134,9 @@ const EditUserModal = ({ open, onClose, role }) => {
                     name="height"
                     required
                   />
+                  <div className="absolute bottom-3 right-4 opacity-50">feet/inches</div>
                 </div>
-                <div className={`grid gap-2 ${role !== 'player' && 'hidden'}`}>
+                <div className={`grid gap-2 relative ${role !== 'player' && 'hidden'}`}>
                   <div className="opacity-45">
                     <label htmlFor="">Weight</label>
                   </div>
@@ -142,10 +146,38 @@ const EditUserModal = ({ open, onClose, role }) => {
                         ? "border-red-900	border"
                         : "primary-border focus:border-green-500"
                       }`}
-                    type="text"
+                    type="number"
                     name="weight"
                     required
                   />
+                  <div className="absolute bottom-3 right-4 opacity-50">lbs</div>
+                </div>
+                <div className={`grid gap-2 ${role !== 'player' && 'hidden'}`}>
+                  <div className="opacity-45">
+                    <label htmlFor="">Handedness</label>
+                  </div>
+                  <Field
+                    className={`w-full text-primary bg-transparent px-3 rounded-lg py-3 text-white rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
+                    ${errors.handedness && touched.handedness
+                        ? "border-red-900	border"
+                        : "primary-border focus:border-green-500"
+                      }`}
+                    type="text"
+                    as='select'
+                    name="handedness"
+                    required
+                  >
+                    <option
+                      className="bg-black"
+                      value={'left'}
+                      label={'Left'}
+                    />
+                    <option
+                      className="bg-black"
+                      value={'right'}
+                      label={'Right'}
+                    />
+                  </Field>
                 </div>
                 <div className="grid gap-2">
                   <div className="opacity-45">

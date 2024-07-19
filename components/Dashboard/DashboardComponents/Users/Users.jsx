@@ -105,27 +105,27 @@ const Users = () => {
                       />
                     </TableCell>
                     <TableCell>
-                      <Typography variant="body2" className="!text-white text-lg font-bold">
+                      <Typography variant="body2" className="!text-white !text-lg !font-bold">
                         {row.firstName} {row.lastName}
                       </Typography>
                     </TableCell>
                     <TableCell>
-                      <Typography variant="body2" className="!text-white text-lg">
+                      <Typography variant="body2" className="!text-white !text-lg">
                         {row.email}
                       </Typography>
                     </TableCell>
                     <TableCell>
-                      <Typography variant="body2" className="!text-white text-lg">
+                      <Typography variant="body2" className="!text-white !text-lg">
                         {row.date}
                       </Typography>
                     </TableCell>
                     <TableCell>
-                      <Typography variant="body2" className="!text-primary text-xl">
+                      <Typography variant="body2" className="!text-primary !text-xl">
                         {row.balance}
                       </Typography>
                     </TableCell>
                     <TableCell>
-                      <Typography variant="body2" className="!text-primary text-xl">
+                      <Typography variant="body2" className="!text-primary !text-xl">
                         {row.plan}
                       </Typography>
                     </TableCell>

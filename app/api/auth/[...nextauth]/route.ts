@@ -19,22 +19,32 @@ export const authOption: AuthOptions = {
         strategy: 'jwt'
     },
     callbacks: {
-        async jwt({ token, user }) {
+        async jwt({ token, user, trigger, session }) {
+            if (trigger === 'update') {
+                return {
+                    ...token,
+                    ...session.user
+                };
+            }
             if (user) {
+                console.log('session.callbacks.user.level', user.level, user.plan, user)
                 token._id = user._id
                 token.firstName = user.firstName
                 token.lastName = user.lastName
                 token.role = user.role
                 token.plan = user.plan
+                token.level = user.level || 'basic'
             }
             return token
         },
         async session({ session, token }) {
+            // console.log('callbacks.session.token', token)
             session.user._id = token._id as string;
             session.user.firstName = token.firstName as string;
             session.user.lastName = token.lastName as string;
             session.user.role = token.role as string;
             session.user.plan = token.plan as string;
+            session.user.level = token.level as string || 'test';
 
             return session;
         }

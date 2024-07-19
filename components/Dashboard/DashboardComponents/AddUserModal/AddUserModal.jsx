@@ -1,5 +1,5 @@
 // components/UploadModal.js
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Modal, Box, Typography, Button, IconButton } from "@mui/material";
 import {
   Close as CloseIcon,
@@ -8,6 +8,7 @@ import {
 import { blueGrey } from "@mui/material/colors";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
+import schemaValidators from '../../../../schema-validators'
 
 const style = {
   position: "absolute",
@@ -22,13 +23,21 @@ const style = {
 const validationSchema = Yup.object({
   firstName: Yup.string().required("Required"),
   lastName: Yup.string().required("Required"),
-  height: Yup.string().required("Required"),
+  height: schemaValidators.user.height,
   weight: Yup.string().required("Required"),
+  handedness: schemaValidators.user.handedness,
+  email: schemaValidators.user.email,
   plan: Yup.string().required("Required"),
   role: Yup.string().required("Required"),
 });
 
 const AddUserModal = ({ open, onClose, role }) => {
+  const [selectedRole, setSelectedRole] = useState(role)
+
+  useEffect(() => {
+    setSelectedRole(role)
+  }, [role])
+
   useEffect(() => {
     const handleEsc = (event) => {
       if (event.keyCode === 27) {
@@ -59,15 +68,17 @@ const AddUserModal = ({ open, onClose, role }) => {
             lastName: "",
             height: "",
             weight: "",
+            handedness: "",
+            email: "",
             plan: "",
-            role: "",
+            role: role,
           }}
           validationSchema={validationSchema}
           onSubmit={(values) => {
             console.log(values);
           }}
         >
-          {({ errors, touched }) => (
+          {({ errors, touched, setFieldValue }) => (
             <Form>
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <div className="grid col-span-2 gap-2">
@@ -92,7 +103,7 @@ const AddUserModal = ({ open, onClose, role }) => {
                     <label htmlFor="">First Name</label>
                   </div>
                   <Field
-                    className={`w-full bg-transparent px-3 rounded-lg py-3 text-white rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
+                    className={`w-full text-primary bg-transparent px-3 rounded-lg py-3 text-white rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
                     ${errors.firstName && touched.firstName
                         ? "border-red-900	border"
                         : "primary-border focus:border-green-500"
@@ -107,7 +118,7 @@ const AddUserModal = ({ open, onClose, role }) => {
                     <label htmlFor="">Last Name</label>
                   </div>
                   <Field
-                    className={`w-full bg-transparent px-3 rounded-lg py-3 text-white rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
+                    className={`w-full text-primary bg-transparent px-3 rounded-lg py-3 text-white rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
                     ${errors.lastName && touched.lastName
                         ? "border-red-900	border"
                         : "primary-border focus:border-green-500"
@@ -117,12 +128,12 @@ const AddUserModal = ({ open, onClose, role }) => {
                     required
                   />
                 </div>
-                <div className={`grid gap-2 ${role !== 'player' && 'hidden'}`}>
+                <div className={`grid gap-2 relative ${selectedRole !== 'player' && 'hidden'}`}>
                   <div className="opacity-45">
                     <label htmlFor="">Height</label>
                   </div>
                   <Field
-                    className={`w-full bg-transparent px-3 rounded-lg py-3 text-white rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
+                    className={`w-full text-primary bg-transparent px-3 rounded-lg py-3 text-white rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
                     ${errors.height && touched.height
                         ? "border-red-900	border"
                         : "primary-border focus:border-green-500"
@@ -131,19 +142,63 @@ const AddUserModal = ({ open, onClose, role }) => {
                     name="height"
                     required
                   />
+                  <div className="absolute bottom-3 right-4 opacity-50">feet/inches</div>
                 </div>
-                <div className={`grid gap-2 ${role !== 'player' && 'hidden'}`}>
+                <div className={`grid gap-2 relative ${selectedRole !== 'player' && 'hidden'}`}>
                   <div className="opacity-45">
                     <label htmlFor="">Weight</label>
                   </div>
                   <Field
-                    className={`w-full bg-transparent px-3 rounded-lg py-3 text-white rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
+                    className={`w-full text-primary bg-transparent px-3 rounded-lg py-3 text-white rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
                     ${errors.weight && touched.weight
                         ? "border-red-900	border"
                         : "primary-border focus:border-green-500"
                       }`}
-                    type="text"
+                    type="number"
                     name="weight"
+                    required
+                  />
+                  <div className="absolute bottom-3 right-4 opacity-50">lbs</div>
+                </div>
+                <div className={`grid gap-2 ${selectedRole !== 'player' && 'hidden'}`}>
+                  <div className="opacity-45">
+                    <label htmlFor="">Handedness</label>
+                  </div>
+                  <Field
+                    className={`w-full text-primary bg-transparent px-3 rounded-lg py-3 text-white rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
+                    ${errors.handedness && touched.handedness
+                        ? "border-red-900	border"
+                        : "primary-border focus:border-green-500"
+                      }`}
+                    type="text"
+                    as='select'
+                    name="handedness"
+                    required
+                  >
+                    <option
+                      className="bg-black"
+                      value={'left'}
+                      label={'Left'}
+                    />
+                    <option
+                      className="bg-black"
+                      value={'right'}
+                      label={'Right'}
+                    />
+                  </Field>
+                </div>
+                <div className={`grid gap-2`}>
+                  <div className="opacity-45">
+                    <label htmlFor="">Email</label>
+                  </div>
+                  <Field
+                    className={`w-full text-primary bg-transparent px-3 rounded-lg py-3 text-white rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
+                    ${errors.email && touched.email
+                        ? "border-red-900	border"
+                        : "primary-border focus:border-green-500"
+                      }`}
+                    type="text"
+                    name="email"
                     required
                   />
                 </div>
@@ -154,7 +209,7 @@ const AddUserModal = ({ open, onClose, role }) => {
                   <Field
                     as='select'
                     name="plan"
-                    className={`w-full py-3 px-3 bg-transparent rounded text-primary primary-border rounded-lg focus:outline-none focus:outline-none focus:border-green-500 placeholder:opacity-45`}
+                    className={`w-full py-3 px-3 text-primary bg-transparent rounded primary-border rounded-lg focus:outline-none focus:outline-none focus:border-green-500 placeholder:opacity-45`}
                   >
                     <option
                       className="bg-black"
@@ -175,7 +230,11 @@ const AddUserModal = ({ open, onClose, role }) => {
                   <Field
                     as='select'
                     name="role"
-                    className={`w-full py-3 px-3 bg-transparent rounded text-primary rounded-lg primary-border focus:outline-none focus:outline-none focus:border-green-500 placeholder:opacity-45`}
+                    onChange={(e) => {
+                      setSelectedRole(e.target.value)
+                      setFieldValue('role', e.target.value)
+                    }}
+                    className={`w-full py-3 px-3 text-primary bg-transparent rounded rounded-lg primary-border focus:outline-none focus:outline-none focus:border-green-500 placeholder:opacity-45`}
                   >
                     <option
                       className="bg-black"

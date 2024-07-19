@@ -49,7 +49,6 @@ const UploadModal = ({ open, onClose, onSuccess }) => {
   };
 
   const interval = useRef()
-
   const handleUploadVideo = () => {
     setIsUploading(true);
     setUploadProgress(0);
@@ -103,10 +102,7 @@ const UploadModal = ({ open, onClose, onSuccess }) => {
               <div className="flex justify-center mb-10">
                 <button
                   className="bg-white dark-blue-color rounded-lg w-28 h-9 flex items-center justify-center text-base font-bold"
-                  onClick={() => {
-                    setRecordModalOpen(true)
-                    handleUploadVideo()
-                  }}
+                  onClick={handleRecordModalOpen}
                 >
                   UPLOAD
                 </button>
@@ -150,6 +146,7 @@ const UploadModal = ({ open, onClose, onSuccess }) => {
                     backgroundColor: "#32e100",
                   },
                 }}
+                className="bg-primary"
               />
               <button
                 className="button-danger text-white px-4 py-1 rounded uppercase"
@@ -158,7 +155,7 @@ const UploadModal = ({ open, onClose, onSuccess }) => {
                 Cancel
               </button>
             </div>
-          ) : (
+          ) : uploadSuccess ? (
             <div className="flex flex-col items-center text-center text-white gap-5">
               <IconButton className="w-24">
                 <img src="assets/checkmark.png" alt="Success" />
@@ -169,7 +166,7 @@ const UploadModal = ({ open, onClose, onSuccess }) => {
               <div className="flex justify-center mt-4">
                 <button
                   className="bg-white dark-blue-color px-4 py-1 rounded font-bold uppercase"
-                  onClick={() => handleRecordModalClose()}
+                  onClick={() => setUploadSuccess(false)}
                 >
                   Back
                 </button>
@@ -177,47 +174,46 @@ const UploadModal = ({ open, onClose, onSuccess }) => {
                   className="px-4 py-1 rounded font-bold bg-primary dark-blue-color ml-4 uppercase"
                   onClick={() => {
                     handleRecordModalClose()
-                    onSuccess()
+                    onSuccess && onSuccess()
                   }}
                 >
                   Submit
                 </button>
               </div>
             </div>
+          ) : (
+            <div className="flex flex-col items-center text-center text-white">
+              <h2 className="text-4xl	mb-6">
+                Here’s how to
+                <span className="text-primary"> Record your Video!</span>
+              </h2>
+              <div className="px-8 py-6 primary-border rounded-3xl	">
+                <div className="relative my-4" style={{ width: "31rem" }}>
+                  <img
+                    src="assets/record-video-picture.png"
+                    alt="Record your Video"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="flex gap-5 justify-center mt-8">
+                  <button
+                    className="bg-primary text-black rounded w-36 h-8 flex items-center justify-center text-base uppercase"
+                    onClick={handleUploadVideo}
+                  >
+                    Upload Video
+                  </button>
+                  <button
+                    className="bg-primary text-black rounded w-36 h-8 flex items-center justify-center text-base uppercase"
+                    onClick={handleUploadVideo}
+                  >
+                    Record Now
+                  </button>
+                </div>
+              </div>
+            </div>
           )}
-          {/* (
-             <div className="flex flex-col items-center text-center text-white">
-               <h2 className="text-4xl	mb-6">
-                 Here’s how to
-                 <span className="text-primary"> Record your Video!</span>
-               </h2>
-               <div className="px-8 py-6 primary-border rounded-3xl	">
-                 <div className="relative my-4" style={{ width: "31rem" }}>
-                   <img
-                     src="assets/record-video-picture.png"
-                     alt="Record your Video"
-                     className="w-full h-full object-cover"
-                   />
-                 </div>
-                 <div className="flex gap-5 justify-center mt-8">
-                   <button
-                     className="bg-primary text-black rounded w-36 h-8 flex items-center justify-center text-base uppercase"
-                     onClick={handleUploadVideo}
-                   >
-                     Upload Video
-                   </button>
-                   <button
-                     className="bg-primary text-black rounded w-36 h-8 flex items-center justify-center text-base uppercase"
-                     onClick={handleUploadVideo}
-                   >
-                     Record Now
-                   </button>
-                 </div>
-               </div>
-             </div>
-           ) */}
-        </Box >
-      </Modal >
+        </Box>
+      </Modal>
     </>
   );
 };

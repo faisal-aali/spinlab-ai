@@ -101,7 +101,6 @@ const Sidebar = ({ showSidebar, setShowSidebar }) => {
       pathValidator: function (pathname, searchParams) {
         const query = Object.fromEntries(searchParams.entries())
         const path = pathname + `?${Object.keys(query).map(k => `${k}=${query[k]}`).join('&')}`
-        console.log('path in trainer', path, (path.startsWith(this.url) && path.endsWith(this.query)));
         return (path.startsWith(this.url) && path.endsWith(this.query))
       }
     },

@@ -1,7 +1,9 @@
 "use client";
+import { useSession } from "next-auth/react";
 import { useState } from "react";
 
 const Purchases = () => {
+  const userSession = useSession().data?.user
   const [step, setStep] = useState(1);
   const [selectedCredits, setSelectedCredits] = useState(null);
 
@@ -21,12 +23,21 @@ const Purchases = () => {
     }
   };
 
+  const calculatePrice = (credits) => {
+    const level = userSession?.level
+    if (['basic', 'varsity', 'heisman', 'hof', 'silver', 'gold', 'platinum'].includes(level)) {
+      return credits * 45
+    } else {
+      return credits * 50
+    }
+  }
+
   return (
     <>
       <div className="flex-1">
-        <div className="blueBackground p-4 primary-border rounded-lg flex items-center justify-between w-3/5 mb-4 h-32">
-          <div className="flex gap-5 items-center">
-            <div className="ml-4">
+        <div className="blueBackground p-8 primary-border rounded-lg flex items-center justify-between w-3/5 mb-4">
+          <div className="flex flex-col ml-4 gap-5">
+            <div>
               <h2 className="font-normal">
                 Your Current Balance :
                 <span className="ml-2 text-primary font-semibold">
@@ -34,6 +45,14 @@ const Purchases = () => {
                   <span className="text-zinc-400 text-base font-normal">
                     Credits
                   </span>
+                </span>
+              </h2>
+            </div>
+            <div>
+              <h2 className="font-normal">
+                Membership Type :
+                <span className="ml-2 text-primary font-semibold">
+                  {userSession?.level}
                 </span>
               </h2>
             </div>
@@ -50,12 +69,12 @@ const Purchases = () => {
               </div>
               <div className="flex flex-col	w-11/12">
                 <div className="mb-6 flex gap-6">
-                  {[50, 100, 150].map((credits, index) => (
+                  {[1, 5, 10].map((credits, index) => (
                     <div
                       key={index}
                       className={`flex flex-col items-center p-4 py-6 rounded-lg cursor-pointer basis-1/3 h-44 justify-center dark-blue-background ${selectedCredits === credits
-                          ? "hover-shadow-light-box"
-                          : "border primary-border"
+                        ? "hover-shadow-light-box"
+                        : "border primary-border"
                         }`}
                       onClick={() => handleSelectCredits(credits)}
                     >
@@ -65,11 +84,11 @@ const Purchases = () => {
                       </h4>
                       <button
                         className={`font-bold px-8 py-1 rounded mt-4 ${selectedCredits === credits
-                            ? "bg-primary dark-blue-color"
-                            : "bg-white dark-blue-color"
+                          ? "bg-primary dark-blue-color"
+                          : "bg-white dark-blue-color"
                           }`}
                       >
-                        ${credits * 2}
+                        ${calculatePrice(credits)}
                       </button>
                     </div>
                   ))}
@@ -83,8 +102,8 @@ const Purchases = () => {
                   </button>
                   <button
                     className={`px-4 py-1 rounded font-bold ${selectedCredits
-                        ? "bg-primary dark-blue-color"
-                        : "bg-primary-light dark-blue-color"
+                      ? "bg-primary dark-blue-color"
+                      : "bg-primary-light dark-blue-color"
                       }`}
                     onClick={handleContinue}
                     disabled={!selectedCredits}

@@ -12,6 +12,7 @@ declare module "next-auth" {
             lastName: string,
             plan: string,
             role: string,
+            level: string,
         } & DefaultSession["user"]
     }
     interface User<IUser> { }

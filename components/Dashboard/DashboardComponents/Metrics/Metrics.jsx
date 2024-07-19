@@ -167,8 +167,8 @@ const HistoryTable = () => {
     );
 };
 
-export default function Metrics() {
-    const user = useSession().data?.user
+export default function Metrics({ omitPlayerCard }) {
+    const user = useSession().data?.user || {}
     const router = useRouter()
 
     const player = {
@@ -219,7 +219,7 @@ export default function Metrics() {
                     </IconButton>
                 </div>
             }
-            <div>
+            <div className={`${omitPlayerCard && 'hidden'}`}>
                 <PlayerCard player={player} />
             </div>
             <div className="grid grid-cols-2 lg:grid-cols-3 gap-7">

@@ -41,7 +41,7 @@ const PlayerCard = ({ player, playersMetrics }) => {
 
   return (
     <Card className="bg-transparent p-1 border primary-border">
-      <Grid container gap={1} padding={1} className="gap-4">
+      <Grid container padding={1} gap={2}>
         <Grid item>
           <CardMedia component={'img'} image={player.imageUrl} />
         </Grid>
@@ -49,7 +49,7 @@ const PlayerCard = ({ player, playersMetrics }) => {
           <CardContent style={{ padding: 0 }}>
             <Grid container flexDirection={'column'} gap={2}>
               <Grid item>
-                <Typography className="text-white text-2xl">{player.firstName} {player.lastName}</Typography>
+                <Typography className="!text-white !text-2xl">{player.firstName} {player.lastName}</Typography>
               </Grid>
               <Grid item container gap={2}>
                 <Grid item className="blueBackground w-36	text-center py-2 px-8 primary-border-green rounded">

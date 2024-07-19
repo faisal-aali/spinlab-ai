@@ -46,7 +46,7 @@ const CustomLinearProgress = ({ value, color }) => {
     );
 };
 
-const PlayersHistory = () => {
+const PlayersHistory = ({ omitHeader }) => {
     const [page, setPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState('')
 
@@ -62,8 +62,8 @@ const PlayersHistory = () => {
     );
 
     return (
-        <div className="grid gap-4 py-8 ">
-            <div className="flex justify-between">
+        <div className="grid gap-4 py-8">
+            <div className={`flex justify-between ${omitHeader && 'hidden'}`}>
                 <div>
                     <h3>Players History</h3>
                 </div>
@@ -77,21 +77,21 @@ const PlayersHistory = () => {
                 </div>
             </div>
             <div className="">
-                <TableContainer component={Paper} className="bg-transparent">
+                <TableContainer component={Paper} className="!bg-transparent">
                     <Table>
                         <TableHead className="leaderboard-table-head bg-primary-light uppercase">
                             <TableRow>
-                                <TableCell className="text-white"></TableCell>
-                                <TableCell className="text-white">Name</TableCell>
-                                <TableCell className="text-white">Date</TableCell>
-                                <TableCell className="text-white">Overall QB Rating</TableCell>
-                                <TableCell className="text-white">Reports</TableCell>
+                                <TableCell className="!text-white"></TableCell>
+                                <TableCell className="!text-white">Name</TableCell>
+                                <TableCell className="!text-white">Date</TableCell>
+                                <TableCell className="!text-white">Overall QB Rating</TableCell>
+                                <TableCell className="!text-white">Reports</TableCell>
                             </TableRow>
                         </TableHead>
-                        <TableBody className="leaderboard-table-body">
+                        <TableBody className="!leaderboard-table-body">
                             {paginatedData.map((row) => (
                                 <TableRow key={row.id}>
-                                    <TableCell className="text-white">
+                                    <TableCell className="!text-white">
                                         <img
                                             src={row.imageUrl}
                                             alt={row.firstName}
@@ -99,22 +99,22 @@ const PlayersHistory = () => {
                                         />
                                     </TableCell>
                                     <TableCell>
-                                        <Typography variant="body2" className="text-white" fontWeight={'bold'}>
+                                        <Typography variant="body2" className="!text-white !text-lg" fontWeight={'bold'}>
                                             {row.firstName} {row.lastName}
                                         </Typography>
                                     </TableCell>
                                     <TableCell>
-                                        <Typography variant="caption" className="text-white">
+                                        <Typography variant="caption" className="!text-white !text-lg">
                                             {row.date}
                                         </Typography>
                                     </TableCell>
-                                    <TableCell className="text-white">
+                                    <TableCell className="!text-white">
                                         <CustomLinearProgress
                                             value={row.overallQBRating}
                                             color="#00FF00"
                                         />
                                     </TableCell>
-                                    <TableCell className="text-white">
+                                    <TableCell className="!text-white">
                                         <div className="grid grid-cols-2 items-center gap-4">
                                             <button className="bg-white text-black px-5 py-3 rounded-lg">
                                                 DOWNLOAD PDF

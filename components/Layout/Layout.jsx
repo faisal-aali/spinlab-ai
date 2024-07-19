@@ -7,13 +7,100 @@ import Cookies from "js-cookie";
 import { FiLogOut } from "react-icons/fi";
 import { IoNotificationsOutline } from "react-icons/io5";
 import HeaderProfile from '../Common/HeaderProfile/HeaderProfile'
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { Box, Button, Grid, IconButton, Menu, MenuItem, Tooltip, Typography } from "@mui/material";
+import MenuIcon from '@mui/icons-material/Menu';
+import { Person } from "@mui/icons-material";
+import UploadModal from "../Dashboard/DashboardComponents/UploadVideoModal/UploadModal";
+
+const ProfileMenu = () => {
+  const [anchorElUser, setAnchorElUser] = useState(null);
+  const { data: session, update } = useSession();
+  const [userRole, setUserRole] = useState('')
+
+  useEffect(() => {
+    setUserRole(localStorage.getItem('userRole'))
+  })
+
+  const handleLogout = async () => {
+    await signOut({ redirect: false });
+    localStorage.removeItem("userSession");
+    localStorage.removeItem("sessionExpiry");
+    // router.replace("/login");
+    Cookies.remove("loggedin");
+  };
+
+  const handleRoleChange = (newRole) => {
+    console.log('handleRoleChange', newRole)
+    update({
+      user: {
+        role: newRole
+      }
+    }).then(console.log).catch(console.error)
+  }
+
+  return (
+    <Box sx={{ flexGrow: 0 }}>
+      <Tooltip title="Open settings">
+        <IconButton onClick={(e) => setAnchorElUser(e.currentTarget)} sx={{ p: 0.5, bgcolor: 'white', ':hover': { bgcolor: 'white' } }}>
+          {/* <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" /> */}
+          <Person fontSize="medium" />
+        </IconButton>
+      </Tooltip>
+      <Menu
+        sx={{
+          mt: '45px',
+        }}
+        id="menu-appbar"
+        anchorEl={anchorElUser}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        keepMounted
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        open={Boolean(anchorElUser)}
+        onClose={() => setAnchorElUser(null)}
+      >
+        <MenuItem disableRipple sx={{ display: userRole === 'staff' ? 'flex' : 'none' }}>
+          <Grid container flexDirection={'column'} gap={1}>
+            <Grid item>
+              <Typography textAlign="center" color={'white'}>Viewing As</Typography>
+            </Grid>
+            <Grid item container gap={1}>
+              <Grid item>
+                <Button variant={session?.user?.role == 'staff' ? "contained" : 'outlined'} size="small" onClick={() => handleRoleChange('staff')}>Staff</Button>
+              </Grid>
+              <Grid item>
+                <Button variant={session?.user?.role == 'trainer' ? "contained" : 'outlined'} size="small" onClick={() => handleRoleChange('trainer')}>Trainer</Button>
+              </Grid>
+            </Grid>
+          </Grid>
+        </MenuItem>
+        <MenuItem onClick={() => {
+          handleLogout()
+          setAnchorElUser(null)
+        }}>
+          <Typography textAlign="center" color={'white'}>Logout</Typography>
+          <FiLogOut
+            className=" text-primary text-lg cursor-pointer ml-2"
+          />
+        </MenuItem>
+      </Menu>
+    </Box >
+  )
+}
 
 const Layout = ({ children }) => {
   const user = useSession().data?.user || {}
   const router = useRouter();
   const pathname = usePathname()
   const [showSidebar, setShowSidebar] = useState(false)
+  const [showUploadModal, setShowUploadModal] = useState(false)
+
 
   useEffect(() => {
     if (!user.role) router.replace('/login')
@@ -22,14 +109,6 @@ const Layout = ({ children }) => {
   useEffect(() => {
     setShowSidebar(false)
   }, [pathname]);
-
-  const handleLogout = async () => {
-    await signOut({ redirect: false });
-    localStorage.removeItem("userSession");
-    localStorage.removeItem("sessionExpiry");
-    router.replace("/login");
-    Cookies.remove("loggedin");
-  };
 
   return (
     <div className="flex flex-row min-h-screen">
@@ -43,18 +122,19 @@ const Layout = ({ children }) => {
         <div className="flex justify-end">
           <div className="flex justify-between items-center mb-8 right-10 top-12 ml-auto z-10">
             <div className="flex space-x-4 items-center">
-              <button className={`bg-white text-black px-5 py-1 rounded-lg ${user.role === 'trainer' && 'hidden'}`}>
+              <button onClick={() => setShowUploadModal(true)} className={`bg-white text-black px-5 py-1 rounded-lg ${user.role === 'trainer' && 'hidden'}`}>
                 UPLOAD
               </button>
-              <button className="bg-white text-black px-5 py-1 rounded-lg">
+              <button className={`bg-white text-black px-5 py-1 rounded-lg ${user.role == 'admin' && 'hidden'}`}>
                 PURCHASE
               </button>
               <div className="flex">
                 <IoNotificationsOutline className="mr-4 text-primary text-3xl cursor-pointer" />
-                <FiLogOut
+                {/* <FiLogOut
                   onClick={handleLogout}
                   className=" text-primary text-3xl cursor-pointer"
-                />
+                /> */}
+                <ProfileMenu key={'ProfileMenu'} />
               </div>
             </div>
           </div>
@@ -70,6 +150,7 @@ const Layout = ({ children }) => {
           {children}
         </div>
       </div>
+      <UploadModal open={showUploadModal} onClose={() => setShowUploadModal(false)} />
     </div>
   );
 };

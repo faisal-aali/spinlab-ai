@@ -20,11 +20,12 @@ const style = {
 };
 
 const validationSchema = Yup.object({
+  category: Yup.string().required("Required"),
   youtubeLink: Yup.string().required("Required"),
   title: Yup.string().required("Required"),
 });
 
-const AddVideoModal = ({ open, onClose }) => {
+const EditVideoModal = ({ open, onClose }) => {
   useEffect(() => {
     const handleEsc = (event) => {
       if (event.keyCode === 27) {
@@ -48,6 +49,7 @@ const AddVideoModal = ({ open, onClose }) => {
         </IconButton>
         <Formik
           initialValues={{
+            category: "",
             youtubeLink: "",
             title: "",
           }}
@@ -59,6 +61,52 @@ const AddVideoModal = ({ open, onClose }) => {
           {({ errors, touched }) => (
             <Form>
               <div className="grid grid-cols-1 gap-4 mb-4">
+                <div className="grid gap-2">
+                  <div className="opacity-45">
+                    <label htmlFor="">Category</label>
+                  </div>
+                  <Field
+                    name="category"
+                    as='select'
+                    className={`w-full bg-transparent px-3 rounded-lg py-3 text-primary rounded focus:outline-none focus:border-green-500 placeholder:opacity-45 
+                      ${errors.category && touched.category
+                        ? "border-red-900	border"
+                        : "primary-border focus:border-green-500"
+                      }`}
+                    required
+                  >
+                    <option
+                      className="bg-black"
+                      value={'fundamentals'}
+                      label={'Fundamentals'}
+                    />
+                    <option
+                      className="bg-black"
+                      value={'exercises'}
+                      label={'Exercises'}
+                    />
+                    <option
+                      className="bg-black"
+                      value={'mobility'}
+                      label={'Mobility'}
+                    />
+                    <option
+                      className="bg-black"
+                      value={'footwork'}
+                      label={'Footwork'}
+                    />
+                    <option
+                      className="bg-black"
+                      value={'iq'}
+                      label={'IQ'}
+                    />
+                    <option
+                      className="bg-black"
+                      value={'drills'}
+                      label={'Drills'}
+                    />
+                  </Field>
+                </div>
                 <div className="grid gap-2">
                   <div className="opacity-45">
                     <label htmlFor="">Youtube Link</label>
@@ -102,4 +150,4 @@ const AddVideoModal = ({ open, onClose }) => {
   );
 };
 
-export default AddVideoModal;
+export default EditVideoModal;

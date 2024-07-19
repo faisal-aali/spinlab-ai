@@ -6,7 +6,6 @@ import { ResetToken, User } from "@/app/lib/models";
 import { getServerSession } from "next-auth";
 import { authOption } from "../[...nextauth]/route";
 import * as Yup from 'yup'
-import { IApiError } from "@/app/lib/interfaces/apiError";
 // const query = util.promisify(db.query).bind(db);
 
 export async function POST(req: NextRequest, res: NextResponse) {

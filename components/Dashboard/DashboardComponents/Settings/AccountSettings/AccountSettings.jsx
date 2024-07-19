@@ -3,6 +3,8 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useSession } from "next-auth/react";
+import { Checkbox, FormControlLabel } from "@mui/material";
+import schemaValidators from "@/schema-validators";
 
 const AccountSettings = () => {
   const user = useSession().data?.user || {}
@@ -51,9 +53,9 @@ const AccountSettings = () => {
     email: Yup.string().email("Invalid email address").required("Required"),
     bio: Yup.string().required("Required"),
     age: Yup.number().required("Required"),
-    height: Yup.string().required("Required"),
+    height: schemaValidators.user.height,
     handedness: Yup.string().required("Required"),
-    weight: Yup.string().required("Required"),
+    weight: Yup.number().required("Required"),
     location: Yup.string().required("Required"),
   });
 
@@ -90,7 +92,7 @@ const AccountSettings = () => {
         {({ errors, touched }) => (
           <Form>
             <div className="space-y-4 primary-border rounded-lg flex items-center p-4">
-              <div className="basis-2/5 flex items-center justify-between flex-col">
+              <div className="basis-2/5 flex pl-28 justify-between flex-col">
                 <div>
                   <h2 className="text-xl font-bold">Profile Photo</h2>
                   <p className="text-gray-400">
@@ -149,7 +151,7 @@ const AccountSettings = () => {
               </div>
             </div>
             <div className="space-y-4 primary-border rounded-lg flex items-center p-4 mt-8">
-              <div className="basis-2/5 flex items-center justify-between flex-col">
+              <div className="basis-2/5 flex pl-28 justify-between flex-col">
                 <div>
                   <h2 className="text-xl font-bold">Personal Information</h2>
                   <p className="text-gray-400">
@@ -254,6 +256,7 @@ const AccountSettings = () => {
                     </div>
                     <Field
                       name="age"
+                      type='number'
                       className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${errors.age && touched.age
                         ? "border-red-900	border"
                         : "primary-border focus:border-green-500"
@@ -261,7 +264,7 @@ const AccountSettings = () => {
                       placeholder="Age"
                     />
                   </div>
-                  <div className="w-1/2">
+                  <div className="w-1/2 relative">
                     <div className="mb-1 opacity-45">
                       <label htmlFor="">Height</label>
                     </div>
@@ -271,8 +274,9 @@ const AccountSettings = () => {
                         ? "border-red-900	border"
                         : "primary-border focus:border-green-500"
                         }`}
-                      placeholder="Height"
+                      placeholder={`i.e. 5'11"`}
                     />
+                    <div className="absolute bottom-3 right-4 opacity-50">feet/inches</div>
                   </div>
                 </div>
                 <div className={`flex items-center mb-4 gap-6 ${user.role !== 'player' && 'hidden'}`}>
@@ -282,25 +286,39 @@ const AccountSettings = () => {
                     </div>
                     <Field
                       name="handedness"
+                      as='select'
                       className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${errors.handedness && touched.handedness
                         ? "border-red-900	border"
                         : "primary-border focus:border-green-500"
                         }`}
                       placeholder="Handedness"
-                    />
+                    >
+                      <option
+                        className="bg-black"
+                        value={'left'}
+                        label={'Left'}
+                      />
+                      <option
+                        className="bg-black"
+                        value={'right'}
+                        label={'Right'}
+                      />
+                    </Field>
                   </div>
-                  <div className="w-1/2">
+                  <div className="w-1/2 relative">
                     <div className="mb-1 opacity-45">
                       <label htmlFor="">Weight</label>
                     </div>
                     <Field
                       name="weight"
+                      type='number'
                       className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${errors.weight && touched.weight
                         ? "border-red-900	border"
                         : "primary-border focus:border-green-500"
                         }`}
                       placeholder="Weight"
                     />
+                    <div className="absolute bottom-3 right-4 opacity-50">lbs</div>
                   </div>
                 </div>
                 <div className="flex justify-end gap-4 mt-4">
@@ -334,7 +352,7 @@ const AccountSettings = () => {
         {({ errors, touched, values }) => (
           <Form>
             <div className="space-y-4 primary-border rounded-lg flex items-center p-4 mt-8">
-              <div className="basis-2/5 flex items-center justify-between flex-col">
+              <div className="basis-2/5 flex pl-28 justify-between flex-col">
                 <div>
                   <h2 className="text-xl font-bold">Password</h2>
                   <p className="text-gray-400">
@@ -435,6 +453,41 @@ const AccountSettings = () => {
           </Form>
         )}
       </Formik>
+      <div className="space-y-4 primary-border rounded-lg flex items-center p-4 mt-8">
+        <div className="basis-2/5 flex pl-28 justify-between flex-col">
+          <div>
+            <h2 className="text-xl font-bold">Additional Settings</h2>
+            <p className="text-gray-400">
+              Update settings for your account
+            </p>
+          </div>
+        </div>
+        <div className="basis-3/5">
+          <div className="flex items-center mb-4 gap-6">
+            <div className="w-1/2">
+              <div className="mb-1 opacity-45">
+                <FormControlLabel control={<Checkbox defaultChecked />} label="Opt out of Leaderboard" />
+              </div>
+              <div>
+              </div>
+            </div>
+          </div>
+          <div className="flex justify-end gap-4 mt-4">
+            <button
+              type="button"
+              className="bg-white dark-blue-color px-4 py-1 rounded font-bold uppercase text-sm"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="bg-primary dark-blue-color px-4 py-1 rounded font-bold uppercase text-sm"
+            >
+              Confirm
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

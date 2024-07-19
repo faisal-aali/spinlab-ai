@@ -1,9 +1,13 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "./globals.css";
+import "@/app/globals.css";
 import { authOption } from "@/app/api/auth/[...nextauth]/route";
 import AuthProvider from './AuthProvider'
 import { getServerSession } from "next-auth";
+import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
+import theme from "./muiTheme";
+import { ThemeProvider } from '@mui/material/styles';
+
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,9 +25,13 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <AuthProvider session={session}>
-        <body className={inter.className}>{children}</body>
-      </AuthProvider>
+      <AppRouterCacheProvider>
+        <AuthProvider session={session}>
+          <ThemeProvider theme={theme}>
+            <body className={inter.className}>{children}</body>
+          </ThemeProvider>
+        </AuthProvider>
+      </AppRouterCacheProvider>
     </html>
   );
 }

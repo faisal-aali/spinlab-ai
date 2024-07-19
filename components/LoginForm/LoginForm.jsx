@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
-import { signIn, useSession } from "next-auth/react";
+import { getSession, signIn, useSession } from "next-auth/react";
 import styles from "./LoginForm.module.css";
 import Link from "next/link";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
@@ -19,7 +19,8 @@ const LoginForm = () => {
     // if (userSession) {
     //   router.push("/dashboard");
     // }
-    if (userSession) router.push('/dashboard')
+    // console.log('userSession changed', userSession)
+    if (userSession) router.replace('/dashboard')
   }, [userSession]);
 
   const handleSubmit = async (e) => {
@@ -32,7 +33,9 @@ const LoginForm = () => {
     });
 
     if (!result.error) {
-      console.log('sign in success', result)
+      let userSession = await getSession().then(data => data.user);
+      console.log('sign in success', result, userSession)
+      localStorage.setItem('userRole', userSession.role)
       localStorage.setItem(
         "userSession",
         JSON.stringify({
