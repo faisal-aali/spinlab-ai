@@ -27,7 +27,7 @@ export const authOption: AuthOptions = {
                 };
             }
             if (user) {
-                console.log('session.callbacks.user.level', user.level, user.plan, user)
+                // console.log('session.callbacks.user.level', user.level, user.plan, user)
                 token._id = user._id
                 token.firstName = user.firstName
                 token.lastName = user.lastName

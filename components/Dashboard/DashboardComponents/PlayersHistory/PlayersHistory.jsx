@@ -46,7 +46,7 @@ const CustomLinearProgress = ({ value, color }) => {
     );
 };
 
-const PlayersHistory = ({ omitHeader }) => {
+const PlayersHistory = (props) => {
     const [page, setPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState('')
 
@@ -63,7 +63,7 @@ const PlayersHistory = ({ omitHeader }) => {
 
     return (
         <div className="grid gap-4 py-8">
-            <div className={`flex justify-between ${omitHeader && 'hidden'}`}>
+            <div className={`flex justify-between ${props.omitHeader && 'hidden'}`}>
                 <div>
                     <h3>Players History</h3>
                 </div>
