@@ -223,8 +223,8 @@ export default function Metrics(props) {
                 <PlayerCard player={player} />
             </div>
             <div className="grid grid-cols-2 lg:grid-cols-3 gap-7">
-                {KPIs.map((kpi) => (
-                    <div>
+                {KPIs.map((kpi, index) => (
+                    <div key={index}>
                         <KPICard {...kpi} />
                     </div>
                 ))}

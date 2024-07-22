@@ -17,6 +17,7 @@ const ProfileMenu = () => {
   const [anchorElUser, setAnchorElUser] = useState(null);
   const { data: session, update } = useSession();
   const [userRole, setUserRole] = useState('')
+  const router = useRouter();
 
   useEffect(() => {
     setUserRole(localStorage.getItem('userRole'))
@@ -24,9 +25,7 @@ const ProfileMenu = () => {
 
   const handleLogout = async () => {
     await signOut({ redirect: false });
-    localStorage.removeItem("userSession");
-    localStorage.removeItem("sessionExpiry");
-    // router.replace("/login");
+    router.replace("/login");
     Cookies.remove("loggedin");
   };
 
@@ -95,15 +94,15 @@ const ProfileMenu = () => {
 }
 
 const Layout = ({ children }) => {
+  const router = useRouter()
   const user = useSession().data?.user || {}
-  const router = useRouter();
   const pathname = usePathname()
   const [showSidebar, setShowSidebar] = useState(false)
   const [showUploadModal, setShowUploadModal] = useState(false)
 
-
   useEffect(() => {
-    if (!user.role) router.replace('/login')
+    if (!user.role)
+      router.replace('/login')
   }, [user]);
 
   useEffect(() => {

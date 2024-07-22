@@ -1,11 +1,9 @@
 // components/UploadModal.js
 import React, { useEffect } from "react";
-import { Modal, Box, Typography, Button, IconButton } from "@mui/material";
+import { Modal, Box, IconButton } from "@mui/material";
 import {
   Close as CloseIcon,
-  CloudUpload as CloudUploadIcon,
 } from "@mui/icons-material";
-import { blueGrey } from "@mui/material/colors";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import schemaValidators from "@/schema-validators";
@@ -28,6 +26,7 @@ const validationSchema = Yup.object({
   weight: Yup.string().required("Required"),
   plan: Yup.string().required("Required"),
   role: Yup.string().required("Required"),
+  password: schemaValidators.user.password
 });
 
 const EditUserModal = ({ open, onClose, role }) => {
@@ -64,6 +63,7 @@ const EditUserModal = ({ open, onClose, role }) => {
             handedness: "",
             plan: "",
             role: role,
+            password: ""
           }}
           validationSchema={validationSchema}
           onSubmit={(values) => {
@@ -225,6 +225,21 @@ const EditUserModal = ({ open, onClose, role }) => {
                       label={'Trainer'}
                     />
                   </Field>
+                </div>
+                <div className={`grid gap-2`}>
+                  <div className="opacity-45">
+                    <label htmlFor="">Password</label>
+                  </div>
+                  <Field
+                    className={`w-full bg-transparent px-3 rounded-lg py-3 text-white rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
+                    ${errors.password && touched.password
+                        ? "border-red-900	border"
+                        : "primary-border focus:border-green-500"
+                      }`}
+                    type="text"
+                    name="password"
+                    required
+                  />
                 </div>
               </div>
               <div className="flex justify-end mb-10">

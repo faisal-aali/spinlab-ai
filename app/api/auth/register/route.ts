@@ -39,7 +39,7 @@ export const POST = async (req: NextRequest) => {
             password: bcrypt.hashSync(password, process.env.BCRYPT_SALT as string),
             plan,
             role,
-            level: 'basic'
+            membership: 'basic'
         }).then((doc) => {
             console.log('created doc', doc)
             return new NextResponse(JSON.stringify(data), { status: 201 });

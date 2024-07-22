@@ -7,6 +7,16 @@ const nextConfig = {
   //   config.optimization.minimize = false;
   //   return config
   // },
+  reactStrictMode: false,
+  async redirects() {
+    return [
+      {
+        source: '/',
+        destination: '/login',
+        permanent: true,
+      },
+    ]
+  },
 };
 
 export default nextConfig;

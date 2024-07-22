@@ -9,5 +9,5 @@ export interface IUser {
     country: String,
     plan: String,
     role: String,
-    level: String,
+    membership: String,
 }

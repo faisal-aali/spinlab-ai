@@ -24,8 +24,8 @@ const Purchases = () => {
   };
 
   const calculatePrice = (credits) => {
-    const level = userSession?.level
-    if (['basic', 'varsity', 'heisman', 'hof', 'silver', 'gold', 'platinum'].includes(level)) {
+    const membership = userSession?.membership
+    if (['basic', 'varsity', 'heisman', 'hof', 'silver', 'gold', 'platinum'].includes(membership)) {
       return credits * 45
     } else {
       return credits * 50
@@ -52,7 +52,7 @@ const Purchases = () => {
               <h2 className="font-normal">
                 Membership Type :
                 <span className="ml-2 text-primary font-semibold">
-                  {userSession?.level}
+                  {userSession?.membership}
                 </span>
               </h2>
             </div>

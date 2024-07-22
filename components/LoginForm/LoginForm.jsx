@@ -1,27 +1,25 @@
 "use client";
 import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
-import { useRouter } from "next/navigation";
-import { getSession, signIn, useSession } from "next-auth/react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { getSession, signIn } from "next-auth/react";
 import styles from "./LoginForm.module.css";
 import Link from "next/link";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const LoginForm = () => {
-  const userSession = useSession().data?.user
+  // const userSession = useSession().data?.user
   const router = useRouter();
   const [user, setUser] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const searchParams = useSearchParams()
 
   useEffect(() => {
-    // const userSession = JSON.parse(localStorage.getItem("userSession"));
-    // if (userSession) {
-    //   router.push("/dashboard");
-    // }
-    // console.log('userSession changed', userSession)
-    if (userSession) router.replace('/dashboard')
-  }, [userSession]);
+    getSession().then(data => {
+      if (data?.user) router.push('/dashboard')
+    }).catch(console.error)
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,22 +28,15 @@ const LoginForm = () => {
       email: user.email,
       password: user.password,
       redirect: false,
-    });
+      // callbackUrl: '/dashboard'
+    })
 
     if (!result.error) {
-      let userSession = await getSession().then(data => data.user);
-      console.log('sign in success', result, userSession)
-      localStorage.setItem('userRole', userSession.role)
-      localStorage.setItem(
-        "userSession",
-        JSON.stringify({
-          email: user.email
-        })
-      );
-      const expiryTime = new Date().getTime() + 3600000;
-      localStorage.setItem("sessionExpiry", expiryTime);
-      Cookies.set("loggedin", "true");
-      // router.push("/dashboard");
+      let userSession = await getSession().then(data => data?.user).catch(console.error)
+      if (userSession)
+        localStorage.setItem('userRole', userSession.role)
+      // router.push(searchParams.get('callbackUrl') || '/dashboard')
+      router.push('/dashboard')
     } else {
       setError(result.status === 401 ? "Invalid email or password" : result.error);
     }

@@ -28,7 +28,7 @@ const Sidebar = ({ showSidebar, setShowSidebar }) => {
     },
     {
       url: '/leaderboard',
-      icon: '/assets/dashboard-icon.svg',
+      icon: '/assets/leaderboard-icon.svg',
       label: 'Leaderboard',
       roles: ['player', 'trainer', 'staff', 'admin']
     },
@@ -71,7 +71,7 @@ const Sidebar = ({ showSidebar, setShowSidebar }) => {
     {
       url: '/users',
       query: '?role=player',
-      icon: `/assets/${user.role === 'staff' ? 'dashboard-icon.svg' : user.role === 'admin' ? 'add-player-icon.svg' : ''}`,
+      icon: `/assets/${user.role === 'staff' ? 'players-database-icon.svg' : user.role === 'admin' ? 'add-player-icon.svg' : ''}`,
       label: user.role === 'staff' ? 'Players Database' : user.role === 'admin' ? 'Manage Player Database' : 'Invalid role',
       roles: ['staff', 'admin'],
       pathValidator: function (pathname, searchParams) {

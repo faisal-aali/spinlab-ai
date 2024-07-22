@@ -17,7 +17,7 @@ export default function HeaderProfile() {
                     </p>
                 </div>
             </div>
-            <div className={`flex space-x-4 ${(user.role === 'staff' || user.role === 'admin') && 'hidden'}`}>
+            <div className={`flex space-x-4 ${(user.role !== 'player') && 'hidden'}`}>
                 <div className="primary-border-green flex items-center justify-center px-4 h-9 rounded-lg">
                     <p className="text-white text-sm">6'2"</p>
                 </div>

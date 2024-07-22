@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema({
     country: String,
     plan: String,
     role: String,
+    membership: String
 });
 
 const resetTokenSchema = new mongoose.Schema({

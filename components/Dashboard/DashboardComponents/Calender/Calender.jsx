@@ -29,7 +29,7 @@ export default function Calender() {
             </div>
             <div className='w-1/2'>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <StaticDateTimePicker className='rounded-lg' defaultValue={dayjs('2022-04-17T15:30')} />
+                    <StaticDateTimePicker sx={{ backgroundColor: 'white' }} className='rounded-lg' defaultValue={dayjs('2022-04-17T15:30')} />
                 </LocalizationProvider>
             </div>
         </div>

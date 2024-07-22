@@ -19,7 +19,7 @@ export default function CoachingCall() {
             </div>
             <div className='grid grid-cols-2 gap-8'>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <StaticDateTimePicker className='rounded-lg' defaultValue={dayjs('2022-04-17T15:30')} />
+                    <StaticDateTimePicker sx={{ backgroundColor: 'white' }} className='rounded-lg' defaultValue={dayjs('2022-04-17T15:30')} />
                 </LocalizationProvider>
             </div>
         </div>

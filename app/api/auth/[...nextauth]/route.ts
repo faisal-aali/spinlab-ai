@@ -15,11 +15,15 @@ interface CredentialInput {
 const credentials: Record<string, CredentialInput> = {};
 
 export const authOption: AuthOptions = {
+    pages: {
+        signIn: '/login',
+        signOut: '/login',
+    },
     session: {
         strategy: 'jwt'
     },
     callbacks: {
-        async jwt({ token, user, trigger, session }) {
+        jwt({ token, user, trigger, session }) {
             if (trigger === 'update') {
                 return {
                     ...token,
@@ -27,24 +31,24 @@ export const authOption: AuthOptions = {
                 };
             }
             if (user) {
-                // console.log('session.callbacks.user.level', user.level, user.plan, user)
-                token._id = user._id
-                token.firstName = user.firstName
-                token.lastName = user.lastName
-                token.role = user.role
-                token.plan = user.plan
-                token.level = user.level || 'basic'
+                // console.log('session.callbacks.user', user.membership, user.plan, user);
+                token._id = user._id;
+                token.firstName = user.firstName;
+                token.lastName = user.lastName;
+                token.role = user.role;
+                token.plan = user.plan;
+                token.membership = user.membership;
             }
             return token
         },
-        async session({ session, token }) {
-            // console.log('callbacks.session.token', token)
+        session({ session, token }) {
+            // console.log('callbacks.session.token', token);
             session.user._id = token._id as string;
             session.user.firstName = token.firstName as string;
             session.user.lastName = token.lastName as string;
             session.user.role = token.role as string;
             session.user.plan = token.plan as string;
-            session.user.level = token.level as string || 'test';
+            session.user.membership = token.membership as string;
 
             return session;
         }
@@ -53,27 +57,32 @@ export const authOption: AuthOptions = {
         CredentialsProvider({
             async authorize(credentials) {
                 if (!credentials?.email || !credentials?.password) {
-                    throw new Error("Missing email or password");
+                    // throw new Error("Missing email or password");
+                    return null
                 }
                 return User.findOne({ email: credentials.email.toLowerCase() })
                     .then((user) => {
                         if (!user) {
-                            throw new Error("Wrong credentials");
+                            // throw new Error("Wrong credentials");
+                            return null
                         }
+                        // console.log('credentialprovider.user', user)
                         if (user.password) {
                             return user.password === bcrypt.hashSync(credentials.password, process.env.BCRYPT_SALT as string) ? user : null;
                         } else {
-                            throw new Error("No password found for user");
+                            // throw new Error("No password found for user");
+                            return null
                         }
                     }).catch(err => {
                         console.error("Database query error:", err);
-                        throw new Error("Database error");
+                        // throw new Error("Database error");
+                        return null
                     })
             },
             credentials: credentials
         })
     ],
-    secret: 'ZUSytDzLavIUuiWumSbjtRsdDWZKRlPRIbpgFWpwkvColKTLvrKUhjB'
+    // secret: 'ZUSytDzLavIUuiWumSbjtRsdDWZKRlPRIbpgFWpwkvColKTLvrKUhjB'
 }
 
 const handler = NextAuth(authOption);

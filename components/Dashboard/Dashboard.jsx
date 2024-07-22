@@ -30,6 +30,11 @@ const Dashboard = () => {
 
   const [videoSubmitted, setVideoSubmitted] = useState(false);
 
+  useEffect(() => {
+    console.log('/dashboard mounted')
+    router.refresh()
+  }, [])
+
   const handleOpenModal = () => {
     setShowUploadModal(true);
   };
