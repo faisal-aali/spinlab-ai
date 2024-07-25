@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import styles from "../../app/login/login.module.css";
+// import styles from "../../app/login/login.module.css";
 import * as Yup from "yup";
 
 const ForgetPasswordSchema = Yup.object().shape({
@@ -56,8 +56,7 @@ const ForgetPassword = () => {
               type="email"
               name="email"
               placeholder="Enter your email"
-              className={`w-full py-3 px-3 bg-transparent primary-border rounded text-white rounded-lg focus:outline-none focus:outline-none focus:border-green-500 placeholder:opacity-45 ${styles.fieldError ? "border-red-500" : ""
-                }`}
+              className={`w-full py-3 px-3 bg-transparent primary-border rounded text-white rounded-lg focus:outline-none focus:outline-none focus:border-green-500 placeholder:opacity-45`}
             />
             <ErrorMessage
               name="email"
