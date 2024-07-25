@@ -78,7 +78,7 @@ const PlayerProfile = () => {
                         Subscription Plan: <span className="text-primary">Monthly/Yearly/One time user</span>
                     </p>
                     <div className="flex justify-end">
-                        <button onClick={() => setShowGiftModal(true)} className="bg-primary dark-blue-color rounded w-40 h-9 flex items-center justify-center text-lg font-bold rounded-lg">
+                        <button onClick={() => setShowGiftModal(true)} className="bg-primary dark-blue-color rounded w-40 h-9 flex items-center justify-center text-lg font-bold rounded-lg hover-button-shadow">
                             GIFT CREDITS
                         </button>
                     </div>

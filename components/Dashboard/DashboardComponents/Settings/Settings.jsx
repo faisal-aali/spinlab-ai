@@ -16,7 +16,7 @@ const Settings = () => {
 
   return (
     <div className="flex-1 py-8">
-      <div className="p-4 flex items-center justify-between w-3/5 mb-4 h-32">
+      <div className="p-4 flex items-center justify-between mb-4 h-32 -mt-16">
         <div className="flex gap-5 items-center">
           <div className="ml-4">
             <h2 className="font-normal">Profile Settings</h2>

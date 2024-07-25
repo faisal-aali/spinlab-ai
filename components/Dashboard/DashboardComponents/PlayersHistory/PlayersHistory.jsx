@@ -63,9 +63,9 @@ const PlayersHistory = (props) => {
 
     return (
         <div className="grid gap-4 py-8">
-            <div className={`flex justify-between ${props.omitHeader && 'hidden'}`}>
+            <div className={`flex justify-between ${props.omitHeader && 'hidden'} mb-4`}>
                 <div>
-                    <h3>Players History</h3>
+                    <h2 className="font-normal ml-1.5">Players History</h2>
                 </div>
                 <div className="search-bar w-2/5">
                     <input

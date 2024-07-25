@@ -22,7 +22,7 @@ const players = [
     id: 1,
     firstName: 'James',
     lastName: 'Anderson',
-    height: '5\'11\"',
+    height: '5ft 11in',
     weight: '200 lbs',
     imageUrl: '/assets/player.png',
   },
@@ -66,7 +66,7 @@ const PlayerCard = ({ player, playersMetrics }) => {
                   </button>
                 </Grid>
                 <Grid item xs>
-                  <button onClick={() => router.replace('/metrics')} style={{ width: playersMetrics && '100%' }} className="bg-primary text-black rounded w-40 h-9 flex items-center justify-center text-base">
+                  <button onClick={() => router.replace('/metrics')} style={{ width: playersMetrics && '100%' }} className="bg-primary text-black rounded w-40 h-9 flex items-center justify-center text-base hover-button-shadow">
                     VIEW METRICS
                   </button>
                 </Grid>

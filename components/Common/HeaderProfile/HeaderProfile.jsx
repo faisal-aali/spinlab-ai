@@ -19,7 +19,7 @@ export default function HeaderProfile() {
             </div>
             <div className={`flex space-x-4 ${(user.role !== 'player') && 'hidden'}`}>
                 <div className="primary-border-green flex items-center justify-center px-4 h-9 rounded-lg">
-                    <p className="text-white text-sm">6'2"</p>
+                    <p className="text-white text-sm">6 <span className="text-primary">ft</span> 2 <span className="text-primary">in</span></p>
                 </div>
                 <div className="primary-border-green flex items-center justify-center px-4 h-9 rounded-lg">
                     <p className="text-white text-sm">200lbs</p>

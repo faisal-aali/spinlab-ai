@@ -1,6 +1,6 @@
 // components/UploadModal.js
 import React, { useEffect } from "react";
-import { Modal, Box, Typography, Button, IconButton } from "@mui/material";
+import { Modal, Box, Typography, Button, IconButton, TextField, MenuItem } from "@mui/material";
 import {
   Close as CloseIcon,
   CloudUpload as CloudUploadIcon,
@@ -9,6 +9,7 @@ import { blueGrey } from "@mui/material/colors";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import schemaValidators from "@/schema-validators";
+import { useRouter } from "next/navigation";
 
 const style = {
   position: "absolute",
@@ -23,11 +24,14 @@ const style = {
 const validationSchema = Yup.object({
   firstName: Yup.string().required("Required"),
   lastName: Yup.string().required("Required"),
-  height: schemaValidators.user.height,
+  heightFt: Yup.number().required("Required"),
+  heightIn: Yup.number().max(11).required("Required"),
   weight: Yup.number().required("Required"),
 });
 
 const AddNewPlayerModal = ({ open, onClose }) => {
+  const router = useRouter()
+
   useEffect(() => {
     const handleEsc = (event) => {
       if (event.keyCode === 27) {
@@ -56,16 +60,19 @@ const AddNewPlayerModal = ({ open, onClose }) => {
           initialValues={{
             firstName: "",
             lastName: "",
-            height: "",
+            heightFt: "",
+            heightIn: "",
             weight: "",
             handedness: "",
           }}
           validationSchema={validationSchema}
           onSubmit={(values) => {
+            router.push('add-player')
+            onClose()
             console.log(values);
           }}
         >
-          {({ errors, touched }) => (
+          {({ errors, touched, setFieldValue }) => (
             <Form>
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <div className="grid gap-2">
@@ -102,18 +109,30 @@ const AddNewPlayerModal = ({ open, onClose }) => {
                   <div className="opacity-45">
                     <label htmlFor="">Height</label>
                   </div>
-                  <Field
-                    className={`w-full text-primary bg-transparent px-3 rounded-lg py-3 text-white rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
-                    ${errors.height && touched.height
-                        ? "border-red-900	border"
-                        : "primary-border focus:border-green-500"
-                      }`}
-                    type="text"
-                    name="height"
-                    placeholder={'i.e. 5\'11\"'}
-                    required
-                  />
-                  <div className="absolute bottom-3 right-4 opacity-50">feet/inches</div>
+                  <div className="flex gap-2">
+                    <div className="relative">
+                      <Field
+                        name="heightFt"
+                        type='number'
+                        className={`py-3 px-3 blueBackground rounded-lg w-full text-primary focus:outline-none placeholder:opacity-45 ${errors.heightFt && touched.heightFt
+                          ? "border-red-900	border"
+                          : "primary-border focus:border-green-500"
+                          }`}
+                      />
+                      <div className="absolute bottom-3 right-4 opacity-50 text-white">ft</div>
+                    </div>
+                    <div className="relative">
+                      <Field
+                        name="heightIn"
+                        type='number'
+                        className={`py-3 px-3 blueBackground rounded-lg  w-full text-primary focus:outline-none placeholder:opacity-45 ${errors.heightIn && touched.heightIn
+                          ? "border-red-900	border"
+                          : "primary-border focus:border-green-500"
+                          }`}
+                      />
+                      <div className="absolute bottom-3 right-4 opacity-50 text-white">in</div>
+                    </div>
+                  </div>
                 </div>
                 <div className="grid gap-2 relative">
                   <div className="opacity-45">
@@ -129,13 +148,18 @@ const AddNewPlayerModal = ({ open, onClose }) => {
                     name="weight"
                     required
                   />
-                  <div className="absolute bottom-3 right-4 opacity-50">lbs</div>
+                  <div className="absolute bottom-3 right-4 opacity-50 text-white">lbs</div>
                 </div>
                 <div className="grid gap-2">
                   <div className="opacity-45">
                     <label htmlFor="">Handedness</label>
                   </div>
-                  <Field
+
+                  <TextField variant="outlined" select defaultValue={'left'} fullWidth onChange={(e) => setFieldValue('handedness', e.target.value)}>
+                    <MenuItem value={'left'}>Left</MenuItem>
+                    <MenuItem value={'right'}>Right</MenuItem>
+                  </TextField>
+                  {/* <Field
                     className={`w-full text-primary bg-transparent px-3 rounded-lg py-3 text-white rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
                     ${errors.handedness && touched.handedness
                         ? "border-red-900	border"
@@ -156,7 +180,7 @@ const AddNewPlayerModal = ({ open, onClose }) => {
                       value={'right'}
                       label={'Right'}
                     />
-                  </Field>
+                  </Field> */}
                 </div>
               </div>
               <div className="grid grid-cols-1 gap-4">
@@ -171,7 +195,7 @@ const AddNewPlayerModal = ({ open, onClose }) => {
                   </div>
                 </div>
                 <div className="flex justify-center mb-10">
-                  <button className="bg-primary dark-blue-color rounded w-28 h-9 flex items-center justify-center text-base font-bold">
+                  <button className="bg-primary dark-blue-color rounded w-28 h-9 flex items-center justify-center text-base font-bold hover-button-shadow">
                     SUBMIT
                   </button>
                 </div>

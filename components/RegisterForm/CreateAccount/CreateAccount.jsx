@@ -2,6 +2,7 @@
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { getNames } from "country-list";
+import { MenuItem, TextField } from "@mui/material";
 
 const accountSchema = Yup.object().shape({
   firstName: Yup.string()
@@ -41,8 +42,8 @@ const CreateAccount = ({ nextStep, handleChange, values, onSubmit }) => {
         console.log("Account Details:", values);
       }}
     >
-      {({ errors, touched }) => (
-        <div className="bg-transparent border primary-border rounded-lg max-w-7xl">
+      {({ errors, touched, setFieldValue }) => (
+        <div className="bg-transparent border primary-border rounded-lg max-w-7xl ">
           <Form className="w-full p-8">
             <h2 className="text-white text-3xl font-bold mb-6 text-center">
               Create your Account
@@ -84,8 +85,8 @@ const CreateAccount = ({ nextStep, handleChange, values, onSubmit }) => {
                   <div className="text-red-500 text-sm">{errors.city}</div>
                 ) : null}
               </div>
-              <div>
-                <Field
+              <div className="">
+                {/* <Field
                   name="country"
                   as="select"
                   className="w-full py-3 px-3 bg-transparent primary-border rounded text-white rounded-lg focus:outline-none focus:outline-none focus:border-green-500 placeholder:opacity-45"
@@ -103,7 +104,12 @@ const CreateAccount = ({ nextStep, handleChange, values, onSubmit }) => {
                       label={country}
                     />
                   ))}
-                </Field>
+                </Field> */}
+                <TextField variant="filled" select fullWidth label='Country' onChange={(e) => setFieldValue('country', e.target.value)}>
+                  {countries.map((country) => (
+                    <MenuItem key={country} value={country}>{country}</MenuItem>
+                  ))}
+                </TextField>
                 {errors.country && touched.country ? (
                   <div className="text-red-500 text-sm">{errors.country}</div>
                 ) : null}

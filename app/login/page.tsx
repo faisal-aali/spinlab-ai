@@ -1,29 +1,11 @@
-import Image from 'next/image';
 import LoginForm from "../../components/LoginForm/LoginForm";
-import styles from './login.module.css';
 import '../globals.css';
-
 
 const login = async () => {
 
   return (
-    <div className={`min-h-screen w-full flex items-center justify-center bg-zinc-900`}>
-      <div className="backgroundOverlay"></div>
-      <div className={`flex w-full`}>
-        <div className={`flex items-center justify-center w-2/5 ${styles.loginBackground}`}>
-          <div className={`z-10`}>
-            <Image
-              src="/assets/spinlab-log.png"
-              alt="Logo"
-              width={370}
-              height={103}
-            />
-          </div>
-        </div>
-        <div className={` flex items-center justify-center z-10 w-3/5`}>
-          <LoginForm />
-        </div>
-      </div>
+    <div>
+      <LoginForm />
     </div>
   );
 }

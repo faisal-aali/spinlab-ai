@@ -1,6 +1,6 @@
 // components/UploadModal.js
 import React, { useEffect } from "react";
-import { Modal, Box, Typography, Button, IconButton } from "@mui/material";
+import { Modal, Box, Typography, Button, IconButton, TextField, MenuItem } from "@mui/material";
 import {
   Close as CloseIcon,
   CloudUpload as CloudUploadIcon,
@@ -58,14 +58,37 @@ const EditVideoModal = ({ open, onClose }) => {
             console.log(values);
           }}
         >
-          {({ errors, touched }) => (
+          {({ errors, touched, setFieldValue }) => (
             <Form>
               <div className="grid grid-cols-1 gap-4 mb-4">
                 <div className="grid gap-2">
                   <div className="opacity-45">
                     <label htmlFor="">Category</label>
                   </div>
-                  <Field
+                  <TextField variant="outlined" defaultValue={'fundamentals'} select fullWidth InputProps={{ style: { height: 50 } }} onChange={(e) => setFieldValue('category', e.target.value)}>
+                    {[{
+                      value: 'fundamentals',
+                      label: 'Fundamentals',
+                    }, {
+                      value: 'exercises',
+                      label: 'Exercises',
+                    }, {
+                      value: 'mobility',
+                      label: 'Mobility',
+                    }, {
+                      value: 'footwork',
+                      label: 'Footwork',
+                    }, {
+                      value: 'iq',
+                      label: 'IQ',
+                    }, {
+                      value: 'drills',
+                      label: 'Drills',
+                    }].map(cat => (
+                      <MenuItem key={cat.value} value={cat.value}>{cat.label}</MenuItem>
+                    ))}
+                  </TextField>
+                  {/* <Field
                     name="category"
                     as='select'
                     className={`w-full bg-transparent px-3 rounded-lg py-3 text-primary rounded focus:outline-none focus:border-green-500 placeholder:opacity-45 
@@ -105,7 +128,7 @@ const EditVideoModal = ({ open, onClose }) => {
                       value={'drills'}
                       label={'Drills'}
                     />
-                  </Field>
+                  </Field> */}
                 </div>
                 <div className="grid gap-2">
                   <div className="opacity-45">
@@ -139,7 +162,7 @@ const EditVideoModal = ({ open, onClose }) => {
                 </div>
               </div>
               <div className="flex justify-center mb-10 mt-6">
-                <button type="submit" className="bg-primary dark-blue-color rounded w-28 h-9 flex items-center justify-center text-lg font-bold" onClick={onClose}>
+                <button type="submit" className="bg-primary dark-blue-color rounded w-28 h-9 flex items-center justify-center text-lg font-bold hover-button-shadow" onClick={onClose}>
                   SUBMIT
                 </button>
               </div>

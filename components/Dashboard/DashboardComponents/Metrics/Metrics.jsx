@@ -174,7 +174,7 @@ export default function Metrics(props) {
     const player = {
         firstName: 'James',
         lastName: 'Anderson',
-        height: '5\'11\"',
+        height: '5ft 11in',
         weight: '200 lbs',
         imageUrl: '/assets/player.png'
     }

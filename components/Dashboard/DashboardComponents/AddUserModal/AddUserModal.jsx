@@ -1,6 +1,6 @@
 // components/UploadModal.js
 import React, { useEffect, useState } from "react";
-import { Modal, Box, Typography, Button, IconButton } from "@mui/material";
+import { Modal, Box, Typography, Button, IconButton, TextField, MenuItem } from "@mui/material";
 import {
   Close as CloseIcon,
   CloudUpload as CloudUploadIcon,
@@ -23,7 +23,8 @@ const style = {
 const validationSchema = Yup.object({
   firstName: Yup.string().required("Required"),
   lastName: Yup.string().required("Required"),
-  height: schemaValidators.user.height,
+  heightFt: Yup.number().required("Required"),
+  heightIn: Yup.number().max(11).required("Required"),
   weight: Yup.string().required("Required"),
   handedness: schemaValidators.user.handedness,
   email: schemaValidators.user.email,
@@ -66,7 +67,8 @@ const AddUserModal = ({ open, onClose, role }) => {
           initialValues={{
             firstName: "",
             lastName: "",
-            height: "",
+            heightFt: "",
+            heightIn: "",
             weight: "",
             handedness: "",
             email: "",
@@ -132,17 +134,30 @@ const AddUserModal = ({ open, onClose, role }) => {
                   <div className="opacity-45">
                     <label htmlFor="">Height</label>
                   </div>
-                  <Field
-                    className={`w-full text-primary bg-transparent px-3 rounded-lg py-3 text-white rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
-                    ${errors.height && touched.height
-                        ? "border-red-900	border"
-                        : "primary-border focus:border-green-500"
-                      }`}
-                    type="text"
-                    name="height"
-                    required
-                  />
-                  <div className="absolute bottom-3 right-4 opacity-50">feet/inches</div>
+                  <div className="flex gap-2">
+                    <div className="relative">
+                      <Field
+                        name="heightFt"
+                        type='number'
+                        className={`py-3 px-3 blueBackground rounded-lg w-full text-primary focus:outline-none placeholder:opacity-45 ${errors.heightFt && touched.heightFt
+                          ? "border-red-900	border"
+                          : "primary-border focus:border-green-500"
+                          }`}
+                      />
+                      <div className="absolute bottom-3 right-4 opacity-50 text-white">ft</div>
+                    </div>
+                    <div className="relative">
+                      <Field
+                        name="heightIn"
+                        type='number'
+                        className={`py-3 px-3 blueBackground rounded-lg  w-full text-primary focus:outline-none placeholder:opacity-45 ${errors.heightIn && touched.heightIn
+                          ? "border-red-900	border"
+                          : "primary-border focus:border-green-500"
+                          }`}
+                      />
+                      <div className="absolute bottom-3 right-4 opacity-50 text-white">in</div>
+                    </div>
+                  </div>
                 </div>
                 <div className={`grid gap-2 relative ${selectedRole !== 'player' && 'hidden'}`}>
                   <div className="opacity-45">
@@ -158,13 +173,18 @@ const AddUserModal = ({ open, onClose, role }) => {
                     name="weight"
                     required
                   />
-                  <div className="absolute bottom-3 right-4 opacity-50">lbs</div>
+                  <div className="absolute bottom-3 right-4 opacity-50 text-white">lbs</div>
                 </div>
                 <div className={`grid gap-2 ${selectedRole !== 'player' && 'hidden'}`}>
                   <div className="opacity-45">
                     <label htmlFor="">Handedness</label>
                   </div>
-                  <Field
+
+                  <TextField variant="outlined" select fullWidth defaultValue={'left'} InputProps={{ style: { height: 50 } }} onChange={(e) => setFieldValue('handedness', e.target.value)}>
+                    <MenuItem value={'left'}>Left</MenuItem>
+                    <MenuItem value={'right'}>Right</MenuItem>
+                  </TextField>
+                  {/* <Field
                     className={`w-full text-primary bg-transparent px-3 rounded-lg py-3 text-white rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
                     ${errors.handedness && touched.handedness
                         ? "border-red-900	border"
@@ -185,7 +205,7 @@ const AddUserModal = ({ open, onClose, role }) => {
                       value={'right'}
                       label={'Right'}
                     />
-                  </Field>
+                  </Field> */}
                 </div>
                 <div className={`grid gap-2`}>
                   <div className="opacity-45">
@@ -206,7 +226,11 @@ const AddUserModal = ({ open, onClose, role }) => {
                   <div className="opacity-45">
                     <label htmlFor="">Subscription Plan</label>
                   </div>
-                  <Field
+                  <TextField variant="outlined" select defaultValue={'monthly'} fullWidth InputProps={{ style: { height: 50 } }} onChange={(e) => setFieldValue('plan', e.target.value)}>
+                    <MenuItem value={'monthly'}>Monthly</MenuItem>
+                    <MenuItem value={'annual'}>Annual</MenuItem>
+                  </TextField>
+                  {/* <Field
                     as='select'
                     name="plan"
                     className={`w-full py-3 px-3 text-primary bg-transparent rounded primary-border rounded-lg focus:outline-none focus:outline-none focus:border-green-500 placeholder:opacity-45`}
@@ -221,13 +245,21 @@ const AddUserModal = ({ open, onClose, role }) => {
                       value={'annual'}
                       label={'Annual'}
                     />
-                  </Field>
+                  </Field> */}
                 </div>
                 <div className="grid gap-2">
                   <div className="opacity-45">
                     <label htmlFor="">User Type</label>
                   </div>
-                  <Field
+                  <TextField variant="outlined" select defaultValue={'player'} fullWidth InputProps={{ style: { height: 50 } }} onChange={(e) => {
+                    setSelectedRole(e.target.value)
+                    setFieldValue('role', e.target.value)
+                  }}>
+                    <MenuItem value={'player'}>Player</MenuItem>
+                    <MenuItem value={'staff'}>Staff</MenuItem>
+                    <MenuItem value={'trainer'}>Trainer</MenuItem>
+                  </TextField>
+                  {/* <Field
                     as='select'
                     name="role"
                     onChange={(e) => {
@@ -251,11 +283,11 @@ const AddUserModal = ({ open, onClose, role }) => {
                       value={'trainer'}
                       label={'Trainer'}
                     />
-                  </Field>
+                  </Field> */}
                 </div>
               </div>
               <div className="flex justify-end mb-10">
-                <button type="submit" className="bg-primary dark-blue-color rounded w-28 h-9 flex items-center justify-center text-lg font-bold">
+                <button type="submit" className="bg-primary dark-blue-color rounded w-28 h-9 flex items-center justify-center text-lg font-bold hover-button-shadow">
                   ADD
                 </button>
               </div>

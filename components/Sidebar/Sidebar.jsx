@@ -13,7 +13,7 @@ const Sidebar = ({ showSidebar, setShowSidebar }) => {
   const searchParams = useSearchParams()
 
   const linkClasses = (path, pathValidator) =>
-    `flex pl-2 py-1 ${(pathValidator ? pathValidator(pathname, searchParams) : pathname.startsWith(path)) ? "bg-primary rounded-lg min-w-44 w-fit items-center text-black" : ""
+    `flex pl-2 py-1 ${(pathValidator ? pathValidator(pathname, searchParams) : pathname.startsWith(path)) ? "bg-primary rounded-lg min-w-[200px] w-fit items-center text-black" : "text-white"
     }`;
 
   const svgClasses = (path, pathValidator) =>
@@ -137,7 +137,7 @@ const Sidebar = ({ showSidebar, setShowSidebar }) => {
   ]
 
   return (
-    <div className={`bg-gray-900 text-white pt-8 min-h-screen p-4 ${showSidebar ? 'w-80' : 'w-fit'} lg:w-80 ${showSidebar ? 'pl-12' : 'pl-4'} lg:pl-12 ${showSidebar ? 'absolute' : 'unset'} lg:unset`}>
+    <div className={`bg-gray-900 pt-8 h-screen overflow-auto p-4 ${showSidebar ? 'w-80' : 'w-fit'} lg:w-80 ${showSidebar ? 'pl-12' : 'pl-4'} lg:pl-12 ${showSidebar ? 'absolute' : 'unset'} lg:unset`}>
       <div className={`${showSidebar ? 'hidden' : 'flex'} lg:hidden`} onClick={() => setShowSidebar(true)}>
         <Menu />
       </div>
@@ -171,8 +171,10 @@ const Sidebar = ({ showSidebar, setShowSidebar }) => {
                   src={link.icon}
                   className={svgClasses(link.url, link.pathValidator?.bind(link))}
                   alt=""
+                  width={20}
+                  height={20}
                 />
-                <span className="flex items-center p-2">{link.label}</span>
+                <span className="flex items-center p-1.5 pl-4 text-inherit">{link.label}</span>
               </Link>
             ))}
           </div>

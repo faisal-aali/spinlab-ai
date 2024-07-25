@@ -3,7 +3,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useSession } from "next-auth/react";
-import { Checkbox, FormControlLabel } from "@mui/material";
+import { Checkbox, FormControlLabel, MenuItem, TextField } from "@mui/material";
 import schemaValidators from "@/schema-validators";
 
 const AccountSettings = () => {
@@ -53,7 +53,8 @@ const AccountSettings = () => {
     email: Yup.string().email("Invalid email address").required("Required"),
     bio: Yup.string().required("Required"),
     age: Yup.number().required("Required"),
-    height: schemaValidators.user.height,
+    heightFt: Yup.number().required("Required"),
+    heightIn: Yup.number().max(11).required("Required"),
     handedness: Yup.string().required("Required"),
     weight: Yup.number().required("Required"),
     location: Yup.string().required("Required"),
@@ -68,7 +69,7 @@ const AccountSettings = () => {
   });
 
   return (
-    <div className="rounded-lg bg-dark-blue text-white space-y-8 mt-4">
+    <div className="rounded-lg bg-dark-blue space-y-8 mt-4">
       <Formik
         initialValues={{
           firstName: "",
@@ -76,7 +77,8 @@ const AccountSettings = () => {
           email: "",
           bio: "",
           age: "",
-          height: "",
+          heightFt: "",
+          heightIn: "",
           handedness: "",
           weight: "",
           location: "",
@@ -89,10 +91,10 @@ const AccountSettings = () => {
           console.log(values);
         }}
       >
-        {({ errors, touched }) => (
+        {({ errors, touched, setFieldValue }) => (
           <Form>
             <div className="space-y-4 primary-border rounded-lg flex items-center p-4">
-              <div className="basis-2/5 flex pl-28 justify-between flex-col">
+              <div className="basis-2/5 flex pl-6 2xl:pl-20 justify-between flex-col">
                 <div>
                   <h2 className="text-xl font-bold">Profile Photo</h2>
                   <p className="text-gray-400">
@@ -111,7 +113,7 @@ const AccountSettings = () => {
                   </div>
                 </div>
                 <div className="flex flex-col items-center basis-3/4">
-                  <div className="p-8 flex items-center justify-center flex-col dark-blue-background rounded-lg w-full gap-4 border-dashed border-2 border-slate-800">
+                  <div className="p-8 flex items-center justify-center flex-col blueBackground rounded-lg w-full gap-4 border-dashed border-2 border-slate-800">
                     <label className="cursor-pointer flex items-center justify-center">
                       <input
                         type="file"
@@ -121,19 +123,19 @@ const AccountSettings = () => {
                       />
                       <img src="assets/upload-icon.svg" alt="" />
                     </label>
-                    <div>
-                      <span className="text-primary text-lg	">
+                    <div className="text-center">
+                      <span className="text-primary text-sm 2xl:text-2xl">
                         Click to Upload
                       </span>
-                      <span className="text-white mx-2 text-lg	">
+                      <span className="text-white mx-2 text-sm 2xl:text-2xl">
                         or drag and drop
                       </span>
                     </div>
-                    <p className="text-white">
+                    <p className="text-white text-sm 2xl:text-lg text-center">
                       JPG, PNG, or GIF (Recommended size 1000x1000px)
                     </p>
                   </div>
-                  <div className="flex w-full justify-end mt-2 gap-4">
+                  <div className="flex w-full justify-end mt-6 gap-4">
                     <button
                       type="button"
                       className="text-white"
@@ -151,9 +153,9 @@ const AccountSettings = () => {
               </div>
             </div>
             <div className="space-y-4 primary-border rounded-lg flex items-center p-4 mt-8">
-              <div className="basis-2/5 flex pl-28 justify-between flex-col">
+              <div className="basis-2/5 flex pl-6 2xl:pl-20 justify-between flex-col">
                 <div>
-                  <h2 className="text-xl font-bold">Personal Information</h2>
+                  <h2 className="text-xl  font-bold">Personal Information</h2>
                   <p className="text-gray-400">
                     Update your personal details here.
                   </p>
@@ -264,19 +266,34 @@ const AccountSettings = () => {
                       placeholder="Age"
                     />
                   </div>
-                  <div className="w-1/2 relative">
-                    <div className="mb-1 opacity-45">
+                  <div className="flex flex-col w-1/2 gap-1">
+                    <div className="opacity-45">
                       <label htmlFor="">Height</label>
                     </div>
-                    <Field
-                      name="height"
-                      className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${errors.height && touched.height
-                        ? "border-red-900	border"
-                        : "primary-border focus:border-green-500"
-                        }`}
-                      placeholder={`i.e. 5'11"`}
-                    />
-                    <div className="absolute bottom-3 right-4 opacity-50">feet/inches</div>
+                    <div className="flex gap-2">
+                      <div className="relative">
+                        <Field
+                          name="heightFt"
+                          type='number'
+                          className={`py-3 px-3 dark-blue-background rounded-lg w-full text-primary focus:outline-none placeholder:opacity-45 ${errors.heightFt && touched.heightFt
+                            ? "border-red-900	border"
+                            : "primary-border focus:border-green-500"
+                            }`}
+                        />
+                        <div className="absolute bottom-3 right-4 opacity-50 text-white">ft</div>
+                      </div>
+                      <div className="relative">
+                        <Field
+                          name="heightIn"
+                          type='number'
+                          className={`py-3 px-3 dark-blue-background rounded-lg  w-full text-primary focus:outline-none placeholder:opacity-45 ${errors.heightIn && touched.heightIn
+                            ? "border-red-900	border"
+                            : "primary-border focus:border-green-500"
+                            }`}
+                        />
+                        <div className="absolute bottom-3 right-4 opacity-50 text-white">in</div>
+                      </div>
+                    </div>
                   </div>
                 </div>
                 <div className={`flex items-center mb-4 gap-6 ${user.role !== 'player' && 'hidden'}`}>
@@ -284,7 +301,11 @@ const AccountSettings = () => {
                     <div className="mb-1 opacity-45">
                       <label htmlFor="">Handedness</label>
                     </div>
-                    <Field
+                    <TextField variant="outlined" select defaultValue={'left'} fullWidth InputProps={{ style: { height: 50 } }} onChange={(e) => setFieldValue('handedness', e.target.value)}>
+                      <MenuItem value={'left'}>Left</MenuItem>
+                      <MenuItem value={'right'}>Right</MenuItem>
+                    </TextField>
+                    {/* <Field
                       name="handedness"
                       as='select'
                       className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${errors.handedness && touched.handedness
@@ -303,7 +324,7 @@ const AccountSettings = () => {
                         value={'right'}
                         label={'Right'}
                       />
-                    </Field>
+                    </Field> */}
                   </div>
                   <div className="w-1/2 relative">
                     <div className="mb-1 opacity-45">
@@ -318,7 +339,7 @@ const AccountSettings = () => {
                         }`}
                       placeholder="Weight"
                     />
-                    <div className="absolute bottom-3 right-4 opacity-50">lbs</div>
+                    <div className="absolute bottom-3 right-4 opacity-50 text-white">lbs</div>
                   </div>
                 </div>
                 <div className="flex justify-end gap-4 mt-4">
@@ -330,7 +351,7 @@ const AccountSettings = () => {
                   </button>
                   <button
                     type="submit"
-                    className="bg-primary dark-blue-color px-4 py-1 rounded font-bold uppercase text-sm"
+                    className="bg-primary dark-blue-color px-4 py-1 rounded font-bold uppercase text-sm hover-button-shadow"
                   >
                     Confirm
                   </button>
@@ -352,7 +373,7 @@ const AccountSettings = () => {
         {({ errors, touched, values }) => (
           <Form>
             <div className="space-y-4 primary-border rounded-lg flex items-center p-4 mt-8">
-              <div className="basis-2/5 flex pl-28 justify-between flex-col">
+              <div className="basis-2/5 flex pl-6 2xl:pl-20 justify-between flex-col">
                 <div>
                   <h2 className="text-xl font-bold">Password</h2>
                   <p className="text-gray-400">
@@ -378,7 +399,7 @@ const AccountSettings = () => {
                       />
                       <div
                         className="absolute inset
-                        right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
+                        right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-white"
                         onClick={() =>
                           setShowCurrentPassword(!showCurrentPassword)
                         }
@@ -404,7 +425,7 @@ const AccountSettings = () => {
                         placeholder="Enter new password"
                       />
                       <div
-                        className="absolute inset right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
+                        className="absolute inset right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-white"
                         onClick={() => setShowNewPassword(!showNewPassword)}
                       >
                         {showNewPassword ? <FaEyeSlash /> : <FaEye />}
@@ -426,7 +447,7 @@ const AccountSettings = () => {
                         placeholder="Confirm"
                       />
                       <div
-                        className="absolute inset right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
+                        className="absolute inset right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-white"
                         onClick={() =>
                           setShowConfirmPassword(!showConfirmPassword)
                         }
@@ -443,7 +464,7 @@ const AccountSettings = () => {
                   <button
                     disabled={!values.currentPassword || !values.newPassword || !values.confirmPassword}
                     type="submit"
-                    className="bg-primary dark-blue-color px-4 py-1 rounded font-bold uppercase text-sm"
+                    className="bg-primary dark-blue-color px-4 py-1 rounded font-bold uppercase text-sm hover-button-shadow"
                   >
                     Update Password
                   </button>
@@ -454,7 +475,7 @@ const AccountSettings = () => {
         )}
       </Formik>
       <div className="space-y-4 primary-border rounded-lg flex items-center p-4 mt-8">
-        <div className="basis-2/5 flex pl-28 justify-between flex-col">
+        <div className="basis-2/5 flex pl-6 2xl:pl-20 justify-between flex-col">
           <div>
             <h2 className="text-xl font-bold">Additional Settings</h2>
             <p className="text-gray-400">
@@ -463,13 +484,12 @@ const AccountSettings = () => {
           </div>
         </div>
         <div className="basis-3/5">
-          <div className="flex items-center mb-4 gap-6">
-            <div className="w-1/2">
-              <div className="mb-1 opacity-45">
-                <FormControlLabel control={<Checkbox defaultChecked />} label="Opt out of Leaderboard" />
-              </div>
-              <div>
-              </div>
+          <div className="w-1/2 flex items-center gap-2">
+            <div>
+              <Checkbox defaultChecked style={{ width: 20 }} />
+            </div>
+            <div className="mb-1 opacity-45">
+              <label htmlFor="">Opt out of Leaderboard</label>
             </div>
           </div>
           <div className="flex justify-end gap-4 mt-4">
@@ -481,7 +501,7 @@ const AccountSettings = () => {
             </button>
             <button
               type="submit"
-              className="bg-primary dark-blue-color px-4 py-1 rounded font-bold uppercase text-sm"
+              className="bg-primary dark-blue-color px-4 py-1 rounded font-bold uppercase text-sm hover-button-shadow"
             >
               Confirm
             </button>

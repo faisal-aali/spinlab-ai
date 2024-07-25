@@ -54,28 +54,28 @@ const Dashboard = () => {
           <h2 className="text-5xl font-normal mb-8">Ready to enter the lab?</h2>
           <div className="flex justify-center mb-10">
             <button
-              className="bg-primary text-black rounded w-36 h-8 flex items-center justify-center text-base"
+              className="bg-primary text-black rounded w-36 h-8 flex items-center justify-center text-base hover-button-shadow"
               onClick={handleOpenModal}
               style={{ display: user.role === 'player' ? 'block' : 'none' }}
             >
               UPLOAD VIDEO
             </button>
             <button
-              className="bg-primary text-black rounded w-36 h-8 flex items-center justify-center text-base ml-4"
+              className="bg-primary text-black rounded w-36 h-8 flex items-center justify-center text-base ml-4 hover-button-shadow"
               onClick={handleOpenModal}
               style={{ display: user.role === 'player' ? 'block' : 'none' }}
             >
               RECORD VIDEO
             </button>
             <button
-              className="bg-primary text-black rounded w-48 h-8 flex items-center justify-center text-base ml-4"
+              className="bg-primary text-black rounded w-48 h-8 flex items-center justify-center text-base ml-4 hover-button-shadow"
               style={{ display: user.role === 'trainer' ? 'block' : 'none' }}
               onClick={() => setShowPlayerModal(true)}
             >
               ADD NEW PLAYER
             </button>
             <button
-              className="bg-primary text-black rounded w-48 h-8 flex items-center justify-center text-base ml-4"
+              className="bg-primary text-black rounded w-48 h-8 flex items-center justify-center text-base ml-4 hover-button-shadow"
               style={{ display: user.role === 'staff' ? 'block' : 'none' }}
               onClick={() => router.push('/users?role=player')}
             >

@@ -1,3 +1,10 @@
-.formWidth{
+.formWidth {
   width: 400px;
-} 
+}
+
+.loginBackground {
+  background-image: url('/assets/login-background.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: left;
+}

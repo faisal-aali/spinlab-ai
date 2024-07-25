@@ -30,7 +30,7 @@ const RegisterForm = () => {
   }, []);
 
   const handleChange = (field) => (e) => {
-    // console.log('handlechange called',field,e)
+    console.log('handlechange called', field, e)
     setValues(v => ({ ...v, [field]: e.target.value }));
   };
 
@@ -65,34 +65,28 @@ const RegisterForm = () => {
     <div>
       <div className="flex justify-center mb-12">
         <div
-          className={`h-2 w-14 ${
-            step === 1 ? "bg-primary" : "backgroundDisabledColor"
-          } rounded-sm mr-2`}
+          className={`h-2 w-14 ${step === 1 ? "bg-primary" : "backgroundDisabledColor"
+            } rounded-sm mr-2`}
         ></div>
         <div
-          className={`h-2 w-14 ${
-            step === 2 ? "bg-primary" : "backgroundDisabledColor"
-          } rounded-sm mr-2`}
+          className={`h-2 w-14 ${step === 2 ? "bg-primary" : "backgroundDisabledColor"
+            } rounded-sm mr-2`}
         ></div>
         <div
-          className={`h-2 w-14 ${
-            step === 3 ? "bg-primary" : "backgroundDisabledColor"
-          } rounded-sm mr-2`}
+          className={`h-2 w-14 ${step === 3 ? "bg-primary" : "backgroundDisabledColor"
+            } rounded-sm mr-2`}
         ></div>
         <div
-          className={`h-2 w-14 ${
-            step === 4 ? "bg-primary" : "backgroundDisabledColor"
-          } rounded-sm mr-2`}
+          className={`h-2 w-14 ${step === 4 ? "bg-primary" : "backgroundDisabledColor"
+            } rounded-sm mr-2`}
         ></div>
         <div
-          className={`h-2 w-14 ${
-            step === 5 ? "bg-primary" : "backgroundDisabledColor"
-          } rounded-sm mr-2`}
+          className={`h-2 w-14 ${step === 5 ? "bg-primary" : "backgroundDisabledColor"
+            } rounded-sm mr-2`}
         ></div>
         <div
-          className={`h-2 w-14 ${
-            step === 6 ? "bg-primary" : "backgroundDisabledColor"
-          } rounded-sm`}
+          className={`h-2 w-14 ${step === 6 ? "bg-primary" : "backgroundDisabledColor"
+            } rounded-sm`}
         ></div>
       </div>
       {step === 1 && (

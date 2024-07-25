@@ -6,6 +6,9 @@ import { getSession, signIn } from "next-auth/react";
 import styles from "./LoginForm.module.css";
 import Link from "next/link";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import useMediaQuery from '@mui/material/useMediaQuery';
+import Image from 'next/image';
+
 
 const LoginForm = () => {
   // const userSession = useSession().data?.user
@@ -13,7 +16,11 @@ const LoginForm = () => {
   const [user, setUser] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const searchParams = useSearchParams()
+  const matches = useMediaQuery('(max-width:768px)');
+
+  useEffect(() => {
+    console.log('matches', matches)
+  }, [matches]);
 
   useEffect(() => {
     getSession().then(data => {
@@ -44,10 +51,21 @@ const LoginForm = () => {
 
   return (
     <div
-      className={`min-h-screen flex items-center justify-center ${styles.formWidth}`}
+      className={`flex flex-col md:flex-row min-h-screen items-center bg-zinc-900 relative ${!matches ? '' : styles.loginBackground}`}
     >
-      <div className="w-full flex items-center justify-center">
-        <div className="bg-transparent border primary-border py-12 px-6 rounded-lg w-full max-w-md">
+      <div className="backgroundOverlay"></div>
+      <div className={`flex items-center py-16 justify-center w-full lg:w-2/5 ${!matches ? styles.loginBackground : ''} h-fit md:h-screen`}>
+        <div className="z-10">
+          <Image
+            src="/assets/spinlab-log.png"
+            alt="Logo"
+            width={!matches ? 370 : 250}
+            height={103}
+          />
+        </div>
+      </div>
+      <div className="flex items-center justify-center w-full p-8 lg:w-3/5 z-20  h-fit md:h-screen">
+        <div className="bg-transparent border primary-border py-12 px-6 rounded-lg w-full max-w-[400px]">
           <h2 className="text-white text-2xl mb-6 text-center">Login</h2>
           <form className="mt-11" onSubmit={(e) => handleSubmit(e)}>
             <div className="mb-4">

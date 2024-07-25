@@ -46,7 +46,7 @@ const DeleteUserModal = ({ open, onClose }) => {
               </button>
             </div>
             <div className="flex justify-center">
-              <button onClick={onClose} className="bg-primary dark-blue-color rounded w-28 h-9 flex items-center justify-center text-lg font-bold">
+              <button onClick={onClose} className="bg-primary dark-blue-color rounded w-28 h-9 flex items-center justify-center text-lg font-bold hover-button-shadow">
                 CONFIRM
               </button>
             </div>

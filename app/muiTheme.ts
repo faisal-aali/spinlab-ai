@@ -1,5 +1,7 @@
 'use client';
 import { createTheme } from '@mui/material/styles';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import { Edit, KeyboardArrowDown } from '@mui/icons-material';
 
 
 const theme = createTheme({
@@ -48,7 +50,21 @@ const theme = createTheme({
                     color: 'white'
                 }
             }
-        }
+        },
+        MuiSelect: {
+            defaultProps: {
+                IconComponent: KeyboardArrowDown, // Set your custom icon component here
+            },
+        },
+        MuiFilledInput: {
+            styleOverrides: {
+                root: {
+                    '&:before, &:after': {
+                        display: 'none', // Remove the animated indicator
+                    },
+                },
+            },
+        },
     }
 });
 

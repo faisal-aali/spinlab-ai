@@ -129,7 +129,7 @@ const DrillLibrary = () => {
         </div>
         <div className="rounded-lg">
           <div className="flex items-center justify-between gap-8">
-            <div className="tabs-wrapper w-1/2">
+            <div className="tabs-wrapper max-w-[759px] w-2/3">
               <Tabs
                 value={selectedCategory}
                 onChange={handleCategoryChange}
@@ -138,9 +138,10 @@ const DrillLibrary = () => {
                 variant="scrollable"
                 scrollButtons="auto"
                 aria-label="category tabs"
-                className="!blueBackground py-2.5 rounded-lg"
+                className="!blueBackground py-2.5 !px-2.5 rounded-lg"
+
                 sx={{
-                  backgroundColor: "#001f3f",
+                  color: 'white',
                   ".MuiButtonBase-root.MuiTab-root": {
                     minHeight: "40px",
                     backgroundColor: "#32E10026",
@@ -148,15 +149,18 @@ const DrillLibrary = () => {
                     fontWeight: 500,
                     fontSize: "15px",
                     textTransform: "capitalize",
-                    padding: " 0 10px",
+                    padding: "10px",
                   },
                   ".MuiTabs-flexContainer": {
                     justifyContent: "space-around",
                     gap: "10px",
                   },
                   ".MuiButtonBase-root.MuiTab-root.Mui-selected": {
-                    color: "#fff",
+                    color: "#090F21",
                     backgroundColor: "#32E100",
+                  },
+                  ".MuiButtonBase-root.MuiTabScrollButton-root": {
+                    width: 20,
                   },
                 }}
               >
@@ -175,7 +179,7 @@ const DrillLibrary = () => {
                 ))}
               </Tabs>
             </div>
-            <div className="search-bar w-2/5">
+            <div className="search-bar max-w-[580px] w-1/3">
               <input
                 placeholder="Search..."
                 value={searchQuery}
@@ -233,7 +237,7 @@ const DrillLibrary = () => {
                 </Grid>
               ))
             ) : (
-              <Typography variant="h6" component="div" sx={{ margin: 2 }}>
+              <Typography variant="h6" component="div" sx={{ margin: 2 }} color={'white'}>
                 No videos found.
               </Typography>
             )}

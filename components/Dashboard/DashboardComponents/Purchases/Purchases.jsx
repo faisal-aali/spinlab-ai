@@ -49,12 +49,12 @@ const Purchases = () => {
               </h2>
             </div>
             <div>
-              <h2 className="font-normal">
+              <p className="ml-1.5 text-zinc-400 text-xl false">
                 Membership Type :
                 <span className="ml-2 text-primary font-semibold">
                   {userSession?.membership}
                 </span>
-              </h2>
+              </p>
             </div>
           </div>
         </div>
@@ -72,7 +72,7 @@ const Purchases = () => {
                   {[1, 5, 10].map((credits, index) => (
                     <div
                       key={index}
-                      className={`flex flex-col items-center p-4 py-6 rounded-lg cursor-pointer basis-1/3 h-44 justify-center dark-blue-background ${selectedCredits === credits
+                      className={`flex flex-col items-center p-4 py-6 rounded-lg cursor-pointer basis-1/3 h-44 justify-center blueBackground ${selectedCredits === credits
                         ? "hover-shadow-light-box"
                         : "border primary-border"
                         }`}
@@ -101,10 +101,7 @@ const Purchases = () => {
                     Back
                   </button>
                   <button
-                    className={`px-4 py-1 rounded font-bold ${selectedCredits
-                      ? "bg-primary dark-blue-color"
-                      : "bg-primary-light dark-blue-color"
-                      }`}
+                    className={`px-4 py-1 rounded font-bold bg-primary dark-blue-color hover-button-shadow`}
                     onClick={handleContinue}
                     disabled={!selectedCredits}
                   >

@@ -171,7 +171,7 @@ const UploadModal = ({ open, onClose, onSuccess }) => {
                   Back
                 </button>
                 <button
-                  className="px-4 py-1 rounded font-bold bg-primary dark-blue-color ml-4 uppercase"
+                  className="px-4 py-1 rounded font-bold bg-primary dark-blue-color ml-4 uppercase hover-button-shadow"
                   onClick={() => {
                     handleRecordModalClose()
                     onSuccess && onSuccess()
@@ -197,13 +197,13 @@ const UploadModal = ({ open, onClose, onSuccess }) => {
                 </div>
                 <div className="flex gap-5 justify-center mt-8">
                   <button
-                    className="bg-primary text-black rounded w-36 h-8 flex items-center justify-center text-base uppercase"
+                    className="bg-primary text-black rounded w-36 h-8 flex items-center justify-center text-base uppercase hover-button-shadow"
                     onClick={handleUploadVideo}
                   >
                     Upload Video
                   </button>
                   <button
-                    className="bg-primary text-black rounded w-36 h-8 flex items-center justify-center text-base uppercase"
+                    className="bg-primary text-black rounded w-36 h-8 flex items-center justify-center text-base uppercase hover-button-shadow"
                     onClick={handleUploadVideo}
                   >
                     Record Now

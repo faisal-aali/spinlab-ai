@@ -9,8 +9,8 @@ const planSchema = Yup.object().shape({
 
 const PickPlan = ({ nextStep, handleChange, values }) => {
 
-  const checkmark = '/assets/checkmark.png'; 
-  
+  const checkmark = '/assets/checkmark.png';
+
   return (
     <Formik
       initialValues={values}
@@ -21,7 +21,7 @@ const PickPlan = ({ nextStep, handleChange, values }) => {
         console.log("Selected Plan:", values.plan);
       }}
     >
-      {({ errors, touched, setFieldValue, values  }) => (
+      {({ errors, touched, setFieldValue, values }) => (
         <div className="bg-transparent border primary-border rounded-lg max-w-7xl">
           <Form className="w-full">
             <div className="w-full p-8">
@@ -33,12 +33,11 @@ const PickPlan = ({ nextStep, handleChange, values }) => {
               </p>
               <div className="mb-6">
                 <div
-                  className={`relative p-4 mb-8 flex items-center gap-12 cursor-pointer border primary-border rounded-lg ${
-                    values.plan === "Monthly" ? "hover-shadow-dark" : "hover-shadow-light"
-                  }`}
-                  onClick={() => setFieldValue("plan", "Monthly")}
+                  className={`relative p-4 mb-8 flex items-center gap-12 cursor-pointer border primary-border rounded-lg ${values.plan === "monthly" ? "hover-shadow-dark" : "hover-shadow-light"
+                    }`}
+                  onClick={() => setFieldValue("plan", "monthly")}
                 >
-                  {values.plan === "Monthly" && (
+                  {values.plan === "monthly" && (
                     <img
                       src={checkmark}
                       alt="Selected"
@@ -75,12 +74,11 @@ const PickPlan = ({ nextStep, handleChange, values }) => {
                   </div>
                 </div>
                 <div
-                  className={`relative p-4 flex items-center gap-12 cursor-pointer border primary-border rounded-lg ${
-                    values.plan === "Annual" ? "hover-shadow-dark" : "hover-shadow-light"
-                  }`}
-                  onClick={() => setFieldValue("plan", "Annual")}
+                  className={`relative p-4 flex items-center gap-12 cursor-pointer border primary-border rounded-lg ${values.plan === "annual" ? "hover-shadow-dark" : "hover-shadow-light"
+                    }`}
+                  onClick={() => setFieldValue("plan", "annual")}
                 >
-                  {values.plan === "Annual" && (
+                  {values.plan === "annual" && (
                     <img
                       src={checkmark}
                       alt="Selected"
@@ -92,7 +90,7 @@ const PickPlan = ({ nextStep, handleChange, values }) => {
                     <p className="text-primary text-3xl font-bold">$460</p>
                   </div>
                   <div>
-                  <ul className="text-zinc-400">
+                    <ul className="text-zinc-400">
                       <li className="mb-4 text-white">
                         <span className="text-primary">1. Performance Tracking:</span> Monitor player statistics and
                         trends to identify strengths, weaknesses, and areas for
@@ -121,12 +119,12 @@ const PickPlan = ({ nextStep, handleChange, values }) => {
                 <div className="text-red-500 text-sm">{errors.plan}</div>
               ) : null}
               <div className="text-center">
-              <button
-                type="submit"
-                className="bg-primary rounded-lg w-80 text-black font-normal px-3 py-3 rounded hover-shadow focus:outline-none"
-              >
-                CONTINUE: SELECT PLAN
-              </button>
+                <button
+                  type="submit"
+                  className="bg-primary rounded-lg w-80 text-black font-normal px-3 py-3 rounded hover-shadow focus:outline-none"
+                >
+                  CONTINUE: SELECT PLAN
+                </button>
               </div>
             </div>
           </Form>

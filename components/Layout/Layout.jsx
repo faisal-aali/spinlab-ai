@@ -110,14 +110,14 @@ const Layout = ({ children }) => {
   }, [pathname]);
 
   return (
-    <div className="flex flex-row min-h-screen">
+    <div className="flex flex-row h-screen">
       <div className="z-20 w-fit">
         <Sidebar showSidebar={showSidebar} setShowSidebar={setShowSidebar} />
       </div>
       {showSidebar &&
         <div onClick={() => setShowSidebar(false)} className={`bg-black opacity-50 absolute w-screen h-screen z-10 top-0 left-0 right-0 bottom-0`}></div>
       }
-      <div className="flex-1 py-8 px-8 dashboard-background w-4/5 max-h-screen overflow-auto">
+      <div className="flex-1 py-8 px-8 dashboard-background w-4/5 h-screen overflow-auto">
         <div className="flex justify-end">
           <div className="flex justify-between items-center mb-8 right-10 top-12 ml-auto z-10">
             <div className="flex space-x-4 items-center">

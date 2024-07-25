@@ -81,7 +81,7 @@ const GiftUserModal = ({ open, onClose }) => {
                 <button type="submit" className="bg-white dark-blue-color rounded w-28 h-9 flex items-center justify-center text-lg font-bold" onClick={onClose}>
                   CANCEL
                 </button>
-                <button type="submit" className="bg-primary dark-blue-color rounded w-28 h-9 flex items-center justify-center text-lg font-bold" onClick={onClose}>
+                <button type="submit" className="bg-primary dark-blue-color rounded w-28 h-9 flex items-center justify-center text-lg font-bold hover-button-shadow" onClick={onClose}>
                   GIFT
                 </button>
               </div>
