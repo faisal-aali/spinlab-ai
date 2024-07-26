@@ -101,7 +101,7 @@ const HistoryTable = () => {
 
     const data = Array.from({ length: 6 }).map((_, index) => ({
         id: index + 1,
-        thumbnail: "https://via.placeholder.com/150",
+        thumbnail: "/assets/samples/150.png",
         date: "April 07, 2024",
         efficiency: 85.9,
         sequencing: 85.9,

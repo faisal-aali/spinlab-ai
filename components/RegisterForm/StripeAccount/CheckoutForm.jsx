@@ -25,12 +25,12 @@ const billingSchema = Yup.object().shape({
     .required("Postal Code is required"),
 });
 
-const CheckoutForm = ({ onPaymentSuccess }) => {
+const CheckoutForm = ({ onPaymentSuccess, values }) => {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const formikRef = useRef()
 
   return (
-    <div className="flex px-[180px] gap-[40px]">
+    <div className="flex px-[75px] 2xl:px-[180px] gap-[40px]">
       <div className="w-7/12 px-8 py-6 bg-transparent border primary-border rounded-lg">
         <div className="text-center mb-4">
           <h2 className="text-white font-bold mb-4 text-2xl">
@@ -51,7 +51,7 @@ const CheckoutForm = ({ onPaymentSuccess }) => {
           <div className="border-b-2 border-dashed mb-4"></div>
           <div className="mb-4">
             <div className="">
-              <h3>Annual</h3>
+              <h3 className="capitalize">{values.plan}</h3>
               <h2 className="text-primary">$460.00</h2>
             </div>
           </div>

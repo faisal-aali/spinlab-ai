@@ -81,7 +81,7 @@ const Users = () => {
         </div>
         <div className="">
           <TableContainer component={Paper} className="!bg-transparent">
-            <Table>
+            <Table sx={{ minWidth: 1000, overflow: 'auto' }}>
               <TableHead className="leaderboard-table-head bg-primary-light uppercase">
                 <TableRow>
                   <TableCell className="!text-white"></TableCell>
@@ -97,7 +97,7 @@ const Users = () => {
               <TableBody className="leaderboard-table-body">
                 {paginatedData.map((row) => (
                   <TableRow key={row.id}>
-                    <TableCell className="!text-white">
+                    <TableCell className="!text-white" sx={{ minWidth: 100 }}>
                       <img
                         src={row.imageUrl}
                         alt={row.firstName}
@@ -135,9 +135,9 @@ const Users = () => {
                           <img src="/assets/delete-icon.svg" />
                         </IconButton>
                       </TableCell>}
-                    <TableCell className="!text-white">
+                    <TableCell className="!text-white" sx={{ minWidth: 75 }}>
                       <IconButton onClick={() => router.push('/users/view?role=' + role)}>
-                        <img src="/assets/open.svg" />
+                        <img src="/assets/open.svg" width={22} height={22} />
                       </IconButton>
                     </TableCell>
                   </TableRow>

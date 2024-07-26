@@ -1,4 +1,5 @@
 "use client";
+import { Checkbox } from '@mui/material';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 
@@ -14,17 +15,17 @@ const SelectRole = ({ nextStep, handleChange, values }) => {
       initialValues={values}
       validationSchema={roleSchema}
       onSubmit={(values) => {
-        console.log('selectrole submit',values);
+        console.log('selectrole submit', values);
         handleChange("role")({ target: { value: values.role } });
         handleChange("email")({ target: { value: values.email } });
         nextStep();
       }}
     >
-      {({ errors, touched, setFieldValue, values  }) => (
+      {({ errors, touched, setFieldValue, values }) => (
         <Form className={`flex items-center justify-center RegisterFormWidth bg-transparent border primary-border py-16 px-10 rounded-lg w-full `}>
-          <div className="w-full">
-            <h2 className="text-white font-bold mb-8 text-center text-3xl">Please select your role:</h2>
-            <div className="flex justify-between mb-8">
+          <div className="flex flex-col w-full gap-[31px]">
+            <h2 className="text-white font-bold text-center text-3xl">Please select your role:</h2>
+            <div className="flex justify-between">
               <button
                 type="button"
                 name='role'
@@ -42,7 +43,25 @@ const SelectRole = ({ nextStep, handleChange, values }) => {
                 Trainer
               </button>
             </div>
-            <div className="mb-8">
+            <div className='flex flex-row  gap-[31px]'>
+              <div className='flex flex-row items-center gap-[12px]'>
+                <div>
+                  <Checkbox sx={{ width: 10, height: 10, color: '#FFFFFF30' }} disableRipple />
+                </div>
+                <div>
+                  <label style={{ color: '#FFFFFF30' }}>Free User</label>
+                </div>
+              </div>
+              <div className='flex flex-row items-center gap-[12px]'>
+                <div>
+                  <Checkbox sx={{ width: 10, height: 10, color: '#FFFFFF30' }} disableRipple />
+                </div>
+                <div>
+                  <label style={{ color: '#FFFFFF30' }}>Monthly</label>
+                </div>
+              </div>
+            </div>
+            <div>
               <Field
                 type="email"
                 name="email"

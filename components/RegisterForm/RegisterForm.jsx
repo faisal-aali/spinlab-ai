@@ -62,8 +62,8 @@ const RegisterForm = () => {
   };
 
   return (
-    <div>
-      <div className="flex justify-center mb-12">
+    <div className="flex flex-col gap-8 justify-center items-center z-10 min-h-screen pt-8 pb-8">
+      <div className="flex justify-center">
         <div
           className={`h-2 w-14 ${step === 1 ? "bg-primary" : "backgroundDisabledColor"
             } rounded-sm mr-2`}
@@ -89,36 +89,39 @@ const RegisterForm = () => {
             } rounded-sm`}
         ></div>
       </div>
-      {step === 1 && (
-        <SelectRole
-          nextStep={nextStep}
-          handleChange={handleChange}
-          values={values}
-        />
-      )}
-      {step === 2 && <EmailConfirmed nextStep={nextStep} />}
-      {step === 3 && (
-        <PickPlan
-          nextStep={nextStep}
-          handleChange={handleChange}
-          values={values}
-        />
-      )}
-      {step === 4 && (
-        <CreateAccount
-          nextStep={nextStep}
-          handleChange={handleChange}
-          onSubmit={handleSubmit}
-          values={values}
-        />
-      )}
-      {step === 5 && (
-        <StripeAccount
-          nextStep={nextStep}
-          onPaymentSuccess={handlePaymentSuccess}
-        />
-      )}
-      {step === 6 && <LoginToPortal />}
+      <div>
+        {step === 1 && (
+          <SelectRole
+            nextStep={nextStep}
+            handleChange={handleChange}
+            values={values}
+          />
+        )}
+        {step === 2 && <EmailConfirmed nextStep={nextStep} />}
+        {step === 3 && (
+          <PickPlan
+            nextStep={nextStep}
+            handleChange={handleChange}
+            values={values}
+          />
+        )}
+        {step === 4 && (
+          <CreateAccount
+            nextStep={nextStep}
+            handleChange={handleChange}
+            onSubmit={handleSubmit}
+            values={values}
+          />
+        )}
+        {step === 5 && (
+          <StripeAccount
+            nextStep={nextStep}
+            onPaymentSuccess={handlePaymentSuccess}
+            values={values}
+          />
+        )}
+        {step === 6 && <LoginToPortal />}
+      </div>
     </div>
   );
 };

@@ -17,6 +17,8 @@ const style = {
   boxShadow: 24,
   p: 4,
   borderRadius: "8px",
+  maxHeight: '90vh',
+  overflow: 'auto'
 };
 
 const validationSchema = Yup.object({

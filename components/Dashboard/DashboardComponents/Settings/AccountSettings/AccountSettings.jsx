@@ -474,7 +474,7 @@ const AccountSettings = () => {
           </Form>
         )}
       </Formik>
-      <div className="space-y-4 primary-border rounded-lg flex items-center p-4 mt-8">
+      <div className={`space-y-4 primary-border rounded-lg flex items-center p-4 mt-8 ${user.role !== 'player' && 'hidden'}`}>
         <div className="basis-2/5 flex pl-6 2xl:pl-20 justify-between flex-col">
           <div>
             <h2 className="text-xl font-bold">Additional Settings</h2>

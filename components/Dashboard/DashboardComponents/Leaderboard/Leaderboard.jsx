@@ -48,8 +48,8 @@ const Leaderboard = () => {
   const data = Array.from({ length: 100 }).map((_, index) => ({
     id: index + 1,
     name: index % 5 == 0 ? "Anonymous" : "Michael Phillips",
-    age: 20,
-    location: "Dallas Texas",
+    age: index % 5 == 0 ? '' : 20,
+    location: index % 5 == 0 ? '' : "Dallas Texas",
     date: "04/23/2024",
     armSpeed: "78 m/s",
     releaseTime: "1.56 sec",
@@ -109,7 +109,7 @@ const Leaderboard = () => {
                     <TableCell className="!text-white">{row.id}</TableCell>
                     <TableCell className="!text-white text-base">
                       {row.name}
-                      <div className="text-primary text-xs">
+                      <div className={`text-primary text-xs ${!row.age && !row.location ? 'hidden' : ''}`}>
                         {row.age} | {row.location}
                       </div>
                     </TableCell>

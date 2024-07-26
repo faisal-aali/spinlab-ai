@@ -4,8 +4,11 @@ import '../globals.css';
 
 const register = () => {
     return (
-        <div className="min-h-screen flex items-center justify-center backgroundOverlay">
-            <RegisterForm />
+        <div className="min-h-screen overflow-auto relative">
+            <div className="backgroundOverlay"></div>
+            <div className="relative">
+                <RegisterForm />
+            </div>
         </div>
     );
 }

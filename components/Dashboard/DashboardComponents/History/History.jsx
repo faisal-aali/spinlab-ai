@@ -17,7 +17,7 @@ import {
 const data = Array.from({ length: 6 }).map((_, index) => ({
   id: index + 1,
   name: "Delivery on Apr 23, 2024",
-  thumbnail: "https://via.placeholder.com/150.png",
+  thumbnail: "/assets/samples/150.png",
   date: "Mar 29, 2024",
   overallQBRating: 86,
 }));

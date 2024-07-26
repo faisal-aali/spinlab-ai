@@ -128,69 +128,69 @@ const DrillLibrary = () => {
           </div>
         </div>
         <div className="rounded-lg">
-          <div className="flex items-center justify-between gap-8">
-            <div className="tabs-wrapper max-w-[759px] w-2/3">
-              <Tabs
-                value={selectedCategory}
-                onChange={handleCategoryChange}
-                indicatorColor="none"
-                textColor="inherit"
-                variant="scrollable"
-                scrollButtons="auto"
-                aria-label="category tabs"
-                className="!blueBackground py-2.5 !px-2.5 rounded-lg"
+          <div className="flex items-center justify-between gap-8 w-full justify-between">
+            <Tabs
+              value={selectedCategory}
+              onChange={handleCategoryChange}
+              indicatorColor="none"
+              textColor="inherit"
+              variant="scrollable"
+              scrollButtons="auto"
+              aria-label="category tabs"
+              className="!blueBackground py-2.5 !px-2.5 rounded-lg"
 
-                sx={{
-                  color: 'white',
-                  ".MuiButtonBase-root.MuiTab-root": {
-                    minHeight: "40px",
-                    backgroundColor: "#32E10026",
-                    borderRadius: "6px",
-                    fontWeight: 500,
-                    fontSize: "15px",
-                    textTransform: "capitalize",
-                    padding: "10px",
-                  },
-                  ".MuiTabs-flexContainer": {
-                    justifyContent: "space-around",
-                    gap: "10px",
-                  },
-                  ".MuiButtonBase-root.MuiTab-root.Mui-selected": {
-                    color: "#090F21",
-                    backgroundColor: "#32E100",
-                  },
-                  ".MuiButtonBase-root.MuiTabScrollButton-root": {
-                    width: 20,
-                  },
-                }}
-              >
-                {categories.map((category) => (
-                  <Tab
-                    key={category}
-                    label={category}
-                    value={category}
-                    sx={{
-                      color: "#ffffff",
-                      "&.Mui-selected": {
-                        color: "#000000",
-                      },
-                    }}
-                  />
-                ))}
-              </Tabs>
-            </div>
-            <div className="search-bar max-w-[580px] w-1/3">
-              <input
-                placeholder="Search..."
-                value={searchQuery}
-                onChange={handleSearchChange}
-                className="w-full pl-2 py-1 rounded-lg text-white h-12 search-background focus:outline-none focus:ring-1 focus:ring-green-500"
-              />
-            </div>
-            <div className={`${user.role !== 'admin' && 'hidden'}`}>
-              <button className="bg-white dark-blue-color rounded w-44 h-14 flex items-center justify-center text-lg rounded-lg" onClick={() => setShowAddModal(true)}>
-                ADD NEW DRILL
-              </button>
+              sx={{
+                color: 'white',
+                ".MuiButtonBase-root.MuiTab-root": {
+                  minHeight: "40px",
+                  backgroundColor: "#32E10026",
+                  borderRadius: "6px",
+                  fontWeight: 500,
+                  fontSize: "15px",
+                  textTransform: "capitalize",
+                  padding: "10px",
+                },
+                ".MuiTabs-flexContainer": {
+                  justifyContent: "space-around",
+                  gap: "10px",
+                },
+                ".MuiButtonBase-root.MuiTab-root.Mui-selected": {
+                  color: "#090F21",
+                  backgroundColor: "#32E100",
+                },
+                ".MuiButtonBase-root.MuiTabScrollButton-root": {
+                  width: 20,
+                },
+              }}
+            >
+              {categories.map((category) => (
+                <Tab
+                  key={category}
+                  label={category}
+                  value={category}
+                  sx={{
+                    color: "#ffffff",
+                    "&.Mui-selected": {
+                      color: "#000000",
+                    },
+                  }}
+                />
+              ))}
+            </Tabs>
+            <div className="flex flex-row justify-end gap-[30px]">
+              <div className="flex search-bar w-[200px] 4xl:w-[580px] ">
+                <input
+                  placeholder="Search..."
+                  value={searchQuery}
+                  onChange={handleSearchChange}
+                  className="w-full pl-2 py-1 rounded-lg text-white h-12 search-background focus:outline-none focus:ring-1 focus:ring-green-500"
+                />
+              </div>
+              <div className={`flex ${user.role !== 'admin' && 'hidden'}`}>
+                <button className="bg-white dark-blue-color rounded w-44 h-14 flex items-center justify-center text-lg rounded-lg" onClick={() => setShowAddModal(true)}>
+                  ADD NEW DRILL
+                </button>
+              </div>
             </div>
           </div>
           <Grid container spacing={2} sx={{ marginTop: 2, overflow: 'auto' }}>
