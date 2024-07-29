@@ -43,7 +43,7 @@ const SelectRole = ({ nextStep, handleChange, values }) => {
                 Trainer
               </button>
             </div>
-            <div className='flex flex-row  gap-[31px]'>
+            {/* <div className='flex flex-row  gap-[31px]'>
               <div className='flex flex-row items-center gap-[12px]'>
                 <div>
                   <Checkbox sx={{ width: 10, height: 10, color: '#FFFFFF30' }} disableRipple />
@@ -60,7 +60,7 @@ const SelectRole = ({ nextStep, handleChange, values }) => {
                   <label style={{ color: '#FFFFFF30' }}>Monthly</label>
                 </div>
               </div>
-            </div>
+            </div> */}
             <div>
               <Field
                 type="email"

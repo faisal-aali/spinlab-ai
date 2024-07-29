@@ -208,7 +208,7 @@ const AccountSettings = () => {
                     placeholder="Email"
                   />
                 </div>
-                <div className={`mb-4 ${user.role === 'player' && 'hidden'}`}>
+                <div className={`mb-4 `}>
                   <div className="mb-1 opacity-45">
                     <label htmlFor="">Bio</label>
                   </div>

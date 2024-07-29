@@ -74,7 +74,7 @@ const PickPlan = ({ nextStep, handleChange, values }) => {
                   </div>
                 </div>
                 <div
-                  className={`relative p-4 flex items-center gap-12 cursor-pointer border primary-border rounded-lg ${values.plan === "annual" ? "hover-shadow-dark" : "hover-shadow-light"
+                  className={`relative p-4 mb-8 flex items-center gap-12 cursor-pointer border primary-border rounded-lg ${values.plan === "annual" ? "hover-shadow-dark" : "hover-shadow-light"
                     }`}
                   onClick={() => setFieldValue("plan", "annual")}
                 >
@@ -88,6 +88,46 @@ const PickPlan = ({ nextStep, handleChange, values }) => {
                   <div className={`blueBackground ${styles.priceTotalWrapper}  py-10 px-12`}>
                     <h3 className="text-white text-2xl mt-2">Annual</h3>
                     <p className="text-primary text-3xl font-bold">$460</p>
+                  </div>
+                  <div>
+                    <ul className="text-zinc-400">
+                      <li className="mb-4 text-white">
+                        <span className="text-primary">1. Performance Tracking:</span> Monitor player statistics and
+                        trends to identify strengths, weaknesses, and areas for
+                        improvement.
+                      </li>
+                      <li className="mb-4 text-white">
+                        <span className="text-primary">2. Tactical Insights:</span> Analyze gameplay patterns to
+                        optimize strategies and adapt game plans for competitive
+                        advantage.
+                      </li>
+                      <li className="mb-4 text-white">
+                        <span className="text-primary">3. Injury Prevention:</span> Utilize data to manage player
+                        workload, track fatigue levels, and reduce the risk of
+                        injuries through informed decision-making.
+                      </li>
+                      <li className="text-white">
+                        <span className="text-primary">4. Talent Development:</span> Identify promising players, track
+                        their progress, and tailor training programs to maximize
+                        their potential.
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                <div
+                  className={`relative p-4 flex items-center gap-12 cursor-pointer border primary-border rounded-lg ${values.plan === "free" ? "hover-shadow-dark" : "hover-shadow-light"
+                    }`}
+                  onClick={() => setFieldValue("plan", "free")}
+                >
+                  {values.plan === "free" && (
+                    <img
+                      src={checkmark}
+                      alt="Selected"
+                      className={`absolute ${styles.checkmarkPosition} w-16 h-16`}
+                    />
+                  )}
+                  <div className={`blueBackground ${styles.priceTotalWrapper}  py-10 px-12`}>
+                    <h3 className="text-white text-2xl mt-2">Free</h3>
                   </div>
                   <div>
                     <ul className="text-zinc-400">
