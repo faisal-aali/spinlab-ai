@@ -33,22 +33,16 @@ export const authOption: AuthOptions = {
             if (user) {
                 // console.log('session.callbacks.user', user.membership, user.plan, user);
                 token._id = user._id;
-                token.firstName = user.firstName;
-                token.lastName = user.lastName;
+                token.name = user.name;
                 token.role = user.role;
-                token.plan = user.plan;
-                token.membership = user.membership;
             }
             return token
         },
         session({ session, token }) {
             // console.log('callbacks.session.token', token);
             session.user._id = token._id as string;
-            session.user.firstName = token.firstName as string;
-            session.user.lastName = token.lastName as string;
+            session.user.name = token.name as string;
             session.user.role = token.role as string;
-            session.user.plan = token.plan as string;
-            session.user.membership = token.membership as string;
 
             return session;
         }

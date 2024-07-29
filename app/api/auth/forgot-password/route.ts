@@ -9,13 +9,15 @@ import * as Yup from 'yup'
 // const query = util.promisify(db.query).bind(db);
 
 export async function POST(req: NextRequest) {
+  console.log('validating')
   const schema = Yup.object({
     email: Yup.string().email().required("Email is required"),
   });
 
-  const data = await req.json();
+  let data;
 
   try {
+    data = await req.json();
     await schema.validate(data)
   } catch (err) {
     console.error(err)

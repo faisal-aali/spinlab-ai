@@ -8,11 +8,8 @@ declare module "next-auth" {
     interface Session {
         user: DefaultSession["user"] & {
             _id: string,
-            firstName: string,
-            lastName: string,
-            plan: string,
+            name: string,
             role: string,
-            membership: string,
         }
     }
     interface User<IUser> { }
