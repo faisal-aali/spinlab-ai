@@ -13,7 +13,7 @@ export async function PATCH(req: NextRequest) {
         const data = await req.json()
 
         const schema = Yup.object({
-            otp: Yup.string().required("OTP is required"),
+            otp: Yup.number().required("OTP is required"),
             email: Yup.string().email('Email must be valid').required("Email is required"),
         });
 
@@ -28,7 +28,13 @@ export async function PATCH(req: NextRequest) {
         const oldEmail = user.email
         const newEmail = data.email
 
-        user.email = data.email
+        if (oldEmail === newEmail) {
+            user.emailVerified = true
+            await user.save()
+            return NextResponse.json({ message: `Email has been verified` }, { status: 200 })
+        }
+
+        user.email = newEmail
         await user.save()
 
         sendEmail({

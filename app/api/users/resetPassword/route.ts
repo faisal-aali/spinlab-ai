@@ -14,7 +14,7 @@ export async function PATCH(req: NextRequest) {
         const data = await req.json()
 
         const schema = Yup.object({
-            otp: Yup.string().required("OTP is required"),
+            otp: Yup.number().required("OTP is required"),
             password: Yup.string().min(8, "Password must be at least 8 characters").required('Password is required'),
         });
 
