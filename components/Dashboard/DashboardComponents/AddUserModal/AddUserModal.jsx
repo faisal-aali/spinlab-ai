@@ -224,7 +224,7 @@ const AddUserModal = ({ open, onClose, role }) => {
                     required
                   />
                 </div>
-                <div className="grid gap-2">
+                {/* <div className="grid gap-2">
                   <div className="opacity-45">
                     <label htmlFor="">Subscription Plan</label>
                   </div>
@@ -232,23 +232,7 @@ const AddUserModal = ({ open, onClose, role }) => {
                     <MenuItem value={'monthly'}>Monthly</MenuItem>
                     <MenuItem value={'annual'}>Annual</MenuItem>
                   </TextField>
-                  {/* <Field
-                    as='select'
-                    name="plan"
-                    className={`w-full py-3 px-3 text-primary bg-transparent rounded primary-border rounded-lg focus:outline-none focus:outline-none focus:border-green-500 placeholder:opacity-45`}
-                  >
-                    <option
-                      className="bg-black"
-                      value={'monthly'}
-                      label={'Monthly'}
-                    />
-                    <option
-                      className="bg-black"
-                      value={'annual'}
-                      label={'Annual'}
-                    />
-                  </Field> */}
-                </div>
+                </div> */}
                 <div className="grid gap-2">
                   <div className="opacity-45">
                     <label htmlFor="">User Type</label>

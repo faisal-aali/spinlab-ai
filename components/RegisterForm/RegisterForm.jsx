@@ -29,6 +29,12 @@ const RegisterForm = () => {
     }
   }, []);
 
+  useEffect(() => {
+    if (step === 4 && values.plan === "free") {
+      nextStep();
+    }
+  }, [step]);
+
   const handleChange = (field) => (e) => {
     console.log('handlechange called', field, e)
     setValues(v => ({ ...v, [field]: e.target.value }));
@@ -68,6 +74,10 @@ const RegisterForm = () => {
           className={`h-2 w-14 ${step === 1 ? "bg-primary" : "backgroundDisabledColor"
             } rounded-sm mr-2`}
         ></div>
+        {/* <div
+          className={`h-2 w-14 ${step === 2 ? "bg-primary" : "backgroundDisabledColor"
+            } rounded-sm mr-2`}
+        ></div> */}
         <div
           className={`h-2 w-14 ${step === 2 ? "bg-primary" : "backgroundDisabledColor"
             } rounded-sm mr-2`}
@@ -82,10 +92,6 @@ const RegisterForm = () => {
         ></div>
         <div
           className={`h-2 w-14 ${step === 5 ? "bg-primary" : "backgroundDisabledColor"
-            } rounded-sm mr-2`}
-        ></div>
-        <div
-          className={`h-2 w-14 ${step === 6 ? "bg-primary" : "backgroundDisabledColor"
             } rounded-sm`}
         ></div>
       </div>
@@ -97,15 +103,15 @@ const RegisterForm = () => {
             values={values}
           />
         )}
-        {step === 2 && <EmailConfirmed nextStep={nextStep} />}
-        {step === 3 && (
+        {/* {step === 2 && <EmailConfirmed nextStep={nextStep} />} */}
+        {step === 2 && (
           <PickPlan
             nextStep={nextStep}
             handleChange={handleChange}
             values={values}
           />
         )}
-        {step === 4 && (
+        {step === 3 && (
           <CreateAccount
             nextStep={nextStep}
             handleChange={handleChange}
@@ -113,14 +119,14 @@ const RegisterForm = () => {
             values={values}
           />
         )}
-        {step === 5 && (
+        {step === 4 && values.plan !== "free" && (
           <StripeAccount
             nextStep={nextStep}
             onPaymentSuccess={handlePaymentSuccess}
             values={values}
           />
         )}
-        {step === 6 && <LoginToPortal />}
+        {step === 5 && <LoginToPortal />}
       </div>
     </div>
   );

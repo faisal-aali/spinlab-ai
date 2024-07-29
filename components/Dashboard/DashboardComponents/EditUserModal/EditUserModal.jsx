@@ -256,7 +256,7 @@ const EditUserModal = ({ open, onClose, role }) => {
                     />
                   </Field> */}
                 </div>
-                <div className={`grid gap-2`}>
+                {/* <div className={`grid gap-2`}>
                   <div className="opacity-45">
                     <label htmlFor="">Password</label>
                   </div>
@@ -270,9 +270,12 @@ const EditUserModal = ({ open, onClose, role }) => {
                     name="password"
                     required
                   />
-                </div>
+                </div> */}
               </div>
-              <div className="flex justify-end mb-10">
+              <div className="flex justify-end mb-10 gap-4">
+              <button className="bg-primary dark-blue-color uppercase rounded px-6 h-9 flex items-center justify-center text-lg font-bold hover-button-shadow">
+                  Update Password
+                </button>
                 <button className="bg-primary dark-blue-color rounded w-28 h-9 flex items-center justify-center text-lg font-bold hover-button-shadow">
                   UPDATE
                 </button>
