@@ -1,14 +1,10 @@
-// components/UploadModal.js
 import React, { useEffect, useState } from "react";
-import { Modal, Box, Typography, Button, IconButton, TextField, MenuItem } from "@mui/material";
-import {
-  Close as CloseIcon,
-  CloudUpload as CloudUploadIcon,
-} from "@mui/icons-material";
-import { blueGrey } from "@mui/material/colors";
+import { Modal, Box, IconButton, TextField, MenuItem, Snackbar, Alert } from "@mui/material";
+import { Close as CloseIcon } from "@mui/icons-material";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
-import schemaValidators from '../../../../schema-validators'
+import schemaValidators from "../../../../schema-validators";
+import axios from "axios";
 
 const style = {
   position: "absolute",
@@ -18,8 +14,8 @@ const style = {
   boxShadow: 24,
   p: 4,
   borderRadius: "8px",
-  maxHeight: '90vh',
-  overflow: 'auto'
+  maxHeight: "90vh",
+  overflow: "auto",
 };
 
 const validationSchema = Yup.object({
@@ -30,16 +26,18 @@ const validationSchema = Yup.object({
   weight: Yup.string().required("Required"),
   handedness: schemaValidators.user.handedness,
   email: schemaValidators.user.email,
-  plan: Yup.string().required("Required"),
   role: Yup.string().required("Required"),
 });
 
 const AddUserModal = ({ open, onClose, role }) => {
-  const [selectedRole, setSelectedRole] = useState(role)
+  const [selectedRole, setSelectedRole] = useState(role);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
 
   useEffect(() => {
-    setSelectedRole(role)
-  }, [role])
+    setSelectedRole(role);
+  }, [role]);
 
   useEffect(() => {
     const handleEsc = (event) => {
@@ -52,6 +50,41 @@ const AddUserModal = ({ open, onClose, role }) => {
       window.removeEventListener("keydown", handleEsc);
     };
   }, [onClose]);
+
+  const handleSubmit = async (values) => {
+    try {
+      const data = {
+        email: values.email,
+        name: `${values.firstName} ${values.lastName}`,
+        height: values.heightFt * 30.48 + values.heightIn * 2.54, // convert to cm
+        weight: values.weight,
+        handedness: values.handedness,
+        city: values.city,
+        country: values.country,
+        role: values.role,
+      };
+
+      const response = await axios.post("/api/players", data);
+
+      if (response.status === 200) {
+        setSnackbarMessage("Player added successfully!");
+        setSnackbarSeverity("success");
+        setSnackbarOpen(true);
+        setTimeout(() => {
+          onClose();
+        }, 2000);
+      }
+    } catch (error) {
+      console.error("Error adding player:", error);
+      setSnackbarMessage("Failed to add player. Please try again.");
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
+    }
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
 
   return (
     <Modal open={open} onClose={onClose} aria-labelledby="upload-modal-title">
@@ -74,13 +107,13 @@ const AddUserModal = ({ open, onClose, role }) => {
             weight: "",
             handedness: "",
             email: "",
-            plan: "",
+            password: "",
+            city: "",
+            country: "",
             role: role,
           }}
           validationSchema={validationSchema}
-          onSubmit={(values) => {
-            console.log(values);
-          }}
+          onSubmit={handleSubmit}
         >
           {({ errors, touched, setFieldValue }) => (
             <Form>
@@ -181,8 +214,16 @@ const AddUserModal = ({ open, onClose, role }) => {
                   <div className="opacity-45">
                     <label htmlFor="">Handedness</label>
                   </div>
-
-                  <TextField variant="outlined" select fullWidth defaultValue={'left'} InputProps={{ style: { height: 50 } }} onChange={(e) => setFieldValue('handedness', e.target.value)}>
+                  <TextField
+                    variant="outlined"
+                    select
+                    fullWidth
+                    defaultValue={'left'}
+                    InputProps={{ style: { height: 50 } }}
+                    onChange={(e) => setFieldValue('handedness', e.target.value)}
+                    error={Boolean(errors.handedness && touched.handedness)}
+                    helperText={errors.handedness && touched.handedness ? errors.handedness : ""}
+                  >
                     <MenuItem value={'left'}>Left</MenuItem>
                     <MenuItem value={'right'}>Right</MenuItem>
                   </TextField>
@@ -277,8 +318,19 @@ const AddUserModal = ({ open, onClose, role }) => {
                   ADD
                 </button>
               </div>
-            </Form>)}
+            </Form>
+          )}
         </Formik>
+        <Snackbar
+          open={snackbarOpen}
+          autoHideDuration={6000}
+          onClose={handleSnackbarClose}
+          message={snackbarMessage}
+        >
+          <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
+            {snackbarMessage}
+          </Alert>
+        </Snackbar>
       </Box>
     </Modal>
   );

@@ -1,6 +1,5 @@
-// src/components/History/History.js
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -9,49 +8,54 @@ import {
   TableHead,
   TableRow,
   Paper,
-  Box,
   Typography,
-  LinearProgress,
   IconButton,
 } from "@mui/material";
-import Pagination from '../../../Common/Pagination/Pagination'
-import DeleteUserModal from '../DeleteUserModal/DeleteUserModal'
-import AddUserModal from '../AddUserModal/AddUserModal'
+import Pagination from '../../../Common/Pagination/Pagination';
+import DeleteUserModal from '../DeleteUserModal/DeleteUserModal';
+import AddUserModal from '../AddUserModal/AddUserModal';
 import { useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
-
-const data = Array.from({ length: 6 }).map((_, index) => ({
-  id: index + 1,
-  firstName: 'James',
-  lastName: 'Anderson',
-  email: 'faisalali.ux@gmail.com',
-  imageUrl: "/assets/player.png",
-  date: "04/29/2024",
-  joiningDate: '05/03/2024',
-  expiryDate: '05/03/2024',
-  balance: 60,
-  plan: 'Monthly'
-}));
-
+import axios from 'axios';
 
 const Users = () => {
-  const user = useSession().data?.user || {}
-  const router = useRouter()
-  const searchParams = useSearchParams()
+  const user = useSession().data?.user || {};
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
   const [page, setPage] = useState(1);
-  const [showDeleteModal, setShowDeleteModal] = useState(false)
-  const [showAddModal, setShowAddModal] = useState(false)
-  const [searchQuery, setSearchQuery] = useState("")
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [data, setData] = useState([]);
+  const [userIdToDelete, setUserIdToDelete] = useState(null);
   const rowsPerPage = 5;
 
-  const role = searchParams.get('role')
+  const role = searchParams.get('role');
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get('/api/users', { params: { role } });
+      setData(response.data);
+    } catch (error) {
+      console.error('Failed to fetch data:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [role]);
 
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
   };
 
-  const paginatedData = data.filter(p => `${p.firstName} ${p.lastName}`.toLowerCase().match(searchQuery)).slice(
+  const handleDeleteClick = (id) => {
+    setUserIdToDelete(id);
+    setShowDeleteModal(true);
+  };
+
+  const paginatedData = data.filter(p => `${p.firstName} ${p.lastName}`.toLowerCase().includes(searchQuery.toLowerCase())).slice(
     (page - 1) * rowsPerPage,
     page * rowsPerPage
   );
@@ -96,7 +100,7 @@ const Users = () => {
               </TableHead>
               <TableBody className="leaderboard-table-body">
                 {paginatedData.map((row) => (
-                  <TableRow key={row.id}>
+                  <TableRow key={row._id}>
                     <TableCell className="!text-white" sx={{ minWidth: 100 }}>
                       <img
                         src={row.imageUrl}
@@ -106,7 +110,7 @@ const Users = () => {
                     </TableCell>
                     <TableCell>
                       <Typography variant="body2" className="!text-white !text-lg !font-bold">
-                        {row.firstName} {row.lastName}
+                        {row.name}
                       </Typography>
                     </TableCell>
                     <TableCell>
@@ -131,12 +135,12 @@ const Users = () => {
                     </TableCell>
                     {user.role === 'admin' &&
                       <TableCell className="!text-white">
-                        <IconButton onClick={() => setShowDeleteModal(true)}>
+                        <IconButton onClick={() => handleDeleteClick(row._id)}>
                           <img src="/assets/delete-icon.svg" />
                         </IconButton>
                       </TableCell>}
                     <TableCell className="!text-white" sx={{ minWidth: 75 }}>
-                      <IconButton onClick={() => router.push('/users/view?role=' + role)}>
+                      <IconButton onClick={() => router.push(`/users/view?role=${role}&id=${row._id}`)}>
                         <img src="/assets/open.svg" width={22} height={22} />
                       </IconButton>
                     </TableCell>
@@ -150,7 +154,11 @@ const Users = () => {
             count={Math.ceil(data.length / rowsPerPage)}
             onChange={handlePageChange}
           />
-          <DeleteUserModal open={showDeleteModal} onClose={() => setShowDeleteModal(false)} />
+          <DeleteUserModal
+            open={showDeleteModal}
+            onClose={() => setShowDeleteModal(false)}
+            userId={userIdToDelete}
+          />
           <AddUserModal open={showAddModal} onClose={() => setShowAddModal(false)} role={role} />
         </div>
       </div>

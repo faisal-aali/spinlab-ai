@@ -1,11 +1,10 @@
-// components/UploadModal.js
-import React, { useEffect } from "react";
-import { Modal, Box, IconButton, TextField, MenuItem } from "@mui/material";
-import {
-  Close as CloseIcon,
-} from "@mui/icons-material";
+// components/EditUserModal.js
+import React, { useEffect, useState } from "react";
+import { Modal, Box, IconButton, TextField, MenuItem, Snackbar  } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
+import axios from "axios";
 import schemaValidators from "@/schema-validators";
 
 const style = {
@@ -29,10 +28,9 @@ const validationSchema = Yup.object({
   weight: Yup.string().required("Required"),
   plan: Yup.string().required("Required"),
   role: Yup.string().required("Required"),
-  password: schemaValidators.user.password
 });
 
-const EditUserModal = ({ open, onClose, role }) => {
+const EditUserModal = ({ open, onClose, role, userData }) => {
   useEffect(() => {
     const handleEsc = (event) => {
       if (event.keyCode === 27) {
@@ -44,6 +42,25 @@ const EditUserModal = ({ open, onClose, role }) => {
       window.removeEventListener("keydown", handleEsc);
     };
   }, [onClose]);
+
+  const handleSubmit = async (values) => {
+    try {
+      const heightInCm = (values.heightFt * 30.48) + (values.heightIn * 2.54);
+      const updatedData = {
+        ...values,
+        height: heightInCm,
+        name: `${values.firstName} ${values.lastName}`
+      };
+
+      await axios.post(`/api/players/${userData._id}`, updatedData);
+      onClose(); 
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const heightFt = Math.floor(userData?.roleData?.height / 30.48); 
+  const heightIn = Math.round((userData?.roleData?.height % 30.48) / 2.54); 
 
   return (
     <Modal open={open} onClose={onClose} aria-labelledby="upload-modal-title">
@@ -59,20 +76,19 @@ const EditUserModal = ({ open, onClose, role }) => {
         </h2>
         <Formik
           initialValues={{
-            firstName: "",
-            lastName: "",
-            heightFt: "",
-            heightIn: "",
-            weight: "",
-            handedness: "",
-            plan: "",
-            role: role,
+            firstName: userData?.name.split(' ')[0] || "",
+            lastName: userData?.name.split(' ')[1] || "",
+            heightFt: heightFt || "",
+            heightIn: heightIn ||"",
+            weight: userData?.roleData.weight || "",
+            handedness: userData?.roleData.handedness || "left",
+            plan: userData?.plan || "monthly",
+            role: userData?.role,
             password: ""
           }}
           validationSchema={validationSchema}
-          onSubmit={(values) => {
-            console.log(values);
-          }}
+          onSubmit={handleSubmit}
+
         >
           {({ errors, touched, setFieldValue }) => (
             <Form>
@@ -173,32 +189,10 @@ const EditUserModal = ({ open, onClose, role }) => {
                   <div className="opacity-45">
                     <label htmlFor="">Handedness</label>
                   </div>
-                  <TextField variant="outlined" select fullWidth defaultValue={'left'} InputProps={{ style: { height: 50 } }} onChange={(e) => setFieldValue('handedness', e.target.value)}>
+                  <TextField variant="outlined" select fullWidth defaultValue={userData?.roleData.handedness} InputProps={{ style: { height: 50 } }} onChange={(e) => setFieldValue('handedness', e.target.value)}>
                     <MenuItem value={'left'}>Left</MenuItem>
                     <MenuItem value={'right'}>Right</MenuItem>
                   </TextField>
-                  {/* <Field
-                    className={`w-full text-primary bg-transparent px-3 rounded-lg py-3 text-white rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
-                    ${errors.handedness && touched.handedness
-                        ? "border-red-900	border"
-                        : "primary-border focus:border-green-500"
-                      }`}
-                    type="text"
-                    as='select'
-                    name="handedness"
-                    required
-                  >
-                    <option
-                      className="bg-black"
-                      value={'left'}
-                      label={'Left'}
-                    />
-                    <option
-                      className="bg-black"
-                      value={'right'}
-                      label={'Right'}
-                    />
-                  </Field> */}
                 </div>
                 <div className="grid gap-2">
                   <div className="opacity-45">
@@ -208,22 +202,6 @@ const EditUserModal = ({ open, onClose, role }) => {
                     <MenuItem value={'monthly'}>Monthly</MenuItem>
                     <MenuItem value={'annual'}>Annual</MenuItem>
                   </TextField>
-                  {/* <Field
-                    name="plan"
-                    as='select'
-                    className="w-full py-3 px-3 bg-transparent primary-border rounded text-primary rounded-lg focus:outline-none focus:outline-none focus:border-green-500 placeholder:opacity-45"
-                  >
-                    <option
-                      className="bg-black"
-                      value={'monthly'}
-                      label={'Monthly'}
-                    />
-                    <option
-                      className="bg-black"
-                      value={'annual'}
-                      label={'Annual'}
-                    />
-                  </Field> */}
                 </div>
                 <div className="grid gap-2">
                   <div className="opacity-45">
@@ -234,53 +212,18 @@ const EditUserModal = ({ open, onClose, role }) => {
                     <MenuItem value={'staff'}>Staff</MenuItem>
                     <MenuItem value={'trainer'}>Trainer</MenuItem>
                   </TextField>
-                  {/* <Field
-                    name="role"
-                    as='select'
-                    className="w-full py-3 px-3 bg-transparent primary-border rounded text-primary rounded-lg focus:outline-none focus:outline-none focus:border-green-500 placeholder:opacity-45"
-                  >
-                    <option
-                      className="bg-black"
-                      value={'player'}
-                      label={'Player'}
-                    />
-                    <option
-                      className="bg-black"
-                      value={'staff'}
-                      label={'Staff'}
-                    />
-                    <option
-                      className="bg-black"
-                      value={'trainer'}
-                      label={'Trainer'}
-                    />
-                  </Field> */}
                 </div>
-                {/* <div className={`grid gap-2`}>
-                  <div className="opacity-45">
-                    <label htmlFor="">Password</label>
-                  </div>
-                  <Field
-                    className={`w-full bg-transparent px-3 rounded-lg py-3 text-white rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
-                    ${errors.password && touched.password
-                        ? "border-red-900	border"
-                        : "primary-border focus:border-green-500"
-                      }`}
-                    type="text"
-                    name="password"
-                    required
-                  />
-                </div> */}
               </div>
               <div className="flex justify-end mb-10 gap-4">
-              <button className="bg-primary dark-blue-color uppercase rounded px-6 h-9 flex items-center justify-center text-lg font-bold hover-button-shadow">
+                <button type="button" className="bg-primary dark-blue-color uppercase rounded px-6 h-9 flex items-center justify-center text-lg font-bold hover-button-shadow">
                   Update Password
                 </button>
-                <button className="bg-primary dark-blue-color rounded w-28 h-9 flex items-center justify-center text-lg font-bold hover-button-shadow">
+                <button type="submit" className="bg-primary dark-blue-color rounded w-28 h-9 flex items-center justify-center text-lg font-bold hover-button-shadow">
                   UPDATE
                 </button>
               </div>
-            </Form>)}
+            </Form>
+          )}
         </Formik>
       </Box>
     </Modal>
