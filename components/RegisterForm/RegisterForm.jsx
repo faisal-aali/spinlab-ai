@@ -4,7 +4,7 @@ import SelectRole from "../../components/RegisterForm/SelectRole/SelectRole";
 import EmailConfirmed from "../../components/RegisterForm/EmailConfirmed/EmailConfirmed";
 import PickPlan from "../../components/RegisterForm/PickPlan/PickPlan";
 import CreateAccount from "../../components/RegisterForm/CreateAccount/CreateAccount";
-import LoginToPortal from "../../components/RegisterForm/LoginToPortal/LoginToPortal";
+import OpenDashboard from "../../components/RegisterForm/OpenDashboard/OpenDashboard";
 import StripeAccount from "../../components/RegisterForm/StripeAccount/StripeAccount";
 import { useSearchParams } from "next/navigation";
 
@@ -19,6 +19,7 @@ const RegisterForm = () => {
     role: "",
     city: "",
     country: "",
+    emailVerified: searchParams.get('emailVerified') || false,
     password: "",
     confirmPassword: "",
     plan: "",
@@ -41,25 +42,6 @@ const RegisterForm = () => {
   const handleChange = (field) => (e) => {
     console.log('handlechange called', field, e)
     setValues(v => ({ ...v, [field]: e.target.value }));
-  };
-
-  const handleSubmit = async (values) => {
-    console.log("Submitting form with values:", values);
-    await handleSubmitRegister(values);
-  };
-
-  const handleSubmitRegister = async (values) => {
-    console.log(values);
-    if (values) {
-      const response = await fetch("/api/auth/register", {
-        method: "POST",
-        body: JSON.stringify(values),
-      });
-      console.log(response);
-
-      return response;
-    }
-    return null;
   };
 
   const nextStep = () => {
@@ -117,8 +99,6 @@ const RegisterForm = () => {
         {step === 3 && (
           <CreateAccount
             nextStep={nextStep}
-            handleChange={handleChange}
-            onSubmit={handleSubmit}
             values={values}
           />
         )}
@@ -129,7 +109,7 @@ const RegisterForm = () => {
             values={values}
           />
         )}
-        {step === 5 && <LoginToPortal />}
+        {step === 5 && <OpenDashboard />}
       </div>
     </div>
   );

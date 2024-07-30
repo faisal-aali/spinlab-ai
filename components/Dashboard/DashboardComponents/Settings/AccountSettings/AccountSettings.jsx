@@ -1,19 +1,47 @@
-import { useState } from "react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { useEffect, useRef, useState } from "react";
+import { Formik, Form, Field, ErrorMessage, useFormikContext, useFormik } from "formik";
 import * as Yup from "yup";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useSession } from "next-auth/react";
 import { Checkbox, FormControlLabel, MenuItem, TextField } from "@mui/material";
 import schemaValidators from "@/schema-validators";
+import axios from "axios";
+import { getNames } from 'country-list'
 
-const AccountSettings = () => {
-  const user = useSession().data?.user || {}
+const AccountSettings = ({ _user }) => {
+  const formikRef = useRef()
+  const [user, setUser] = useState(_user)
+  // const user = useSession().data?.user || {}
+  const [response, setResponse] = useState({})
+  const countries = getNames()
 
   const [imageSrc, setImageSrc] = useState("https://placehold.co/100x100");
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [pwMsg, setPwMsg] = useState()
+
+  const reinitializeForm = (user) => {
+    Object.keys(user).forEach(field => {
+      formikRef.current.setFieldValue(field, user[field])
+    })
+  }
+
+  useEffect(() => {
+    reinitializeForm({
+      ...user,
+      ...user.roleData,
+      firstName: user.name.split(' ')[0],
+      lastName: user.name.split(' ')[1] || "",
+      age: user.roleData.age || ''
+    })
+  }, [user])
+
+  const fetchUser = () => {
+    axios.get('/api/users', { params: { id: user._id } }).then(res => setUser({
+      ...res.data[0]
+    })).catch(console.error)
+  }
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
@@ -47,17 +75,39 @@ const AccountSettings = () => {
     })
   }
 
+  const handleUpdateProfile = (values) => {
+    values.name = `${values.firstName} ${values.lastName}`.trim()
+    const data = {}
+    Object.keys(values).filter(key => values[key]).forEach(key => {
+      data[key] = values[key]
+    })
+    axios.post(`/api/${(user.role === 'player' && 'players') || (user.role === 'trainer' && 'trainers') || (user.role === 'staff' && 'staff') || (user.role === 'admin' && 'admin')}/${user._id}`, data).then(res => {
+      setResponse({
+        type: 'profile',
+        severity: 'success',
+        message: 'Saved changes!'
+      })
+    }).catch(err => {
+      setResponse({
+        type: 'profile',
+        severity: 'error',
+        message: err.response?.data?.message || err.message
+      })
+    }).finally(() => fetchUser())
+  }
+
   const validationSchema = Yup.object({
     firstName: Yup.string().required("Required"),
     lastName: Yup.string().required("Required"),
     email: Yup.string().email("Invalid email address").required("Required"),
-    bio: Yup.string().required("Required"),
-    age: Yup.number().required("Required"),
-    heightFt: Yup.number().required("Required"),
-    heightIn: Yup.number().max(11).required("Required"),
-    handedness: Yup.string().required("Required"),
-    weight: Yup.number().required("Required"),
-    location: Yup.string().required("Required"),
+    bio: Yup.string().optional(),
+    age: Yup.number().optional().nullable(),
+    heightFt: Yup.number().optional(),
+    heightIn: Yup.number().max(11).optional(),
+    handedness: Yup.string().optional(),
+    weight: Yup.number().optional(),
+    city: Yup.string().optional(),
+    country: Yup.string().optional(),
   });
 
   const passwordValidationSchema = Yup.object({
@@ -71,27 +121,28 @@ const AccountSettings = () => {
   return (
     <div className="rounded-lg bg-dark-blue space-y-8 mt-4">
       <Formik
+        innerRef={formikRef}
+        enableReinitialize
         initialValues={{
-          firstName: "",
-          lastName: "",
-          email: "",
-          bio: "",
-          age: "",
+          firstName: user.name.split(' ')[0],
+          lastName: user.name.split(' ')[1] || "",
+          email: user.email,
+          bio: user.bio,
+          age: user.roleData?.age || '',
           heightFt: "",
           heightIn: "",
-          handedness: "",
-          weight: "",
-          location: "",
+          handedness: user.roleData?.handedness,
+          weight: user.roleData?.weight,
+          city: user.city,
+          country: user.country,
           currentPassword: "",
           newPassword: "",
           confirmPassword: "",
         }}
         validationSchema={validationSchema}
-        onSubmit={(values) => {
-          console.log(values);
-        }}
+        onSubmit={handleUpdateProfile}
       >
-        {({ errors, touched, setFieldValue }) => (
+        {({ errors, touched, setFieldValue, values }) => (
           <Form>
             <div className="space-y-4 primary-border rounded-lg flex items-center p-4">
               <div className="basis-2/5 flex pl-6 2xl:pl-20 justify-between flex-col">
@@ -161,40 +212,38 @@ const AccountSettings = () => {
                   </p>
                 </div>
               </div>
-              <div className="basis-3/5">
-                <div className="flex items-center mb-4 gap-6">
-                  <div className="w-1/2">
-                    <div className="mb-1 opacity-45">
-                      <label htmlFor="">First Name</label>
-                    </div>
-                    <div>
-                      <Field
-                        name="firstName"
-                        className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${errors.firstName && touched.firstName
-                          ? "border-red-900	border"
-                          : "primary-border focus:border-green-500"
-                          }`}
-                        placeholder="First Name"
-                      />
-                    </div>
+              <div className="basis-3/5 grid grid-cols-2 gap-y-2 gap-x-6">
+                <div>
+                  <div className="mb-1 opacity-45">
+                    <label htmlFor="">First Name</label>
                   </div>
-                  <div className="w-1/2">
-                    <div className="mb-1 opacity-45">
-                      <label htmlFor="">Last Name</label>
-                    </div>
-                    <div>
-                      <Field
-                        name="lastName"
-                        className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${errors.lastName && touched.lastName
-                          ? "border-red-900	border"
-                          : "primary-border focus:border-green-500"
-                          }`}
-                        placeholder="Last Name"
-                      />
-                    </div>
+                  <div>
+                    <Field
+                      name="firstName"
+                      className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${errors.firstName && touched.firstName
+                        ? "border-red-900	border"
+                        : "primary-border focus:border-green-500"
+                        }`}
+                      placeholder="First Name"
+                    />
                   </div>
                 </div>
-                <div className={`mb-4 ${user.role === 'staff' && 'hidden'}`}>
+                <div>
+                  <div className="mb-1 opacity-45">
+                    <label htmlFor="">Last Name</label>
+                  </div>
+                  <div>
+                    <Field
+                      name="lastName"
+                      className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${errors.lastName && touched.lastName
+                        ? "border-red-900	border"
+                        : "primary-border focus:border-green-500"
+                        }`}
+                      placeholder="Last Name"
+                    />
+                  </div>
+                </div>
+                {/* <div className={`mb-4 ${user.role === 'staff' && 'hidden'}`}>
                   <div className="mb-1 opacity-45">
                     <label htmlFor="">Email</label>
                   </div>
@@ -207,8 +256,8 @@ const AccountSettings = () => {
                       }`}
                     placeholder="Email"
                   />
-                </div>
-                <div className={`mb-4 `}>
+                </div> */}
+                <div className="col-span-2">
                   <div className="mb-1 opacity-45">
                     <label htmlFor="">Bio</label>
                   </div>
@@ -222,127 +271,122 @@ const AccountSettings = () => {
                     placeholder="Enter your bio"
                   />
                 </div>
-                <div className={`flex items-center mb-4 gap-6 ${user.role !== 'staff' && 'hidden'}`}>
-                  <div className="w-1/2">
-                    <div className="mb-1 opacity-45">
-                      <label htmlFor="">Email</label>
-                    </div>
-                    <Field
-                      name="email"
-                      type="email"
-                      className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${errors.email && touched.email
-                        ? "border-red-900	border"
-                        : "primary-border focus:border-green-500"
-                        }`}
-                      placeholder="Email"
-                    />
+                <div>
+                  <div className="mb-1 opacity-45">
+                    <label htmlFor="">Email</label>
                   </div>
-                  <div className="w-1/2">
-                    <div className="mb-1 opacity-45">
-                      <label htmlFor="">Location</label>
-                    </div>
-                    <Field
-                      name="location"
-                      className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${errors.location && touched.location
-                        ? "border-red-900	border"
-                        : "primary-border focus:border-green-500"
-                        }`}
-                      placeholder="Location"
-                    />
-                  </div>
+                  <Field
+                    name="email"
+                    readOnly={true}
+                    type="email"
+                    className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${errors.email && touched.email
+                      ? "border-red-900	border"
+                      : "primary-border focus:border-green-500"
+                      }`}
+                    placeholder="Email"
+                  />
                 </div>
-                <div className={`flex items-center mb-4 gap-6 ${user.role !== 'player' && 'hidden'}`}>
-                  <div className="w-1/2">
-                    <div className="mb-1 opacity-45">
-                      <label htmlFor="">Age</label>
-                    </div>
-                    <Field
-                      name="age"
-                      type='number'
-                      className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${errors.age && touched.age
-                        ? "border-red-900	border"
-                        : "primary-border focus:border-green-500"
-                        }`}
-                      placeholder="Age"
-                    />
+                <div>
+                  <div className="mb-1 opacity-45">
+                    <label htmlFor="">City</label>
                   </div>
-                  <div className="flex flex-col w-1/2 gap-1">
-                    <div className="opacity-45">
-                      <label htmlFor="">Height</label>
-                    </div>
-                    <div className="flex gap-2">
-                      <div className="relative">
-                        <Field
-                          name="heightFt"
-                          type='number'
-                          className={`py-3 px-3 dark-blue-background rounded-lg w-full text-primary focus:outline-none placeholder:opacity-45 ${errors.heightFt && touched.heightFt
-                            ? "border-red-900	border"
-                            : "primary-border focus:border-green-500"
-                            }`}
-                        />
-                        <div className="absolute bottom-3 right-4 opacity-50 text-white">ft</div>
-                      </div>
-                      <div className="relative">
-                        <Field
-                          name="heightIn"
-                          type='number'
-                          className={`py-3 px-3 dark-blue-background rounded-lg  w-full text-primary focus:outline-none placeholder:opacity-45 ${errors.heightIn && touched.heightIn
-                            ? "border-red-900	border"
-                            : "primary-border focus:border-green-500"
-                            }`}
-                        />
-                        <div className="absolute bottom-3 right-4 opacity-50 text-white">in</div>
-                      </div>
-                    </div>
-                  </div>
+                  <Field
+                    name="city"
+                    className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${errors.city && touched.city
+                      ? "border-red-900	border"
+                      : "primary-border focus:border-green-500"
+                      }`}
+                    placeholder="City"
+                  />
                 </div>
-                <div className={`flex items-center mb-4 gap-6 ${user.role !== 'player' && 'hidden'}`}>
-                  <div className="w-1/2">
-                    <div className="mb-1 opacity-45">
-                      <label htmlFor="">Handedness</label>
-                    </div>
-                    <TextField variant="outlined" select defaultValue={'left'} fullWidth InputProps={{ style: { height: 50 } }} onChange={(e) => setFieldValue('handedness', e.target.value)}>
-                      <MenuItem value={'left'}>Left</MenuItem>
-                      <MenuItem value={'right'}>Right</MenuItem>
-                    </TextField>
-                    {/* <Field
-                      name="handedness"
-                      as='select'
-                      className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${errors.handedness && touched.handedness
-                        ? "border-red-900	border"
-                        : "primary-border focus:border-green-500"
-                        }`}
-                      placeholder="Handedness"
-                    >
-                      <option
-                        className="bg-black"
-                        value={'left'}
-                        label={'Left'}
+                <div>
+                  <div className="mb-1 opacity-45">
+                    <label htmlFor="">Country</label>
+                  </div>
+                  <TextField variant="outlined" select value={values.country} fullWidth InputProps={{ sx: { height: '50px' } }} onChange={(e) => setFieldValue('country', e.target.value)}>
+                    {countries.map((country) => (
+                      <MenuItem key={country} value={country}>{country}</MenuItem>
+                    ))}
+                  </TextField>
+                </div>
+                <div className={`${user.role !== 'player' && 'hidden'}`}>
+                  <div className="mb-1 opacity-45">
+                    <label htmlFor="">Age</label>
+                  </div>
+                  <Field
+                    name="age"
+                    type='number'
+                    className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${errors.age && touched.age
+                      ? "border-red-900	border"
+                      : "primary-border focus:border-green-500"
+                      }`}
+                    placeholder="Age"
+                  />
+                </div>
+                <div className={`flex flex-col gap-1 ${user.role !== 'player' && 'hidden'}`}>
+                  <div className="opacity-45">
+                    <label htmlFor="">Height</label>
+                  </div>
+                  <div className="flex gap-2">
+                    <div className="relative">
+                      <Field
+                        name="heightFt"
+                        type='number'
+                        className={`py-3 px-3 dark-blue-background rounded-lg w-full text-primary focus:outline-none placeholder:opacity-45 ${errors.heightFt && touched.heightFt
+                          ? "border-red-900	border"
+                          : "primary-border focus:border-green-500"
+                          }`}
                       />
-                      <option
-                        className="bg-black"
-                        value={'right'}
-                        label={'Right'}
-                      />
-                    </Field> */}
-                  </div>
-                  <div className="w-1/2 relative">
-                    <div className="mb-1 opacity-45">
-                      <label htmlFor="">Weight</label>
+                      <div className="absolute bottom-3 right-4 opacity-50 text-white">ft</div>
                     </div>
-                    <Field
-                      name="weight"
-                      type='number'
-                      className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${errors.weight && touched.weight
-                        ? "border-red-900	border"
-                        : "primary-border focus:border-green-500"
-                        }`}
-                      placeholder="Weight"
-                    />
-                    <div className="absolute bottom-3 right-4 opacity-50 text-white">lbs</div>
+                    <div className="relative">
+                      <Field
+                        name="heightIn"
+                        type='number'
+                        className={`py-3 px-3 dark-blue-background rounded-lg  w-full text-primary focus:outline-none placeholder:opacity-45 ${errors.heightIn && touched.heightIn
+                          ? "border-red-900	border"
+                          : "primary-border focus:border-green-500"
+                          }`}
+                      />
+                      <div className="absolute bottom-3 right-4 opacity-50 text-white">in</div>
+                    </div>
                   </div>
                 </div>
-                <div className="flex justify-end gap-4 mt-4">
+                <div className={`${user.role !== 'player' && 'hidden'}`}>
+                  <div className="mb-1 opacity-45">
+                    <label htmlFor="">Handedness</label>
+                  </div>
+                  <TextField variant="outlined" select defaultValue={'left'} fullWidth InputProps={{ style: { height: 50 } }} onChange={(e) => setFieldValue('handedness', e.target.value)}>
+                    <MenuItem value={'left'}>Left</MenuItem>
+                    <MenuItem value={'right'}>Right</MenuItem>
+                  </TextField>
+                </div>
+                <div className={`relative ${user.role !== 'player' && 'hidden'}`}>
+                  <div className="mb-1 opacity-45">
+                    <label htmlFor="">Weight</label>
+                  </div>
+                  <Field
+                    name="weight"
+                    type='number'
+                    className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${errors.weight && touched.weight
+                      ? "border-red-900	border"
+                      : "primary-border focus:border-green-500"
+                      }`}
+                    placeholder="Weight"
+                  />
+                  <div className="absolute bottom-3 right-4 opacity-50 text-white">lbs</div>
+                </div>
+                <div className={`flex flex-row col-span-2 items-center gap-2 mt-2 ${user.role !== 'player' && 'hidden'}`}>
+                  <div>
+                    <Checkbox defaultChecked style={{ width: 20 }} />
+                  </div>
+                  <div className="mb-1 opacity-45">
+                    <label htmlFor="">Opt out of Leaderboard</label>
+                  </div>
+                </div>
+                {response.type === 'profile' && <div className={`flex justify-end col-span-2 ${response.severity === 'success' ? 'text-primary' : 'text-error'}`}>{response.message}</div>}
+                <div></div>
+                <div className="flex justify-end gap-4 col-span-2">
                   <button
                     type="button"
                     className="bg-white dark-blue-color px-4 py-1 rounded font-bold uppercase text-sm"
@@ -474,7 +518,7 @@ const AccountSettings = () => {
           </Form>
         )}
       </Formik>
-      <div className={`space-y-4 primary-border rounded-lg flex items-center p-4 mt-8 ${user.role !== 'player' && 'hidden'}`}>
+      {/* <div className={`space-y-4 primary-border rounded-lg flex items-center p-4 mt-8 ${user.role !== 'player' && 'hidden'}`}>
         <div className="basis-2/5 flex pl-6 2xl:pl-20 justify-between flex-col">
           <div>
             <h2 className="text-xl font-bold">Additional Settings</h2>
@@ -484,14 +528,6 @@ const AccountSettings = () => {
           </div>
         </div>
         <div className="basis-3/5">
-          <div className="w-1/2 flex items-center gap-2">
-            <div>
-              <Checkbox defaultChecked style={{ width: 20 }} />
-            </div>
-            <div className="mb-1 opacity-45">
-              <label htmlFor="">Opt out of Leaderboard</label>
-            </div>
-          </div>
           <div className="flex justify-end gap-4 mt-4">
             <button
               type="button"
@@ -507,8 +543,8 @@ const AccountSettings = () => {
             </button>
           </div>
         </div>
-      </div>
-    </div>
+      </div> */}
+    </div >
   );
 };
 

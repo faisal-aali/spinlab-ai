@@ -1,8 +1,10 @@
 "use client";
 import { Checkbox } from '@mui/material';
+import axios from 'axios';
 import { Formik, Form, Field } from 'formik';
 import { signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import * as Yup from 'yup';
 
 const roleSchema = Yup.object().shape({
@@ -12,12 +14,30 @@ const roleSchema = Yup.object().shape({
 
 const SelectRole = ({ nextStep, handleChange, values }) => {
   const router = useRouter()
+  const [error, setError] = useState('')
 
   const handleGoBack = async (e) => {
     console.log('handleGoBack clicked')
     e.preventDefault()
     await signOut({ redirect: false }).catch(console.error)
     router.replace('/login')
+  }
+
+  const checkEmail = (email) => {
+    return new Promise((resolve, reject) => {
+      axios.get('/api/users/emailExists', {
+        params: {
+          email
+        }
+      }).then(res => {
+        const exists = res.data
+        if (exists) reject('Email already exists')
+        else resolve()
+      }).catch(err => {
+        console.error(err)
+        reject(`Error occured: ${err.response.data.message || err.message}`)
+      })
+    })
   }
 
   return (
@@ -29,7 +49,9 @@ const SelectRole = ({ nextStep, handleChange, values }) => {
           console.log('selectrole submit', values);
           handleChange("role")({ target: { value: values.role } });
           handleChange("email")({ target: { value: values.email } });
-          nextStep();
+          checkEmail(values.email).then(() => {
+            nextStep();
+          }).catch(setError)
         }}
       >
         {({ errors, touched, setFieldValue, values }) => (
@@ -54,6 +76,7 @@ const SelectRole = ({ nextStep, handleChange, values }) => {
                   Trainer
                 </button>
               </div>
+              {errors.role && touched.role ? <div className="text-red-500 text-sm">{errors.role}</div> : null}
               {/* <div className='flex flex-row  gap-[31px]'>
               <div className='flex flex-row items-center gap-[12px]'>
                 <div>
@@ -79,8 +102,9 @@ const SelectRole = ({ nextStep, handleChange, values }) => {
                   placeholder="Email"
                   className="w-full py-3 px-3 bg-transparent primary-border rounded text-white rounded-lg focus:outline-none focus:outline-none focus:border-green-500 placeholder:opacity-45"
                 />
-                {errors.email && touched.email ? <div className="text-red-500 text-sm">{errors.email}</div> : null}
               </div>
+              {errors.email && touched.email ? <div className="text-red-500 text-sm">{errors.email}</div> : null}
+              {error ? <div className="text-red-500 text-sm">{error}</div> : null}
               <button type="submit" className="w-full bg-green-500 bg-primary rounded-lg text-black font-normal py-3 rounded hover-shadow focus:outline-none">CONTINUE</button>
               <button onClick={handleGoBack}>Go Back to Login</button>
             </div>

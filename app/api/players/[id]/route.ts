@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
             height: (data.height || user.roleData.height),
             handedness: (data.handedness || user.roleData.handedness),
             weight: (data.weight || user.roleData.weight),
-            anonymous: (data.anonymous || user.roleData.anonymous),
+            anonymous: (data.anonymous !== undefined ? data.anonymous : user.roleData.anonymous),
         }
 
         await user.save()

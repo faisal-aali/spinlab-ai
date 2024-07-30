@@ -1,14 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Tabs, Tab } from "@mui/material";
 import AccountSettings from "./AccountSettings/AccountSettings";
 import BillingTab from "./Billings/Billings";
 import { useSession } from "next-auth/react";
 
-const Settings = () => {
-  const user = useSession().data?.user || {}
+const Settings = ({ _user }) => {
+  // const user = useSession().data?.user || {}
   const [tabIndex, setTabIndex] = useState(0);
+
+  useEffect(() => {
+    console.log('user is', _user)
+  }, [])
 
   const handleTabChange = (event, newValue) => {
     setTabIndex(newValue);
@@ -57,11 +61,11 @@ const Settings = () => {
             }}
           >
             <Tab label="Account" />
-            {['player', 'trainer'].includes(user.role) && <Tab label="Billing" />}
+            {['player', 'trainer'].includes(_user.role) && <Tab label="Billing" />}
           </Tabs>
 
-          {tabIndex === 0 && <AccountSettings />}
-          {tabIndex === 1 && <BillingTab />}
+          {tabIndex === 0 && <AccountSettings _user={_user} />}
+          {tabIndex === 1 && <BillingTab _user={_user} />}
         </div>
       </div>
     </div>

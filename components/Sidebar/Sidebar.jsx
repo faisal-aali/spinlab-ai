@@ -153,8 +153,8 @@ const Sidebar = ({ showSidebar, setShowSidebar }) => {
               className="w-10 h-10 rounded-full"
             />
             <div>
-              <p className={`font-semibold ${pathname === '/profile' && 'text-black'}`}>Faisal Ali ({user.role})</p>
-              <p className={`text-sm ${pathname === '/profile' ? 'text-black' : 'text-zinc-400'}`}>FaisalAli.us@gmail.com</p>
+              <p className={`font-semibold ${pathname === '/profile' && 'text-black'}`}>{user.name} ({user.role})</p>
+              <p className={`text-sm ${pathname === '/profile' ? 'text-black' : 'text-zinc-400'}`}>{user.email}</p>
             </div>
           </div>
           <div className="mb-8">

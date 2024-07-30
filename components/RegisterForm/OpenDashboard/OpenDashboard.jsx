@@ -1,8 +1,11 @@
 "use client";
 import React from "react";
-import Link from "next/link";
+// import Link from "next/link";
+import { useRouter } from "next/navigation";
 
-const LoginToPortal = ({ nextStep, handleSubmitRegister }) => {
+const LoginToPortal = () => {
+  const router = useRouter()
+
   return (
     <div className="bg-transparent border primary-border rounded-lg max-w-lg">
       <div className="py-8">
@@ -14,15 +17,14 @@ const LoginToPortal = ({ nextStep, handleSubmitRegister }) => {
           Instagram (@spinlabai) and tag us in your posts.
         </p>
         <div className="text-center px-5 mt-8">
-          <Link href="/login">
-            <button
-              onClick={handleSubmitRegister}
-              type="submit"
-              className="bg-primary rounded-lg w-full text-black font-normal px-3 py-3 rounded hover-shadow focus:outline-none"
-            >
-              LOG IN TO THE WEB PORTAL
-            </button>
-          </Link>
+          <button
+            onClick={() => router.replace('/dashboard')}
+            type="submit"
+            className="bg-primary rounded-lg w-full text-black font-normal px-3 py-3 rounded hover-shadow focus:outline-none"
+          >
+            {/* LOG IN TO THE WEB PORTAL */}
+            OPEN DASHBOARD
+          </button>
         </div>
       </div>
     </div>

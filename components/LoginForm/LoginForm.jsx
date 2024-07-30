@@ -161,9 +161,15 @@ const LoginForm = () => {
               <div>
                 <img src="/assets/google-icon.png" width={32} height={32}></img>
               </div>
-              <div>
+              <p style={{
+                fontFamily: `"Euclid Circular A", "Helvetica Neue", Helvetica, Arial, sans-serif !important`,
+                fontWeight: 700,
+                fontSize: '16px',
+                lineHeight: '28px',
+                color: 'rgb(92, 108, 117)'
+              }}>
                 Continue with Google
-              </div>
+              </p>
             </div>
           </button>
           <p className="text-zinc-400 text-center mt-6">

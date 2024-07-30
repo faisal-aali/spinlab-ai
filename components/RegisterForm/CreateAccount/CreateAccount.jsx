@@ -3,6 +3,9 @@ import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { getNames } from "country-list";
 import { MenuItem, TextField } from "@mui/material";
+import { useState } from "react";
+import axios, { AxiosError } from 'axios'
+import { signIn, signOut } from "next-auth/react";
 
 const accountSchema = Yup.object().shape({
   firstName: Yup.string()
@@ -29,17 +32,38 @@ const accountSchema = Yup.object().shape({
     .required("Confirm password is required"),
 });
 
-const CreateAccount = ({ nextStep, handleChange, values, onSubmit }) => {
+const CreateAccount = ({ nextStep, values }) => {
+  const [error, setError] = useState('')
   const countries = getNames();
+
+  const onSubmit = (values) => {
+    return new Promise((resolve, reject) => {
+      if (!values) reject('Invalid request')
+
+      axios.post(values.role === 'player' ? "/api/players" : values.role === 'trainer' ? "/api/trainers" : "invalid_role", {
+        ...values,
+        name: `${values.firstName} ${values.lastName}`.trim()
+      }).then(res => {
+        resolve('User created')
+      }).catch(err => {
+        console.error(err)
+        reject(`Error occured: ${(err.response.data.message || err.message)}`)
+      })
+    })
+  }
 
   return (
     <Formik
       initialValues={values}
       validationSchema={accountSchema}
       onSubmit={(values) => {
-        onSubmit(values);
-        nextStep();
         console.log("Account Details:", values);
+        onSubmit(values).then(async res => {
+          await signIn('credentials', { email: values.email, password: values.password, redirect: false }).catch(err => signOut({ redirect: false }))
+          nextStep();
+        }).catch(err => {
+          setError(err)
+        })
       }}
     >
       {({ errors, touched, setFieldValue }) => (
@@ -137,6 +161,9 @@ const CreateAccount = ({ nextStep, handleChange, values, onSubmit }) => {
                     {errors.confirmPassword}
                   </div>
                 ) : null}
+              </div>
+              <div className={`text-error ${!error && 'hidden'}`}>
+                {error}
               </div>
               <div className="text-center">
                 <button
