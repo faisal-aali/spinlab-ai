@@ -39,16 +39,20 @@ export async function POST(req: NextRequest) {
 
         if (Object.keys(data).length == 0) return NextResponse.json({ message: 'BAD REQUEST' }, { status: 400 })
 
+        console.log('received data', data)
+
         user.avatarUrl = (data.avatarUrl || user.avatarUrl);
         user.name = (data.name || user.name);
         user.bio = (data.bio || user.bio);
         user.city = (data.city || user.city);
         user.country = (data.country || user.country);
-        user.roleData.age = (data.age || user.roleData.age);
-        user.roleData.height = (data.height || user.roleData.height);
-        user.roleData.handedness = (data.handedness || user.roleData.handedness);
-        user.roleData.weight = (data.weight || user.roleData.weight);
-        user.roleData.anonymous = (data.anonymous || user.roleData.anonymous);
+        user.roleData = {
+            age: (data.age || user.roleData.age),
+            height: (data.height || user.roleData.height),
+            handedness: (data.handedness || user.roleData.handedness),
+            weight: (data.weight || user.roleData.weight),
+            anonymous: (data.anonymous || user.roleData.anonymous),
+        }
 
         await user.save()
 
