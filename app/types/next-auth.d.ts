@@ -10,6 +10,7 @@ declare module "next-auth" {
             _id: string,
             name: string,
             role: string,
+            emailVerified: boolean,
         }
     }
     interface User<IUser> { }

@@ -94,6 +94,10 @@ h4 {
     color: rgb(var(--primary-color));
   }
 
+  .text-error {
+    color: #F52323;
+  }
+
   .text-selected {
     color: #090F21;
   }

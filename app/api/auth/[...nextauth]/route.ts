@@ -36,6 +36,7 @@ export const authOption: AuthOptions = {
                 token._id = user._id;
                 token.name = user.name;
                 token.role = user.role;
+                token.emailVerified = user.emailVerified;
             }
             return token
         },
@@ -44,6 +45,7 @@ export const authOption: AuthOptions = {
             session.user._id = token._id as string;
             session.user.name = token.name as string;
             session.user.role = token.role as string;
+            session.user.emailVerified = token.emailVerified as boolean;
 
             return session;
         }
@@ -89,7 +91,8 @@ export const authOption: AuthOptions = {
                         return {
                             id: profile.sub,
                             name: profile.name,
-                            email: profile.email
+                            email: profile.email,
+                            emailVerified: true
                         }
                     } else {
                         return user;

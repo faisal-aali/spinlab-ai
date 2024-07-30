@@ -43,6 +43,7 @@ export async function POST(req: NextRequest) {
             avatarUrl: Yup.string().optional(),
             city: Yup.string().optional(),
             country: Yup.string().optional(),
+            emailVerified: Yup.boolean().optional(),
         });
 
         await schema.validate(data)
@@ -59,6 +60,7 @@ export async function POST(req: NextRequest) {
             avatarUrl: data.avatarUrl,
             city: data.city,
             country: data.country,
+            emailVerified: data.emailVerified,
             role: 'trainer',
             roleData: {}
         })

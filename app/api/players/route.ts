@@ -46,6 +46,7 @@ export async function POST(req: NextRequest) {
             handedness: Yup.string().oneOf(['left', 'right']).optional(),
             city: Yup.string().optional(),
             country: Yup.string().optional(),
+            emailVerified: Yup.boolean().optional(),
         });
 
         await schema.validate(data)
@@ -62,6 +63,7 @@ export async function POST(req: NextRequest) {
             avatarUrl: data.avatarUrl,
             city: data.city,
             country: data.country,
+            emailVerified: data.emailVerified,
             role: 'player',
             roleData: {
                 age: null,
