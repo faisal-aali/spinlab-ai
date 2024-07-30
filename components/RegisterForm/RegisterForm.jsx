@@ -6,13 +6,16 @@ import PickPlan from "../../components/RegisterForm/PickPlan/PickPlan";
 import CreateAccount from "../../components/RegisterForm/CreateAccount/CreateAccount";
 import LoginToPortal from "../../components/RegisterForm/LoginToPortal/LoginToPortal";
 import StripeAccount from "../../components/RegisterForm/StripeAccount/StripeAccount";
+import { useSearchParams } from "next/navigation";
 
 const RegisterForm = () => {
+  const searchParams = useSearchParams()
+
   const [step, setStep] = useState(1);
   const [values, setValues] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
+    firstName: searchParams.get('name')?.split(' ')[0],
+    lastName: searchParams.get('name')?.split(' ')[1] || "",
+    email: searchParams.get('email'),
     role: "",
     city: "",
     country: "",

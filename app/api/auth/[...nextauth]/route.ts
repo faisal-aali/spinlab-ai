@@ -3,6 +3,7 @@ import util from "util";
 // import db from "../../../lib/db";
 import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
 import { AuthOptions } from "next-auth";
 import { User } from "@/app/lib/models";
 import bcrypt from 'bcrypt'
@@ -46,6 +47,7 @@ export const authOption: AuthOptions = {
 
             return session;
         }
+
     },
     providers: [
         CredentialsProvider({
@@ -75,10 +77,29 @@ export const authOption: AuthOptions = {
             },
             credentials: credentials
         }),
-        // GoogleProvider({
-        //   clientId: process.env.GOOGLE_CLIENT_ID,
-        //   clientSecret: process.env.GOOGLE_CLIENT_SECRET
-        // })
+        GoogleProvider({
+            clientId: process.env.GOOGLE_CLIENT_ID as string,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+            profile: async (profile) => {
+                console.log('[googleOAuth] profile', profile)
+                const email = profile.email.toLowerCase();
+                return User.findOne({ email }).then(async (user) => {
+                    if (!user) {
+                        console.log('[googleOAuth] user with email', email, 'does not exist')
+                        return {
+                            id: profile.sub,
+                            name: profile.name,
+                            email: profile.email
+                        }
+                    } else {
+                        return user;
+                    }
+                }).catch(err => {
+                    console.error("Database query error:", err);
+                    return null;
+                });
+            }
+        })
     ],
     // secret: 'ZUSytDzLavIUuiWumSbjtRsdDWZKRlPRIbpgFWpwkvColKTLvrKUhjB'
 }

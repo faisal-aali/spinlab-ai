@@ -18,15 +18,42 @@ const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const matches = useMediaQuery('(max-width:768px)');
 
-  useEffect(() => {
-    console.log('matches', matches)
-  }, [matches]);
+  // useEffect(() => {
+  //   console.log('matches', matches)
+  // }, [matches]);
 
   useEffect(() => {
     getSession().then(data => {
-      if (data?.user) router.push('/dashboard')
+      console.log('useEffect getSession', data)
+      if (!data || !data.user) return
+      if (data.user.role) router.push('/dashboard')
+      else router.push(`/register?${new URLSearchParams(data.user).toString()}`)
     }).catch(console.error)
   }, []);
+
+  const handleContinueWithGoogle = async (e) => {
+    e.preventDefault();
+
+    signIn("google").catch(err => {
+      console.error('Error while continuing via google', err)
+      setError("Error occured. Please try again");
+    })
+
+    // if (!result.error) {
+    //   let userSession = await getSession().then(data => data?.user).catch(console.error)
+    //   if (userSession) {
+    //     if (!userSession.role) {
+    //       return router.push(`/register?${new URLSearchParams(userSession).toString()}`)
+    //     }
+    //     localStorage.setItem('userRole', userSession.role)
+    //   } else {
+    //     return setError("Error occured. Please try again");
+    //   }
+    //   router.push('/dashboard')
+    // } else {
+    //   setError("Error occured. Please try again");
+    // }
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -40,8 +67,12 @@ const LoginForm = () => {
 
     if (!result.error) {
       let userSession = await getSession().then(data => data?.user).catch(console.error)
-      if (userSession)
+      if (userSession) {
         localStorage.setItem('userRole', userSession.role)
+      }
+      else {
+        return setError("Error occured. Please try again");
+      }
       // router.push(searchParams.get('callbackUrl') || '/dashboard')
       router.push('/dashboard')
     } else {
@@ -117,11 +148,24 @@ const LoginForm = () => {
             </div>
             <button
               type="submit"
-              className="w-full bg-green-500 bg-primary rounded-lg text-black font-normal py-3 rounded hover-shadow focus:outline-none"
+              className="w-full bg-primary rounded-lg text-black font-normal py-3 rounded hover-shadow focus:outline-none"
             >
               LOGIN
             </button>
           </form>
+          <button
+            onClick={handleContinueWithGoogle}
+            className="w-full bg-white border-blue-500 border-solid border-2 rounded-lg text-black font-normal py-3 rounded focus:outline-none mt-4"
+          >
+            <div className="flex flex-row items-center gap-2 justify-center">
+              <div>
+                <img src="/assets/google-icon.png" width={32} height={32}></img>
+              </div>
+              <div>
+                Continue with Google
+              </div>
+            </div>
+          </button>
           <p className="text-zinc-400 text-center mt-6">
             Don't have an account?{" "}
             <Link href="/register" className="text-white font-bold">
