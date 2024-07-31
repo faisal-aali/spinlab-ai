@@ -1,13 +1,9 @@
-// components/UploadModal.js
-import React, { useEffect } from "react";
-import { Modal, Box, Typography, Button, IconButton, MenuItem, TextField } from "@mui/material";
-import {
-  Close as CloseIcon,
-  CloudUpload as CloudUploadIcon,
-} from "@mui/icons-material";
-import { blueGrey } from "@mui/material/colors";
+import React, { useEffect, useRef } from "react";
+import { Modal, Box, IconButton, MenuItem, TextField, Checkbox } from "@mui/material";
+import { Close as CloseIcon } from "@mui/icons-material";
 import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
+import axios from 'axios';
 
 const style = {
   position: "absolute",
@@ -21,13 +17,29 @@ const style = {
   overflow: 'auto'
 };
 
+
 const validationSchema = Yup.object({
-  category: Yup.string().required("Required"),
-  youtubeLink: Yup.string().required("Required"),
+  categoryId: Yup.string().required("Required"),
+  videoLink: Yup.string().url("Invalid URL").required("Required"),
   title: Yup.string().required("Required"),
+  isFree: Yup.boolean().required("Required"),
 });
 
-const AddVideoModal = ({ open, onClose }) => {
+const addNewDrill = async (values, onClose) => {
+  try {
+    await axios.post("http://localhost:3000/api/drills", values);
+    onClose();
+  } catch (error) {
+    console.error("Error adding video", error);
+  }
+};
+
+const AddVideoModal = ({ open, onClose, categories, initialCategory }) => {
+  const formikRef = useRef()
+  useEffect(() => {
+    formikRef.current?.setFieldValue('categoryId', initialCategory)
+  }, [initialCategory]);
+
   useEffect(() => {
     const handleEsc = (event) => {
       if (event.keyCode === 27) {
@@ -39,6 +51,8 @@ const AddVideoModal = ({ open, onClose }) => {
       window.removeEventListener("keydown", handleEsc);
     };
   }, [onClose]);
+
+  const defaultCategoryId = initialCategory ? initialCategory._id : (categories.length > 0 ? categories[0]._id : '');
 
   return (
     <Modal open={open} onClose={onClose} aria-labelledby="upload-modal-title">
@@ -53,122 +67,88 @@ const AddVideoModal = ({ open, onClose }) => {
           <span>To Add a video to drill library, </span>Please enter the details below.
         </h2>
         <Formik
+          innerRef={formikRef}
           initialValues={{
-            category: "fundamentals",
-            youtubeLink: "",
+            categoryId: defaultCategoryId,
+            videoLink: "",
             title: "",
+            isFree: false,
           }}
           validationSchema={validationSchema}
-          onSubmit={(values) => {
-            console.log(values);
-          }}
+          onSubmit={(values) => addNewDrill(values, onClose)}
         >
-          {({ errors, touched, setFieldValue }) => (
+          {({ errors, touched, setFieldValue, values }) => (
             <Form>
               <div className="grid grid-cols-1 gap-4 mb-4">
                 <div className="grid gap-2">
                   <div className="opacity-45">
-                    <label htmlFor="">Category</label>
+                    <label htmlFor="categoryId">Category</label>
                   </div>
-
-                  <TextField variant="outlined" defaultValue={'fundamentals'} select fullWidth InputProps={{ style: { height: 50 } }} onChange={(e) => setFieldValue('category', e.target.value)}>
-                    {[{
-                      value: 'fundamentals',
-                      label: 'Fundamentals',
-                    }, {
-                      value: 'exercises',
-                      label: 'Exercises',
-                    }, {
-                      value: 'mobility',
-                      label: 'Mobility',
-                    }, {
-                      value: 'footwork',
-                      label: 'Footwork',
-                    }, {
-                      value: 'iq',
-                      label: 'IQ',
-                    }, {
-                      value: 'drills',
-                      label: 'Drills',
-                    }].map(cat => (
-                      <MenuItem key={cat.value} value={cat.value}>{cat.label}</MenuItem>
+                  <TextField
+                    name="categoryId"
+                    select
+                    fullWidth
+                    variant="outlined"
+                    value={values.categoryId}
+                    onChange={(e) => setFieldValue('categoryId', e.target.value)}
+                    InputProps={{ style: { height: 50 } }}
+                  >
+                    {categories.map((cat) => (
+                      <MenuItem key={cat._id} value={cat._id}>
+                        {cat.name}
+                      </MenuItem>
                     ))}
                   </TextField>
-                  {/* <Field
-                    name="category"
-                    as='select'
-                    className={`w-full bg-transparent px-3 rounded-lg py-3 text-primary rounded focus:outline-none focus:border-green-500 placeholder:opacity-45 
-                      ${errors.category && touched.category
-                        ? "border-red-900	border"
-                        : "primary-border focus:border-green-500"
-                      }`}
-                    required
-                  >
-                    <option
-                      className="bg-black"
-                      value={'fundamentals'}
-                      label={'Fundamentals'}
+                </div>
+                <div className='flex flex-row items-center gap-[12px]'>
+                  <div>
+                    <Checkbox
+                      sx={{ width: 10, height: 10, color: '#FFFFFF30' }}
+                      disableRipple
+                      checked={values.isFree}
+                      onChange={(e) => setFieldValue('isFree', e.target.checked)}
                     />
-                    <option
-                      className="bg-black"
-                      value={'exercises'}
-                      label={'Exercises'}
-                    />
-                    <option
-                      className="bg-black"
-                      value={'mobility'}
-                      label={'Mobility'}
-                    />
-                    <option
-                      className="bg-black"
-                      value={'footwork'}
-                      label={'Footwork'}
-                    />
-                    <option
-                      className="bg-black"
-                      value={'iq'}
-                      label={'IQ'}
-                    />
-                    <option
-                      className="bg-black"
-                      value={'drills'}
-                      label={'Drills'}
-                    />
-                  </Field> */}
+                  </div>
+                  <div className="opacity-45">
+                    <label>Free Video</label>
+                  </div>
                 </div>
                 <div className="grid gap-2">
                   <div className="opacity-45">
-                    <label htmlFor="">Youtube Link</label>
+                    <label htmlFor="videoLink">Youtube Link</label>
                   </div>
                   <Field
-                    name="youtubeLink"
-                    className={`w-full bg-transparent px-3 rounded-lg py-3 text-primary rounded focus:outline-none focus:border-green-500 placeholder:opacity-45 
-                      ${errors.youtubeLink && touched.youtubeLink
-                        ? "border-red-900	border"
+                    name="videoLink"
+                    as="input"
+                    type="text"
+                    className={`w-full bg-transparent px-3 rounded-lg py-3 text-primary rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
+                      ${errors.videoLink && touched.videoLink
+                        ? "border-red-900 border"
                         : "primary-border focus:border-green-500"
                       }`}
-                    required
                   />
                 </div>
                 <div className="grid gap-2">
                   <div className="opacity-45">
-                    <label htmlFor="">Title</label>
+                    <label htmlFor="title">Title</label>
                   </div>
                   <Field
+                    name="title"
+                    as="textarea"
+                    rows={5}
                     className={`w-full bg-transparent px-3 rounded-lg py-3 text-primary rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
                       ${errors.title && touched.title
-                        ? "border-red-900	border"
+                        ? "border-red-900 border"
                         : "primary-border focus:border-green-500"
                       }`}
-                    name="title"
-                    as='textarea'
-                    rows={5}
-                    required
                   />
                 </div>
               </div>
               <div className="flex justify-center mb-10 mt-6">
-                <button type="submit" className="bg-primary dark-blue-color rounded w-28 h-9 flex items-center justify-center text-lg font-bold" onClick={onClose}>
+                <button
+                  type="submit"
+                  className="bg-primary dark-blue-color rounded w-28 h-9 flex items-center justify-center text-lg font-bold"
+                >
                   SUBMIT
                 </button>
               </div>

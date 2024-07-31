@@ -1,6 +1,6 @@
-// components/UploadModal.js
 import React, { useEffect } from "react";
 import { Modal, Box, Typography, Button, IconButton } from "@mui/material";
+import axios from 'axios';
 
 const style = {
   position: "absolute",
@@ -14,7 +14,7 @@ const style = {
   overflow: 'auto'
 };
 
-const DeleteVideoModal = ({ open, onClose }) => {
+const DeleteVideoModal = ({ open, onClose, videoId, onSuccess }) => {
   useEffect(() => {
     const handleEsc = (event) => {
       if (event.keyCode === 27) {
@@ -27,8 +27,18 @@ const DeleteVideoModal = ({ open, onClose }) => {
     };
   }, [onClose]);
 
+  const handleDelete = async () => {
+    try {
+      await axios.delete(`http://localhost:3000/api/drills/${videoId}`);
+      onSuccess && onSuccess()
+      onClose(); 
+    } catch (error) {
+      console.error("Error deleting video", error);
+    }
+  };
+
   return (
-    <Modal open={open} onClose={onClose} aria-labelledby="upload-modal-title">
+    <Modal open={open} onClose={onClose} aria-labelledby="delete-modal-title">
       <Box sx={style} className="w-full max-w-lg blueBackground">
         <div className="flex flex-col justify-center items-center gap-5 py-7">
           <div className="border rounded-lg border-red-600 p-2">
@@ -44,7 +54,7 @@ const DeleteVideoModal = ({ open, onClose }) => {
               </button>
             </div>
             <div className="flex justify-center">
-              <button onClick={onClose} className="bg-primary dark-blue-color rounded w-28 h-9 flex items-center justify-center text-lg font-bold hover-button-shadow">
+              <button onClick={handleDelete} className="bg-primary dark-blue-color rounded w-28 h-9 flex items-center justify-center text-lg font-bold hover-button-shadow">
                 CONFIRM
               </button>
             </div>
