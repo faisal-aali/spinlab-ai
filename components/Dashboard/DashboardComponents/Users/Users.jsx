@@ -154,12 +154,13 @@ const Users = () => {
             count={Math.ceil(data.length / rowsPerPage)}
             onChange={handlePageChange}
           />
+          <AddUserModal open={showAddModal} onClose={() => setShowAddModal(false)} role={role} onSuccess={fetchData} />
           <DeleteUserModal
             open={showDeleteModal}
             onClose={() => setShowDeleteModal(false)}
             userId={userIdToDelete}
+            onSuccess={fetchData}
           />
-          <AddUserModal open={showAddModal} onClose={() => setShowAddModal(false)} role={role} />
         </div>
       </div>
     </>

@@ -23,22 +23,22 @@ export async function POST(req: NextRequest) {
         const data = await req.json()
 
         const schema = Yup.object({
-            avatarUrl: Yup.string().optional(),
+            avatarUrl: Yup.string().optional().nullable(),
             name: Yup.string().optional(),
-            bio: Yup.string().optional(),
-            city: Yup.string().optional(),
-            country: Yup.string().optional(),
+            bio: Yup.string().optional().nullable(),
+            city: Yup.string().optional().nullable(),
+            country: Yup.string().optional().nullable(),
         });
 
         await schema.validate(data)
 
         if (Object.keys(data).length == 0) return NextResponse.json({ message: 'BAD REQUEST' }, { status: 400 })
 
-        user.avatarUrl = (data.avatarUrl || user.avatarUrl);
+        user.avatarUrl = (data.avatarUrl === null ? null : data.avatarUrl || user.avatarUrl);
         user.name = (data.name || user.name);
-        user.bio = (data.bio || user.bio);
-        user.city = (data.city || user.city);
-        user.country = (data.country || user.country);
+        user.bio = (data.bio === null ? null : data.bio || user.bio);
+        user.city = (data.city === null ? null : data.city || user.city);
+        user.country = (data.country === null ? null : data.country || user.country);
 
         await user.save()
 

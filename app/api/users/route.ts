@@ -15,12 +15,14 @@ export async function GET(req: NextRequest) {
 
         const { searchParams } = new URL(req.url);
         const id = searchParams.get('id')
+        const role = searchParams.get('role')
 
-        const query: { isDeleted: boolean, _id?: string } = {
+        const query: { isDeleted: boolean, role?: string, _id?: string } = {
             isDeleted: false
         };
 
         if (id) query._id = id;
+        if (role) query.role = role;
 
         const users = await User.find(query)
         return NextResponse.json(users)

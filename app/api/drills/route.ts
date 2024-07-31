@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
         const data = await req.json()
 
         const schema = Yup.object({
-            userId: Yup.string().required("User Id is required"),
+            // userId: Yup.string().required("User Id is required"),
             categoryId: Yup.string().required("Category Id is required"),
             videoLink: Yup.string().required("Video Link is required"),
             title: Yup.string().required("Title is required"),
@@ -46,11 +46,11 @@ export async function POST(req: NextRequest) {
         const category = await Category.findOne({ _id: data.categoryId })
         if (!category) return NextResponse.json({ message: 'Invalid category Id' }, { status: 400 });
 
-        const user = await User.findOne({ _id: data.userId })
-        if (!user) return NextResponse.json({ message: 'Invalid user Id' }, { status: 400 });
+        // const user = await User.findOne({ _id: data.userId })
+        // if (!user) return NextResponse.json({ message: 'Invalid user Id' }, { status: 400 });
 
         const drill = await Drill.create({
-            userId: data.userId,
+            userId: session.user._id,
             categoryId: data.categoryId,
             videoLink: data.videoLink,
             title: data.title,

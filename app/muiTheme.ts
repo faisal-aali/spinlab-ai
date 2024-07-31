@@ -47,7 +47,7 @@ const theme = createTheme({
         MuiCheckbox: {
             styleOverrides: {
                 root: {
-                    color: 'white'
+                    color: '#ffffff45',
                 }
             }
         },
@@ -63,6 +63,7 @@ const theme = createTheme({
                         display: 'none', // Remove the animated indicator
                     },
                 },
+
             },
         },
     }

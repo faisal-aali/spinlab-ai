@@ -23,16 +23,16 @@ export async function POST(req: NextRequest) {
         const data = await req.json()
 
         const schema = Yup.object({
-            avatarUrl: Yup.string().optional(),
+            avatarUrl: Yup.string().optional().nullable(),
             name: Yup.string().optional(),
-            age: Yup.number().optional(),
-            height: Yup.number().optional(),
-            handedness: Yup.string().oneOf(['left', 'right']).optional(),
-            weight: Yup.string().optional(),
+            age: Yup.number().min(1).optional().nullable().strict(),
+            height: Yup.number().min(1).optional().nullable().strict(),
+            weight: Yup.number().min(1).optional().nullable().strict(),
+            handedness: Yup.string().oneOf(['left', 'right']).optional().nullable(),
             anonymous: Yup.boolean().optional(),
-            bio: Yup.string().optional(),
-            city: Yup.string().optional(),
-            country: Yup.string().optional(),
+            bio: Yup.string().optional().nullable(),
+            city: Yup.string().optional().nullable(),
+            country: Yup.string().optional().nullable(),
         });
 
         await schema.validate(data)
@@ -41,16 +41,16 @@ export async function POST(req: NextRequest) {
 
         console.log('received data', data)
 
-        user.avatarUrl = (data.avatarUrl || user.avatarUrl);
+        user.avatarUrl = (data.avatarUrl === null ? null : data.avatarUrl || user.avatarUrl);
         user.name = (data.name || user.name);
-        user.bio = (data.bio || user.bio);
-        user.city = (data.city || user.city);
-        user.country = (data.country || user.country);
+        user.bio = (data.bio === null ? null : data.bio || user.bio);
+        user.city = (data.city === null ? null : data.city || user.city);
+        user.country = (data.country === null ? null : data.country || user.country);
         user.roleData = {
-            age: (data.age || user.roleData.age),
-            height: (data.height || user.roleData.height),
-            handedness: (data.handedness || user.roleData.handedness),
-            weight: (data.weight || user.roleData.weight),
+            age: (data.age === null ? null : data.age || user.roleData.age),
+            height: (data.height === null ? null : data.height || user.roleData.height),
+            handedness: (data.handedness === null ? null : data.handedness || user.roleData.handedness),
+            weight: (data.weight === null ? null : data.weight || user.roleData.weight),
             anonymous: (data.anonymous !== undefined ? data.anonymous : user.roleData.anonymous),
         }
 

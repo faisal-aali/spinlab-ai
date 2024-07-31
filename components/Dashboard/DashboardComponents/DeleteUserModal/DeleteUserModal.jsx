@@ -15,7 +15,7 @@ const style = {
   overflow: 'auto'
 };
 
-const DeleteUserModal = ({ open, onClose, userId }) => {
+const DeleteUserModal = ({ open, onClose, userId, onSuccess }) => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
@@ -35,10 +35,11 @@ const DeleteUserModal = ({ open, onClose, userId }) => {
 
   const handleDelete = async () => {
     try {
-      const response = await axios.delete(`/api/players/${userId}`);
+      const response = await axios.delete(`/api/users/${userId}`);
       if (response.status === 200) {
         setSnackbarMessage("User deleted successfully!");
         setSnackbarSeverity("success");
+        onSuccess && onSuccess()
       } else {
         setSnackbarMessage("Failed to delete user.");
         setSnackbarSeverity("error");
