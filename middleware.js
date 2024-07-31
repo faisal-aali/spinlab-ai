@@ -43,5 +43,5 @@ const protectedRoutes = [
 
 export { default } from "next-auth/middleware"
 
-export const config = { matcher: ['/dashboard', '/players-history'] }
+export const config = { matcher: ['/dashboard', '/players-history', '/settings'] }
 

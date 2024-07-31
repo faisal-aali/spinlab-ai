@@ -9,13 +9,13 @@ import { authOption } from "../auth/[...nextauth]/route";
 import { getServerSession } from "next-auth";
 
 export async function GET(req: NextRequest) {
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get('id')
+    const role = searchParams.get('role')
+
     try {
         const session = await getServerSession(authOption);
         if (!session || !session.user) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
-
-        const { searchParams } = new URL(req.url);
-        const id = searchParams.get('id')
-        const role = searchParams.get('role')
 
         const query: { isDeleted: boolean, role?: string, _id?: string } = {
             isDeleted: false

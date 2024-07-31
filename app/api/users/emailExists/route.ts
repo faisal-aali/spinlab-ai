@@ -6,11 +6,11 @@ import { validateError } from "@/app/lib/functions";
 // const query = util.promisify(db.query).bind(db);
 
 export async function GET(req: NextRequest) {
-    try {
-        const { searchParams } = new URL(req.url);
-        const email = searchParams.get('email')
-        if (!email) return NextResponse.json({ message: 'Email is required' }, { status: 400 })
+    const { searchParams } = new URL(req.url);
+    const email = searchParams.get('email')
+    if (!email) return NextResponse.json({ message: 'Email is required' }, { status: 400 })
 
+    try {
         const user = await User.findOne({ email })
 
         if (user) return NextResponse.json(true, { status: 200 })
