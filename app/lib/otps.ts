@@ -21,12 +21,12 @@ function generateOtp(id: string) {
     return code
 }
 
-function verifyOtp(code: number) {
+function verifyOtp(code: number, remove = true) {
     // console.log('verifyotp', otps)
     const otp = otps.find(_otp => _otp.code === code)
     if (!otp) return null
 
-    otps = otps.filter(_otp => _otp.code !== otp.code)
+    if (remove) otps = otps.filter(_otp => _otp.code !== otp.code)
     return otp
 }
 

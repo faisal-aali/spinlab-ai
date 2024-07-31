@@ -22,35 +22,12 @@ import {
 } from "@mui/material";
 import { Person } from "@mui/icons-material";
 import UploadModal from "../Dashboard/DashboardComponents/UploadVideoModal/UploadModal";
+import UpdateEmailModal from "../Dashboard/DashboardComponents/UpdateEmailModal/UpdateEmailModal";
 import {
   Warning as WarningIcon,
   Close as CloseIcon,
   ArrowForward as ArrowForwardIcon,
 } from "@mui/icons-material";
-import { Formik, Field, Form } from "formik";
-import * as Yup from "yup";
-
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  boxShadow: 24,
-  p: 4,
-  borderRadius: "8px",
-  maxHeight: "90vh",
-  overflow: "auto",
-};
-
-const validationSchema = Yup.object({
-  email: Yup.string()
-    .email("Invalid email address")
-    .required("Email is required"),
-  otp: Yup.string().when("step", {
-    is: 2,
-    then: Yup.string().required("OTP is required"),
-  }),
-});
 
 const ProfileMenu = () => {
   const [anchorElUser, setAnchorElUser] = useState(null);
@@ -158,8 +135,7 @@ const Layout = ({ children }) => {
   const [showSidebar, setShowSidebar] = useState(false);
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [currentStep, setCurrentStep] = useState(1);
+  const [showUpdateEmailModal, setShowUpdateEmailModal] = useState(false);
 
   useEffect(() => {
     if (!user.role) router.replace("/login");
@@ -170,28 +146,6 @@ const Layout = ({ children }) => {
   useEffect(() => {
     setShowSidebar(false);
   }, [pathname]);
-
-  const handleUpdateEmail = (values) => {
-    // Handle sending email verification code here
-    console.log("Email updated to:", values.email);
-    setCurrentStep(2);
-  };
-
-  const handleSendCode = () => {
-    // Handle sending code to email here
-    setCurrentStep(3);
-  };
-
-  const handleVerifyOtp = (values) => {
-    // Handle OTP verification here
-    console.log("OTP code:", values.otp.join(""));
-    setCurrentStep(4);
-  };
-
-  const handleCloseModal = () => {
-    setModalOpen(false);
-    setCurrentStep(1); 
-  };
 
   return (
     <div className="flex flex-row h-screen">
@@ -210,16 +164,14 @@ const Layout = ({ children }) => {
             <div className="flex space-x-4 items-center">
               <button
                 onClick={() => setShowUploadModal(true)}
-                className={`bg-white text-black px-5 py-1 rounded-lg ${
-                  user.role === "trainer" && "hidden"
-                }`}
+                className={`bg-white text-black px-5 py-1 rounded-lg ${user.role === "trainer" && "hidden"
+                  }`}
               >
                 UPLOAD
               </button>
               <button
-                className={`bg-white text-black px-5 py-1 rounded-lg ${
-                  user.role === "admin" && "hidden"
-                }`}
+                className={`bg-white text-black px-5 py-1 rounded-lg ${user.role === "admin" && "hidden"
+                  }`}
               >
                 PURCHASE
               </button>
@@ -244,10 +196,10 @@ const Layout = ({ children }) => {
               ["/dashboard", "/users", "/users/view"].includes(pathname)) ||
             (user.role === "admin" &&
               ["/dashboard", "/users", "/users/view"].includes(pathname))) && (
-            <div>
-              <HeaderProfile />
-            </div>
-          )}
+              <div>
+                <HeaderProfile />
+              </div>
+            )}
           {children}
         </div>
       </div>
@@ -259,9 +211,9 @@ const Layout = ({ children }) => {
       <Snackbar
         open={snackbarOpen}
         onClose={() => setSnackbarOpen(false)}
-        onClick={() => setModalOpen(true)}
+        onClick={() => setShowUpdateEmailModal(true)}
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
-        sx={{ width: "30%" , cursor: "pointer"}}
+        sx={{ width: "30%", cursor: "pointer" }}
       >
         <SnackbarContent
           message={
@@ -293,173 +245,7 @@ const Layout = ({ children }) => {
           }}
         />
       </Snackbar>
-
-      {/* Email Verify Modal */}
-
-      <Modal open={modalOpen} onClose={() => handleCloseModal()}>
-        <Box sx={style} className="w-full max-w-2xl blueBackground px-16">
-          <IconButton
-            style={{ position: "absolute", top: 10, right: 10, color: "#fff" }}
-            onClick={() => handleCloseModal()}
-          >
-            <CloseIcon />
-          </IconButton>
-          {currentStep === 1 && (
-            <div>
-              <h2 className="text-2xl font-bold mb-8 text-center flex flex-col">
-                Please enter your email to receive a verification code.
-              </h2>
-              <Formik
-                initialValues={{ email: "" }}
-                validationSchema={validationSchema}
-                onSubmit={(values) => handleUpdateEmail(values)}
-              >
-                {({ errors, touched }) => (
-                  <Form>
-                    <div className={`grid gap-2`}>
-                      <div className="opacity-45">
-                        <label htmlFor="email">Email</label>
-                      </div>
-                      <Field
-                        className={`w-full text-primary bg-transparent px-3 rounded-lg py-3 text-white rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
-                    ${
-                      errors.email && touched.email
-                        ? "border-red-900 border"
-                        : "primary-border focus:border-green-500"
-                    }`}
-                        type="text"
-                        name="email"
-                        required
-                      />
-                    </div>
-                    <div className="flex justify-end gap-2 mt-4">
-                      <Button
-                        type="button"
-                        variant="outlined"
-                        color="primary"
-                        onClick={() => handleCloseModal()}
-                      >
-                        Cancel
-                      </Button>
-                      <Button type="submit" variant="contained" color="primary">
-                        Verify
-                      </Button>
-                    </div>
-                  </Form>
-                )}
-              </Formik>
-            </div>
-          )}
-          {currentStep === 2 && (
-            <div>
-              <p className="text-2xl mb-8 text-center flex flex-col">
-                A code will be sent to your email.
-              </p>
-              <div className="flex justify-end gap-2 mt-4">
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  onClick={() => handleCloseModal()}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={() => handleSendCode()}
-                >
-                  Send Code
-                </Button>
-              </div>
-            </div>
-          )}
-          {currentStep === 3 && (
-            <div>
-              <h2 className="text-2xl font-bold mb-8 text-center flex flex-col">
-                Enter the OTP code sent to your email.
-              </h2>
-              <Formik
-                initialValues={{ otp: ["", "", "", "", "", ""] }}
-                validationSchema={Yup.object({
-                  otp: Yup.array().of(
-                    Yup.string()
-                      .matches(/^\d$/, "Must be exactly one digit")
-                      .required("Required")
-                  ),
-                })}
-                onSubmit={(values) => handleVerifyOtp(values)}
-              >
-                {({ values, handleChange, handleBlur, setFieldValue }) => (
-                  <Form>
-                    <div className="flex justify-center mb-4">
-                      {values.otp.map((_, index) => (
-                        <input
-                          key={index}
-                          name={`otp[${index}]`}
-                          type="text"
-                          maxLength="1"
-                          onChange={(e) => {
-                            const { value } = e.target;
-                            if (/^\d$/.test(value) || value === "") {
-                              setFieldValue(`otp[${index}]`, value);
-                              if (value !== "" && e.target.nextSibling) {
-                                e.target.nextSibling.focus();
-                              }
-                            }
-                          }}
-                          onBlur={handleBlur}
-                          value={values.otp[index]}
-                          onKeyDown={(e) => {
-                            if (
-                              e.key === "Backspace" &&
-                              !values.otp[index] &&
-                              e.target.previousSibling
-                            ) {
-                              e.target.previousSibling.focus();
-                            }
-                          }}
-                          autoComplete="off"
-                          className="w-10 h-10 m-1 text-center text-black text-lg border border-gray-400 rounded"
-                        />
-                      ))}
-                    </div>
-                    <div className="flex justify-end gap-2 mt-4">
-                      <Button
-                        type="button"
-                        variant="outlined"
-                        color="primary"
-                        onClick={() => setCurrentStep(2)}
-                      >
-                        Resend Code
-                      </Button>
-                      <Button type="submit" variant="contained" color="primary">
-                        Verify
-                      </Button>
-                    </div>
-                  </Form>
-                )}
-              </Formik>
-            </div>
-          )}
-
-          {currentStep === 4 && (
-            <div className="w-auto	">
-              <h4 className="text-center">
-                Your email has been verified!
-              </h4>
-              <div className="flex justify-center gap-2 mt-4">
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={() => handleCloseModal()}
-                >
-                  Done
-                </Button>
-              </div>
-            </div>
-          )}
-        </Box>
-      </Modal>
+      {showUpdateEmailModal && <UpdateEmailModal open={showUpdateEmailModal} onClose={() => setShowUpdateEmailModal(false)} isVerification={user.emailVerified ? false : true} />}
     </div>
   );
 };

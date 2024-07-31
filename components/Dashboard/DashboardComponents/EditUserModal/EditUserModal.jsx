@@ -1,11 +1,13 @@
 // components/EditUserModal.js
-import React, { useEffect, useState } from "react";
-import { Modal, Box, IconButton, TextField, MenuItem, Snackbar  } from "@mui/material";
+import React, { useEffect, useRef, useState } from "react";
+import { Modal, Box, IconButton, TextField, MenuItem, Snackbar } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import schemaValidators from "@/schema-validators";
+import { convertCmToFeetAndInches, convertFeetAndInchesToCm } from "@/util/utils";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const style = {
   position: "absolute",
@@ -22,15 +24,172 @@ const style = {
 const validationSchema = Yup.object({
   firstName: Yup.string().required("Required"),
   lastName: Yup.string().required("Required"),
-  heightFt: Yup.number().required("Required"),
-  heightIn: Yup.number().max(11).required("Required"),
-  handedness: schemaValidators.user.handedness,
-  weight: Yup.string().required("Required"),
-  plan: Yup.string().required("Required"),
-  role: Yup.string().required("Required"),
+  heightFt: Yup.number().optional(),
+  heightIn: Yup.number().max(11).optional(),
+  handedness: Yup.string().oneOf(['left', 'right'], 'Handedness must be a valid string').optional(),
+  weight: Yup.string().optional(),
+  // plan: Yup.string().required("Required"),
+  // role: Yup.string().required("Required"),
 });
 
-const EditUserModal = ({ open, onClose, role, userData }) => {
+const passwordValidationSchema = Yup.object({
+  newPassword: Yup.string().required("Required"),
+  confirmPassword: Yup.string()
+    .oneOf([Yup.ref("newPassword"), null], "Passwords must match")
+    .required("Required"),
+});
+
+const UpdatePasswordModal = ({ open, onClose, userId }) => {
+
+  const [response, setResponse] = useState({})
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const timeout = useRef()
+  useEffect(() => {
+    if (response.message) {
+      clearTimeout(timeout.current)
+      timeout.current = setTimeout(() => setResponse({}), 3000);
+    }
+  }, [response])
+
+  const handleChangePassword = (values) => {
+    return new Promise((resolve, reject) => {
+      axios.patch("/api/users/updatePassword/admin", {
+        id: userId,
+        password: values.newPassword,
+      }).then(res => {
+        setResponse({
+          type: 'password',
+          severity: 'success',
+          message: 'Password updated!'
+        })
+        resolve()
+      }).catch(err => {
+        setResponse({
+          type: 'password',
+          severity: 'error',
+          message: err.response?.data?.message || err.message
+        })
+        reject(err)
+      })
+    })
+  }
+
+  return (
+    <Modal open={open} onClose={onClose} aria-labelledby="upload-modal-title">
+      <Box sx={style} className="blueBackground px-16">
+        <IconButton
+          style={{ position: "absolute", top: 10, right: 10, color: '#fff' }}
+          onClick={onClose}
+        ></IconButton>
+        <h2 className="text-2xl font-bold mb-8 text-center flex flex-col">
+          Update Password
+        </h2>
+        <Formik
+          initialValues={{
+            newPassword: "",
+            confirmPassword: "",
+          }}
+          validationSchema={passwordValidationSchema}
+          onSubmit={(values, { resetForm }) => {
+            handleChangePassword(values).then(() => resetForm()).catch(console.error)
+          }}
+        >
+          {({ errors, touched, values }) => (
+            <Form>
+              <div className="flex flex-col items-center p-4 mt-8">
+                <div className="flex items-center mb-4 gap-6">
+                  <div className="w-1/2">
+                    <div className="mb-1 opacity-45">
+                      <label htmlFor="">New Password</label>
+                    </div>
+                    <div className="relative">
+                      <Field
+                        name="newPassword"
+                        type={showNewPassword ? "text" : "password"}
+                        className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${errors.newPassword && touched.newPassword
+                          ? "border-red-900 border"
+                          : "primary-border focus:border-green-500"
+                          }`}
+                        placeholder="Enter new password"
+                      />
+                      <div
+                        className="absolute inset right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-white"
+                        onClick={() => setShowNewPassword(!showNewPassword)}
+                      >
+                        {showNewPassword ? <FaEyeSlash /> : <FaEye />}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="w-1/2">
+                    <div className="mb-1 opacity-45">
+                      <label htmlFor="">Confirm Password</label>
+                    </div>
+                    <div className="relative">
+                      <Field
+                        name="confirmPassword"
+                        type={showConfirmPassword ? "text" : "password"}
+                        className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${errors.confirmPassword && touched.confirmPassword
+                          ? "border-red-900 border"
+                          : "primary-border focus:border-green-500"
+                          }`}
+                        placeholder="Confirm"
+                      />
+                      <div
+                        className="absolute inset right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-white"
+                        onClick={() =>
+                          setShowConfirmPassword(!showConfirmPassword)
+                        }
+                      >
+                        {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {response.message && <div className={`flex justify-end col-span-2 ${response.severity === 'success' ? 'text-primary' : 'text-error'}`}>{response.message}</div>}
+                <div className="flex justify-end gap-4 mt-4">
+                  <button
+                    disabled={!values.newPassword || !values.confirmPassword}
+                    type="submit"
+                    className="bg-primary dark-blue-color px-4 py-1 rounded font-bold uppercase text-sm hover-button-shadow"
+                  >
+                    Update Password
+                  </button>
+                </div>
+              </div>
+            </Form>
+          )}
+        </Formik>
+      </Box>
+    </Modal>
+  )
+}
+
+const EditUserModal = ({ open, onClose, userData, onSuccess }) => {
+  const [showPasswordModal, setShowPasswordModal] = useState(false)
+  const [user, setUser] = useState(userData)
+  const [response, setResponse] = useState({})
+
+  const fetchUser = () => {
+    return new Promise((resolve) => {
+      axios.get('/api/users', { params: { id: userData._id } }).then(res => {
+        console.log('fetchuser', res.data[0])
+        setUser(res.data[0])
+        resolve()
+      }).catch(console.error)
+    })
+  }
+
+  const timeout = useRef()
+  useEffect(() => {
+    if (response.message) {
+      clearTimeout(timeout.current)
+      timeout.current = setTimeout(() => setResponse({}), 3000);
+    }
+  }, [response])
+
   useEffect(() => {
     const handleEsc = (event) => {
       if (event.keyCode === 27) {
@@ -44,23 +203,29 @@ const EditUserModal = ({ open, onClose, role, userData }) => {
   }, [onClose]);
 
   const handleSubmit = async (values) => {
-    try {
-      const heightInCm = (values.heightFt * 30.48) + (values.heightIn * 2.54);
-      const updatedData = {
-        ...values,
-        height: heightInCm,
-        name: `${values.firstName} ${values.lastName}`
-      };
-
-      await axios.post(`/api/players/${userData._id}`, updatedData);
-      onClose(); 
-    } catch (error) {
-      console.log(error);
-    }
+    return new Promise((resolve, reject) => {
+      values.name = `${values.firstName} ${values.lastName}`.trim();
+      values.height = convertFeetAndInchesToCm(values.heightFt, values.heightIn) || null;
+      const data = {}
+      Object.keys(values).forEach(key => {
+        data[key] = values[key] || null
+      })
+      axios.post(`/api/${(userData.role === 'player' && 'players') || (userData.role === 'trainer' && 'trainers') || (userData.role === 'staff' && 'staff') || (userData.role === 'admin' && 'admin')}/${userData._id}`, data)
+        .then(res => {
+          setResponse({
+            severity: 'success',
+            message: 'Saved changes!'
+          });
+          resolve();
+        }).catch(err => {
+          setResponse({
+            severity: 'error',
+            message: err.response?.data?.message || err.message
+          })
+          reject(err);
+        })
+    })
   };
-
-  const heightFt = Math.floor(userData?.roleData?.height / 30.48); 
-  const heightIn = Math.round((userData?.roleData?.height % 30.48) / 2.54); 
 
   return (
     <Modal open={open} onClose={onClose} aria-labelledby="upload-modal-title">
@@ -75,22 +240,27 @@ const EditUserModal = ({ open, onClose, role, userData }) => {
           Edit Details
         </h2>
         <Formik
+          enableReinitialize
           initialValues={{
-            firstName: userData?.name.split(' ')[0] || "",
-            lastName: userData?.name.split(' ')[1] || "",
-            heightFt: heightFt || "",
-            heightIn: heightIn ||"",
-            weight: userData?.roleData.weight || "",
-            handedness: userData?.roleData.handedness || "left",
-            plan: userData?.plan || "monthly",
-            role: userData?.role,
-            password: ""
+            firstName: user.name.split(' ')[0] || "",
+            lastName: user.name.split(' ')[1] || "",
+            heightFt: convertCmToFeetAndInches(user.roleData?.height).feet,
+            heightIn: convertCmToFeetAndInches(user.roleData?.height).inches,
+            weight: user.roleData?.weight || "",
+            handedness: user.roleData?.handedness || "",
+            // plan: userData?.plan || "monthly",
+            // role: userData?.role,
+            // password: ""
           }}
           validationSchema={validationSchema}
-          onSubmit={handleSubmit}
-
+          onSubmit={(values, { resetForm }) => {
+            handleSubmit(values).then(() => {
+              onSuccess && onSuccess();
+              fetchUser().finally(() => resetForm())
+            }).catch(console.error)
+          }}
         >
-          {({ errors, touched, setFieldValue }) => (
+          {({ errors, touched, setFieldValue, values }) => (
             <Form>
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <div className="grid col-span-2 gap-2">
@@ -115,7 +285,7 @@ const EditUserModal = ({ open, onClose, role, userData }) => {
                     <label htmlFor="">First Name</label>
                   </div>
                   <Field
-                    className={`w-full bg-transparent px-3 rounded-lg py-3 text-white rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
+                    className={`w-full bg-transparent px-3 rounded-lg py-3 text-primary rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
                     ${errors.firstName && touched.firstName
                         ? "border-red-900	border"
                         : "primary-border focus:border-green-500"
@@ -130,7 +300,7 @@ const EditUserModal = ({ open, onClose, role, userData }) => {
                     <label htmlFor="">Last Name</label>
                   </div>
                   <Field
-                    className={`w-full bg-transparent px-3 rounded-lg py-3 text-white rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
+                    className={`w-full bg-transparent px-3 rounded-lg py-3 text-primary rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
                     ${errors.lastName && touched.lastName
                         ? "border-red-900	border"
                         : "primary-border focus:border-green-500"
@@ -140,61 +310,64 @@ const EditUserModal = ({ open, onClose, role, userData }) => {
                     required
                   />
                 </div>
-                <div className={`grid gap-2 relative ${role !== 'player' && 'hidden'}`}>
-                  <div className="opacity-45">
-                    <label htmlFor="">Height</label>
-                  </div>
-                  <div className="flex gap-2">
-                    <div className="relative">
-                      <Field
-                        name="heightFt"
-                        type='number'
-                        className={`py-3 px-3 blueBackground rounded-lg w-full text-primary focus:outline-none placeholder:opacity-45 ${errors.heightFt && touched.heightFt
-                          ? "border-red-900	border"
-                          : "primary-border focus:border-green-500"
-                          }`}
-                      />
-                      <div className="absolute bottom-3 right-4 opacity-50 text-white">ft</div>
+                {userData.role === 'player' &&
+                  <div className={`grid gap-2 relative`}>
+                    <div className="opacity-45">
+                      <label htmlFor="">Height</label>
                     </div>
-                    <div className="relative">
-                      <Field
-                        name="heightIn"
-                        type='number'
-                        className={`py-3 px-3 blueBackground rounded-lg  w-full text-primary focus:outline-none placeholder:opacity-45 ${errors.heightIn && touched.heightIn
-                          ? "border-red-900	border"
-                          : "primary-border focus:border-green-500"
-                          }`}
-                      />
-                      <div className="absolute bottom-3 right-4 opacity-50 text-white">in</div>
+                    <div className="flex gap-2">
+                      <div className="relative">
+                        <Field
+                          name="heightFt"
+                          type='number'
+                          className={`py-3 px-3 blueBackground rounded-lg w-full text-primary focus:outline-none placeholder:opacity-45 ${errors.heightFt && touched.heightFt
+                            ? "border-red-900	border"
+                            : "primary-border focus:border-green-500"
+                            }`}
+                        />
+                        <div className="absolute bottom-3 right-4 opacity-50 text-white">ft</div>
+                      </div>
+                      <div className="relative">
+                        <Field
+                          name="heightIn"
+                          type='number'
+                          className={`py-3 px-3 blueBackground rounded-lg  w-full text-primary focus:outline-none placeholder:opacity-45 ${errors.heightIn && touched.heightIn
+                            ? "border-red-900	border"
+                            : "primary-border focus:border-green-500"
+                            }`}
+                        />
+                        <div className="absolute bottom-3 right-4 opacity-50 text-white">in</div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-                <div className={`grid gap-2 relative ${role !== 'player' && 'hidden'}`}>
-                  <div className="opacity-45">
-                    <label htmlFor="">Weight</label>
-                  </div>
-                  <Field
-                    className={`w-full bg-transparent px-3 rounded-lg py-3 text-white rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
+                  </div>}
+                {userData.role === 'player' &&
+                  <div className={`grid gap-2 relative`}>
+                    <div className="opacity-45">
+                      <label htmlFor="">Weight</label>
+                    </div>
+                    <Field
+                      className={`w-full bg-transparent px-3 rounded-lg py-3 text-primary rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
                     ${errors.weight && touched.weight
-                        ? "border-red-900	border"
-                        : "primary-border focus:border-green-500"
-                      }`}
-                    type="number"
-                    name="weight"
-                    required
-                  />
-                  <div className="absolute bottom-3 right-4 opacity-50 text-white">lbs</div>
-                </div>
-                <div className={`grid gap-2 ${role !== 'player' && 'hidden'}`}>
-                  <div className="opacity-45">
-                    <label htmlFor="">Handedness</label>
-                  </div>
-                  <TextField variant="outlined" select fullWidth defaultValue={userData?.roleData.handedness} InputProps={{ style: { height: 50 } }} onChange={(e) => setFieldValue('handedness', e.target.value)}>
-                    <MenuItem value={'left'}>Left</MenuItem>
-                    <MenuItem value={'right'}>Right</MenuItem>
-                  </TextField>
-                </div>
-                <div className="grid gap-2">
+                          ? "border-red-900	border"
+                          : "primary-border focus:border-green-500"
+                        }`}
+                      type="number"
+                      name="weight"
+                      required
+                    />
+                    <div className="absolute bottom-3 right-4 opacity-50 text-white">lbs</div>
+                  </div>}
+                {userData.role === 'player' &&
+                  <div className={`grid gap-2`}>
+                    <div className="opacity-45">
+                      <label htmlFor="">Handedness</label>
+                    </div>
+                    <TextField variant="outlined" select fullWidth value={values.handedness} InputProps={{ style: { height: 50 } }} onChange={(e) => setFieldValue('handedness', e.target.value)}>
+                      <MenuItem value={'left'}>Left</MenuItem>
+                      <MenuItem value={'right'}>Right</MenuItem>
+                    </TextField>
+                  </div>}
+                {/* <div className="grid gap-2">
                   <div className="opacity-45">
                     <label htmlFor="">Subscription Plan</label>
                   </div>
@@ -212,10 +385,11 @@ const EditUserModal = ({ open, onClose, role, userData }) => {
                     <MenuItem value={'staff'}>Staff</MenuItem>
                     <MenuItem value={'trainer'}>Trainer</MenuItem>
                   </TextField>
-                </div>
+                </div> */}
               </div>
+              {response.message && <div className={`flex justify-end col-span-2 mb-4 ${response.severity === 'success' ? 'text-primary' : 'text-error'}`}>{response.message}</div>}
               <div className="flex justify-end mb-10 gap-4">
-                <button type="button" className="bg-primary dark-blue-color uppercase rounded px-6 h-9 flex items-center justify-center text-lg font-bold hover-button-shadow">
+                <button type="button" onClick={() => setShowPasswordModal(true)} className="bg-primary dark-blue-color uppercase rounded px-6 h-9 flex items-center justify-center text-lg font-bold hover-button-shadow">
                   Update Password
                 </button>
                 <button type="submit" className="bg-primary dark-blue-color rounded w-28 h-9 flex items-center justify-center text-lg font-bold hover-button-shadow">
@@ -225,6 +399,7 @@ const EditUserModal = ({ open, onClose, role, userData }) => {
             </Form>
           )}
         </Formik>
+        <UpdatePasswordModal open={showPasswordModal} onClose={() => setShowPasswordModal(false)} userId={userData._id} />
       </Box>
     </Modal>
   );

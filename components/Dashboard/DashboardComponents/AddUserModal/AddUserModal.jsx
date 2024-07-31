@@ -64,7 +64,6 @@ const AddUserModal = ({ open, onClose, role, onSuccess }) => {
 
       axios.post(`/api/${(role === 'player' && 'players') || (role === 'trainer' && 'trainers') || (role === 'staff' && 'staff') || (role === 'admin' && 'admin')}`, data).then(res => {
         setResponse({
-          type: 'profile',
           severity: 'success',
           message: 'User added!'
         });
@@ -72,7 +71,6 @@ const AddUserModal = ({ open, onClose, role, onSuccess }) => {
         resolve();
       }).catch(err => {
         setResponse({
-          type: 'profile',
           severity: 'error',
           message: err.response?.data?.message || err.message
         })

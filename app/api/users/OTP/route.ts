@@ -3,11 +3,26 @@ import { NextRequest, NextResponse } from "next/server";
 import { User } from "@/app/lib/models";
 import * as Yup from 'yup'
 import { validateError } from "@/app/lib/functions";
-import { generateOtp } from "@/app/lib/otps";
-import { getServerSession } from "next-auth";
+import { generateOtp, verifyOtp } from "@/app/lib/otps";
 import { sendEmail } from "@/app/lib/sendEmail";
 
 // const query = util.promisify(db.query).bind(db);
+
+export async function GET(req: NextRequest) {
+    try {
+        const { searchParams } = new URL(req.url);
+        const otp = Number(searchParams.get('otp'))
+        if (!otp) return NextResponse.json({ message: 'OTP is required' }, { status: 400 })
+
+        if (verifyOtp(otp, false)) return NextResponse.json(true, { status: 200 })
+        else return NextResponse.json(false, { status: 200 })
+
+    } catch (err: unknown) {
+        console.error(err)
+        const obj = validateError(err)
+        return NextResponse.json({ message: obj.message }, { status: obj.status })
+    }
+}
 
 export async function POST(req: NextRequest) {
     try {

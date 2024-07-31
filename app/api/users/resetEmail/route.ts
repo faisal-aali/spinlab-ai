@@ -35,6 +35,8 @@ export async function PATCH(req: NextRequest) {
         }
 
         user.email = newEmail
+        user.emailVerified = true
+
         await user.save()
 
         sendEmail({

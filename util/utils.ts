@@ -4,7 +4,6 @@ const convertCmToFeetAndInches = (cm: number) => {
     const num = cm / 2.54;
     const feet = Math.floor(num / 12);
     const inches = Math.round(num % 12);
-    console.log(feet, inches)
     return {
         feet,
         inches,

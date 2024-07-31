@@ -1,15 +1,16 @@
 // components/UploadModal.js
-import React, { useEffect } from "react";
-import { Modal, Box, Typography, Button, IconButton, TextField, MenuItem } from "@mui/material";
+import React, { useEffect, useRef, useState } from "react";
+import { Modal, Box, IconButton, TextField, MenuItem } from "@mui/material";
 import {
   Close as CloseIcon,
   CloudUpload as CloudUploadIcon,
 } from "@mui/icons-material";
-import { blueGrey } from "@mui/material/colors";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
-import schemaValidators from "@/schema-validators";
 import { useRouter } from "next/navigation";
+import { convertFeetAndInchesToCm } from "@/util/utils";
+import axios from 'axios'
+import schemaValidators from "@/schema-validators";
 
 const style = {
   position: "absolute",
@@ -24,15 +25,27 @@ const style = {
 };
 
 const validationSchema = Yup.object({
+  email: Yup.string().email().required("Required"),
   firstName: Yup.string().required("Required"),
   lastName: Yup.string().required("Required"),
   heightFt: Yup.number().required("Required"),
   heightIn: Yup.number().max(11).required("Required"),
+  handedness: schemaValidators.user.handedness,
   weight: Yup.number().required("Required"),
 });
 
-const AddNewPlayerModal = ({ open, onClose }) => {
+const AddNewPlayerModal = ({ open, onClose, onSuccess }) => {
   const router = useRouter()
+
+  const [response, setResponse] = useState({})
+
+  const timeout = useRef()
+  useEffect(() => {
+    if (response.message) {
+      clearTimeout(timeout.current)
+      timeout.current = setTimeout(() => setResponse({}), 3000);
+    }
+  }, [response])
 
   useEffect(() => {
     const handleEsc = (event) => {
@@ -44,7 +57,33 @@ const AddNewPlayerModal = ({ open, onClose }) => {
     return () => {
       window.removeEventListener("keydown", handleEsc);
     };
-  }, [onClose]);
+  }, []);
+
+  const handleSubmit = async (values) => {
+    return new Promise((resolve, reject) => {
+      const data = {
+        email: values.email,
+        name: `${values.firstName} ${values.lastName}`,
+        height: convertFeetAndInchesToCm(values.heightFt, values.heightIn),
+        weight: values.weight,
+      };
+
+      axios.post(`/api/players`, data).then(res => {
+        setResponse({
+          severity: 'success',
+          message: 'Player added!'
+        });
+        onSuccess && onSuccess();
+        resolve();
+      }).catch(err => {
+        setResponse({
+          severity: 'error',
+          message: err.response?.data?.message || err.message
+        })
+        reject(err);
+      })
+    })
+  };
 
   return (
     <Modal open={open} onClose={onClose} aria-labelledby="upload-modal-title">
@@ -60,6 +99,7 @@ const AddNewPlayerModal = ({ open, onClose }) => {
         </h2>
         <Formik
           initialValues={{
+            email: "",
             firstName: "",
             lastName: "",
             heightFt: "",
@@ -68,13 +108,14 @@ const AddNewPlayerModal = ({ open, onClose }) => {
             handedness: "",
           }}
           validationSchema={validationSchema}
-          onSubmit={(values) => {
-            router.push('add-player')
-            onClose()
-            console.log(values);
+          onSubmit={(values, { resetForm }) => {
+            handleSubmit(values).then(() => {
+              resetForm()
+              router.push('/add-player')
+            }).catch(console.error)
           }}
         >
-          {({ errors, touched, setFieldValue }) => (
+          {({ errors, touched, setFieldValue, values }) => (
             <Form>
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <div className="grid gap-2">
@@ -157,32 +198,25 @@ const AddNewPlayerModal = ({ open, onClose }) => {
                     <label htmlFor="">Handedness</label>
                   </div>
 
-                  <TextField variant="outlined" select defaultValue={'left'} fullWidth onChange={(e) => setFieldValue('handedness', e.target.value)}>
+                  <TextField error={Boolean(errors.handedness && touched.handedness)} variant="outlined" select value={values.handedness} InputProps={{ sx: { height: 50 } }} fullWidth onChange={(e) => setFieldValue('handedness', e.target.value)}>
                     <MenuItem value={'left'}>Left</MenuItem>
                     <MenuItem value={'right'}>Right</MenuItem>
                   </TextField>
-                  {/* <Field
+                </div>
+                <div className={`grid gap-2`}>
+                  <div className="opacity-45">
+                    <label htmlFor="">Email</label>
+                  </div>
+                  <Field
                     className={`w-full text-primary bg-transparent px-3 rounded-lg py-3 text-white rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
-                    ${errors.handedness && touched.handedness
+                    ${errors.email && touched.email
                         ? "border-red-900	border"
                         : "primary-border focus:border-green-500"
                       }`}
                     type="text"
-                    as="select"
-                    name="handedness"
+                    name="email"
                     required
-                  >
-                    <option
-                      className="bg-black"
-                      value={'left'}
-                      label={'Left'}
-                    />
-                    <option
-                      className="bg-black"
-                      value={'right'}
-                      label={'Right'}
-                    />
-                  </Field> */}
+                  />
                 </div>
               </div>
               <div className="grid grid-cols-1 gap-4">
@@ -196,11 +230,12 @@ const AddNewPlayerModal = ({ open, onClose }) => {
                     <span className="text-white mx-2 text-2xl">or drag and drop</span>
                   </div>
                 </div>
-                <div className="flex justify-center mb-10">
-                  <button className="bg-primary dark-blue-color rounded w-28 h-9 flex items-center justify-center text-base font-bold hover-button-shadow">
-                    SUBMIT
-                  </button>
-                </div>
+              </div>
+              {response.message && <div className={`flex justify-center col-span-2 mt-4 ${response.severity === 'success' ? 'text-primary' : 'text-error'}`}>{response.message}</div>}
+              <div className="flex justify-center mt-4 mb-10">
+                <button type="submit" className="bg-primary dark-blue-color rounded w-28 h-9 flex items-center justify-center text-base font-bold hover-button-shadow">
+                  SUBMIT
+                </button>
               </div>
             </Form>
           )}

@@ -51,7 +51,7 @@ const PlayerProfile = ({ setShowEditModal, setShowDeleteModal, setShowGiftModal,
                             Age: <span className="text-primary">{userData.age || "N/A"}</span>
                         </p>
                         <p className="flex-1 text-base mb-2 pb-4 pt-2 border-b border-solid primary-border-color font-bold	">
-                            Location: <span className="text-primary">{`${userData.city}${userData.city && userData.country ? ',' : ''} ${userData.country}`.trim() || "N/A"}</span>
+                            Location: <span className="text-primary">{`${userData.city || ''}${userData.city && userData.country ? ',' : ''} ${userData.country || ''}`.trim() || "N/A"}</span>
                         </p>
                     </div>
                     <div className="flex flex-col lg:flex-row">
@@ -222,17 +222,17 @@ const UserProfile = () => {
     const [showGiftModal, setShowGiftModal] = useState(false)
 
     useEffect(() => {
-        const fetchUserData = async () => {
-            try {
-                const response = await axios.get(`/api/users`, { params: { id: userId } });
-                setUserData(response.data[0]);
-            } catch (error) {
-                console.error('Failed to fetch user data:', error);
-            }
-        };
-
-        fetchUserData();
+        fetchUser();
     }, [userId]);
+
+    const fetchUser = async () => {
+        try {
+            const response = await axios.get(`/api/users`, { params: { id: userId } });
+            setUserData(response.data[0]);
+        } catch (error) {
+            console.error('Failed to fetch user data:', error);
+        }
+    };
 
     return (
 
@@ -249,9 +249,13 @@ const UserProfile = () => {
                             role === 'staff' ? <StaffProfile setShowEditModal={setShowEditModal} setShowDeleteModal={setShowDeleteModal} userData={userData} /> : <></>
                 }
             </div>
-            <EditUserModal open={showEditModal} onClose={() => setShowEditModal(false)} role={role} />
-            <DeleteUserModal open={showDeleteModal} onClose={() => setShowDeleteModal(false)} userId={userId} onSuccess={() => router.back()} />
-            <GiftUserModal open={showGiftModal} onClose={() => setShowGiftModal(false)} />
+            {userData &&
+                <div>
+                    <EditUserModal open={showEditModal} onClose={() => setShowEditModal(false)} userData={userData} onSuccess={fetchUser} />
+                    <DeleteUserModal open={showDeleteModal} onClose={() => setShowDeleteModal(false)} userId={userId} onSuccess={() => router.back()} />
+                    <GiftUserModal open={showGiftModal} onClose={() => setShowGiftModal(false)} />
+                </div>
+            }
         </div>
     );
 };

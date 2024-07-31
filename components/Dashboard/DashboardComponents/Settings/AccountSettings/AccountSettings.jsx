@@ -8,6 +8,7 @@ import schemaValidators from "@/schema-validators";
 import axios from "axios";
 import { getNames } from 'country-list'
 import { convertCmToFeetAndInches, convertFeetAndInchesToCm } from "@/util/utils";
+import UpdateEmailModal from "../../UpdateEmailModal/UpdateEmailModal";
 
 const AccountSettings = ({ _user }) => {
   const formikRef = useRef()
@@ -20,7 +21,7 @@ const AccountSettings = ({ _user }) => {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [pwMsg, setPwMsg] = useState()
+  const [showUpdateEmailModal, setShowUpdateEmailModal] = useState(false)
 
   // const reinitializeForm = (user) => {
   //   Object.keys(user).forEach(field => {
@@ -52,6 +53,7 @@ const AccountSettings = ({ _user }) => {
   // }, [user])
 
   const fetchUser = () => {
+    console.log('accountsettings fetchuser called')
     return new Promise((resolve) => {
       axios.get('/api/users', { params: { id: user._id } }).then(res => setUser({
         ...res.data[0]
@@ -72,21 +74,20 @@ const AccountSettings = ({ _user }) => {
 
   const handleChangePassword = ({ currentPassword, newPassword }) => {
     console.error('handleChangePassword')
-    fetch("/api/auth/change-password", {
-      method: "POST",
-      body: JSON.stringify({
-        currentPassword,
-        newPassword,
-      }),
-    }).then(r => r.json().then(data => ({ status: r.status, ...data }))).then((res => {
-      setPwMsg({
-        message: res.message || JSON.stringify(res),
-        status: res.status
+    axios.patch("/api/users/updatePassword", {
+      oldPassword: currentPassword,
+      newPassword,
+    }).then(res => {
+      setResponse({
+        type: 'password',
+        severity: 'success',
+        message: 'Password updated!'
       })
-    })).catch(err => {
-      setPwMsg({
-        message: err.message || JSON.stringify(res),
-        status: err.status
+    }).catch(err => {
+      setResponse({
+        type: 'password',
+        severity: 'error',
+        message: err.response?.data?.message || err.message
       })
     })
   }
@@ -439,7 +440,7 @@ const AccountSettings = ({ _user }) => {
                 <input
                   name="email"
                   value={user.email}
-                  readOnly
+                  disabled
                   type="text"
                   className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 primary-border focus:border-green-500`}
                 />
@@ -448,6 +449,8 @@ const AccountSettings = ({ _user }) => {
           </div>
           <div className="flex justify-end gap-4 mt-4">
             <button
+              type="button"
+              onClick={() => setShowUpdateEmailModal(true)}
               className="bg-primary dark-blue-color px-4 py-1 rounded font-bold uppercase text-sm hover-button-shadow"
             >
               Update Email
@@ -551,9 +554,7 @@ const AccountSettings = ({ _user }) => {
                     </div>
                   </div>
                 </div>
-                <div className={`flex justify-end text-${pwMsg?.status == 200 ? 'green-500' : 'red-500'} ${!pwMsg && 'hidden'} `}>
-                  <p>{pwMsg?.message}</p>
-                </div>
+                {response.type === 'password' && <div className={`flex justify-end col-span-2 ${response.severity === 'success' ? 'text-primary' : 'text-error'}`}>{response.message}</div>}
                 <div className="flex justify-end gap-4 mt-4">
                   <button
                     disabled={!values.currentPassword || !values.newPassword || !values.confirmPassword}
@@ -568,6 +569,7 @@ const AccountSettings = ({ _user }) => {
           </Form>
         )}
       </Formik>
+      {showUpdateEmailModal && <UpdateEmailModal open={showUpdateEmailModal} onClose={() => setShowUpdateEmailModal(false)} isVerification={false} onSuccess={fetchUser} />}
       {/* <div className={`space-y-4 primary-border rounded-lg flex items-center p-4 mt-8 ${user.role !== 'player' && 'hidden'}`}>
         <div className="basis-2/5 flex pl-6 2xl:pl-20 justify-between flex-col">
           <div>

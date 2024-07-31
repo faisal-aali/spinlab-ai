@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Tabs,
   Tab,
@@ -10,12 +10,15 @@ import {
   Typography,
   Button,
   IconButton,
+  CircularProgress,
 } from "@mui/material";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import { Add } from "@mui/icons-material";
 import { green } from "@mui/material/colors";
 import AddNewPlayerModal from "../AddNewPlayerModal/AddNewPlayerModal";
 import { usePathname, useRouter } from "next/navigation";
+import axios from "axios";
+import { convertCmToFeetAndInches } from "@/util/utils";
 
 const players = [
   {
@@ -43,20 +46,20 @@ const PlayerCard = ({ player, playersMetrics }) => {
     <Card className="bg-transparent p-1 border primary-border">
       <Grid container padding={1} gap={2}>
         <Grid item>
-          <CardMedia component={'img'} image={player.imageUrl} />
+          <CardMedia component={'img'} image={'/assets/player.png'} />
         </Grid>
         <Grid item alignItems={'center'} display={'flex'} xs>
           <CardContent style={{ padding: 0 }}>
             <Grid container flexDirection={'column'} gap={2}>
               <Grid item>
-                <Typography className="!text-white !text-2xl">{player.firstName} {player.lastName}</Typography>
+                <Typography className="!text-white !text-2xl">{player.name}</Typography>
               </Grid>
               <Grid item container gap={2}>
                 <Grid item className="blueBackground w-36	text-center py-2 px-8 primary-border-green rounded">
-                  <Typography className="text-white text-lg	">{player.height}</Typography>
+                  <Typography className="text-white text-lg	">{convertCmToFeetAndInches(player.height).string}</Typography>
                 </Grid>
                 <Grid item className="blueBackground w-36	text-center py-2 px-8 primary-border-green rounded">
-                  <Typography className="text-white text-lg	">{player.weight}</Typography>
+                  <Typography className="text-white text-lg	">{player.weight || 'N/A'}</Typography>
                 </Grid>
               </Grid>
               <Grid item container gap={2} justifyContent={'space-between'}>
@@ -83,8 +86,19 @@ const AddPlayer = () => {
   const [showModal, setShowModal] = useState(false)
   const [searchQuery, setSearchQuery] = useState("");
   const pathname = usePathname()
+  const [players, setPlayers] = useState()
 
   const playersMetrics = (pathname == '/players-metrics')
+
+  useEffect(() => {
+    fetchPlayers()
+  }, [])
+
+  const fetchPlayers = () => {
+    axios.get('/api/users', { params: { role: 'player' } }).then(res => {
+      setPlayers(res.data)
+    }).catch(console.error)
+  }
 
   // const handleCategoryChange = (event, newValue) => {
   //   setSelectedCategory(newValue);
@@ -94,7 +108,7 @@ const AddPlayer = () => {
   //   setSearchQuery(event.target.value);
   // };
 
-  const filteredPlayers = players.filter((player) => `${player.firstName} ${player.lastName}`.toLowerCase().match(searchQuery.toLowerCase()));
+  const filteredPlayers = players?.filter((player) => player.name.toLowerCase().match(searchQuery.toLowerCase()));
 
   return (
     <div className="grid gap-4 py-8 ">
@@ -112,20 +126,21 @@ const AddPlayer = () => {
         </div>
       </div>
       <div>
-        <Grid container gap={2}>
-          {filteredPlayers.map(player => (
-            <Grid item key={player.id}>
-              <PlayerCard player={player} playersMetrics={playersMetrics} />
+        {!players ? <CircularProgress /> :
+          <Grid container gap={2}>
+            {filteredPlayers.map(player => (
+              <Grid item key={player.id}>
+                <PlayerCard player={player} playersMetrics={playersMetrics} />
+              </Grid>
+            ))}
+            <Grid item onClick={() => setShowModal(true)} className="border primary-border rounded" alignItems={'center'} justifyContent={'center'} display={playersMetrics ? 'none' : 'flex'} sx={{ ':hover': { bgcolor: green[900], cursor: 'pointer' } }} minHeight={175} width={485}>
+              <IconButton>
+                <Add className="text-primary" fontSize="large" />
+              </IconButton>
             </Grid>
-          ))}
-          <Grid item onClick={() => setShowModal(true)} className="border primary-border rounded" alignItems={'center'} justifyContent={'center'} display={playersMetrics ? 'none' : 'flex'} sx={{ ':hover': { bgcolor: green[900], cursor: 'pointer' } }} minHeight={175} width={485}>
-            <IconButton>
-              <Add className="text-primary" fontSize="large" />
-            </IconButton>
-          </Grid>
-        </Grid>
+          </Grid>}
       </div>
-      <AddNewPlayerModal onClose={() => setShowModal(false)} open={showModal} />
+      <AddNewPlayerModal onClose={() => setShowModal(false)} open={showModal} onSuccess={fetchPlayers} />
     </div>
   );
 };
