@@ -3,13 +3,8 @@ import * as Yup from "yup";
 import { validateError } from "@/app/lib/functions";
 import { authOption } from "../auth/[...nextauth]/route";
 import { getServerSession } from "next-auth";
-import { Video } from "@/app/lib/models";
-import { Terminal } from "@mui/icons-material";
-
- 
-const videoSchema = Yup.object({
-    videoUrl: Yup.string().required("Video URL is required"),
-});
+import { User, Video } from "@/app/lib/models";
+import _3Motion from "@/app/lib/3motion";
 
 export async function GET(req: NextRequest) {
     try {
@@ -20,7 +15,7 @@ export async function GET(req: NextRequest) {
         const id = searchParams.get('id');
         const userId = searchParams.get('userId');
 
-        const query: { _id?: string , userId?: string } = {};
+        const query: { _id?: string, userId?: string } = {};
 
         if (id) query._id = id;
         if (userId) query.userId = userId;
@@ -37,20 +32,35 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
     try {
         const session = await getServerSession(authOption);
-        if (!session || !session.user) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+        if (!session || !session.user || session.user.role !== 'player') return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
 
-        const data = await req.json();
-        
-        await videoSchema.validate(data);
+        const formData = await req.formData();
 
+        const uploadfile = formData.get('file') as File
+        if (!uploadfile) return NextResponse.json({ message: 'File is required' }, { status: 400 });
+
+        const user = await User.findOne({ _id: session.user._id })
+        if (!user) return NextResponse.json({ message: 'User not found' }, { status: 404 });
+        if (!user.roleData.weight || !user.roleData.height) return NextResponse.json({ message: 'Weight and height is required' }, { status: 400 });
+
+        const height = Math.round(user.roleData.height)
+        const weight = Math.round(user.roleData.weight)
         const taskType = "hit"
+
+        const task = await _3Motion.createAssessment({
+            height,
+            weight,
+            taskType,
+            uploadfile,
+        })
+
         // const task = createAssesment();
 
         const newVideo = await Video.create({
             userId: session.user._id,
-            // taskId: task.assesmentId,
+            taskId: task.assessmentId,
             taskType: taskType,
-            deliveryDate: new Date().getTime()+600000,
+            deliveryDate: new Date().getTime() + 600000,
         });
 
         return NextResponse.json({ message: `Video has been queued with id ${newVideo._id}` }, { status: 200 });

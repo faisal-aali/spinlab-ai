@@ -1,7 +1,8 @@
-import { IUser } from './interfaces/users';
+import { IUser } from './interfaces/user';
 import mongoose from './mongodb'
 import { IDrill } from './interfaces/drill';
 import { ICategory } from './interfaces/category';
+import { IVideo } from './interfaces/video';
 
 // const roleDataSchema = new mongoose.Schema({
 //     age: { type: Number, required: false, default: null },
@@ -41,11 +42,11 @@ const categorySchema = new mongoose.Schema({
 
 const videosSchema = new mongoose.Schema({
     userId: { type: String, required: true },
-    taskId: { type: String, required: true, },
+    taskId: { type: String, required: true, unique: true },
     taskType: { type: String, required: true, },
     deliveryDate: { type: Date, required: true },
     creationDate: { type: Date, required: false, default: () => new Date().toISOString() },
-    videoData: { type: Boolean, required: false, default: {}},
+    assessmentDetails: { type: mongoose.Schema.Types.Mixed, required: false, default: {} },
 }, { minimize: false });
 
 export const User: mongoose.Model<IUser> = mongoose.models.user || mongoose.model<IUser>('user', userSchema, 'users');
@@ -54,4 +55,4 @@ export const Drill: mongoose.Model<IDrill> = mongoose.models.drill || mongoose.m
 
 export const Category: mongoose.Model<ICategory> = mongoose.models.category || mongoose.model<ICategory>('category', categorySchema, 'categories');
 
-export const Video: mongoose.Model<ICategory> = mongoose.models.video || mongoose.model<ICategory>('video', videosSchema, 'videos');
+export const Video: mongoose.Model<IVideo> = mongoose.models.video || mongoose.model<IVideo>('video', videosSchema, 'videos');
