@@ -39,8 +39,19 @@ const categorySchema = new mongoose.Schema({
     name: { type: String, required: true },
 });
 
+const videosSchema = new mongoose.Schema({
+    userId: { type: String, required: true },
+    taskId: { type: String, required: true, },
+    taskType: { type: String, required: true, },
+    deliveryDate: { type: Date, required: true },
+    creationDate: { type: Date, required: false, default: () => new Date().toISOString() },
+    videoData: { type: Boolean, required: false, default: {}},
+}, { minimize: false });
+
 export const User: mongoose.Model<IUser> = mongoose.models.user || mongoose.model<IUser>('user', userSchema, 'users');
 
 export const Drill: mongoose.Model<IDrill> = mongoose.models.drill || mongoose.model<IDrill>('drill', drillSchema, 'drills');
 
 export const Category: mongoose.Model<ICategory> = mongoose.models.category || mongoose.model<ICategory>('category', categorySchema, 'categories');
+
+export const Video: mongoose.Model<ICategory> = mongoose.models.video || mongoose.model<ICategory>('video', videosSchema, 'videos');
