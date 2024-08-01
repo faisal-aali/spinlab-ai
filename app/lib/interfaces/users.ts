@@ -16,6 +16,7 @@ export interface IUser {
     bio: string | null,
     credits: number,
     emailVerified: boolean,
+    creationDate: Date,
     role: string,
     roleData: IRoleData,
     isDeleted: boolean

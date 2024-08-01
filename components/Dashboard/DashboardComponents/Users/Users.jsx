@@ -55,7 +55,7 @@ const Users = () => {
     setShowDeleteModal(true);
   };
 
-  const paginatedData = data.filter(p => `${p.firstName} ${p.lastName}`.toLowerCase().includes(searchQuery.toLowerCase())).slice(
+  const paginatedData = data.filter(u => u.name.toLowerCase().includes(searchQuery.toLowerCase())).slice(
     (page - 1) * rowsPerPage,
     page * rowsPerPage
   );
@@ -120,7 +120,7 @@ const Users = () => {
                     </TableCell>
                     <TableCell>
                       <Typography variant="body2" className="!text-white !text-lg">
-                        {row.date}
+                        {new Date(row.creationDate).toLocaleDateString()}
                       </Typography>
                     </TableCell>
                     <TableCell>

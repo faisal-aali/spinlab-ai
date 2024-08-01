@@ -31,7 +31,7 @@ const DeleteVideoModal = ({ open, onClose, videoId, onSuccess }) => {
     try {
       await axios.delete(`http://localhost:3000/api/drills/${videoId}`);
       onSuccess && onSuccess()
-      onClose(); 
+      onClose();
     } catch (error) {
       console.error("Error deleting video", error);
     }

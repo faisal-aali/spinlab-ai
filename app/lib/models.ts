@@ -1,4 +1,3 @@
-import { IResetToken } from './interfaces/resetTokens';
 import { IUser } from './interfaces/users';
 import mongoose from './mongodb'
 import { IDrill } from './interfaces/drill';
@@ -22,6 +21,7 @@ const userSchema = new mongoose.Schema({
     bio: { type: String, required: false, default: null },
     credits: { type: Number, required: false, default: 0 },
     emailVerified: { type: Boolean, required: false, default: false },
+    creationDate: { type: Date, required: false, default: () => new Date().toISOString() },
     role: { type: String, required: true },
     roleData: { type: mongoose.Schema.Types.Mixed, required: true },
     isDeleted: { type: Boolean, required: false, default: false },
@@ -39,16 +39,8 @@ const categorySchema = new mongoose.Schema({
     name: { type: String, required: true },
 });
 
-const resetTokenSchema = new mongoose.Schema({
-    token: String,
-    expiration: Number,
-    user_id: String,
-});
+export const User: mongoose.Model<IUser> = mongoose.models.user || mongoose.model<IUser>('user', userSchema, 'users');
 
-export const User: mongoose.Model<IUser> = mongoose.models.user || mongoose.model<IUser>('user', userSchema);
+export const Drill: mongoose.Model<IDrill> = mongoose.models.drill || mongoose.model<IDrill>('drill', drillSchema, 'drills');
 
-export const Drill: mongoose.Model<IDrill> = mongoose.models.drill || mongoose.model<IDrill>('drill', drillSchema);
-
-export const Category: mongoose.Model<ICategory> = mongoose.models.category || mongoose.model<ICategory>('category', categorySchema);
-
-export const ResetToken: mongoose.Model<IResetToken> = mongoose.models.resetToken || mongoose.model<IUser>('resetToken', resetTokenSchema);
+export const Category: mongoose.Model<ICategory> = mongoose.models.category || mongoose.model<ICategory>('category', categorySchema, 'categories');

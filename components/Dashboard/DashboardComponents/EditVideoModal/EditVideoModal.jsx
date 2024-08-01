@@ -23,7 +23,7 @@ const validationSchema = Yup.object({
   title: Yup.string().required("Required"),
 });
 
-const EditVideoModal = ({ open, onClose, videoId, videoData, categories }) => {
+const EditVideoModal = ({ open, onClose, videoId, videoData, categories, onSuccess }) => {
   useEffect(() => {
     const handleEsc = (event) => {
       if (event.keyCode === 27) {
@@ -40,7 +40,8 @@ const EditVideoModal = ({ open, onClose, videoId, videoData, categories }) => {
     console.log(values)
     try {
       await axios.post(`http://localhost:3000/api/drills/${videoId}`, values);
-      onClose(); 
+      onClose();
+      onSuccess && onSuccess()
     } catch (error) {
       console.error("Error updating video", error);
     }

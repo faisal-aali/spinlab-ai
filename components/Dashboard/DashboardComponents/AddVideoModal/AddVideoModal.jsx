@@ -25,16 +25,8 @@ const validationSchema = Yup.object({
   isFree: Yup.boolean().required("Required"),
 });
 
-const addNewDrill = async (values, onClose) => {
-  try {
-    await axios.post("http://localhost:3000/api/drills", values);
-    onClose();
-  } catch (error) {
-    console.error("Error adding video", error);
-  }
-};
 
-const AddVideoModal = ({ open, onClose, categories, initialCategory }) => {
+const AddVideoModal = ({ open, onClose, categories, initialCategory, onSuccess }) => {
   const formikRef = useRef()
   useEffect(() => {
     formikRef.current?.setFieldValue('categoryId', initialCategory)
@@ -52,7 +44,17 @@ const AddVideoModal = ({ open, onClose, categories, initialCategory }) => {
     };
   }, [onClose]);
 
-  const defaultCategoryId = initialCategory ? initialCategory._id : (categories.length > 0 ? categories[0]._id : '');
+  const addNewDrill = async (values, onClose) => {
+    try {
+      await axios.post("http://localhost:3000/api/drills", values);
+      onSuccess && onSuccess()
+      onClose();
+    } catch (error) {
+      console.error("Error adding video", error);
+    }
+  };
+
+  const defaultCategoryId = initialCategory ? initialCategory : (categories.length > 0 ? categories[0]._id : '');
 
   return (
     <Modal open={open} onClose={onClose} aria-labelledby="upload-modal-title">

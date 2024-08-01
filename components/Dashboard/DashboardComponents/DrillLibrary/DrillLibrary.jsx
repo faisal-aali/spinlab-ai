@@ -29,7 +29,7 @@ const DrillLibrary = () => {
   const [selectedVideoId, setSelectedVideoId] = useState(null);
   const [selectedVideoData, setSelectedVideoData] = useState(null); // Add this state
 
-   
+
   const fetchCategoriesAndVideos = async () => {
     try {
       const categoryResponse = await axios.get("/api/categories");
@@ -218,7 +218,7 @@ const DrillLibrary = () => {
                         >
                           <Grid item>
                             <button
-                              onClick={() =>  handleEditClick(video._id)}
+                              onClick={() => handleEditClick(video._id)}
                               className="bg-white flex justify-center items-center w-8 h-8 text-green-600 rounded p-2 focus:outline-none"
                             >
                               <img src="/assets/edit-icon.svg" alt="" />
@@ -267,6 +267,7 @@ const DrillLibrary = () => {
         onClose={() => setShowAddModal(false)}
         categories={categories}
         initialCategory={selectedCategory}
+        onSuccess={fetchCategoriesAndVideos}
       />
       <EditVideoModal
         open={showEditModal}
@@ -274,6 +275,7 @@ const DrillLibrary = () => {
         categories={categories} // Pass categories to the EditVideo
         videoId={selectedVideoId} // Replace with the actual video ID
         videoData={selectedVideoData}
+        onSuccess={fetchCategoriesAndVideos}
       />
       <DeleteVideoModal
         open={showDeleteModal}

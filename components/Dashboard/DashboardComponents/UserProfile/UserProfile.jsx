@@ -63,7 +63,7 @@ const PlayerProfile = ({ setShowEditModal, setShowDeleteModal, setShowGiftModal,
                         </p>
                     </div>
                     <p className="text-base mb-2 pb-4 pt-2 border-b border-solid primary-border-color font-bold	">
-                        Joining Date: <span className="text-primary">{userData.creationDate}</span>
+                        Joining Date: <span className="text-primary">{new Date(userData.creationDate).toLocaleDateString()}</span>
                     </p>
                     <p className="text-base mb-2 pb-4 pt-2 border-b border-solid primary-border-color font-bold	">
                         Remaining Credits: <span className="text-primary">{userData.credits}</span>
@@ -119,7 +119,7 @@ const TrainerProfile = ({ setShowEditModal, setShowDeleteModal, setShowGiftModal
                         Email: <span className="font-normal">{userData.email}</span>
                     </p>
                     <p className="text-base mb-2 pb-4 pt-2 border-b border-solid primary-border-color font-bold	">
-                        Joining Date: <span className="text-primary">{userData.creationDate}</span>
+                        Joining Date: <span className="text-primary">{new Date(userData.creationDate).toLocaleDateString()}</span>
                     </p>
                     <p className="text-base mb-2 pb-4 pt-2 border-b border-solid primary-border-color font-bold	">
                         Expiry Date: <span className="text-primary">{userData.expiryDate || 'N/A'}</span>
@@ -187,7 +187,7 @@ const StaffProfile = ({ setShowEditModal, setShowDeleteModal, userData }) => {
                         Email: <span className="font-normal">{userData.email}</span>
                     </p>
                     <p className="text-base mb-2 pb-4 pt-2 border-b border-solid primary-border-color font-bold	">
-                        Joining Date: <span className="text-primary">{userData.creationDate}</span>
+                        Joining Date: <span className="text-primary">{new Date(userData.creationDate).toLocaleDateString()}</span>
                     </p>
                     <p className="text-base mb-2 pb-4 pt-2 border-b border-solid primary-border-color font-bold	">
                         Expiry Date: <span className="text-primary">{userData.expiryDate || 'N/A'}</span>
