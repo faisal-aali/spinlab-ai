@@ -42,7 +42,7 @@ const EditVideoModal = ({ open, onClose, videoId, videoData, categories, onSucce
 
   const handleSubmit = async (values) => {
     try {
-      await axios.post(`http://localhost:3000/api/drills/${videoId}`, values).then( res => {
+      await axios.post(`/api/drills/${videoId}`, values).then( res => {
         showSnackbar('Saved Changes!', 'success');
         onSuccess && onSuccess();
         onClose();

@@ -50,7 +50,7 @@ const AddVideoModal = ({ open, onClose, categories, initialCategory, onSuccess }
 
   const addNewDrill = async (values, onClose) => {
     try {
-      await axios.post("http://localhost:3000/api/drills", values);
+      await axios.post("/api/drills", values);
       showSnackbar('Video has been added', 'success');
       onSuccess && onSuccess()
       onClose();
