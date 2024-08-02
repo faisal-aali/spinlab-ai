@@ -27,9 +27,9 @@ export async function POST(req: NextRequest) {
 
         const video = await Video.findOne({
             $or: [{
-                taskId: data.TaskId
+                taskId: data.TaskId.toString()
             }, {
-                assessmentMappingId: data.TaskId
+                assessmentMappingId: data.TaskId.toString()
             }]
         })
         if (!video) {
@@ -38,7 +38,11 @@ export async function POST(req: NextRequest) {
         }
 
         const assessmentDetails = await _3Motion.getAssessmentDetails({ taskId: video.taskId, taskType: video.taskType });
-        assessmentDetails.stats = await axios.get(assessmentDetails.dataJsonUrl).then(res => res.data);
+        if (assessmentDetails.dataJsonUrl) {
+            assessmentDetails.stats = await axios.get(assessmentDetails.dataJsonUrl).then(res => res.data);
+        } else {
+            console.log('[/api/3motion/webhook] dataJsonUrl is empty')
+        }
 
         video.assessmentDetails = assessmentDetails as object
 
