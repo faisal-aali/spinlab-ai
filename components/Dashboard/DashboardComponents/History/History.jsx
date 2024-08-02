@@ -12,11 +12,11 @@ import {
   Box,
   Typography,
   LinearProgress,
-  CircularProgress,
-  Pagination,
+  CircularProgress
 } from "@mui/material";
 import { useSession } from "next-auth/react";
-import axios from 'axios'
+import axios from 'axios';
+import Pagination from "../../../Common/Pagination/Pagination";
 
 const CustomLinearProgress = ({ value, color }) => {
   return (
@@ -110,7 +110,7 @@ const History = (props) => {
                             Delivery in
                           </Typography>
                           <Typography variant="caption" className="!text-white">
-                            {row.date}
+                          {new Date(row.creationDate).toLocaleDateString()}
                           </Typography>
                         </TableCell>
                         <TableCell className="!text-white">
