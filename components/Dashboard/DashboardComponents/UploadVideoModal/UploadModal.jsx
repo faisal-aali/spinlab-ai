@@ -11,6 +11,8 @@ import {
 import { Close as CloseIcon } from "@mui/icons-material";
 import axios from "axios";
 import { useSnackbar } from "@/components/Context/AppContext";
+import Recorder from './Recorder'
+
 
 const style = {
   position: "absolute",
@@ -27,34 +29,79 @@ const style = {
 
 const UploadModal = ({ open, onClose, onSuccess, type }) => {
   const { showSnackbar } = useSnackbar();
-  const [recordModalOpen, setRecordModalOpen] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [uploadFailed, setUploadFailed] = useState(false);
+  const [recordVideo, setRecordVideo] = useState(false)
 
-  useEffect(() => {
-    const handleEsc = (event) => {
-      if (event.keyCode === 27) {
-        onClose();
-      }
-    };
-    window.addEventListener("keydown", handleEsc);
-    return () => {
-      window.removeEventListener("keydown", handleEsc);
-    };
-  }, [onClose]);
+  const recordingRef =
 
-  const handleRecordModalClose = () => {
-    setRecordModalOpen(false);
+    useEffect(() => {
+      const handleEsc = (event) => {
+        if (event.keyCode === 27) {
+          onClose();
+        }
+      };
+      window.addEventListener("keydown", handleEsc);
+      return () => {
+        window.removeEventListener("keydown", handleEsc);
+      };
+    }, [onClose]);
+
+  // Function to convert data URL to Blob
+  const dataURLToBlob = (dataURL) => {
+    const arr = dataURL.split(',');
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new Blob([u8arr], { type: mime });
   };
 
-  const interval = useRef()
-  const handleUploadVideo = (file) => {
+  const getVideoThumbnail = (file) => {
+    return new Promise((resolve) => {
+      const url = URL.createObjectURL(file);
+
+      // Create an offscreen video element
+      const video = document.createElement('video');
+      video.src = url;
+      video.muted = true; // Ensure no audio plays
+
+      // Return a promise that resolves when the video is loaded
+      video.addEventListener('loadeddata', () => {
+        // Create an offscreen canvas element
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+
+        // Set canvas dimensions to match the video
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+
+        // Draw the current video frame onto the canvas
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        // Get the thumbnail image as a data URL
+        const thumbnailDataUrl = canvas.toDataURL('image/png');
+        const blob = dataURLToBlob(thumbnailDataUrl)
+        resolve(blob);
+
+        // Clean up the object URL
+        URL.revokeObjectURL(video.src);
+      });
+    });
+  }
+
+  const handleUploadVideo = async (file) => {
     if (!file) return console.error('no file selected')
     setIsUploading(true);
     setUploadProgress(0);
 
+    const thumbnail = await getVideoThumbnail(file)
+    console.log('thumbnail', thumbnail)
     const formData = new FormData()
     formData.append('file', file)
 
@@ -91,7 +138,6 @@ const UploadModal = ({ open, onClose, onSuccess, type }) => {
   const handleCancelUpload = () => {
     setIsUploading(false);
     setUploadProgress(0);
-    setRecordModalOpen(false);
   };
 
 
@@ -181,7 +227,6 @@ const UploadModal = ({ open, onClose, onSuccess, type }) => {
                 <button
                   className="px-4 py-1 rounded font-bold bg-primary dark-blue-color ml-4 uppercase hover-button-shadow"
                   onClick={() => {
-                    handleRecordModalClose()
                     onSuccess && onSuccess()
                   }}
                 >
@@ -209,10 +254,10 @@ const UploadModal = ({ open, onClose, onSuccess, type }) => {
                 </button>
               </div>
             </div>}
-          {type === 'record' &&
+          {type === 'record' && !recordVideo && !isUploading && !uploadSuccess && !uploadFailed &&
             <div className="flex flex-col items-center text-center text-white">
               <h2 className="text-4xl	mb-6">
-                Here’s how to
+                Here's how to
                 <span className="text-primary"> Record your Video!</span>
               </h2>
               <div className="px-8 py-6 primary-border rounded-3xl	">
@@ -232,13 +277,17 @@ const UploadModal = ({ open, onClose, onSuccess, type }) => {
                   </button> */}
                   <button
                     className="bg-primary text-black rounded w-36 h-8 flex items-center justify-center text-base uppercase hover-button-shadow"
-                    onClick={handleUploadVideo}
+                    onClick={() => setRecordVideo(true)}
                   >
                     Record Now
                   </button>
                 </div>
               </div>
             </div>}
+          {recordVideo && <Recorder onSubmit={(blob) => {
+            setRecordVideo(false)
+            handleUploadVideo(blob)
+          }} />}
         </Box>
       </Modal>
     </>

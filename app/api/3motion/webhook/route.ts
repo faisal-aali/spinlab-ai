@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
             console.log('[/api/3motion/webhook] dataJsonUrl is empty')
         }
 
-        video.assessmentDetails = assessmentDetails as object
+        video.assessmentDetails = assessmentDetails
 
         await video.save()
 
@@ -56,4 +56,27 @@ export async function POST(req: NextRequest) {
         const obj = validateError(err)
         return NextResponse.json({ message: obj.message }, { status: obj.status })
     }
+}
+
+// update pending assessment every one hour
+setInterval(() => {
+    updateAssessments()
+}, 3600000);
+
+const updateAssessments = async () => {
+    const videos = await Video.find({}, { assessmentDetails: { stats: { ARR: 0, ANG: 0, VEL: 0 } } });
+    videos.forEach(async video => {
+        if (video.assessmentDetails.statusCode) return
+        console.log('updating assessment details for', video.taskId)
+        const assessmentDetails = await _3Motion.getAssessmentDetails({ taskId: video.taskId, taskType: video.taskType });
+        if (assessmentDetails.dataJsonUrl) {
+            assessmentDetails.stats = await axios.get(assessmentDetails.dataJsonUrl).then(res => res.data);
+        }
+
+        video.assessmentDetails = assessmentDetails
+
+        await video.save()
+
+        console.log('updated assessment details for', video.taskId)
+    })
 }

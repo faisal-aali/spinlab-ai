@@ -17,6 +17,7 @@ import {
 import { useSession } from "next-auth/react";
 import axios from 'axios';
 import Pagination from "../../../Common/Pagination/Pagination";
+import VideoPlayer from "../../../Common/VideoPlayer/VideoPlayer";
 
 const CustomLinearProgress = ({ value, color }) => {
   return (
@@ -42,6 +43,8 @@ const CustomLinearProgress = ({ value, color }) => {
 
 const History = (props) => {
   const user = useSession().data?.user || {}
+
+  const [videoSrc, setVideoSrc] = useState('')
 
   const [data, setData] = useState()
   const [page, setPage] = useState(1);
@@ -91,46 +94,57 @@ const History = (props) => {
                     <TableRow>
                       <TableCell className="!text-white">Videos</TableCell>
                       <TableCell className="!text-white">Date</TableCell>
+                      <TableCell className="!text-white">Status</TableCell>
                       <TableCell className="!text-white">Overall QB Rating</TableCell>
                       <TableCell className="!text-white">Reports</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody className="leaderboard-table-body">
-                    {paginatedData.map((row) => (
-                      <TableRow key={row.id}>
-                        <TableCell className="!text-white">
-                          <img
-                            src={row.thumbnail}
-                            alt={row.name}
-                            style={{ width: 50, height: 50 }}
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <Typography variant="body2" className="!text-white">
-                            Delivery in
-                          </Typography>
-                          <Typography variant="caption" className="!text-white">
-                          {new Date(row.creationDate).toLocaleDateString()}
-                          </Typography>
-                        </TableCell>
-                        <TableCell className="!text-white">
-                          <CustomLinearProgress
-                            value={row.overallQBRating}
-                            color="#00FF00"
-                          />
-                        </TableCell>
-                        <TableCell className="text-white">
-                          <div className="grid grid-cols-2 items-center gap-4">
-                            <button className="bg-white text-black px-5 py-3 rounded-lg">
-                              DOWNLOAD PDF
-                            </button>
-                            <button className="bg-white text-black px-5 py-3 rounded-lg">
-                              VIEW HERE
-                            </button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                    {paginatedData.map((row) => {
+                      const qbRating = row.assessmentDetails?.stats?.performance?.score1
+                      const pdfUrl = row.assessmentDetails?.reportPdfUrl
+                      const overlayVideoUrl = row.assessmentDetails?.overlayVideoUrl
+
+                      return (
+                        <TableRow key={row.id}>
+                          <TableCell className="!text-white">
+                            <img
+                              src={row.thumbnail}
+                              alt={row.name}
+                              style={{ width: 50, height: 50 }}
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <Typography variant="body2" className="!text-white">
+                              Delivery in
+                            </Typography>
+                            <Typography variant="caption" className="!text-white">
+                              {new Date(row.creationDate).toLocaleDateString()}
+                            </Typography>
+                          </TableCell>
+                          <TableCell className="!text-white">
+                            {row.assessmentDetails?.statusText || 'Pending'}
+                          </TableCell>
+                          <TableCell className="!text-white">
+                            {qbRating &&
+                              <CustomLinearProgress
+                                value={qbRating}
+                                color="#00FF00"
+                              />}
+                          </TableCell>
+                          <TableCell className="text-white">
+                            <div className="grid grid-cols-2 items-center gap-4">
+                              <button className={`bg-white text-black px-5 py-3 rounded-lg ${!pdfUrl && 'hidden'}`}>
+                                DOWNLOAD PDF
+                              </button>
+                              <button onClick={() => setVideoSrc(overlayVideoUrl)} className={`bg-white text-black px-5 py-3 rounded-lg ${!overlayVideoUrl && 'hidden'}`}>
+                                OVERLAY VIDEO
+                              </button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      )
+                    })}
                   </TableBody>
                 </Table>
               </TableContainer>}
@@ -143,6 +157,7 @@ const History = (props) => {
             />
           </div>
         </div>
+        <VideoPlayer open={videoSrc ? true : false} onClose={() => setVideoSrc('')} src={videoSrc} />
       </div>
     </>
   );

@@ -24,25 +24,15 @@ const VideoSubmittedScreen = () => {
 const Dashboard = () => {
   const user = useSession().data?.user || {}
   const router = useRouter();
-  const [userEmail, setUserEmail] = useState("");
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [uploadType, setUploadType] = useState("upload");
   const [showPlayerModal, setShowPlayerModal] = useState(false);
-
   const [videoSubmitted, setVideoSubmitted] = useState(false);
 
   useEffect(() => {
     console.log('/dashboard mounted')
     router.refresh()
   }, [])
-
-  const handleOpenModal = () => {
-    setShowUploadModal(true);
-  };
-
-  const handleCloseModal = () => {
-    setShowUploadModal(false);
-  };
 
   useEffect(() => {
     if (user.role === 'admin') router.replace('/profile')
@@ -97,7 +87,7 @@ const Dashboard = () => {
             Click here!
           </a>
         </div>
-        <UploadModal open={showUploadModal} onClose={() => setShowUploadModal(false)} onSuccess={() => setVideoSubmitted(true)} type={'upload'} />
+        <UploadModal open={showUploadModal} onClose={() => setShowUploadModal(false)} onSuccess={() => setVideoSubmitted(true)} type={uploadType} />
         <AddNewPlayerModal open={showPlayerModal} onClose={() => setShowPlayerModal(false)} />
       </div>
   );

@@ -1,3 +1,4 @@
+import { IAssessmentDetails } from "./assessmentDetails";
 
 export interface IVideo {
     _id: string,
@@ -7,5 +8,5 @@ export interface IVideo {
     taskType: string,
     deliveryDate: Date,
     creationDate: Date,
-    assessmentDetails: object
+    assessmentDetails: IAssessmentDetails
 }
