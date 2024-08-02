@@ -1,6 +1,6 @@
 // src/components/History/History.js
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -12,15 +12,11 @@ import {
   Box,
   Typography,
   LinearProgress,
+  CircularProgress,
+  Pagination,
 } from "@mui/material";
-
-const data = Array.from({ length: 6 }).map((_, index) => ({
-  id: index + 1,
-  name: "Delivery on Apr 23, 2024",
-  thumbnail: "/assets/samples/150.png",
-  date: "Mar 29, 2024",
-  overallQBRating: 86,
-}));
+import { useSession } from "next-auth/react";
+import axios from 'axios'
 
 const CustomLinearProgress = ({ value, color }) => {
   return (
@@ -45,17 +41,30 @@ const CustomLinearProgress = ({ value, color }) => {
 };
 
 const History = (props) => {
+  const user = useSession().data?.user || {}
+
+  const [data, setData] = useState()
   const [page, setPage] = useState(1);
   const rowsPerPage = 10;
+
+  useEffect(() => {
+    fetchVideos()
+  }, [])
 
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
   };
 
-  const paginatedData = data.slice(
+  const paginatedData = data?.slice(
     (page - 1) * rowsPerPage,
     page * rowsPerPage
   );
+
+  const fetchVideos = () => {
+    axios.get('/api/videos', { params: { userId: user._id } }).then(res => {
+      setData(res.data)
+    }).catch(console.error)
+  }
 
   return (
     <>
@@ -73,56 +82,66 @@ const History = (props) => {
             </div>
           </div>
         </div>
-        <div className="">
-          <TableContainer component={Paper} className="!bg-transparent">
-            <Table>
-              <TableHead className="leaderboard-table-head bg-primary-light uppercase">
-                <TableRow>
-                  <TableCell className="!text-white">Videos</TableCell>
-                  <TableCell className="!text-white">Date</TableCell>
-                  <TableCell className="!text-white">Overall QB Rating</TableCell>
-                  <TableCell className="!text-white">Reports</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody className="leaderboard-table-body">
-                {paginatedData.map((row) => (
-                  <TableRow key={row.id}>
-                    <TableCell className="!text-white">
-                      <img
-                        src={row.thumbnail}
-                        alt={row.name}
-                        style={{ width: 50, height: 50 }}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Typography variant="body2" className="!text-white">
-                        {row.name}
-                      </Typography>
-                      <Typography variant="caption" className="!text-white">
-                        {row.date}
-                      </Typography>
-                    </TableCell>
-                    <TableCell className="!text-white">
-                      <CustomLinearProgress
-                        value={row.overallQBRating}
-                        color="#00FF00"
-                      />
-                    </TableCell>
-                    <TableCell className="text-white">
-                      <div className="grid grid-cols-2 items-center gap-4">
-                        <button className="bg-white text-black px-5 py-3 rounded-lg">
-                          DOWNLOAD PDF
-                        </button>
-                        <button className="bg-white text-black px-5 py-3 rounded-lg">
-                          VIEW HERE
-                        </button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+        <div className="flex flex-col   gap-4">
+          <div>
+            {!data ? <CircularProgress /> :
+              <TableContainer component={Paper} className="!bg-transparent">
+                <Table>
+                  <TableHead className="leaderboard-table-head bg-primary-light uppercase">
+                    <TableRow>
+                      <TableCell className="!text-white">Videos</TableCell>
+                      <TableCell className="!text-white">Date</TableCell>
+                      <TableCell className="!text-white">Overall QB Rating</TableCell>
+                      <TableCell className="!text-white">Reports</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody className="leaderboard-table-body">
+                    {paginatedData.map((row) => (
+                      <TableRow key={row.id}>
+                        <TableCell className="!text-white">
+                          <img
+                            src={row.thumbnail}
+                            alt={row.name}
+                            style={{ width: 50, height: 50 }}
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <Typography variant="body2" className="!text-white">
+                            Delivery in
+                          </Typography>
+                          <Typography variant="caption" className="!text-white">
+                            {row.date}
+                          </Typography>
+                        </TableCell>
+                        <TableCell className="!text-white">
+                          <CustomLinearProgress
+                            value={row.overallQBRating}
+                            color="#00FF00"
+                          />
+                        </TableCell>
+                        <TableCell className="text-white">
+                          <div className="grid grid-cols-2 items-center gap-4">
+                            <button className="bg-white text-black px-5 py-3 rounded-lg">
+                              DOWNLOAD PDF
+                            </button>
+                            <button className="bg-white text-black px-5 py-3 rounded-lg">
+                              VIEW HERE
+                            </button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>}
+          </div>
+          <div className="flex justify-center">
+            <Pagination
+              page={page}
+              count={Math.ceil(data?.length / rowsPerPage)}
+              onChange={handlePageChange}
+            />
+          </div>
         </div>
       </div>
     </>
