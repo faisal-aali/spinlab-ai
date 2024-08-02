@@ -152,8 +152,8 @@ function createAssessment({
         // console.log(file)
         formData.append('individualId', individualId.toString())
         formData.append('taskType', taskType)
-        formData.append('height', '150')
-        formData.append('weight', '5000')
+        formData.append('height', height.toString())
+        formData.append('weight', weight.toString())
         formData.append('uploadfile', uploadfile)
 
         console.log(formData)
