@@ -140,7 +140,7 @@ function createAssessment({
     assessmentMappingId: number
 }> {
     return new Promise((resolve, reject) => {
-        console.log('createAssessment called', auth, uploadfile)
+        console.log('[3motion.createAssessment] called: Auth', auth, uploadfile)
         if (!auth) return reject({ message: 'Unauthorized' })
 
         individualId = individualId || 124923
@@ -164,9 +164,14 @@ function createAssessment({
                 'Accept': 'application/json',
                 'Cookie': 'Dsi.Localization.CultureName=en',
                 'Authorization': `Bearer ${auth.accessToken}`
-            }
+            },
+            onUploadProgress: (progressEvent) => {
+                const percentCompleted = Math.round((progressEvent.loaded * 100) / (progressEvent.total || 1));
+                console.log(`[3motion.createAssessment] uploaded ${percentCompleted}%`);
+            },
         }).then(res => {
             if (!res.data.success) return reject({ message: res.data.message || 'Unexpected error' })
+            console.log(res.data.result)
             resolve(res.data.result)
         }).catch(err => {
             reject({ message: err.response.data?.message || err.message || 'INTERNAL ERROR' })

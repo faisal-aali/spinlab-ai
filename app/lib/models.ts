@@ -43,6 +43,7 @@ const categorySchema = new mongoose.Schema({
 const videosSchema = new mongoose.Schema({
     userId: { type: String, required: true },
     taskId: { type: String, required: true, unique: true },
+    assessmentMappingId: { type: String, required: true, unique: true },
     taskType: { type: String, required: true, },
     deliveryDate: { type: Date, required: true },
     creationDate: { type: Date, required: false, default: () => new Date().toISOString() },

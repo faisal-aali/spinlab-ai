@@ -206,6 +206,7 @@ const Layout = ({ children }) => {
       <UploadModal
         open={showUploadModal}
         onClose={() => setShowUploadModal(false)}
+        type={'upload'}
       />
 
       <Snackbar

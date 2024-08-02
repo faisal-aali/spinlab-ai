@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
         if (id) query._id = id;
         if (userId) query.userId = userId;
 
-        const videos = await Video.find(query);
+        const videos = await Video.find(query, { assessmentDetails: { stats: 0 } });
         return NextResponse.json(videos);
     } catch (err: unknown) {
         console.error(err);
@@ -54,11 +54,10 @@ export async function POST(req: NextRequest) {
             uploadfile,
         })
 
-        // const task = createAssesment();
-
         const newVideo = await Video.create({
             userId: session.user._id,
             taskId: task.assessmentId,
+            assessmentMappingId: task.assessmentMappingId,
             taskType: taskType,
             deliveryDate: new Date().getTime() + 600000,
         });

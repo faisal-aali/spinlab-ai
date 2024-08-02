@@ -25,7 +25,13 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ message: `Invalid TenantId` }, { status: 404 })
         }
 
-        const video = await Video.findOne({ taskId: data.TaskId })
+        const video = await Video.findOne({
+            $or: [{
+                taskId: data.TaskId
+            }, {
+                assessmentMappingId: data.TaskId
+            }]
+        })
         if (!video) {
             console.log('[/api/3motion/webhook] Invalid TaskId')
             return NextResponse.json({ message: `Invalid TaskId` }, { status: 404 })

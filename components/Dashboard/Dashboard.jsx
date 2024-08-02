@@ -26,6 +26,7 @@ const Dashboard = () => {
   const router = useRouter();
   const [userEmail, setUserEmail] = useState("");
   const [showUploadModal, setShowUploadModal] = useState(false);
+  const [uploadType, setUploadType] = useState("upload");
   const [showPlayerModal, setShowPlayerModal] = useState(false);
 
   const [videoSubmitted, setVideoSubmitted] = useState(false);
@@ -55,14 +56,20 @@ const Dashboard = () => {
           <div className="flex justify-center mb-10">
             <button
               className="bg-primary text-black rounded w-36 h-8 flex items-center justify-center text-base hover-button-shadow"
-              onClick={handleOpenModal}
+              onClick={() => {
+                setUploadType('upload')
+                setShowUploadModal(true);
+              }}
               style={{ display: user.role === 'player' ? 'block' : 'none' }}
             >
               UPLOAD VIDEO
             </button>
             <button
               className="bg-primary text-black rounded w-36 h-8 flex items-center justify-center text-base ml-4 hover-button-shadow"
-              onClick={handleOpenModal}
+              onClick={() => {
+                setUploadType('record')
+                setShowUploadModal(true);
+              }}
               style={{ display: user.role === 'player' ? 'block' : 'none' }}
             >
               RECORD VIDEO
@@ -90,7 +97,7 @@ const Dashboard = () => {
             Click here!
           </a>
         </div>
-        <UploadModal open={showUploadModal} onClose={handleCloseModal} onSuccess={() => setVideoSubmitted(true)} />
+        <UploadModal open={showUploadModal} onClose={() => setShowUploadModal(false)} onSuccess={() => setVideoSubmitted(true)} type={'upload'} />
         <AddNewPlayerModal open={showPlayerModal} onClose={() => setShowPlayerModal(false)} />
       </div>
   );
