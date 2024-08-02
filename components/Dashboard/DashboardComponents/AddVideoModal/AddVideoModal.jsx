@@ -4,6 +4,8 @@ import { Close as CloseIcon } from "@mui/icons-material";
 import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import axios from 'axios';
+import { useSnackbar } from '../../../Context/AppContext';
+
 
 const style = {
   position: "absolute",
@@ -27,7 +29,9 @@ const validationSchema = Yup.object({
 
 
 const AddVideoModal = ({ open, onClose, categories, initialCategory, onSuccess }) => {
-  const formikRef = useRef()
+  const formikRef = useRef();
+  const { showSnackbar } = useSnackbar();
+
   useEffect(() => {
     formikRef.current?.setFieldValue('categoryId', initialCategory)
   }, [initialCategory]);
@@ -47,10 +51,11 @@ const AddVideoModal = ({ open, onClose, categories, initialCategory, onSuccess }
   const addNewDrill = async (values, onClose) => {
     try {
       await axios.post("http://localhost:3000/api/drills", values);
+      showSnackbar('Video has been added', 'success');
       onSuccess && onSuccess()
       onClose();
-    } catch (error) {
-      console.error("Error adding video", error);
+    } catch (err) {
+      showSnackbar(err.response?.data?.message || err.message, 'error');
     }
   };
 

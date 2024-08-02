@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Box, Typography, Button, IconButton, Snackbar, Alert } from "@mui/material";
-import { Close as CloseIcon } from "@mui/icons-material";
+import { Modal, Box } from "@mui/material";
 import axios from "axios";
+import { useSnackbar } from "../../../Context/AppContext";
 
 const style = {
   position: "absolute",
@@ -11,17 +11,14 @@ const style = {
   boxShadow: 24,
   p: 4,
   borderRadius: "8px",
-  maxHeight: '90vh',
-  overflow: 'auto'
+  maxHeight: "90vh",
+  overflow: "auto",
 };
 
 const DeleteUserModal = ({ open, onClose, userId, onSuccess }) => {
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+  const { showSnackbar } = useSnackbar();
 
   useEffect(() => {
-
     const handleEsc = (event) => {
       if (event.keyCode === 27) {
         onClose();
@@ -37,24 +34,16 @@ const DeleteUserModal = ({ open, onClose, userId, onSuccess }) => {
     try {
       const response = await axios.delete(`/api/users/${userId}`);
       if (response.status === 200) {
-        setSnackbarMessage("User deleted successfully!");
-        setSnackbarSeverity("success");
-        onSuccess && onSuccess()
+        showSnackbar("User deleted successfully!", "success");
+        onSuccess && onSuccess();
       } else {
-        setSnackbarMessage("Failed to delete user.");
-        setSnackbarSeverity("error");
+        showSnackbar("Failed to delete user.", "error");
       }
     } catch (error) {
-      setSnackbarMessage("Failed to delete user. Please try again.");
-      setSnackbarSeverity("error");
+      showSnackbar("Failed to delete user.", "error");
     } finally {
-      setSnackbarOpen(true);
       onClose();
     }
-  };
-
-  const handleSnackbarClose = () => {
-    setSnackbarOpen(false);
   };
 
   return (
@@ -66,16 +55,24 @@ const DeleteUserModal = ({ open, onClose, userId, onSuccess }) => {
               <img src="/assets/delete-icon.svg" alt="Delete Icon" />
             </div>
             <div>
-              <p className="text-lg">Are you sure you want to delete this user?</p>
+              <p className="text-lg">
+                Are you sure you want to delete this user?
+              </p>
             </div>
             <div className="flex flex-row gap-4">
               <div className="flex justify-center">
-                <button onClick={onClose} className="bg-white dark-blue-color rounded w-28 h-9 flex items-center justify-center text-lg font-bold">
+                <button
+                  onClick={onClose}
+                  className="bg-white dark-blue-color rounded w-28 h-9 flex items-center justify-center text-lg font-bold"
+                >
                   CANCEL
                 </button>
               </div>
               <div className="flex justify-center">
-                <button onClick={handleDelete} className="bg-primary dark-blue-color rounded w-28 h-9 flex items-center justify-center text-lg font-bold hover-button-shadow">
+                <button
+                  onClick={handleDelete}
+                  className="bg-primary dark-blue-color rounded w-28 h-9 flex items-center justify-center text-lg font-bold hover-button-shadow"
+                >
                   CONFIRM
                 </button>
               </div>
@@ -83,11 +80,6 @@ const DeleteUserModal = ({ open, onClose, userId, onSuccess }) => {
           </div>
         </Box>
       </Modal>
-      <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose}>
-        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
     </>
   );
 };

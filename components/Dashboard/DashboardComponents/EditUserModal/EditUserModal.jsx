@@ -8,6 +8,7 @@ import axios from "axios";
 import schemaValidators from "@/schema-validators";
 import { convertCmToFeetAndInches, convertFeetAndInchesToCm } from "@/util/utils";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { useSnackbar } from "../../../Context/AppContext";
 
 const style = {
   position: "absolute",
@@ -42,17 +43,12 @@ const passwordValidationSchema = Yup.object({
 const UpdatePasswordModal = ({ open, onClose, userId }) => {
 
   const [response, setResponse] = useState({})
+  const { showSnackbar } = useSnackbar();
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const timeout = useRef()
-  useEffect(() => {
-    if (response.message) {
-      clearTimeout(timeout.current)
-      timeout.current = setTimeout(() => setResponse({}), 3000);
-    }
-  }, [response])
 
   const handleChangePassword = (values) => {
     return new Promise((resolve, reject) => {
@@ -60,18 +56,10 @@ const UpdatePasswordModal = ({ open, onClose, userId }) => {
         id: userId,
         password: values.newPassword,
       }).then(res => {
-        setResponse({
-          type: 'password',
-          severity: 'success',
-          message: 'Password updated!'
-        })
+        showSnackbar('Password Updated!', 'success');
         resolve()
       }).catch(err => {
-        setResponse({
-          type: 'password',
-          severity: 'error',
-          message: err.response?.data?.message || err.message
-        })
+        showSnackbar(err.response?.data?.message || err.message, 'error');
         reject(err)
       })
     })
@@ -171,6 +159,7 @@ const EditUserModal = ({ open, onClose, userData, onSuccess }) => {
   const [showPasswordModal, setShowPasswordModal] = useState(false)
   const [user, setUser] = useState(userData)
   const [response, setResponse] = useState({})
+  const { showSnackbar } = useSnackbar();
 
   const fetchUser = () => {
     return new Promise((resolve) => {
@@ -183,13 +172,7 @@ const EditUserModal = ({ open, onClose, userData, onSuccess }) => {
   }
 
   const timeout = useRef()
-  useEffect(() => {
-    if (response.message) {
-      clearTimeout(timeout.current)
-      timeout.current = setTimeout(() => setResponse({}), 3000);
-    }
-  }, [response])
-
+  
   useEffect(() => {
     const handleEsc = (event) => {
       if (event.keyCode === 27) {
@@ -212,16 +195,10 @@ const EditUserModal = ({ open, onClose, userData, onSuccess }) => {
       })
       axios.post(`/api/${(userData.role === 'player' && 'players') || (userData.role === 'trainer' && 'trainers') || (userData.role === 'staff' && 'staff') || (userData.role === 'admin' && 'admin')}/${userData._id}`, data)
         .then(res => {
-          setResponse({
-            severity: 'success',
-            message: 'Saved changes!'
-          });
+          showSnackbar(`${userData.role} has been updated`, 'success');
           resolve();
         }).catch(err => {
-          setResponse({
-            severity: 'error',
-            message: err.response?.data?.message || err.message
-          })
+          showSnackbar( err.response?.data?.message || err.message, 'error');
           reject(err);
         })
     })

@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Modal, Box, IconButton, TextField, MenuItem, Snackbar, Alert } from "@mui/material";
+import { Modal, Box, IconButton, TextField, MenuItem } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import schemaValidators from "../../../../schema-validators";
 import axios from "axios";
 import { convertFeetAndInchesToCm } from "@/util/utils";
+import { useSnackbar } from '../../../Context/AppContext';
 
 const style = {
   position: "absolute",
@@ -21,9 +22,7 @@ const style = {
 
 const AddUserModal = ({ open, onClose, role, onSuccess }) => {
   // const [selectedRole, setSelectedRole] = useState(role);
-  // const [snackbarOpen, setSnackbarOpen] = useState(false);
-  // const [snackbarMessage, setSnackbarMessage] = useState("");
-  // const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+  const { showSnackbar } = useSnackbar();
   const [response, setResponse] = useState({})
 
   const timeout = useRef()
@@ -63,17 +62,12 @@ const AddUserModal = ({ open, onClose, role, onSuccess }) => {
       };
 
       axios.post(`/api/${(role === 'player' && 'players') || (role === 'trainer' && 'trainers') || (role === 'staff' && 'staff') || (role === 'admin' && 'admin')}`, data).then(res => {
-        setResponse({
-          severity: 'success',
-          message: 'User added!'
-        });
+        showSnackbar('User added successfully!', 'success');
         onSuccess && onSuccess();
+        onClose();
         resolve();
       }).catch(err => {
-        setResponse({
-          severity: 'error',
-          message: err.response?.data?.message || err.message
-        })
+        showSnackbar(err.response?.data?.message || err.message, 'error');
         reject(err);
       })
     })
@@ -88,10 +82,6 @@ const AddUserModal = ({ open, onClose, role, onSuccess }) => {
     weight: role === 'player' && Yup.number().required("Required"),
     handedness: role === 'player' && schemaValidators.user.handedness,
   });
-
-  // const handleSnackbarClose = () => {
-  //   setSnackbarOpen(false);
-  // };
 
   return (
     <Modal open={open} onClose={onClose} aria-labelledby="upload-modal-title">
@@ -124,7 +114,6 @@ const AddUserModal = ({ open, onClose, role, onSuccess }) => {
 
         >
           {({ errors, touched, setFieldValue, values }) => (
-            console.log(errors),
             <Form>
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <div className="grid col-span-2 gap-2">
@@ -255,28 +244,6 @@ const AddUserModal = ({ open, onClose, role, onSuccess }) => {
                     required
                   />
                 </div>
-                {/* <div className="grid gap-2">
-                  <div className="opacity-45">
-                    <label htmlFor="">Subscription Plan</label>
-                  </div>
-                  <TextField variant="outlined" select defaultValue={'monthly'} fullWidth InputProps={{ style: { height: 50 } }} onChange={(e) => setFieldValue('plan', e.target.value)}>
-                    <MenuItem value={'monthly'}>Monthly</MenuItem>
-                    <MenuItem value={'annual'}>Annual</MenuItem>
-                  </TextField>
-                </div> */}
-                {/* <div className="grid gap-2">
-                  <div className="opacity-45">
-                    <label htmlFor="">User Type</label>
-                  </div>
-                  <TextField variant="outlined" select defaultValue={'player'} fullWidth InputProps={{ style: { height: 50 } }} onChange={(e) => {
-                    setSelectedRole(e.target.value)
-                    setFieldValue('role', e.target.value)
-                  }}>
-                    <MenuItem value={'player'}>Player</MenuItem>
-                    <MenuItem value={'staff'}>Staff</MenuItem>
-                    <MenuItem value={'trainer'}>Trainer</MenuItem>
-                  </TextField>
-                </div> */}
               </div>
               {response.message && <div className={`flex justify-end col-span-2 mb-4 ${response.severity === 'success' ? 'text-primary' : 'text-error'}`}>{response.message}</div>}
               <div className="flex justify-end mb-10">
@@ -287,16 +254,6 @@ const AddUserModal = ({ open, onClose, role, onSuccess }) => {
             </Form>
           )}
         </Formik>
-        {/* <Snackbar
-          open={snackbarOpen}
-          autoHideDuration={6000}
-          onClose={handleSnackbarClose}
-          message={snackbarMessage}
-        >
-          <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
-            {snackbarMessage}
-          </Alert>
-        </Snackbar> */}
       </Box>
     </Modal >
   );

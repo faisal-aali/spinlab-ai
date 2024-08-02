@@ -4,6 +4,7 @@ import { Close as CloseIcon } from "@mui/icons-material";
 import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
+import { useSnackbar } from '../../../Context/AppContext';
 
 const style = {
   position: "absolute",
@@ -24,6 +25,9 @@ const validationSchema = Yup.object({
 });
 
 const EditVideoModal = ({ open, onClose, videoId, videoData, categories, onSuccess }) => {
+
+  const { showSnackbar } = useSnackbar();
+  
   useEffect(() => {
     const handleEsc = (event) => {
       if (event.keyCode === 27) {
@@ -37,13 +41,14 @@ const EditVideoModal = ({ open, onClose, videoId, videoData, categories, onSucce
   }, [onClose]);
 
   const handleSubmit = async (values) => {
-    console.log(values)
     try {
-      await axios.post(`http://localhost:3000/api/drills/${videoId}`, values);
-      onClose();
-      onSuccess && onSuccess()
-    } catch (error) {
-      console.error("Error updating video", error);
+      await axios.post(`http://localhost:3000/api/drills/${videoId}`, values).then( res => {
+        showSnackbar('Saved Changes!', 'success');
+        onSuccess && onSuccess();
+        onClose();
+      });
+    } catch (err) {
+      showSnackbar(err.response?.data?.message || err.message, 'error');
     }
   };
 

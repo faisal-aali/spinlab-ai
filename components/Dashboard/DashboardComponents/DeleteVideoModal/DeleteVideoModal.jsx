@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { Modal, Box, Typography, Button, IconButton } from "@mui/material";
 import axios from 'axios';
+import { useSnackbar } from '../../../Context/AppContext';
 
 const style = {
   position: "absolute",
@@ -15,6 +16,9 @@ const style = {
 };
 
 const DeleteVideoModal = ({ open, onClose, videoId, onSuccess }) => {
+
+  const { showSnackbar } = useSnackbar();
+  
   useEffect(() => {
     const handleEsc = (event) => {
       if (event.keyCode === 27) {
@@ -30,10 +34,11 @@ const DeleteVideoModal = ({ open, onClose, videoId, onSuccess }) => {
   const handleDelete = async () => {
     try {
       await axios.delete(`http://localhost:3000/api/drills/${videoId}`);
+      showSnackbar('Video has been deleted', 'success');
       onSuccess && onSuccess()
       onClose();
-    } catch (error) {
-      console.error("Error deleting video", error);
+    } catch (err) {
+      showSnackbar(err.response?.data?.message || err.message, 'error');
     }
   };
 

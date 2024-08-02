@@ -12,7 +12,13 @@ const theme = createTheme({
         },
         background: {
             paper: '#090F21',
-        }
+        },
+        success: {
+            main: '#32E100',
+        },
+        error: {
+            main: '#F52323',
+        },
     },
     components: {
         MuiButton: {

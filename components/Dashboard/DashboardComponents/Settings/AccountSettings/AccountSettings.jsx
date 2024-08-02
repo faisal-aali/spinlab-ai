@@ -9,6 +9,7 @@ import axios from "axios";
 import { getNames } from 'country-list'
 import { convertCmToFeetAndInches, convertFeetAndInchesToCm } from "@/util/utils";
 import UpdateEmailModal from "../../UpdateEmailModal/UpdateEmailModal";
+import { useSnackbar } from "../../../../Context/AppContext";
 
 const AccountSettings = ({ _user }) => {
   const formikRef = useRef()
@@ -22,6 +23,8 @@ const AccountSettings = ({ _user }) => {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showUpdateEmailModal, setShowUpdateEmailModal] = useState(false)
+  const { showSnackbar } = useSnackbar();
+
 
   // const reinitializeForm = (user) => {
   //   Object.keys(user).forEach(field => {
@@ -78,17 +81,9 @@ const AccountSettings = ({ _user }) => {
       oldPassword: currentPassword,
       newPassword,
     }).then(res => {
-      setResponse({
-        type: 'password',
-        severity: 'success',
-        message: 'Password updated!'
-      })
+      showSnackbar('Password Updated!', 'success');
     }).catch(err => {
-      setResponse({
-        type: 'password',
-        severity: 'error',
-        message: err.response?.data?.message || err.message
-      })
+      showSnackbar(err.response?.data?.message || err.message, 'error');
     })
   }
 
@@ -101,18 +96,10 @@ const AccountSettings = ({ _user }) => {
         data[key] = values[key] || null
       })
       axios.post(`/api/${(user.role === 'player' && 'players') || (user.role === 'trainer' && 'trainers') || (user.role === 'staff' && 'staff') || (user.role === 'admin' && 'admin')}/${user._id}`, data).then(res => {
-        setResponse({
-          type: 'profile',
-          severity: 'success',
-          message: 'Saved changes!'
-        })
+        showSnackbar('Saved changes!', 'success');
         resolve()
       }).catch(err => {
-        setResponse({
-          type: 'profile',
-          severity: 'error',
-          message: err.response?.data?.message || err.message
-        })
+        showSnackbar(err.response?.data?.message || err.message, 'error');
         reject(err)
       })
     })

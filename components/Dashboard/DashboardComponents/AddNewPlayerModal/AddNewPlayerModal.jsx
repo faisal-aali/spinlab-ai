@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import { convertFeetAndInchesToCm } from "@/util/utils";
 import axios from 'axios'
 import schemaValidators from "@/schema-validators";
+import { useSnackbar } from '../../../Context/AppContext';
 
 const style = {
   position: "absolute",
@@ -38,6 +39,7 @@ const AddNewPlayerModal = ({ open, onClose, onSuccess }) => {
   const router = useRouter()
 
   const [response, setResponse] = useState({})
+  const { showSnackbar } = useSnackbar();
 
   const timeout = useRef()
   useEffect(() => {
@@ -69,17 +71,12 @@ const AddNewPlayerModal = ({ open, onClose, onSuccess }) => {
       };
 
       axios.post(`/api/players`, data).then(res => {
-        setResponse({
-          severity: 'success',
-          message: 'Player added!'
-        });
+        showSnackbar('Player added!', 'success');
         onSuccess && onSuccess();
+        onClose();
         resolve();
       }).catch(err => {
-        setResponse({
-          severity: 'error',
-          message: err.response?.data?.message || err.message
-        })
+        showSnackbar(err.response?.data?.message || err.message, 'error');
         reject(err);
       })
     })

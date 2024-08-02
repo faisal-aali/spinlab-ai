@@ -14,7 +14,9 @@ import {
 } from "@mui/icons-material";
 import { Formik, Field, Form } from "formik";
 import * as Yup from "yup";
-import axios from 'axios'
+import axios from 'axios';
+import { useSnackbar } from '../../../Context/AppContext';
+
 
 const style = {
     position: "absolute",
@@ -33,7 +35,9 @@ const UpdateEmailModal = ({ open, onClose, isVerification, onSuccess }) => {
     const user = data?.user || {}
     const [email, setEmail] = useState()
     const [currentStep, setCurrentStep] = useState(0);
-    const [response, setResponse] = useState({})
+    const [response, setResponse] = useState({});
+    const { showSnackbar } = useSnackbar();
+
 
     const timeout = useRef()
 
@@ -55,16 +59,10 @@ const UpdateEmailModal = ({ open, onClose, isVerification, onSuccess }) => {
             try {
                 const res = await axios.get('/api/users/emailExists', { params: { email } })
                 if (res.data) {
-                    return setResponse({
-                        message: 'The email is already registered',
-                        severity: 'error'
-                    })
+                    return showSnackbar("The email is already registered", "error");
                 }
             } catch (err) {
-                return setResponse({
-                    message: err.response?.data?.message || err.message,
-                    severity: 'error'
-                })
+                    return showSnackbar(err.response?.data?.message || err.message, "error");
             }
         }
         axios.post("/api/users/OTP", {
@@ -72,10 +70,7 @@ const UpdateEmailModal = ({ open, onClose, isVerification, onSuccess }) => {
             receiverEmail: email
         }).then(res => {
             setEmail(email)
-            setResponse({
-                message: 'OTP code has been sent on your email',
-                severity: 'success'
-            })
+            showSnackbar("OTP code has been sent on your email!", "success");
             if (proceed)
                 setCurrentStep(1)
         }).catch(err => {
@@ -83,6 +78,7 @@ const UpdateEmailModal = ({ open, onClose, isVerification, onSuccess }) => {
                 message: err.response?.data?.message || err.message,
                 severity: 'error'
             })
+            showSnackbar(err.response?.data?.message || err.message, "error");
         })
     };
 
@@ -97,10 +93,7 @@ const UpdateEmailModal = ({ open, onClose, isVerification, onSuccess }) => {
             setCurrentStep(2)
             onSuccess && onSuccess()
         }).catch(err => {
-            setResponse({
-                message: err.response?.data?.message || err.message,
-                severity: 'error'
-            })
+            showSnackbar(err.response?.data?.message || err.message, "error");
         })
     };
 
