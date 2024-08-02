@@ -1,5 +1,5 @@
 import NextAuth, { DefaultSession } from "next-auth"
-import { IUser } from '../lib/interfaces/users'
+import { IUser } from '../lib/interfaces/user'
 
 declare module "next-auth" {
     /**

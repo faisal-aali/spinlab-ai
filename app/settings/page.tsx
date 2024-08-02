@@ -3,7 +3,7 @@ import Settings from '../../components/Dashboard/DashboardComponents//Settings/S
 import { getServerSession } from 'next-auth';
 import { authOption } from '../api/auth/[...nextauth]/route';
 import axios from 'axios';
-import { IUser } from '../lib/interfaces/users';
+import { IUser } from '../lib/interfaces/user';
 import { cookies } from 'next/headers';
 import { notFound } from 'next/navigation';
 
