@@ -5,5 +5,6 @@ export interface IDrill {
     categoryId: string,
     videoLink: string,
     title: string,
-    isFree: boolean
+    isFree: boolean,
+    creationDate: Date,
 }

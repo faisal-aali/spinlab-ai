@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
 
         const height = Math.round(user.roleData.height)
         const weight = Math.round(user.roleData.weight)
-        const taskType = "hit"
+        const taskType = "qbthrow"
 
         const task = await _3Motion.createAssessment({
             height,

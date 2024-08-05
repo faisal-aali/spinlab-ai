@@ -16,6 +16,7 @@ export interface IUser {
     bio: string | null,
     credits: number,
     emailVerified: boolean,
+    stripeCustomerId: string | null,
     creationDate: Date,
     role: string,
     roleData: IRoleData,
