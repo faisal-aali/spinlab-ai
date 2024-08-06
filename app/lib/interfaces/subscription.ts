@@ -3,9 +3,10 @@ export interface IHistory {
     packageId: string,
     stripeSubscriptionId: string,
     amount: number,
-    status: boolean,
+    status: string,
     currentPeriodStart: Date,
     currentPeriodEnd: Date,
+    lastUpdated: Date,
 }
 
 export interface ISubscription {
@@ -14,9 +15,10 @@ export interface ISubscription {
     packageId: string,
     stripeSubscriptionId: string,
     amount: number,
-    status: boolean,
+    status: string,
     history: Array<IHistory>,
     currentPeriodStart: Date,
     currentPeriodEnd: Date,
     creationDate: Date,
+    lastUpdated: Date,
 }

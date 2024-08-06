@@ -61,12 +61,12 @@ const packageSchema = new mongoose.Schema({
     description: { type: String, required: true },
     role: { type: String, required: true, enum: ['player', 'trainer'] },
     throwsPerMonth: { type: Number, required: true },
-    amountPerMonth: { type: Number, required: true },
+    amountPerCredit: { type: Number, required: true },
     amount: { type: Number, required: true },
 });
 
 const subscriptionSchema = new mongoose.Schema({
-    userId: { type: mongoose.Schema.Types.ObjectId, required: true },
+    userId: { type: mongoose.Schema.Types.ObjectId, required: true, unique: true },
     packageId: { type: mongoose.Schema.Types.ObjectId, required: true },
     stripeSubscriptionId: { type: String, required: true },
     amount: { type: Number, required: true },
@@ -75,16 +75,19 @@ const subscriptionSchema = new mongoose.Schema({
     currentPeriodStart: { type: Date, required: true },
     currentPeriodEnd: { type: Date, required: true },
     creationDate: { type: Date, required: false, default: () => new Date().toISOString() },
+    lastUpdated: { type: Date, required: false, default: () => new Date().toISOString() },
 }, { minimize: false });
 
 const purchaseSchema = new mongoose.Schema({
     userId: { type: mongoose.Schema.Types.ObjectId, required: true },
-    subscriptionId: { type: mongoose.Schema.Types.ObjectId, required: false, default: null },
+    stripeSubscriptionId: { type: String, required: false, default: null },
     stripeIntentId: { type: String, required: false, default: null },
-    amount: { type: Number, required: true },
+    amount: { type: Number, required: false, default: 0 },
     credits: { type: Number, required: true },
     type: { type: String, required: true, enum: ['purchase', 'subscription', 'gift'] },
     giftedBy: { type: mongoose.Schema.Types.ObjectId, required: false, default: null },
+    isForfeited: { type: Boolean, required: false, default: false },
+    forfeitReason: { type: String, required: false, default: null },
     creationDate: { type: Date, required: false, default: () => new Date().toISOString() },
 }, { minimize: false });
 

@@ -21,6 +21,7 @@ export async function GET(req: NextRequest) {
         if (userId) query.userId = userId;
 
         const videos = await Video.find(query, { assessmentDetails: { stats: { ARR: 0, ANG: 0, VEL: 0 } } }, { sort: { creationDate: -1 } });
+
         return NextResponse.json(videos);
     } catch (err: unknown) {
         console.error(err);

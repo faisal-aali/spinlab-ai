@@ -6,33 +6,28 @@ const bucket = process.env.AWS_BUCKET || ''
 AWS.config.update({
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    region: process.env.AWS_REGION,
 });
 
 const s3 = new AWS.S3();
 
-/**
- * List all S3 buckets.
- * @returns A promise that resolves with the list of buckets.
- */
-const listS3Buckets = (): Promise<AWS.S3.ListBucketsOutput> => {
-    return new Promise((resolve, reject) => {
-        s3.listBuckets((err, data) => {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(data);
-            }
-        });
-    });
-};
+const uploadFileToS3 = (file: Buffer | File | Uint8Array | Blob | string) => {
+    return new Promise(async (resolve, reject) => {
+        let fileBody;
 
+        if (file instanceof Blob) {
+            const arrayBuffer = await file.arrayBuffer();
+            fileBody = Buffer.from(arrayBuffer);
+        } else {
+            fileBody = file;
+        }
 
-const uploadFileToS3 = (file: Buffer | Uint8Array | Blob | string) => {
-    return new Promise((resolve, reject) => {
+        const fileName = `${crypto.randomUUID()}${(file instanceof File && `.${file.name.split('.').pop()}`) || ''}`
+
         s3.upload({
             Bucket: bucket,
-            Key: crypto.randomUUID(),
-            Body: file
+            Key: fileName,
+            Body: fileBody
         }, (err, data) => {
             if (err) {
                 reject(err);
@@ -44,6 +39,5 @@ const uploadFileToS3 = (file: Buffer | Uint8Array | Blob | string) => {
 };
 
 export {
-    uploadFileToS3,
-    listS3Buckets
+    uploadFileToS3
 }

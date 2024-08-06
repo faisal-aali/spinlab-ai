@@ -7,13 +7,13 @@ import { createCustomer, handlePaymentSuccess, handleSubscriptionSuccess, update
 import { validateError } from "@/app/lib/functions";
 import { IPackage } from "@/app/lib/interfaces/package";
 
-const stripeSecretKey: string = process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY || "";
+const stripeSecretKey: string = process.env.STRIPE_SECRET_KEY || "";
 const stripe = new Stripe(stripeSecretKey);
 
 export async function POST(req: NextRequest) {
     try {
         const data = await req.json()
-        console.log('[/stripe/webhook] data', data)
+        console.log('[/stripe/webhook] data', JSON.stringify(data))
         const event = stripe.webhooks.constructEvent(
             data,
             req.headers.get('stripe-signature') as string,

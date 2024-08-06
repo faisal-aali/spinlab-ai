@@ -4,7 +4,7 @@ import * as Yup from 'yup'
 import { validateError } from "@/app/lib/functions";
 import { authOption } from "../auth/[...nextauth]/route";
 import { getServerSession } from "next-auth";
-import { listS3Buckets } from "@/app/lib/aws";
+import { uploadFileToS3 } from "@/app/lib/aws";
 
 export async function POST(req: NextRequest) {
     try {
@@ -15,22 +15,10 @@ export async function POST(req: NextRequest) {
         const file = formData.get('file')
         if (!file) return NextResponse.json({ message: 'File is required' }, { status: 400 });
 
-        // const user = await User.findOne({ _id: data.userId })
-        // if (!user) return NextResponse.json({ message: 'Invalid user Id' }, { status: 400 });
+        console.log('file', file)
+        const url = await uploadFileToS3(file)
 
-
-        const data = await listS3Buckets();
-        console.log('S3 Buckets:', data.Buckets);
-
-        // const drill = await Drill.create({
-        //     userId: session.user._id,
-        //     categoryId: data.categoryId,
-        //     videoLink: data.videoLink,
-        //     title: data.title,
-        //     isFree: data.isFree,
-        // })
-
-        // return NextResponse.json({ message: `Drill has been created with id ${drill._id}` }, { status: 200 })
+        return NextResponse.json({ url }, { status: 200 })
     } catch (err: unknown) {
         console.error(err)
         const obj = validateError(err)
