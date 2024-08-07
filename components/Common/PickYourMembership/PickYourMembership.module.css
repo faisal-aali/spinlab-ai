@@ -2,15 +2,3 @@
     width: 100%;
 }
 
-.pricePlan{
-    height: 180px;
-    width: 225px;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    border-top-left-radius: 12px;
-    border-bottom-left-radius: 12px;
-}
-
