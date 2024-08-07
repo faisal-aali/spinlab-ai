@@ -10,5 +10,6 @@ export interface IPurchase {
     giftedBy: string | null,
     creationDate: Date,
     isForfeited: boolean,
-    forfeitReason: string | null
+    forfeitReason: string | null,
+    activateAfter: Date
 }

@@ -30,7 +30,6 @@ const userSchema = new mongoose.Schema({
     role: { type: String, required: true, enum: ['player', 'trainer', 'staff', 'admin'] },
     roleData: { type: mongoose.Schema.Types.Mixed, required: true },
     isDeleted: { type: Boolean, required: false, default: false },
-    subscription: { type: mongoose.Schema.Types.ObjectId, ref: 'Subscription' }
 }, { minimize: false }); // minimize false in order to store empty objects
 
 const drillSchema = new mongoose.Schema({
@@ -64,6 +63,7 @@ const packageSchema = new mongoose.Schema({
     throwsPerMonth: { type: Number, required: true },
     amountPerCredit: { type: Number, required: true },
     amount: { type: Number, required: true },
+    plan: { type: String, required: true, enum: ['monthly', 'yearly', 'free'] },
 });
 
 const subscriptionSchema = new mongoose.Schema({
@@ -77,7 +77,6 @@ const subscriptionSchema = new mongoose.Schema({
     currentPeriodEnd: { type: Date, required: true },
     creationDate: { type: Date, required: false, default: () => new Date().toISOString() },
     lastUpdated: { type: Date, required: false, default: () => new Date().toISOString() },
-    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
 }, { minimize: false });
 
 const purchaseSchema = new mongoose.Schema({
@@ -91,6 +90,7 @@ const purchaseSchema = new mongoose.Schema({
     isForfeited: { type: Boolean, required: false, default: false },
     forfeitReason: { type: String, required: false, default: null },
     creationDate: { type: Date, required: false, default: () => new Date().toISOString() },
+    activateAfter: { type: Date, required: false, default: () => new Date().toISOString() },
 }, { minimize: false });
 
 export const User: mongoose.Model<IUser> = mongoose.models.user || mongoose.model<IUser>('user', userSchema, 'users');

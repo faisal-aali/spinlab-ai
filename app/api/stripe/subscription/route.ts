@@ -64,9 +64,6 @@ export async function POST(req: NextRequest) {
                 customer: customer.id,
                 items: [{ plan: _package.stripePlanId }],
                 expand: ['latest_invoice.payment_intent'],
-                metadata: {
-                    packageId: packageId
-                }
             });
         }
 

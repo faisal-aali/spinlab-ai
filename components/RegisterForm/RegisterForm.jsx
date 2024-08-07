@@ -107,9 +107,6 @@ const RegisterForm = () => {
         )}
         {step === 3 && values.plan !== "free" && (
           <div className="bg-transparent border primary-border rounded-lg max-w-7xl px-6">
-            <h2 className="text-white text-3xl font-bold mb-2 text-center mt-4">
-              Pick your membership
-            </h2>
             <PickYourMembership
               plan={values.plan}
               role={values.role}

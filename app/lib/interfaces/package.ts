@@ -8,4 +8,5 @@ export interface IPackage {
     throwsPerMonth: number,
     amountPerCredit: number,
     amount: number,
+    plan: string,
 }

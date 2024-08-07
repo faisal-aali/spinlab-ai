@@ -51,10 +51,10 @@ async function handleSubscriptionSuccess({ subscription }: { subscription: Strip
             const user = await User.findOne({ stripeCustomerId: subscription.customer as string })
             if (!user) return reject({ message: 'Customer not found' })
 
-            const _package = await Package.findOne({ _id: subscription.metadata.packageId as string })
-            if (!_package) return reject({ message: 'Package not found' })
-
             const plan = subscription.items.data[0].plan
+
+            const _package = await Package.findOne({ stripePlanId: plan.id })
+            if (!_package) return reject({ message: 'Package not found' })
 
             const db_subscription = await Subscription.findOne({ userId: user._id })
 
@@ -89,13 +89,33 @@ async function handleSubscriptionSuccess({ subscription }: { subscription: Strip
                 await db_subscription.save()
             }
 
+            console.log('throwsPerMonth', _package.throwsPerMonth)
             if (_package.throwsPerMonth) {
-                await Purchase.create({
-                    userId: user._id,
-                    stripeSubscriptionId: subscription.id,
-                    credits: _package.throwsPerMonth,
-                    type: 'subscription',
-                })
+                if (_package.plan === 'yearly') {
+                    console.log('adding yearly credits')
+                    const dates: Array<Date> = []
+                    const currMonth = new Date().getMonth()
+                    Array.from({ length: 12 }).forEach((_, i) => {
+                        dates.push(new Date(new Date().setMonth(currMonth + i)))
+                    })
+                    await Promise.all(
+                        dates.map(date => Purchase.create({
+                            userId: user._id,
+                            stripeSubscriptionId: subscription.id,
+                            credits: _package.throwsPerMonth,
+                            type: 'subscription',
+                            activateAfter: date
+                        }))
+                    )
+                } else if (_package.plan === 'monthly') {
+                    console.log('adding monthly credits')
+                    await Purchase.create({
+                        userId: user._id,
+                        stripeSubscriptionId: subscription.id,
+                        credits: _package.throwsPerMonth,
+                        type: 'subscription',
+                    })
+                }
             }
 
             resolve()
