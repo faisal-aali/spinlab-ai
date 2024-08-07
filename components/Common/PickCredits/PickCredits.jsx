@@ -2,18 +2,12 @@
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 
-const PickCredits = ({ onSubmit, onBack }) => {
-  const userSession = useSession().data?.user
+const PickCredits = ({ onSubmit, onBack, user }) => {
   const [selectedCredits, setSelectedCredits] = useState(null);
 
-  const calculatePrice = (credits) => {
-    const membership = userSession?.membership
-    if (['basic', 'varsity', 'heisman', 'hof', 'silver', 'gold', 'platinum'].includes(membership)) {
-      return credits * 45
-    } else {
-      return credits * 50
-    }
-  }
+  const calculatePrice = (credits) => (
+    ((!user.subscription.status || user.subscription.status !== 'active' ? credits * user.subscription.freePackage?.amountPerCredit : credits * user.subscription.package.amountPerCredit) / 100).toFixed(2)
+  )
 
   return (
     <div>

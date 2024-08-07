@@ -84,7 +84,7 @@ const PickYourMembership = ({ plan, onBack, onSubmit }) => {
                     }
                     <button
                         className={`px-4 py-1 rounded font-bold bg-primary dark-blue-color hover-button-shadow`}
-                        onClick={() => onSubmit(selectedPackage)}
+                        onClick={() => onSubmit(packages.find(p => p._id === selectedPackage))}
                         disabled={!selectedPackage}
                     >
                         CONTINUE

@@ -29,43 +29,47 @@ const Settings = ({ _user }) => {
         </div>
       </div>
       <div className="p-8 pt-0">
-        <div className="">
-          <Tabs
-            value={tabIndex}
-            onChange={handleTabChange}
-            indicatorColor="none"
-            aria-label="category tabs"
-            className={`!blueBackground py-2.5 rounded-lg w-fit px-3`}
-            sx={{
-              backgroundColor: "#001f3f",
-              ".MuiTabs-flexContainer button": {
-                minHeight: "40px",
-                backgroundColor: "#32E10026",
-                borderRadius: "6px",
-                fontWeight: 500,
-                fontSize: "15px",
-                textTransform: "capitalize",
-                padding: "10px",
-                color: "#fff",
-                minWidth: 0,
-                height: '44px'
-              },
-              ".MuiTabs-flexContainer": {
-                justifyContent: "center",
-                gap: "10px",
-              },
-              ".Mui-selected": {
-                backgroundColor: "#00ff00 !important",
-                color: "#000 !important",
-              },
-            }}
-          >
-            <Tab label="Account" />
-            {['player', 'trainer'].includes(_user.role) && <Tab label="Billing" />}
-          </Tabs>
+        <div className="flex flex-col gap-4">
+          <div>
+            <Tabs
+              value={tabIndex}
+              onChange={handleTabChange}
+              indicatorColor="none"
+              aria-label="category tabs"
+              className={`!blueBackground py-2.5 rounded-lg w-fit px-3`}
+              sx={{
+                backgroundColor: "#001f3f",
+                ".MuiTabs-flexContainer button": {
+                  minHeight: "40px",
+                  backgroundColor: "#32E10026",
+                  borderRadius: "6px",
+                  fontWeight: 500,
+                  fontSize: "15px",
+                  textTransform: "capitalize",
+                  padding: "10px",
+                  color: "#fff",
+                  minWidth: 0,
+                  height: '44px'
+                },
+                ".MuiTabs-flexContainer": {
+                  justifyContent: "center",
+                  gap: "10px",
+                },
+                ".Mui-selected": {
+                  backgroundColor: "#00ff00 !important",
+                  color: "#000 !important",
+                },
+              }}
+            >
+              <Tab label="Account" />
+              {['player', 'trainer'].includes(_user.role) && <Tab label="Billing" />}
+            </Tabs>
+          </div>
 
-          {tabIndex === 0 && <AccountSettings _user={_user} />}
-          {tabIndex === 1 && <BillingTab _user={_user} />}
+          <div>
+            {tabIndex === 0 && <AccountSettings _user={_user} />}
+            {tabIndex === 1 && <BillingTab _user={_user} />}
+          </div>
         </div>
       </div>
     </div>

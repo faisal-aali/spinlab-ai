@@ -129,7 +129,7 @@ const AccountSettings = ({ _user }) => {
   });
 
   return (
-    <div className="rounded-lg bg-dark-blue space-y-8 mt-4">
+    <div className="rounded-lg bg-dark-blue space-y-8">
       <Formik
         innerRef={formikRef}
         enableReinitialize

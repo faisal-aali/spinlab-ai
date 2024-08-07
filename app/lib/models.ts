@@ -30,6 +30,7 @@ const userSchema = new mongoose.Schema({
     role: { type: String, required: true, enum: ['player', 'trainer', 'staff', 'admin'] },
     roleData: { type: mongoose.Schema.Types.Mixed, required: true },
     isDeleted: { type: Boolean, required: false, default: false },
+    subscription: { type: mongoose.Schema.Types.ObjectId, ref: 'Subscription' }
 }, { minimize: false }); // minimize false in order to store empty objects
 
 const drillSchema = new mongoose.Schema({
@@ -76,6 +77,7 @@ const subscriptionSchema = new mongoose.Schema({
     currentPeriodEnd: { type: Date, required: true },
     creationDate: { type: Date, required: false, default: () => new Date().toISOString() },
     lastUpdated: { type: Date, required: false, default: () => new Date().toISOString() },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
 }, { minimize: false });
 
 const purchaseSchema = new mongoose.Schema({

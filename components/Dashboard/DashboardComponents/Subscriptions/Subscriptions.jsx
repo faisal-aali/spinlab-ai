@@ -10,7 +10,7 @@ const Subscriptions = () => {
   const router = useRouter()
   const [step, setStep] = useState(1);
   const [plan, setPlan] = useState(null);
-  const [packageId, setPackageId] = useState(null);
+  const [_package, setPackage] = useState(null);
 
   return (
     <div className="flex-1 py-8">
@@ -30,13 +30,13 @@ const Subscriptions = () => {
         }} />}
         {step === 2 && <PickYourMembership
           plan={plan}
-          onSubmit={(packageId) => {
-            setPackageId(packageId)
+          onSubmit={(_package) => {
+            setPackage(_package)
             setStep(3)
           }}
           onBack={() => setStep(1)}
         />}
-        {step === 3 && <PaymentForm onPaymentSuccess={() => setStep(4)} packageId={packageId} type='subscription' />}
+        {step === 3 && <PaymentForm onBack={() => setStep(2)} onPaymentSuccess={() => setStep(4)} _package={_package} type='subscription' />}
         {step === 4 && (
           <div className="text-center p-8 rounded-lg mx-auto">
             <div className="flex flex-col justify-center items-center h-full">
@@ -46,7 +46,7 @@ const Subscriptions = () => {
                 className="w-24 h-24 mb-4"
               />
               <h2 className="text-white text-3xl mt-2 mb-4 font-semibold capitalize">
-                Your {plan} Plan Activated!
+                Your {plan} plan has been activated!
               </h2>
               <button
                 variant="contained"

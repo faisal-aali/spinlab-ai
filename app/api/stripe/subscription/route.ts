@@ -9,6 +9,21 @@ import { validateError } from "@/app/lib/functions";
 const stripeSecretKey: string = process.env.STRIPE_SECRET_KEY || "";
 const stripe = new Stripe(stripeSecretKey);
 
+export async function GET(req: NextRequest) {
+    try {
+        const session = await getServerSession(authOption);
+        if (!session || !session.user || !['player', 'trainer'].includes(session.user.role)) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
+
+        const subscription = await Subscription.findOne({ userId: session.user._id })
+
+        return NextResponse.json(subscription || {})
+    } catch (err) {
+        console.error(err)
+        const obj = validateError(err)
+        return NextResponse.json({ message: obj.message }, { status: obj.status })
+    }
+}
+
 export async function POST(req: NextRequest) {
     try {
         const session = await getServerSession(authOption);
