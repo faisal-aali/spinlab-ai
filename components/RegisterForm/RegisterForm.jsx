@@ -7,6 +7,9 @@ import CreateAccount from "../../components/RegisterForm/CreateAccount/CreateAcc
 import OpenDashboard from "../../components/RegisterForm/OpenDashboard/OpenDashboard";
 import StripeAccount from "../../components/RegisterForm/StripeAccount/StripeAccount";
 import { useSearchParams } from "next/navigation";
+import PickYourPlan from "../Common/PickYourPlan/PickYourPlan";
+import PickYourMembership from "../Common/PickYourMembership/PickYourMembership";
+import PaymentForm from "../Common/PaymentForm/PaymentForm";
 
 const RegisterForm = () => {
   const searchParams = useSearchParams()
@@ -23,6 +26,7 @@ const RegisterForm = () => {
     password: "",
     confirmPassword: "",
     plan: "",
+    package: {}
   });
 
   useEffect(() => {
@@ -34,10 +38,13 @@ const RegisterForm = () => {
   }, []);
 
   useEffect(() => {
-    if (step === 4 && values.plan === "free") {
+    if (step === 3 && values.plan === "free") {
       nextStep();
     }
-  }, [step]);
+    if (step === 5 && values.plan === "free") {
+      nextStep();
+    }
+  }, [step, values]);
 
   const handleChange = (field) => (e) => {
     console.log('handlechange called', field, e)
@@ -46,10 +53,6 @@ const RegisterForm = () => {
 
   const nextStep = () => {
     setStep(step + 1);
-  };
-
-  const handlePaymentSuccess = () => {
-    setStep(6);
   };
 
   return (
@@ -79,6 +82,10 @@ const RegisterForm = () => {
           className={`h-2 w-14 ${step === 5 ? "bg-primary" : "backgroundDisabledColor"
             } rounded-sm`}
         ></div>
+        <div
+          className={`h-2 w-14 ${step === 6 ? "bg-primary" : "backgroundDisabledColor"
+            } rounded-sm`}
+        ></div>
       </div>
       <div>
         {step === 1 && (
@@ -90,26 +97,39 @@ const RegisterForm = () => {
         )}
         {/* {step === 2 && <EmailConfirmed nextStep={nextStep} />} */}
         {step === 2 && (
-          <PickPlan
-            nextStep={nextStep}
-            handleChange={handleChange}
-            values={values}
-          />
+          <div className="bg-transparent border primary-border rounded-lg max-w-7xl">
+            <PickPlan
+              nextStep={nextStep}
+              handleChange={handleChange}
+              values={values}
+            />
+          </div>
         )}
-        {step === 3 && (
+        {step === 3 && values.plan !== "free" && (
+          <div className="bg-transparent border primary-border rounded-lg max-w-7xl px-6">
+            <h2 className="text-white text-3xl font-bold mb-2 text-center mt-4">
+              Pick your membership
+            </h2>
+            <PickYourMembership
+              plan={values.plan}
+              role={values.role}
+              onSubmit={(_package) => {
+                handleChange("package")({ target: { value: _package } })
+                nextStep()
+              }}
+            />
+          </div>
+        )}
+        {step === 4 && (
           <CreateAccount
             nextStep={nextStep}
             values={values}
           />
         )}
-        {step === 4 && values.plan !== "free" && (
-          <StripeAccount
-            nextStep={nextStep}
-            onPaymentSuccess={handlePaymentSuccess}
-            values={values}
-          />
+        {step === 5 && values.plan !== "free" && (
+          <PaymentForm onPaymentSuccess={() => setStep(6)} _package={values.package} type='subscription' />
         )}
-        {step === 5 && <OpenDashboard />}
+        {step === 6 && <OpenDashboard />}
       </div>
     </div>
   );

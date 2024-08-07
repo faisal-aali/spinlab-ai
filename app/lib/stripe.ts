@@ -105,6 +105,28 @@ async function handleSubscriptionSuccess({ subscription }: { subscription: Strip
     })
 }
 
+async function handleSubscriptionCancel({ userId }: { userId: string }): Promise<void> {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const subscription = await Subscription.findOne({ userId })
+            if (!subscription) return reject('Subscription not found')
+
+            subscription.status = 'canceled'
+            subscription.lastUpdated = new Date();
+            await subscription.save()
+
+            await Purchase.updateMany({ stripeSubscriptionId: subscription.stripeSubscriptionId }, {
+                isForfeited: true,
+                forfeitReason: 'Subscription cancelled'
+            })
+
+            resolve()
+        } catch (err) {
+            reject(err)
+        }
+    })
+}
+
 async function handlePaymentSuccess({ paymentIntent }: { paymentIntent: Stripe.PaymentIntent }): Promise<void> {
     return new Promise(async (resolve, reject) => {
         try {
@@ -129,5 +151,6 @@ export {
     createCustomer,
     updateCustomer,
     handleSubscriptionSuccess,
+    handleSubscriptionCancel,
     handlePaymentSuccess
 }

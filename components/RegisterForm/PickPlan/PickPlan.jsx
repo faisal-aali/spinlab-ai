@@ -28,9 +28,9 @@ const PickPlan = ({ nextStep, handleChange, values }) => {
               <h2 className="text-white text-3xl font-bold mb-2 text-center">
                 Pick your plan
               </h2>
-              <p className="text-zinc-400 mb-6 text-center">
+              {/* <p className="text-zinc-400 mb-6 text-center">
                 Start your 7 days free trial today.
-              </p>
+              </p> */}
               <div className="mb-6">
                 <div
                   className={`relative p-4 mb-8 flex items-center gap-12 cursor-pointer border primary-border rounded-lg ${values.plan === "monthly" ? "hover-shadow-dark" : "hover-shadow-light"
@@ -46,7 +46,7 @@ const PickPlan = ({ nextStep, handleChange, values }) => {
                   )}
                   <div className={`blueBackground ${styles.priceTotalWrapper}  py-10 px-12`}>
                     <h3 className="text-white text-2xl mt-2">Monthly</h3>
-                    <p className="text-primary text-3xl font-bold">$99.99</p>
+                    {/* <p className="text-primary text-3xl font-bold">$99.99</p> */}
                   </div>
                   <div>
                     <ul className="text-zinc-400">
@@ -74,11 +74,11 @@ const PickPlan = ({ nextStep, handleChange, values }) => {
                   </div>
                 </div>
                 <div
-                  className={`relative p-4 mb-8 flex items-center gap-12 cursor-pointer border primary-border rounded-lg ${values.plan === "annual" ? "hover-shadow-dark" : "hover-shadow-light"
+                  className={`relative p-4 mb-8 flex items-center gap-12 cursor-pointer border primary-border rounded-lg ${values.plan === "yearly" ? "hover-shadow-dark" : "hover-shadow-light"
                     }`}
-                  onClick={() => setFieldValue("plan", "annual")}
+                  onClick={() => setFieldValue("plan", "yearly")}
                 >
-                  {values.plan === "annual" && (
+                  {values.plan === "yearly" && (
                     <img
                       src={checkmark}
                       alt="Selected"
@@ -86,8 +86,8 @@ const PickPlan = ({ nextStep, handleChange, values }) => {
                     />
                   )}
                   <div className={`blueBackground ${styles.priceTotalWrapper}  py-10 px-12`}>
-                    <h3 className="text-white text-2xl mt-2">Annual</h3>
-                    <p className="text-primary text-3xl font-bold">$460</p>
+                    <h3 className="text-white text-2xl mt-2">Yearly</h3>
+                    {/* <p className="text-primary text-3xl font-bold">$460</p> */}
                   </div>
                   <div>
                     <ul className="text-zinc-400">

@@ -11,8 +11,6 @@ export async function GET(req: NextRequest) {
     const plan = searchParams.get('plan')
 
     try {
-        const session = await getServerSession(authOption);
-        if (!session || !session.user) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
 
         const query: { _id?: string, role?: string, plan?: string } = {};
 
