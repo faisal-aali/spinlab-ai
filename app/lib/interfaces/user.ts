@@ -6,7 +6,7 @@ interface IRoleData {
     anonymous: boolean | null;
 }
 
-interface ICredit {
+export interface ICredit {
     purchased: number,
     used: number,
     remaining: number

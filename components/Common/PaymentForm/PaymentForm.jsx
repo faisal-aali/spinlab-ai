@@ -14,6 +14,7 @@ import * as Yup from "yup";
 import Image from "next/image";
 import styles from "./PaymentForm.module.css";
 import axios from 'axios'
+import { useApp } from "@/components/Context/AppContext";
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
 
@@ -43,6 +44,7 @@ const _PaymentForm = ({ onPaymentSuccess, type, _package, credits, amount, onBac
     const [paymentError, setPaymentError] = useState(null);
     const formikRef = useRef()
     const [isSubmitting, setIsSubmitting] = useState(false)
+    const { fetchUser } = useApp()
 
     const handleSubmit = async (values) => {
         console.log(formikRef.current)
@@ -107,10 +109,14 @@ const _PaymentForm = ({ onPaymentSuccess, type, _package, credits, amount, onBac
                     //     headers: { 'Content-Type': 'application/json' },
                     //     body: JSON.stringify({ paymentIntentId: result.paymentIntentId }),
                     //   });
-                    onPaymentSuccess();
+                    setTimeout(() => {
+                        onPaymentSuccess();
+                    }, 3000);
                 }
             } else if (res.success) {
-                onPaymentSuccess();
+                setTimeout(() => {
+                    onPaymentSuccess();
+                }, 3000);
             } else {
                 throw new Error('Invalid server response')
             }
@@ -118,7 +124,10 @@ const _PaymentForm = ({ onPaymentSuccess, type, _package, credits, amount, onBac
             console.error("Error occured:", error);
             setPaymentError(`Transaction failed: ${error.response?.data?.message || error.message}`);
         } finally {
-            setIsSubmitting(false);
+            setTimeout(() => {
+                fetchUser()
+                setIsSubmitting(false);
+            }, 3000);
             // setIsSubmitting(false)
         }
     };

@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
 
         const auth = _3Motion.getAuth()
         if (!auth) {
-            console.log('[/api/3motion/webhook] INTERNAL ERROR')
+            console.log('[/api/3motion/webhook] Auth token not found')
             return NextResponse.json({ message: `INTERNAL ERROR` }, { status: 500 })
         }
         if (auth.tenantId !== data.TenantId) {
@@ -38,13 +38,18 @@ export async function POST(req: NextRequest) {
         }
 
         const assessmentDetails = await _3Motion.getAssessmentDetails({ taskId: video.taskId, taskType: video.taskType });
-        if (assessmentDetails.dataJsonUrl) {
-            assessmentDetails.stats = await axios.get(assessmentDetails.dataJsonUrl).then(res => res.data);
-        } else {
-            console.log('[/api/3motion/webhook] dataJsonUrl is empty')
-        }
 
-        video.assessmentDetails = assessmentDetails
+        if (assessmentDetails) {
+            if (assessmentDetails.dataJsonUrl) {
+                assessmentDetails.stats = await axios.get(assessmentDetails.dataJsonUrl).then(res => res.data);
+            } else {
+                console.log('[/api/3motion/webhook] dataJsonUrl is empty')
+            }
+
+            video.assessmentDetails = assessmentDetails
+        } else {
+            video.assessmentDetails = data
+        }
 
         await video.save()
 

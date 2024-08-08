@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import * as Yup from "yup";
-import { validateError } from "@/app/lib/functions";
+import { calculateCredits, validateError } from "@/app/lib/functions";
 import { authOption } from "../auth/[...nextauth]/route";
 import { getServerSession } from "next-auth";
 import { User, Video } from "@/app/lib/models";
@@ -37,6 +37,7 @@ export async function POST(req: NextRequest) {
         console.log(session)
         if (!session || !session.user || session.user.role !== 'player') return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
 
+
         const formData = await req.formData();
 
         const uploadfile = formData.get('file') as File
@@ -44,6 +45,8 @@ export async function POST(req: NextRequest) {
 
         const user = await User.findOne({ _id: session.user._id })
         if (!user) return NextResponse.json({ message: 'User not found' }, { status: 404 });
+        const credits = await calculateCredits({ user })
+        if (credits.remaining < 1) return NextResponse.json({ message: 'Out of credits' }, { status: 403 });
         if (!user.roleData.weight || !user.roleData.height) return NextResponse.json({ message: 'Weight and height is required' }, { status: 400 });
 
         const height = Math.round(user.roleData.height)

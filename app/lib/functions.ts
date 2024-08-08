@@ -2,7 +2,7 @@ import { MongooseError } from 'mongoose'
 import * as Yup from 'yup'
 import Stripe from "stripe";
 import { IVideo } from './interfaces/video';
-import { IUser } from './interfaces/user';
+import { ICredit, IUser } from './interfaces/user';
 import { IPurchase } from './interfaces/purchase';
 import { Purchase, Video } from './models';
 
@@ -22,7 +22,7 @@ function validateError(err: any) {
     return { message: err?.message || 'Error occured', status: 500 }
 }
 
-function calculateCredits({ user }: { user: IUser }) {
+function calculateCredits({ user }: { user: IUser }): Promise<ICredit> {
     return new Promise(async (resolve, reject) => {
         try {
             // console.log(user)

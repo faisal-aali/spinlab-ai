@@ -5,22 +5,13 @@ import PickCredits from '@/components/Common/PickCredits/PickCredits'
 import PaymentForm from "@/components/Common/PaymentForm/PaymentForm";
 import { CircularProgress } from "@mui/material";
 import axios from 'axios'
+import { useApp } from "@/components/Context/AppContext";
 
 const Purchases = () => {
   const userSession = useSession().data?.user
   const [step, setStep] = useState(1);
   const [credits, setCredits] = useState(null);
-  const [user, setUser] = useState()
-
-  useEffect(() => {
-    fetchData()
-  }, [])
-
-  const fetchData = () => {
-    axios.get('/api/users', { params: { id: userSession._id } }).then(res => {
-      setUser(res.data[0])
-    }).catch(console.error)
-  }
+  const { user, fetchUser } = useApp()
 
   const calculateAmount = () => (
     ((!user.subscription.status || user.subscription.status !== 'active' ? credits * user.subscription.freePackage?.amountPerCredit : credits * user.subscription.package.amountPerCredit) / 100).toFixed(2)
@@ -35,7 +26,7 @@ const Purchases = () => {
               <h2 className="font-normal">
                 Your Current Balance :
                 <span className="ml-2 text-primary font-semibold">
-                  07{" "}
+                  {user?.credits.remaining}{" "}
                   <span className="text-zinc-400 text-base font-normal">
                     Credits
                   </span>
@@ -44,9 +35,9 @@ const Purchases = () => {
             </div>
             <div>
               <p className="ml-1.5 text-zinc-400 text-xl false">
-                Membership Type :
+                Plan :
                 <span className="ml-2 text-primary font-semibold">
-                  {userSession?.membership}
+                  {user?.subscription.package.name}
                 </span>
               </p>
             </div>
@@ -70,7 +61,7 @@ const Purchases = () => {
                     Your Current Balance
                   </p>
                   <p className="text-5xl mb-6 text-primary">
-                    {credits} <span className="text-zinc-400">Credits</span>
+                    {user?.credits.remaining} <span className="text-zinc-400">Credits</span>
                   </p>
                   <button
                     variant="contained"

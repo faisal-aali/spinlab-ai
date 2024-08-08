@@ -1,190 +1,211 @@
-import axios from 'axios'
+import axios from 'axios';
 import { I3MotionAuth } from './interfaces/3motion';
 import { IAssessmentDetails } from './interfaces/assessmentDetails';
 
-const BASE_URL = 'https://3m.3motionai.com/api/v1'
-var auth: I3MotionAuth | null = null;
+const BASE_URL = 'https://3m.3motionai.com/api/v1';
 
-authorize().catch(console.error)
+class MotionAPI {
+    private auth: I3MotionAuth | null = null;
 
-// refresh token every 1h
-setInterval(() => {
-    authorize().catch(console.error)
-}, 3600000)
+    constructor() {
+        this.authorize().catch(console.error);
+        this.startTokenRefresh();
+    }
 
-function getAuth() {
-    return auth
-}
+    private startTokenRefresh() {
+        // Refresh token every 1 hour
+        setInterval(() => {
+            this.authorize().catch(console.error);
+        }, 3600000);
+    }
 
-function authorize() {
-    return new Promise((resolve, reject) => {
-        axios.post(BASE_URL + '/Account/Authenticate', {
-            usernameOrEmailAddress: process.env._3MOTION_EMAIL,
-            password: process.env._3MOTION_PASSWORD,
-        }, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'Cookie': 'Dsi.Localization.CultureName=en'
+    public getAuth(): I3MotionAuth | null {
+        return this.auth;
+    }
+
+    private async authorize(): Promise<void> {
+        try {
+            const res = await axios.post(BASE_URL + '/Account/Authenticate', {
+                usernameOrEmailAddress: process.env._3MOTION_EMAIL,
+                password: process.env._3MOTION_PASSWORD,
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'Cookie': 'Dsi.Localization.CultureName=en'
+                }
+            });
+
+            if (!res.data.success) {
+                throw new Error(res.data.message || 'Unexpected error');
             }
-        }).then(res => {
-            if (!res.data.success) return reject({ message: res.data.message || 'Unexpected error' })
-            auth = res.data.result;
-            console.info('Updated 3motion auth')
-            resolve({ message: 'success' })
-        }).catch(err => {
-            reject({ message: err.response.data?.message || err.message || 'INTERNAL ERROR' })
-        })
-    })
-}
 
-function getUser() {
-    return new Promise((resolve, reject) => {
-        if (!auth) return reject({ message: 'Unauthorized' })
-        axios.post(BASE_URL + '/User/GetUsers', {
-            pageSize: 30,
-            pageNo: 1,
-            searchText: ""
-        }, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'Cookie': 'Dsi.Localization.CultureName=en',
-                'Authorization': `Bearer ${auth.accessToken}`
+            this.auth = res.data.result;
+            console.info('Updated 3motion auth');
+        } catch (err: any) {
+            throw new Error(err.response?.data?.message || err.message || 'INTERNAL ERROR');
+        }
+    }
+
+    public async getUser(): Promise<any> {
+        if (!this.auth) {
+            throw new Error('Unauthorized');
+        }
+
+        try {
+            const res = await axios.post(BASE_URL + '/User/GetUsers', {
+                pageSize: 30,
+                pageNo: 1,
+                searchText: ""
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'Cookie': 'Dsi.Localization.CultureName=en',
+                    'Authorization': `Bearer ${this.auth.accessToken}`
+                }
+            });
+
+            if (!res.data.success) {
+                throw new Error(res.data.message || 'Unexpected error');
             }
-        }).then(res => {
-            if (!res.data.success) return reject({ message: res.data.message || 'Unexpected error' })
 
-            const user = res.data.result[0]
-            if (!user) return reject({ message: 'Invalid API response' })
-
-            resolve(user)
-        }).catch(err => {
-            reject({ message: err.response.data?.message || err.message || 'INTERNAL ERROR' })
-        })
-    })
-}
-
-function getAssessments({
-    searchText,
-    pageno,
-    sort_key,
-    sort_direction,
-    pageSize,
-} = {
-        searchText: "",
-        pageno: 1,
-        sort_key: "",
-        sort_direction: "ascd",
-        pageSize: 100
-    }) {
-    return new Promise((resolve, reject) => {
-        if (!auth) return reject({ message: 'Unauthorized' })
-        axios.post(BASE_URL + '/Assessment/GetAssessments', {
-            searchText,
-            pageno,
-            sort_key,
-            sort_direction,
-            pageSize,
-        }, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'Cookie': 'Dsi.Localization.CultureName=en',
-                'Authorization': `Bearer ${auth.accessToken}`
+            const user = res.data.result[0];
+            if (!user) {
+                throw new Error('Invalid API response');
             }
-        }).then(res => {
-            if (!res.data.success) return reject({ message: res.data.message || 'Unexpected error' })
-            resolve(res.data.result)
-        }).catch(err => {
-            reject({ message: err.response.data?.message || err.message || 'INTERNAL ERROR' })
-        })
-    })
-}
 
-function getAssessmentDetails({ taskId, taskType }: { taskId: string, taskType: string }): Promise<IAssessmentDetails> {
-    return new Promise((resolve, reject) => {
-        if (!auth) return reject({ message: 'Unauthorized' })
+            return user;
+        } catch (err: any) {
+            throw new Error(err.response?.data?.message || err.message || 'INTERNAL ERROR');
+        }
+    }
 
-        if (!taskId || !taskType) return reject({ message: 'Should provide valid parameters' })
+    public async getAssessments({
+        searchText = "",
+        pageno = 1,
+        sort_key = "",
+        sort_direction = "ascd",
+        pageSize = 100,
+    }: {
+        searchText?: string;
+        pageno?: number;
+        sort_key?: string;
+        sort_direction?: string;
+        pageSize?: number;
+    }): Promise<any> {
+        if (!this.auth) {
+            throw new Error('Unauthorized');
+        }
 
-        axios.get(BASE_URL + '/Assessment/GetAssessmentDetails', {
-            params: {
-                taskId,
-                taskType
-            },
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'Cookie': 'Dsi.Localization.CultureName=en',
-                'Authorization': `Bearer ${auth.accessToken}`
+        try {
+            const res = await axios.post(BASE_URL + '/Assessment/GetAssessments', {
+                searchText,
+                pageno,
+                sort_key,
+                sort_direction,
+                pageSize,
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'Cookie': 'Dsi.Localization.CultureName=en',
+                    'Authorization': `Bearer ${this.auth.accessToken}`
+                }
+            });
+
+            if (!res.data.success) {
+                throw new Error(res.data.message || 'Unexpected error');
             }
-        }).then(res => {
-            if (!res.data.success) return reject({ message: res.data.message || 'Unexpected error' })
-            resolve(res.data.result)
-        }).catch(err => {
-            reject({ message: err.response.data?.message || err.message || 'INTERNAL ERROR' })
-        })
-    })
-}
 
-function createAssessment({
-    individualId,
-    taskType,
-    height,
-    weight,
-    uploadfile,
-}: { individualId?: number, taskType: string, height: number, weight: number, uploadfile: File, }): Promise<{
-    assessmentId: number,
-    assessmentMappingId: number
-}> {
-    return new Promise((resolve, reject) => {
-        console.log('[3motion.createAssessment] called: Auth', auth, uploadfile)
-        if (!auth) return reject({ message: 'Unauthorized' })
+            return res.data.result;
+        } catch (err: any) {
+            throw new Error(err.response?.data?.message || err.message || 'INTERNAL ERROR');
+        }
+    }
 
-        individualId = individualId || 124923
-        if (!taskType || !height || !weight || !uploadfile) return reject({ message: 'Should provide valid parameters' })
+    public async getAssessmentDetails({ taskId, taskType }: { taskId: string; taskType: string; }): Promise<IAssessmentDetails> {
+        if (!this.auth) {
+            throw new Error('Unauthorized');
+        }
+
+        if (!taskId || !taskType) {
+            throw new Error('Should provide valid parameters');
+        }
+
+        try {
+            const res = await axios.get(BASE_URL + '/Assessment/GetAssessmentDetails', {
+                params: { taskId, taskType },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'Cookie': 'Dsi.Localization.CultureName=en',
+                    'Authorization': `Bearer ${this.auth.accessToken}`
+                }
+            });
+
+            if (!res.data.success) {
+                throw new Error(res.data.message || 'Unexpected error');
+            }
+
+            return res.data.result;
+        } catch (err: any) {
+            throw new Error(err.response?.data?.message || err.message || 'INTERNAL ERROR');
+        }
+    }
+
+    public async createAssessment({
+        individualId = 124923,
+        taskType,
+        height,
+        weight,
+        uploadfile,
+    }: {
+        individualId?: number;
+        taskType: string;
+        height: number;
+        weight: number;
+        uploadfile: File;
+    }): Promise<{ assessmentId: number; assessmentMappingId: number; }> {
+        if (!this.auth) {
+            throw new Error('Unauthorized');
+        }
+
+        if (!taskType || !height || !weight || !uploadfile) {
+            throw new Error('Should provide valid parameters');
+        }
 
         const formData = new FormData();
-        // const file = new Blob([fs.readFileSync(`./spinlab-test-video.mp4`)]);
-        // const fileStream = fs.createReadStream('./example.jpg');
-        // console.log(file)
-        formData.append('individualId', individualId.toString())
-        formData.append('taskType', taskType)
-        formData.append('height', height.toString())
-        formData.append('weight', weight.toString())
-        formData.append('uploadfile', uploadfile)
+        formData.append('individualId', individualId.toString());
+        formData.append('taskType', taskType);
+        formData.append('height', height.toString());
+        formData.append('weight', weight.toString());
+        formData.append('uploadfile', uploadfile);
 
-        console.log(formData)
+        try {
+            const res = await axios.post(BASE_URL + '/Assessment/CreateAssessment', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Accept': 'application/json',
+                    'Cookie': 'Dsi.Localization.CultureName=en',
+                    'Authorization': `Bearer ${this.auth.accessToken}`
+                },
+                onUploadProgress: (progressEvent) => {
+                    const percentCompleted = Math.round((progressEvent.loaded * 100) / (progressEvent.total || 1));
+                    console.log(`[3motion.createAssessment] uploaded ${percentCompleted}%`);
+                },
+            });
 
-        axios.post(BASE_URL + '/Assessment/CreateAssessment', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-                'Accept': 'application/json',
-                'Cookie': 'Dsi.Localization.CultureName=en',
-                'Authorization': `Bearer ${auth.accessToken}`
-            },
-            onUploadProgress: (progressEvent) => {
-                const percentCompleted = Math.round((progressEvent.loaded * 100) / (progressEvent.total || 1));
-                console.log(`[3motion.createAssessment] uploaded ${percentCompleted}%`);
-            },
-        }).then(res => {
-            if (!res.data.success) return reject({ message: res.data.message || 'Unexpected error' })
-            console.log(res.data.result)
-            resolve(res.data.result)
-        }).catch(err => {
-            reject({ message: err.response.data?.message || err.message || 'INTERNAL ERROR' })
-        })
-    })
+            if (!res.data.success) {
+                throw new Error(res.data.message || 'Unexpected error');
+            }
+
+            return res.data.result;
+        } catch (err: any) {
+            throw new Error(err.response?.data?.message || err.message || 'INTERNAL ERROR');
+        }
+    }
 }
 
-const _3Motion = {
-    getAuth,
-    authorize,
-    getUser,
-    getAssessments,
-    getAssessmentDetails,
-    createAssessment
-}
-
-export default _3Motion
+const _3Motion = new MotionAPI();
+export default _3Motion;

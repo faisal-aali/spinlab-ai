@@ -24,33 +24,18 @@ const style = {
 };
 
 const Subscriptions = () => {
-  const userSession = useSession().data?.user || {}
-  const [step, setStep] = useState(0);
+  const [step, setStep] = useState(1);
   const [plan, setPlan] = useState(null);
   const [_package, setPackage] = useState(null);
-  const [user, setUser] = useState(null);
   const [canceling, setCanceling] = useState(false);
   const [openCancelModal, setOpenCancelModal] = useState(false);
-  const { showSnackbar } = useApp();
+  const { showSnackbar, user, fetchUser } = useApp();
 
   useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
-    try {
-      const response = await axios.get('/api/users', { params: { id: userSession._id } });
-      const userData = response.data[0];
-      setUser(userData);
-      if (userData.subscription && userData.subscription.status === 'active') {
-        setStep(1);
-      } else {
-        setStep(2);
-      }
-    } catch (error) {
-      console.error("Error fetching user data:", error);
-    }
-  };
+    if (!user) return
+    if (!user.subscription.status || user.subscription.status !== 'active')
+      setStep(2)
+  }, [user])
 
   const handleCancelSubscription = async () => {
     try {
@@ -58,9 +43,11 @@ const Subscriptions = () => {
       const { success } = await axios.post('/api/stripe/subscription/cancel', { userId: user._id }).then(res => res.data);
       if (!success) showSnackbar(`Unexpected error occurred`, 'error');
       else showSnackbar(`Your subscription has been cancelled`, 'success');
-      setUser(null);
-      fetchData();
-      setStep(0);
+      setTimeout(() => {
+        setCanceling(false);
+        fetchUser();
+        setStep(1);
+      }, 3000);
     } catch (error) {
       console.error('Error canceling subscription:', error);
       showSnackbar(`Error canceling subscription: ${error.response?.data?.message || error.message}`, 'error')
@@ -119,7 +106,8 @@ const Subscriptions = () => {
                     className="bg-transparent border border-red-500 w-64 font-bold px-12 py-1 rounded mt-4"
                     onClick={openConfirmationModal}
                   >
-                    Cancel Subscription
+
+                    {canceling ? <CircularProgress size={20} /> : 'Cancel Subscription'}
                   </button>
                 </div>
               </div>
@@ -166,10 +154,7 @@ const Subscriptions = () => {
                 <button
                   variant="contained"
                   className="bg-white text-black font-bold px-12 py-1 rounded mt-4"
-                  onClick={() => {
-                    fetchData();
-                    setStep(1);
-                  }}
+                  onClick={() => setStep(1)}
                 >
                   OK
                 </button>
