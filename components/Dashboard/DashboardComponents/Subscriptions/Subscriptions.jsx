@@ -48,7 +48,7 @@ const Subscriptions = () => {
       setStep(0);
     } catch (error) {
       console.error('Error canceling subscription:', error);
-      showSnackbar(`Error canceling subscription: ${error}`, 'error')
+      showSnackbar(`Error canceling subscription: ${error.response?.data?.message || error.message}`, 'error')
       setCanceling(false)
     }
   };

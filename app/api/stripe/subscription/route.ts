@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
             console.log('old_subscription status', old_subscription.status)
             subscription = await stripe.subscriptions.update(old_subscription.id, {
                 cancel_at_period_end: false,
-                proration_behavior: 'create_prorations',
+                proration_behavior: 'always_invoice',
                 items: [{
                     id: old_subscription.items.data[0].id,
                     price: _package.stripePlanId,
@@ -67,24 +67,24 @@ export async function POST(req: NextRequest) {
             });
         }
 
-        if (!subscription.latest_invoice || typeof subscription.latest_invoice === "string" || !subscription.latest_invoice.payment_intent || typeof subscription.latest_invoice.payment_intent === "string") {
+        console.log('latest_invoice', subscription.latest_invoice)
+
+        if (!subscription.latest_invoice || typeof subscription.latest_invoice === "string") {
             return NextResponse.json({ message: "Unable to retrieve latest invoice." }, { status: 500 });
         }
 
         const paymentIntent = subscription.latest_invoice.payment_intent;
 
-        if (paymentIntent.status === 'requires_action') {
+        if (paymentIntent && typeof paymentIntent !== "string" && paymentIntent.status === 'requires_action') {
             return NextResponse.json({
                 requiresAction: true,
                 paymentIntentClientSecret: paymentIntent.client_secret,
                 paymentIntentId: paymentIntent.id,
             });
-        } else if (paymentIntent.status === 'succeeded') {
-            // Handle successful subscription setup
-            await handleSubscriptionSuccess({ subscription });
-            return NextResponse.json({ success: true });
         } else {
-            return NextResponse.json({ message: "Subscription failed. Please try again." }, { status: 500 });
+            // Handle successful subscription setup
+            // await handleSubscriptionSuccess({ subscription });
+            return NextResponse.json({ success: true });
         }
 
     } catch (err) {

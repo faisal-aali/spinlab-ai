@@ -22,8 +22,6 @@ export async function POST(req: NextRequest) {
 
         await stripe.subscriptions.cancel(subscription.stripeSubscriptionId);
 
-        await handleSubscriptionCancel({ userId: user._id })
-
         return NextResponse.json({ success: true })
     } catch (err) {
         console.error(err)

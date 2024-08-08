@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
                 paymentIntentId: paymentIntent.id,
             });
         } else if (paymentIntent.status === 'succeeded') {
-            await handlePaymentSuccess({ paymentIntent });
+            // await handlePaymentSuccess({ paymentIntent });
             return NextResponse.json({ success: true });
         } else {
             return NextResponse.json({ message: "Payment failed. Please try again." }, { status: 500 });
