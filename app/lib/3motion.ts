@@ -48,11 +48,10 @@ class MotionAPI {
     }
 
     public async getUser(): Promise<any> {
-        if (!this.auth) {
-            throw new Error('Unauthorized');
-        }
-
         try {
+            if (!this.auth) await this.authorize()
+            if (!this.auth) throw new Error('Unauthorized');
+
             const res = await axios.post(BASE_URL + '/User/GetUsers', {
                 pageSize: 30,
                 pageNo: 1,
@@ -94,11 +93,10 @@ class MotionAPI {
         sort_direction?: string;
         pageSize?: number;
     }): Promise<any> {
-        if (!this.auth) {
-            throw new Error('Unauthorized');
-        }
-
         try {
+            if (!this.auth) await this.authorize()
+            if (!this.auth) throw new Error('Unauthorized');
+
             const res = await axios.post(BASE_URL + '/Assessment/GetAssessments', {
                 searchText,
                 pageno,
@@ -125,15 +123,14 @@ class MotionAPI {
     }
 
     public async getAssessmentDetails({ taskId, taskType }: { taskId: string; taskType: string; }): Promise<IAssessmentDetails> {
-        if (!this.auth) {
-            throw new Error('Unauthorized');
-        }
-
         if (!taskId || !taskType) {
             throw new Error('Should provide valid parameters');
         }
 
         try {
+            if (!this.auth) await this.authorize()
+            if (!this.auth) throw new Error('Unauthorized');
+
             const res = await axios.get(BASE_URL + '/Assessment/GetAssessmentDetails', {
                 params: { taskId, taskType },
                 headers: {
@@ -167,9 +164,6 @@ class MotionAPI {
         weight: number;
         uploadfile: File;
     }): Promise<{ assessmentId: number; assessmentMappingId: number; }> {
-        if (!this.auth) {
-            throw new Error('Unauthorized');
-        }
 
         if (!taskType || !height || !weight || !uploadfile) {
             throw new Error('Should provide valid parameters');
@@ -183,6 +177,9 @@ class MotionAPI {
         formData.append('uploadfile', uploadfile);
 
         try {
+            if (!this.auth) await this.authorize()
+            if (!this.auth) throw new Error('Unauthorized');
+
             const res = await axios.post(BASE_URL + '/Assessment/CreateAssessment', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
