@@ -6,7 +6,7 @@ import * as Yup from "yup";
 import schemaValidators from "../../../../schema-validators";
 import axios from "axios";
 import { convertFeetAndInchesToCm } from "@/util/utils";
-import { useSnackbar } from '../../../Context/AppContext';
+import { useApp } from '../../../Context/AppContext';
 
 const style = {
   position: "absolute",
@@ -22,7 +22,7 @@ const style = {
 
 const AddUserModal = ({ open, onClose, role, onSuccess }) => {
   // const [selectedRole, setSelectedRole] = useState(role);
-  const { showSnackbar } = useSnackbar();
+  const { showSnackbar } = useApp();
   const [response, setResponse] = useState({})
 
   const timeout = useRef()

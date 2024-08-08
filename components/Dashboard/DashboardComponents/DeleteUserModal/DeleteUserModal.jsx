@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Box } from "@mui/material";
 import axios from "axios";
-import { useSnackbar } from "../../../Context/AppContext";
+import { useApp } from "../../../Context/AppContext";
 
 const style = {
   position: "absolute",
@@ -16,7 +16,7 @@ const style = {
 };
 
 const DeleteUserModal = ({ open, onClose, userId, onSuccess }) => {
-  const { showSnackbar } = useSnackbar();
+  const { showSnackbar } = useApp();
 
   useEffect(() => {
     const handleEsc = (event) => {

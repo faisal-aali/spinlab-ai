@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { User, Subscription, Package } from "@/app/lib/models";
+import { User, Subscription, Package, Video, Purchase } from "@/app/lib/models";
 import * as Yup from 'yup'
 import crypto from "crypto";
 import bcrypt from "bcrypt";
 import { sendEmail } from "@/app/lib/sendEmail";
-import { validateError } from "@/app/lib/functions";
+import { calculateCredits, validateError } from "@/app/lib/functions";
 import { authOption } from "../auth/[...nextauth]/route";
 import { getServerSession } from "next-auth";
 import mongoose from "@/app/lib/mongodb";
@@ -90,6 +90,12 @@ export async function GET(req: NextRequest) {
                 }
             }
         ]);
+
+        await Promise.all(users.map((user) => (
+            calculateCredits({ user }).then(credits => {
+                user.credits = credits
+            })
+        )))
 
         return NextResponse.json(users)
     } catch (err: unknown) {

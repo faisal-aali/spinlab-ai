@@ -7,7 +7,7 @@ import { getServerSession } from "next-auth";
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
 import theme from "./muiTheme";
 import { ThemeProvider } from '@mui/material/styles';
-import SnackbarProvider from '../components/Context/AppContext';  
+import AppProvider from '../components/Context/AppContext';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -28,9 +28,9 @@ export default async function RootLayout({
       <AppRouterCacheProvider>
         <AuthProvider session={session}>
           <ThemeProvider theme={theme}>
-            <SnackbarProvider> 
+            <AppProvider>
               <body className={inter.className}>{children}</body>
-            </SnackbarProvider>
+            </AppProvider>
           </ThemeProvider>
         </AuthProvider>
       </AppRouterCacheProvider>

@@ -4,7 +4,7 @@ import { Close as CloseIcon } from "@mui/icons-material";
 import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import axios from 'axios';
-import { useSnackbar } from '../../../Context/AppContext';
+import { useApp } from '../../../Context/AppContext';
 
 
 const style = {
@@ -30,7 +30,7 @@ const validationSchema = Yup.object({
 
 const AddVideoModal = ({ open, onClose, categories, initialCategory, onSuccess }) => {
   const formikRef = useRef();
-  const { showSnackbar } = useSnackbar();
+  const { showSnackbar } = useApp();
 
   useEffect(() => {
     formikRef.current?.setFieldValue('categoryId', initialCategory)

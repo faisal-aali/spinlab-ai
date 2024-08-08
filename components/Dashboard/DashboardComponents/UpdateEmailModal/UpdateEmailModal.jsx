@@ -15,7 +15,7 @@ import {
 import { Formik, Field, Form } from "formik";
 import * as Yup from "yup";
 import axios from 'axios';
-import { useSnackbar } from '../../../Context/AppContext';
+import { useApp } from '../../../Context/AppContext';
 
 
 const style = {
@@ -36,7 +36,7 @@ const UpdateEmailModal = ({ open, onClose, isVerification, onSuccess }) => {
     const [email, setEmail] = useState()
     const [currentStep, setCurrentStep] = useState(0);
     const [response, setResponse] = useState({});
-    const { showSnackbar } = useSnackbar();
+    const { showSnackbar } = useApp();
 
 
     const timeout = useRef()
@@ -62,7 +62,7 @@ const UpdateEmailModal = ({ open, onClose, isVerification, onSuccess }) => {
                     return showSnackbar("The email is already registered", "error");
                 }
             } catch (err) {
-                    return showSnackbar(err.response?.data?.message || err.message, "error");
+                return showSnackbar(err.response?.data?.message || err.message, "error");
             }
         }
         axios.post("/api/users/OTP", {

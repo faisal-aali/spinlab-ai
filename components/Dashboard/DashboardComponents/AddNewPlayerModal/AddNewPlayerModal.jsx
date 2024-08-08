@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation";
 import { convertFeetAndInchesToCm } from "@/util/utils";
 import axios from 'axios'
 import schemaValidators from "@/schema-validators";
-import { useSnackbar } from '../../../Context/AppContext';
+import { useApp } from '../../../Context/AppContext';
 
 const style = {
   position: "absolute",
@@ -39,7 +39,7 @@ const AddNewPlayerModal = ({ open, onClose, onSuccess }) => {
   const router = useRouter()
 
   const [response, setResponse] = useState({})
-  const { showSnackbar } = useSnackbar();
+  const { showSnackbar } = useApp();
 
   const timeout = useRef()
   useEffect(() => {

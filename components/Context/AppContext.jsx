@@ -1,21 +1,34 @@
 "use client"
 // components/Context/AppContext.jsx
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import Slide from '@mui/material/Slide'; // Import Slide component
+import axios from 'axios'
+import { useSession } from 'next-auth/react';
 
+const AppContext = createContext();
 
-const SnackbarContext = createContext();
+export const useApp = () => useContext(AppContext);
 
-export const useSnackbar = () => useContext(SnackbarContext);
-
-const SnackbarProvider = ({ children }) => {
+const AppProvider = ({ children }) => {
+    const userSession = useSession().data?.user || {}
+    const [user, setUser] = useState()
     const [snackbar, setSnackbar] = useState({
         open: false,
         message: '',
         severity: 'info',
     });
+
+    useEffect(() => {
+        fetchUser()
+    }, [userSession])
+
+    const fetchUser = () => {
+        console.log('fetchUser', userSession._id)
+        if (userSession._id)
+            axios.get('/api/users', { params: { id: userSession._id } }).then(res => setUser(res.data[0])).catch(console.error)
+    }
 
     const showSnackbar = (message, severity = 'info') => {
         setSnackbar({
@@ -30,7 +43,7 @@ const SnackbarProvider = ({ children }) => {
     };
 
     return (
-        <SnackbarContext.Provider value={{ showSnackbar, hideSnackbar }}>
+        <AppContext.Provider value={{ showSnackbar, hideSnackbar, user, fetchUser }}>
             {children}
             <Snackbar
                 open={snackbar.open}
@@ -42,8 +55,8 @@ const SnackbarProvider = ({ children }) => {
                     {snackbar.message}
                 </MuiAlert>
             </Snackbar>
-        </SnackbarContext.Provider>
+        </AppContext.Provider>
     );
 };
 
-export default SnackbarProvider;
+export default AppProvider;

@@ -9,7 +9,7 @@ import axios from "axios";
 import { getNames } from 'country-list'
 import { convertCmToFeetAndInches, convertFeetAndInchesToCm } from "@/util/utils";
 import UpdateEmailModal from "../../UpdateEmailModal/UpdateEmailModal";
-import { useSnackbar } from "../../../../Context/AppContext";
+import { useApp } from "../../../../Context/AppContext";
 
 const AccountSettings = ({ _user }) => {
   const formikRef = useRef()
@@ -23,7 +23,7 @@ const AccountSettings = ({ _user }) => {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showUpdateEmailModal, setShowUpdateEmailModal] = useState(false)
-  const { showSnackbar } = useSnackbar();
+  const { showSnackbar } = useApp();
 
 
   // const reinitializeForm = (user) => {

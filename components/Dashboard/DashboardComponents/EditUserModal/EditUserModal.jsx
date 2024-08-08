@@ -8,7 +8,7 @@ import axios from "axios";
 import schemaValidators from "@/schema-validators";
 import { convertCmToFeetAndInches, convertFeetAndInchesToCm } from "@/util/utils";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { useSnackbar } from "../../../Context/AppContext";
+import { useApp } from "../../../Context/AppContext";
 
 const style = {
   position: "absolute",
@@ -43,7 +43,7 @@ const passwordValidationSchema = Yup.object({
 const UpdatePasswordModal = ({ open, onClose, userId }) => {
 
   const [response, setResponse] = useState({})
-  const { showSnackbar } = useSnackbar();
+  const { showSnackbar } = useApp();
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -159,7 +159,7 @@ const EditUserModal = ({ open, onClose, userData, onSuccess }) => {
   const [showPasswordModal, setShowPasswordModal] = useState(false)
   const [user, setUser] = useState(userData)
   const [response, setResponse] = useState({})
-  const { showSnackbar } = useSnackbar();
+  const { showSnackbar } = useApp();
 
   const fetchUser = () => {
     return new Promise((resolve) => {
@@ -172,7 +172,7 @@ const EditUserModal = ({ open, onClose, userData, onSuccess }) => {
   }
 
   const timeout = useRef()
-  
+
   useEffect(() => {
     const handleEsc = (event) => {
       if (event.keyCode === 27) {
@@ -198,7 +198,7 @@ const EditUserModal = ({ open, onClose, userData, onSuccess }) => {
           showSnackbar(`${userData.role} has been updated`, 'success');
           resolve();
         }).catch(err => {
-          showSnackbar( err.response?.data?.message || err.message, 'error');
+          showSnackbar(err.response?.data?.message || err.message, 'error');
           reject(err);
         })
     })

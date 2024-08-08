@@ -7,7 +7,7 @@ import PaymentForm from "@/components/Common/PaymentForm/PaymentForm";
 import axios from 'axios';
 import { useSession } from "next-auth/react";
 import { CircularProgress } from "@mui/material";
-import { useSnackbar } from "@/components/Context/AppContext";
+import { useApp } from "@/components/Context/AppContext";
 
 const Subscriptions = () => {
   const userSession = useSession().data?.user || {}
@@ -16,7 +16,7 @@ const Subscriptions = () => {
   const [_package, setPackage] = useState(null);
   const [user, setUser] = useState(null);
   const [canceling, setCanceling] = useState(false)
-  const { showSnackbar } = useSnackbar();
+  const { showSnackbar } = useApp();
 
   useEffect(() => {
     fetchData();

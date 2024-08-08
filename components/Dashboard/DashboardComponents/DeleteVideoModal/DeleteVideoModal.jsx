@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Modal, Box, Typography, Button, IconButton } from "@mui/material";
 import axios from 'axios';
-import { useSnackbar } from '../../../Context/AppContext';
+import { useApp } from '../../../Context/AppContext';
 
 const style = {
   position: "absolute",
@@ -17,8 +17,8 @@ const style = {
 
 const DeleteVideoModal = ({ open, onClose, videoId, onSuccess }) => {
 
-  const { showSnackbar } = useSnackbar();
-  
+  const { showSnackbar } = useApp();
+
   useEffect(() => {
     const handleEsc = (event) => {
       if (event.keyCode === 27) {

@@ -5,6 +5,12 @@ interface IRoleData {
     handedness: 'left' | 'right' | null; // Example of a string union type
     anonymous: boolean | null;
 }
+
+interface ICredit {
+    purchased: number,
+    used: number,
+    remaining: number
+}
 export interface IUser {
     _id: string,
     name: string,
@@ -14,7 +20,7 @@ export interface IUser {
     country: string | null,
     avatarUrl: string | null,
     bio: string | null,
-    credits: number,
+    credits: ICredit,
     emailVerified: boolean,
     stripeCustomerId: string | null,
     creationDate: Date,

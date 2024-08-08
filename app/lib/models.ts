@@ -23,7 +23,6 @@ const userSchema = new mongoose.Schema({
     country: { type: String, required: false, default: null },
     avatarUrl: { type: String, required: false, default: null },
     bio: { type: String, required: false, default: null },
-    credits: { type: Number, required: false, default: 0 },
     emailVerified: { type: Boolean, required: false, default: false },
     stripeCustomerId: { type: String, required: false, default: null },
     creationDate: { type: Date, required: false, default: () => new Date().toISOString() },
