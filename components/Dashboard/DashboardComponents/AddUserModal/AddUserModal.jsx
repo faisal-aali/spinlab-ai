@@ -6,7 +6,7 @@ import * as Yup from "yup";
 import schemaValidators from "../../../../schema-validators";
 import axios from "axios";
 import { convertFeetAndInchesToCm } from "@/util/utils";
-import { useApp } from '../../../Context/AppContext';
+import { useApp } from "../../../Context/AppContext";
 
 const style = {
   position: "absolute",
@@ -21,21 +21,18 @@ const style = {
 };
 
 const AddUserModal = ({ open, onClose, role, onSuccess }) => {
-  // const [selectedRole, setSelectedRole] = useState(role);
   const { showSnackbar } = useApp();
-  const [response, setResponse] = useState({})
+  const [file, setFile] = useState(null);
+  const [imageSrc, setImageSrc] = useState("");
+  const [response, setResponse] = useState({});
 
-  const timeout = useRef()
+  const timeout = useRef();
   useEffect(() => {
     if (response.message) {
-      clearTimeout(timeout.current)
+      clearTimeout(timeout.current);
       timeout.current = setTimeout(() => setResponse({}), 3000);
     }
-  }, [response])
-
-  // useEffect(() => {
-  //   setSelectedRole(role);
-  // }, [role]);
+  }, [response]);
 
   useEffect(() => {
     const handleEsc = (event) => {
@@ -49,8 +46,28 @@ const AddUserModal = ({ open, onClose, role, onSuccess }) => {
     };
   }, []);
 
+  const handleImageChange = (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setImageSrc(event.target.result);
+      };
+      reader.readAsDataURL(selectedFile);
+      setFile(selectedFile);
+    }
+  };
+
   const handleSubmit = async (values) => {
-    return new Promise((resolve, reject) => {
+    try {
+      let imageUrl = "";
+      if (file) {
+        const formData = new FormData();
+        formData.append("file", file);
+        const res = await axios.post("/api/S3", formData);
+        imageUrl = res.data.url;
+      }
+
       const data = {
         email: values.email,
         name: `${values.firstName} ${values.lastName}`,
@@ -59,35 +76,41 @@ const AddUserModal = ({ open, onClose, role, onSuccess }) => {
         height: convertFeetAndInchesToCm(values.heightFt, values.heightIn),
         weight: values.weight,
         handedness: values.handedness,
+        avatarUrl: imageUrl,
       };
 
-      axios.post(`/api/${(role === 'player' && 'players') || (role === 'trainer' && 'trainers') || (role === 'staff' && 'staff') || (role === 'admin' && 'admin')}`, data).then(res => {
-        showSnackbar('User added successfully!', 'success');
-        onSuccess && onSuccess();
-        onClose();
-        resolve();
-      }).catch(err => {
-        showSnackbar(err.response?.data?.message || err.message, 'error');
-        reject(err);
-      })
-    })
+      await axios.post(
+        `/api/${
+          (role === "player" && "players") ||
+          (role === "trainer" && "trainers") ||
+          (role === "staff" && "staff") ||
+          (role === "admin" && "admin")
+        }`,
+        data
+      );
+      showSnackbar("User added successfully!", "success");
+      onSuccess && onSuccess();
+      onClose();
+    } catch (err) {
+      showSnackbar(err.response?.data?.message || err.message, "error");
+    }
   };
 
   const validationSchema = Yup.object({
     firstName: Yup.string().required("Required"),
     lastName: Yup.string().required("Required"),
     email: schemaValidators.user.email,
-    heightFt: role === 'player' && Yup.number().optional(),
-    heightIn: role === 'player' && Yup.number().max(11).required("Required"),
-    weight: role === 'player' && Yup.number().required("Required"),
-    handedness: role === 'player' && schemaValidators.user.handedness,
+    heightFt: role === "player" && Yup.number().optional(),
+    heightIn: role === "player" && Yup.number().max(11).required("Required"),
+    weight: role === "player" && Yup.number().required("Required"),
+    handedness: role === "player" && schemaValidators.user.handedness,
   });
 
   return (
     <Modal open={open} onClose={onClose} aria-labelledby="upload-modal-title">
       <Box sx={style} className="w-full max-w-3xl blueBackground px-16">
         <IconButton
-          style={{ position: "absolute", top: 10, right: 10, color: '#fff' }}
+          style={{ position: "absolute", top: 10, right: 10, color: "#fff" }}
           onClick={onClose}
         >
           <CloseIcon />
@@ -105,30 +128,49 @@ const AddUserModal = ({ open, onClose, role, onSuccess }) => {
             handedness: "",
             email: "",
             password: "",
-            // role: role,
           }}
           validationSchema={validationSchema}
-          onSubmit={(values, { resetForm }) => {
-            handleSubmit(values).then(() => resetForm()).catch(console.error)
+          onSubmit={(values, { resetForm, setSubmitting }) => {
+            handleSubmit(values)
+              .then(() => resetForm())
+              .catch(console.error)
+              .finally(() => setSubmitting(false));
           }}
-
         >
-          {({ errors, touched, setFieldValue, values }) => (
+          {({ isSubmitting, errors, touched, setFieldValue, values }) => (
             <Form>
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <div className="grid col-span-2 gap-2">
                   <div className="opacity-45">
                     <label htmlFor="">Profile Photo</label>
                   </div>
-                  <div className="grid grid-cols-1 gap-4">
-                    <div className="flex items-center justify-center flex-col blueBackground rounded-lg w-full h-52 gap-4 border-dashed border-2 border-slate-800">
+                  <div className="grid grid-cols-1 gap-4 h-auto">
+                    <div className="flex items-center justify-center flex-col blueBackground rounded-lg w-full py-4 gap-4 border-dashed border-2 border-slate-800">
+                      <div className="w-24">
+                        {imageSrc && (
+                          <img
+                            src={imageSrc}
+                            alt="Preview"
+                            className="w-full h-full object-cover rounded-full"
+                          />
+                        )}
+                      </div>
                       <label className="cursor-pointer flex items-center justify-center">
-                        <input type="file" accept="image/*" className="hidden" />
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={handleImageChange}
+                        />
                         <img src="/assets/upload-icon.svg" alt="" />
                       </label>
                       <div>
-                        <span className="text-primary text-2xl">Click to Upload image</span>
-                        <span className="text-white mx-2 text-2xl">or drag and drop</span>
+                        <span className="text-primary text-2xl">
+                          Click to Upload image
+                        </span>
+                        <span className="text-white mx-2 text-2xl">
+                          or drag and drop
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -139,10 +181,11 @@ const AddUserModal = ({ open, onClose, role, onSuccess }) => {
                   </div>
                   <Field
                     className={`w-full text-primary bg-transparent px-3 rounded-lg py-3 text-white rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
-                    ${errors.firstName && touched.firstName
+                    ${
+                      errors.firstName && touched.firstName
                         ? "border-red-900	border"
                         : "primary-border focus:border-green-500"
-                      }`}
+                    }`}
                     type="text"
                     name="firstName"
                     required
@@ -154,17 +197,22 @@ const AddUserModal = ({ open, onClose, role, onSuccess }) => {
                   </div>
                   <Field
                     className={`w-full text-primary bg-transparent px-3 rounded-lg py-3 text-white rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
-                    ${errors.lastName && touched.lastName
+                    ${
+                      errors.lastName && touched.lastName
                         ? "border-red-900	border"
                         : "primary-border focus:border-green-500"
-                      }`}
+                    }`}
                     type="text"
                     name="lastName"
                     required
                   />
                 </div>
-                {role === 'player' &&
-                  <div className={`grid gap-2 relative ${role !== 'player' && 'hidden'}`}>
+                {role === "player" && (
+                  <div
+                    className={`grid gap-2 relative ${
+                      role !== "player" && "hidden"
+                    }`}
+                  >
                     <div className="opacity-45">
                       <label htmlFor="">Height</label>
                     </div>
@@ -172,46 +220,59 @@ const AddUserModal = ({ open, onClose, role, onSuccess }) => {
                       <div className="relative">
                         <Field
                           name="heightFt"
-                          type='number'
-                          className={`py-3 px-3 blueBackground rounded-lg w-full text-primary focus:outline-none placeholder:opacity-45 ${errors.heightFt && touched.heightFt
-                            ? "border-red-900	border"
-                            : "primary-border focus:border-green-500"
-                            }`}
+                          type="number"
+                          className={`py-3 px-3 blueBackground rounded-lg w-full text-primary focus:outline-none placeholder:opacity-45 ${
+                            errors.heightFt && touched.heightFt
+                              ? "border-red-900	border"
+                              : "primary-border focus:border-green-500"
+                          }`}
                         />
-                        <div className="absolute bottom-3 right-4 opacity-50 text-white">ft</div>
+                        <div className="absolute bottom-3 right-4 opacity-50 text-white">
+                          ft
+                        </div>
                       </div>
                       <div className="relative">
                         <Field
                           name="heightIn"
-                          type='number'
-                          className={`py-3 px-3 blueBackground rounded-lg  w-full text-primary focus:outline-none placeholder:opacity-45 ${errors.heightIn && touched.heightIn
-                            ? "border-red-900	border"
-                            : "primary-border focus:border-green-500"
-                            }`}
+                          type="number"
+                          className={`py-3 px-3 blueBackground rounded-lg  w-full text-primary focus:outline-none placeholder:opacity-45 ${
+                            errors.heightIn && touched.heightIn
+                              ? "border-red-900	border"
+                              : "primary-border focus:border-green-500"
+                          }`}
                         />
-                        <div className="absolute bottom-3 right-4 opacity-50 text-white">in</div>
+                        <div className="absolute bottom-3 right-4 opacity-50 text-white">
+                          in
+                        </div>
                       </div>
                     </div>
-                  </div>}
-                {role === 'player' &&
+                  </div>
+                )}
+                {role === "player" && (
                   <div className={`grid gap-2 relative`}>
                     <div className="opacity-45">
                       <label htmlFor="">Weight</label>
                     </div>
                     <Field
                       className={`w-full text-primary bg-transparent px-3 rounded-lg py-3 text-white rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
-                    ${errors.weight && touched.weight
-                          ? "border-red-900	border"
-                          : "primary-border focus:border-green-500"
-                        }`}
+                    ${
+                      errors.weight && touched.weight
+                        ? "border-red-900	border"
+                        : "primary-border focus:border-green-500"
+                    }`}
                       type="number"
                       name="weight"
                       required
                     />
-                    <div className="absolute bottom-3 right-4 opacity-50 text-white">lbs</div>
-                  </div>}
-                {role === 'player' &&
-                  <div className={`grid gap-2 ${role !== 'player' && 'hidden'}`}>
+                    <div className="absolute bottom-3 right-4 opacity-50 text-white">
+                      lbs
+                    </div>
+                  </div>
+                )}
+                {role === "player" && (
+                  <div
+                    className={`grid gap-2 ${role !== "player" && "hidden"}`}
+                  >
                     <div className="opacity-45">
                       <label htmlFor="">Handedness</label>
                     </div>
@@ -221,41 +282,65 @@ const AddUserModal = ({ open, onClose, role, onSuccess }) => {
                       fullWidth
                       value={values.handedness}
                       InputProps={{ style: { height: 50 } }}
-                      onChange={(e) => setFieldValue('handedness', e.target.value)}
+                      onChange={(e) =>
+                        setFieldValue("handedness", e.target.value)
+                      }
                       error={Boolean(errors.handedness && touched.handedness)}
-                      helperText={errors.handedness && touched.handedness ? errors.handedness : ""}
+                      helperText={
+                        errors.handedness && touched.handedness
+                          ? errors.handedness
+                          : ""
+                      }
                     >
-                      <MenuItem value={'left'}>Left</MenuItem>
-                      <MenuItem value={'right'}>Right</MenuItem>
+                      <MenuItem value={"left"}>Left</MenuItem>
+                      <MenuItem value={"right"}>Right</MenuItem>
                     </TextField>
-                  </div>}
+                  </div>
+                )}
                 <div className={`grid gap-2`}>
                   <div className="opacity-45">
                     <label htmlFor="">Email</label>
                   </div>
                   <Field
                     className={`w-full text-primary bg-transparent px-3 rounded-lg py-3 text-white rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
-                    ${errors.email && touched.email
+                    ${
+                      errors.email && touched.email
                         ? "border-red-900	border"
                         : "primary-border focus:border-green-500"
-                      }`}
+                    }`}
                     type="text"
                     name="email"
                     required
                   />
                 </div>
               </div>
-              {response.message && <div className={`flex justify-end col-span-2 mb-4 ${response.severity === 'success' ? 'text-primary' : 'text-error'}`}>{response.message}</div>}
+              {response.message && (
+                <div
+                  className={`flex justify-end col-span-2 mb-4 ${
+                    response.severity === "success"
+                      ? "text-primary"
+                      : "text-error"
+                  }`}
+                >
+                  {response.message}
+                </div>
+              )}
               <div className="flex justify-end mb-10">
-                <button type="submit" className="bg-primary dark-blue-color rounded w-28 h-9 flex items-center justify-center text-lg font-bold hover-button-shadow">
-                  ADD
+                <button
+                  type="submit"
+                  className={`bg-primary dark-blue-color rounded w-28 h-9 flex items-center justify-center text-lg font-bold hover-button-shadow ${
+                    isSubmitting ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? "Adding..." : "ADD"}
                 </button>
               </div>
             </Form>
           )}
         </Formik>
       </Box>
-    </Modal >
+    </Modal>
   );
 };
 

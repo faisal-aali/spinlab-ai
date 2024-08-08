@@ -3,7 +3,7 @@ import { Formik, Form, Field, ErrorMessage, useFormikContext, useFormik } from "
 import * as Yup from "yup";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useSession } from "next-auth/react";
-import { Checkbox, FormControlLabel, MenuItem, TextField } from "@mui/material";
+import { Checkbox, FormControlLabel, MenuItem, TextField, CircularProgress } from "@mui/material";
 import schemaValidators from "@/schema-validators";
 import axios from "axios";
 import { getNames } from 'country-list'
@@ -18,12 +18,14 @@ const AccountSettings = ({ _user }) => {
   const [response, setResponse] = useState({})
   const countries = getNames()
 
-  const [imageSrc, setImageSrc] = useState("https://placehold.co/100x100");
+  const [imageSrc, setImageSrc] = useState();
+  const [file, setFile] = useState(null);
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showUpdateEmailModal, setShowUpdateEmailModal] = useState(false)
   const { showSnackbar } = useApp();
+  const [loading, setLoading] = useState(false);
 
 
   // const reinitializeForm = (user) => {
@@ -58,22 +60,49 @@ const AccountSettings = ({ _user }) => {
   const fetchUser = () => {
     console.log('accountsettings fetchuser called')
     return new Promise((resolve) => {
-      axios.get('/api/users', { params: { id: user._id } }).then(res => setUser({
-        ...res.data[0]
-      })).catch(console.error).finally(() => resolve())
-    })
-  }
+      axios.get('/api/users', { params: { id: user._id } })
+        .then(res => {
+          setUser({
+            ...res.data[0],
+            avatarUrl: res.data[0].avatarUrl || "" 
+          });
+        })
+        .catch(console.error)
+        .finally(() => resolve());
+    });
+  };
+  
 
-  const handleImageChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
+  const handleImageChange = (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setImageSrc(reader.result);
+      reader.onload = (event) => {
+        setImageSrc(event.target.result);
       };
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(selectedFile);
+      setFile(selectedFile);
     }
   };
+
+  const handleSave = async () => {
+    if (!file) return;
+  
+    const formData = new FormData();
+    formData.append("file", file);
+    setLoading(true); 
+
+    try {
+      const res = await axios.post("/api/S3", formData);
+      const imageUrl = res.data.url;
+      await axios.post(`/api/${(user.role === 'player' && 'players') || (user.role === 'trainer' && 'trainers') || (user.role === 'staff' && 'staff') || (user.role === 'admin' && 'admin')}/${user._id}`, { avatarUrl: imageUrl });
+      showSnackbar('Profile Picture Updated!', 'success');
+      setLoading(false); 
+      await fetchUser();
+    } catch (err) {
+      showSnackbar(err.response?.data?.message || err.message, 'error');
+    }
+  };  
 
   const handleChangePassword = ({ currentPassword, newPassword }) => {
     console.error('handleChangePassword')
@@ -172,7 +201,7 @@ const AccountSettings = ({ _user }) => {
                 <div className="basis-1/4 flex items-center justify-center">
                   <div className="relative rounded-full overflow-hidden">
                     <img
-                      src={imageSrc}
+                      src={imageSrc || (user.avatarUrl ? user.avatarUrl : "https://placehold.co/100x100")}
                       alt="Profile"
                       className="w-full h-full object-cover"
                     />
@@ -206,14 +235,18 @@ const AccountSettings = ({ _user }) => {
                       type="button"
                       className="text-white"
                       onClick={() =>
-                        setImageSrc("https://placehold.co/100x100")
+                        setImageSrc()
                       }
                     >
                       Cancel
                     </button>
-                    <button type="button" className="text-primary pl-2">
-                      Save
-                    </button>
+                    {loading ? (
+                      <CircularProgress size={24}/>
+                    ) : (
+                      <button type="button" className="text-primary pl-2" onClick={handleSave}>
+                        Save
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>

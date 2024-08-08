@@ -103,7 +103,7 @@ const Users = () => {
                   <TableRow key={row._id}>
                     <TableCell className="!text-white" sx={{ minWidth: 100 }}>
                       <img
-                        src={row.imageUrl}
+                        src={row.avatarUrl}
                         alt={row.firstName}
                         style={{ width: 54, height: 64 }}
                       />
@@ -154,7 +154,7 @@ const Users = () => {
             count={Math.ceil(data.length / rowsPerPage)}
             onChange={handlePageChange}
           />
-          <AddUserModal open={showAddModal} onClose={() => setShowAddModal(false)} role={role} onSuccess={fetchData} />
+          {showAddModal && <AddUserModal open={showAddModal} onClose={() => setShowAddModal(false)} role={role} onSuccess={fetchData} />}
           <DeleteUserModal
             open={showDeleteModal}
             onClose={() => setShowDeleteModal(false)}

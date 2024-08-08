@@ -4,13 +4,15 @@ import Link from "next/link";
 import profileStyle from './sidebar.module.css'
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
+import { useApp } from "../Context/AppContext";
 import { Menu } from "@mui/icons-material";
 
 const Sidebar = ({ showSidebar, setShowSidebar }) => {
-  const user = useSession().data?.user || {}
+  const userSession = useSession().data?.user || {}
   const pathname = usePathname();
   const route = useRouter()
   const searchParams = useSearchParams()
+  const { user } = useApp();
 
   const linkClasses = (path, pathValidator) =>
     `flex pl-2 py-1 ${(pathValidator ? pathValidator(pathname, searchParams) : pathname.startsWith(path)) ? "bg-primary rounded-lg min-w-[200px] w-fit items-center text-black" : "text-white"
@@ -71,8 +73,8 @@ const Sidebar = ({ showSidebar, setShowSidebar }) => {
     {
       url: '/users',
       query: '?role=player',
-      icon: `/assets/${user.role === 'staff' ? 'players-database-icon.svg' : user.role === 'admin' ? 'add-player-icon.svg' : ''}`,
-      label: user.role === 'staff' ? 'Players Database' : user.role === 'admin' ? 'Manage Player Database' : 'Invalid role',
+      icon: `/assets/${userSession.role === 'staff' ? 'players-database-icon.svg' : userSession.role === 'admin' ? 'add-player-icon.svg' : ''}`,
+      label: userSession.role === 'staff' ? 'Players Database' : userSession.role === 'admin' ? 'Manage Player Database' : 'Invalid role',
       roles: ['staff', 'admin'],
       pathValidator: function (pathname, searchParams) {
         const query = Object.fromEntries(searchParams.entries())
@@ -146,15 +148,15 @@ const Sidebar = ({ showSidebar, setShowSidebar }) => {
           <div className="flex items-center mb-6">
             <img src="/assets/spinlab-log.png" alt="Logo" className="w-48	" />
           </div>
-          <div className={`${(user.role === 'staff' || user.role === 'admin') && profileStyle.profile} flex items-center space-x-2 mb-8 rounded-lg ${pathname === '/profile' && `bg-primary p-2`}`} onClick={(user.role === 'staff' || user.role === 'admin') && (() => route.replace('/profile')) || undefined}>
+          <div className={`${(userSession.role === 'staff' || userSession.role === 'admin') && profileStyle.profile} flex items-center space-x-2 mb-8 rounded-lg ${pathname === '/profile' && `bg-primary p-2`}`} onClick={(userSession.role === 'staff' || userSession.role === 'admin') && (() => route.replace('/profile')) || undefined}>
             <img
-              src="https://placehold.co/40x40"
+              src={user?.avatarUrl ? user.avatarUrl : "https://placehold.co/100x100"}
               alt="User Avatar"
               className="w-10 h-10 rounded-full"
             />
             <div>
-              <p className={`font-semibold ${pathname === '/profile' && 'text-black'}`}>{user.name} ({user.role})</p>
-              <p className={`text-sm ${pathname === '/profile' ? 'text-black' : 'text-zinc-400'}`}>{user.email}</p>
+              <p className={`font-semibold ${pathname === '/profile' && 'text-black'}`}>{userSession.name} ({userSession.role})</p>
+              <p className={`text-sm ${pathname === '/profile' ? 'text-black' : 'text-zinc-400'}`}>{userSession.email}</p>
             </div>
           </div>
           <div className="mb-8">
@@ -165,7 +167,7 @@ const Sidebar = ({ showSidebar, setShowSidebar }) => {
             />
           </div>
           <div className="flex flex-col space-y-2">
-            {links.filter(link => link.roles.includes(user.role)).map((link, index) => (
+            {links.filter(link => link.roles.includes(userSession.role)).map((link, index) => (
               <Link key={index} href={`${link.url}${link.query || ''}`} className={linkClasses(link.url, link.pathValidator?.bind(link))}>
                 <img
                   src={link.icon}

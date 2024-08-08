@@ -9,6 +9,7 @@ import {
   CardMedia,
   CardContent,
   Typography,
+  CircularProgress
 } from "@mui/material";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import AddVideoModal from "../AddVideoModal/AddVideoModal";
@@ -27,10 +28,11 @@ const DrillLibrary = () => {
   const [allVideos, setAllVideos] = useState([]);
   const [categories, setCategories] = useState([]);
   const [selectedVideoId, setSelectedVideoId] = useState(null);
-  const [selectedVideoData, setSelectedVideoData] = useState(null); // Add this state
-
+  const [selectedVideoData, setSelectedVideoData] = useState(null);
+  const [loading, setLoading] = useState(true);  
 
   const fetchCategoriesAndVideos = async () => {
+    setLoading(true);  
     try {
       const categoryResponse = await axios.get("/api/categories");
       const categoryData = categoryResponse.data;
@@ -49,6 +51,8 @@ const DrillLibrary = () => {
       setVideos(videoResponse.data);
     } catch (error) {
       console.error("Error fetching categories and videos", error);
+    } finally {
+      setLoading(false);  
     }
   };
 
@@ -89,8 +93,7 @@ const DrillLibrary = () => {
     const searchLower = searchQuery.toLowerCase();
     const title = video.title ? video.title.toLowerCase() : "";
     const description = video.description
-      ? video.description.toLowerCase()
-      : "";
+      ? video.description.toLowerCase() : "";
 
     return title.includes(searchLower) || description.includes(searchLower);
   });
@@ -181,85 +184,91 @@ const DrillLibrary = () => {
               </div>
             </div>
           </div>
-          <Grid container spacing={2} sx={{ marginTop: 2, overflow: "auto" }}>
-            {filteredVideos.length > 0 ? (
-              filteredVideos.map((video, index) => (
-                <Grid item xs={12} sm={6} md={4} lg={4} key={index}>
-                  <Card
-                    sx={{
-                      borderRadius: "10px",
-                      backgroundColor: "transparent",
-                      boxShadow: "none",
-                    }}
-                    className="relative"
-                  >
-                    <CardMedia
-                      component="iframe"
-                      height="238"
-                      src={video.videoLink}
-                      title={video.title}
-                      className="rounded-lg"
-                    />
-                    <CardContent className="pl-1 pt-2	">
-                      <Grid container gap={1}>
-                        <Grid item xs>
-                          <Typography variant="body2" className="text-white">
-                            {video.title}
-                          </Typography>
+          {loading ? (
+            <div className="flex justify-center items-center mt-12">
+              <CircularProgress />
+            </div>
+          ) : (
+            <Grid container spacing={2} sx={{ marginTop: 2, overflow: "auto" }}>
+              {filteredVideos.length > 0 ? (
+                filteredVideos.map((video, index) => (
+                  <Grid item xs={12} sm={6} md={4} lg={4} key={index}>
+                    <Card
+                      sx={{
+                        borderRadius: "10px",
+                        backgroundColor: "transparent",
+                        boxShadow: "none",
+                      }}
+                      className="relative"
+                    >
+                      <CardMedia
+                        component="iframe"
+                        height="238"
+                        src={video.videoLink}
+                        title={video.title}
+                        className="rounded-lg"
+                      />
+                      <CardContent className="pl-1 pt-2	">
+                        <Grid container gap={1}>
+                          <Grid item xs>
+                            <Typography variant="body2" className="text-white">
+                              {video.title}
+                            </Typography>
+                          </Grid>
+                          <Grid
+                            item
+                            container
+                            xs="auto"
+                            gap={2}
+                            sx={{
+                              display: user.role === "admin" ? "flex" : "none",
+                            }}
+                          >
+                            <Grid item>
+                              <button
+                                onClick={() => handleEditClick(video._id)}
+                                className="bg-white flex justify-center items-center w-8 h-8 text-green-600 rounded p-2 focus:outline-none"
+                              >
+                                <img src="/assets/edit-icon.svg" alt="" />
+                              </button>
+                            </Grid>
+                            <Grid item>
+                              <button
+                                onClick={() => handleDeleteClick(video._id)}
+                                className="button-danger flex justify-center items-center w-8 h-8 rounded p-2 focus:outline-none"
+                              >
+                                <img src="/assets/delete-icon-white.svg" alt="" />
+                              </button>
+                            </Grid>
+                          </Grid>
                         </Grid>
-                        <Grid
-                          item
-                          container
-                          xs="auto"
-                          gap={2}
-                          sx={{
-                            display: user.role === "admin" ? "flex" : "none",
-                          }}
+                        <Typography
+                          variant="body2"
+                          className="text-white watch-youtube-wrapper "
                         >
-                          <Grid item>
-                            <button
-                              onClick={() => handleEditClick(video._id)}
-                              className="bg-white flex justify-center items-center w-8 h-8 text-green-600 rounded p-2 focus:outline-none"
-                            >
-                              <img src="/assets/edit-icon.svg" alt="" />
-                            </button>
-                          </Grid>
-                          <Grid item>
-                            <button
-                              onClick={() => handleDeleteClick(video._id)}
-                              className="button-danger flex justify-center items-center w-8 h-8 rounded p-2 focus:outline-none"
-                            >
-                              <img src="/assets/delete-icon-white.svg" alt="" />
-                            </button>
-                          </Grid>
-                        </Grid>
-                      </Grid>
-                      <Typography
-                        variant="body2"
-                        className="text-white watch-youtube-wrapper "
-                      >
-                        Watch on
-                        <YouTubeIcon
-                          className="ml-2 mr-0"
-                          sx={{ verticalAlign: "middle", marginRight: "5px" }}
-                        />
-                        <span className="font-semibold">YouTube</span>
-                      </Typography>
-                    </CardContent>
-                  </Card>
-                </Grid>
-              ))
-            ) : (
-              <Typography
-                variant="h6"
-                component="div"
-                sx={{ margin: 2 }}
-                color={"white"}
-              >
-                No videos found.
-              </Typography>
-            )}
-          </Grid>
+                          Watch on
+                          <YouTubeIcon
+                            className="ml-2 mr-0"
+                            sx={{ verticalAlign: "middle", marginRight: "5px" }}
+                          />
+                          <span className="font-semibold">YouTube</span>
+                        </Typography>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                ))
+              ) : (
+                <Typography
+                  variant="h6"
+                  component="div"
+                  sx={{ margin: 2 }}
+                  color={"white"}
+                >
+                  No videos found.
+                </Typography>
+              )}
+            </Grid>
+          )}
         </div>
       </div>
       <AddVideoModal
