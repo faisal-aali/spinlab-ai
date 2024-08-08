@@ -6,8 +6,22 @@ import PickYourMembership from '../../../Common/PickYourMembership/PickYourMembe
 import PaymentForm from "@/components/Common/PaymentForm/PaymentForm";
 import axios from 'axios';
 import { useSession } from "next-auth/react";
-import { CircularProgress } from "@mui/material";
+import { CircularProgress, Modal, Box } from "@mui/material";
 import { useApp } from "@/components/Context/AppContext";
+import ReportProblemIcon from '@mui/icons-material/ReportProblem';
+
+
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  boxShadow: 24,
+  p: 4,
+  borderRadius: "8px",
+  maxHeight: "90vh",
+  overflow: "auto",
+};
 
 const Subscriptions = () => {
   const userSession = useSession().data?.user || {}
@@ -15,7 +29,8 @@ const Subscriptions = () => {
   const [plan, setPlan] = useState(null);
   const [_package, setPackage] = useState(null);
   const [user, setUser] = useState(null);
-  const [canceling, setCanceling] = useState(false)
+  const [canceling, setCanceling] = useState(false);
+  const [openCancelModal, setOpenCancelModal] = useState(false);
   const { showSnackbar } = useApp();
 
   useEffect(() => {
@@ -39,18 +54,31 @@ const Subscriptions = () => {
 
   const handleCancelSubscription = async () => {
     try {
-      setCanceling(true)
+      setCanceling(true);
       const { success } = await axios.post('/api/stripe/subscription/cancel', { userId: user._id }).then(res => res.data);
-      if (!success) showSnackbar(`Unexpected error occured`, 'error')
-      else showSnackbar(`Your subscription has been cancelled`, 'success')
+      if (!success) showSnackbar(`Unexpected error occurred`, 'error');
+      else showSnackbar(`Your subscription has been cancelled`, 'success');
       setUser(null);
-      fetchData()
+      fetchData();
       setStep(0);
     } catch (error) {
       console.error('Error canceling subscription:', error);
       showSnackbar(`Error canceling subscription: ${error.response?.data?.message || error.message}`, 'error')
-      setCanceling(false)
+      setCanceling(false);
     }
+  };
+
+  const openConfirmationModal = () => {
+    setOpenCancelModal(true);
+  };
+
+  const closeConfirmationModal = () => {
+    setOpenCancelModal(false);
+  };
+
+  const confirmCancelSubscription = () => {
+    closeConfirmationModal();
+    handleCancelSubscription();
   };
 
   return (
@@ -89,7 +117,7 @@ const Subscriptions = () => {
                   <button
                     variant="contained"
                     className="bg-transparent border border-red-500 w-64 font-bold px-12 py-1 rounded mt-4"
-                    onClick={handleCancelSubscription}
+                    onClick={openConfirmationModal}
                   >
                     Cancel Subscription
                   </button>
@@ -139,8 +167,8 @@ const Subscriptions = () => {
                   variant="contained"
                   className="bg-white text-black font-bold px-12 py-1 rounded mt-4"
                   onClick={() => {
-                    fetchData()
-                    setStep(1)
+                    fetchData();
+                    setStep(1);
                   }}
                 >
                   OK
@@ -149,6 +177,38 @@ const Subscriptions = () => {
             </div>
           )}
         </div>}
+      <Modal open={openCancelModal} onClose={closeConfirmationModal} aria-labelledby="delete-modal-title">
+        <Box sx={style} className="w-full max-w-lg blueBackground">
+          <div className="flex flex-col justify-center items-center gap-5 py-7">
+            <div className="text-error ">
+              <ReportProblemIcon sx={{ fontSize: '45px' }} />
+            </div>
+            <div>
+              <p className="text-lg">
+                Are you sure you want to cancel the subscription ?
+              </p>
+            </div>
+            <div className="flex flex-row gap-4">
+              <div className="flex justify-center">
+                <button
+                  onClick={closeConfirmationModal}
+                  className="bg-white dark-blue-color rounded w-28 h-9 flex items-center justify-center text-lg font-bold"
+                >
+                  CANCEL
+                </button>
+              </div>
+              <div className="flex justify-center">
+                <button
+                  onClick={confirmCancelSubscription}
+                  className="bg-primary dark-blue-color rounded w-28 h-9 flex items-center justify-center text-lg font-bold hover-button-shadow"
+                >
+                  CONFIRM
+                </button>
+              </div>
+            </div>
+          </div>
+        </Box>
+      </Modal>
     </div>
   );
 };
