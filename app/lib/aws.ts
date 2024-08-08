@@ -11,7 +11,9 @@ AWS.config.update({
 
 const s3 = new AWS.S3();
 
-const uploadFileToS3 = (file: Buffer | File | Uint8Array | Blob | string) => {
+
+
+const uploadFileToS3 = (file: Buffer | Uint8Array | Blob | string, name: string | undefined) => {
     return new Promise(async (resolve, reject) => {
         let fileBody;
 
@@ -22,7 +24,7 @@ const uploadFileToS3 = (file: Buffer | File | Uint8Array | Blob | string) => {
             fileBody = file;
         }
 
-        const fileName = `${crypto.randomUUID()}${(file instanceof File && `.${file.name.split('.').pop()}`) || ''}`
+        const fileName = `${crypto.randomUUID()}${(name && `.${name.split('.').pop()}`) || ''}`
 
         s3.upload({
             Bucket: bucket,

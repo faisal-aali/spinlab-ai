@@ -1,6 +1,5 @@
 import axios from 'axios'
 import { I3MotionAuth } from './interfaces/3motion';
-import fs from 'fs'
 import { IAssessmentDetails } from './interfaces/assessmentDetails';
 
 const BASE_URL = 'https://3m.3motionai.com/api/v1'

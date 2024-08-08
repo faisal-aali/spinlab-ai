@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
         if (!file) return NextResponse.json({ message: 'File is required' }, { status: 400 });
 
         console.log('file', file)
-        const url = await uploadFileToS3(file)
+        const url = await uploadFileToS3(file, (file as File).name)
 
         return NextResponse.json({ url }, { status: 200 })
     } catch (err: unknown) {

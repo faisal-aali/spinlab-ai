@@ -32,25 +32,12 @@ const style = {
 
 const UploadModal = ({ open, onClose, onSuccess, type }) => {
   const router = useRouter()
-  const userSession = useSession().data?.user || {}
-  const { showSnackbar } = useApp();
+  const { showSnackbar, user, fetchUser } = useApp();
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [uploadFailed, setUploadFailed] = useState(false);
   const [recordVideo, setRecordVideo] = useState(false);
-  const [user, setUser] = useState()
-
-  useEffect(() => {
-    setUser(null)
-    fetchData()
-  }, [open])
-
-  const fetchData = () => {
-    axios.get('/api/users', { params: { id: userSession._id } }).then(res => {
-      setUser(res.data[0])
-    }).catch(console.error)
-  }
 
   useEffect(() => {
     const handleEsc = (event) => {
@@ -137,6 +124,8 @@ const UploadModal = ({ open, onClose, onSuccess, type }) => {
       showSnackbar(err.response.data?.message || err.message || 'Error uploading file. Please try again', 'error')
       setIsUploading(false);
       setUploadFailed(true)
+    }).finally(() => {
+      fetchUser()
     })
     // interval.current = setInterval(() => {
     //   setUploadProgress((prev) => {
@@ -254,7 +243,7 @@ const UploadModal = ({ open, onClose, onSuccess, type }) => {
                           onSuccess && onSuccess()
                         }}
                       >
-                        Submit
+                        OK
                       </button>
                     </div>
                   </div>}

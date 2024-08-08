@@ -34,6 +34,7 @@ export async function POST(req: NextRequest) {
     // return NextResponse.json({ message: `OK` }, { status: 200 });
     try {
         const session = await getServerSession(authOption);
+        console.log(session)
         if (!session || !session.user || session.user.role !== 'player') return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
 
         const formData = await req.formData();
