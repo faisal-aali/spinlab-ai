@@ -7,6 +7,7 @@ import { sendEmail } from "@/app/lib/sendEmail";
 import { validateError } from "@/app/lib/functions";
 import { authOption } from "../auth/[...nextauth]/route";
 import { getServerSession } from "next-auth";
+import mongoose from "@/app/lib/mongodb";
 
 export async function GET(req: NextRequest) {
     try {
@@ -34,6 +35,7 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
     try {
+
         const data = await req.json()
 
         const schema = Yup.object({
@@ -56,6 +58,10 @@ export async function POST(req: NextRequest) {
         const dups = await User.find({ email: data.email })
         if (dups.length > 0) return NextResponse.json({ message: 'The email has already been registered.' }, { status: 400 })
 
+        let trainerId = null
+        const session = await getServerSession(authOption);
+        if (session && session.user && ['trainer', 'staff'].includes(session.user.role)) trainerId = new mongoose.Schema.Types.ObjectId(session.user._id)
+
         const user = await User.create({
             email: data.email,
             password: bcrypt.hashSync((data.password || randomPassword), process.env.BCRYPT_SALT as string),
@@ -71,10 +77,11 @@ export async function POST(req: NextRequest) {
                 weight: data.weight || null,
                 handedness: data.handedness || null,
                 anonymous: false,
+                trainerId: trainerId
             }
         })
 
-        if (randomPassword) {
+        if (randomPassword && !trainerId) {
             sendEmail({
                 to: data.email,
                 subject: 'Welcome to SpinLab',

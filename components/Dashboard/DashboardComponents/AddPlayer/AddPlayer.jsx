@@ -19,27 +19,10 @@ import AddNewPlayerModal from "../AddNewPlayerModal/AddNewPlayerModal";
 import { usePathname, useRouter } from "next/navigation";
 import axios from "axios";
 import { convertCmToFeetAndInches } from "@/util/utils";
+import { useSession } from "next-auth/react";
+import UploadModal from "../UploadVideoModal/UploadModal";
 
-const players = [
-  {
-    id: 1,
-    firstName: 'James',
-    lastName: 'Anderson',
-    height: '5ft 11in',
-    weight: '200 lbs',
-    imageUrl: '/assets/player.png',
-  },
-  {
-    id: 2,
-    firstName: 'Drake',
-    lastName: 'Johnson',
-    height: '170 cm',
-    weight: '200 lbs',
-    imageUrl: '/assets/player.png',
-  },
-];
-
-const PlayerCard = ({ player, playersMetrics }) => {
+const PlayerCard = ({ player, playersMetrics, setShowUploadModal, setSelectedPlayerId }) => {
   const router = useRouter()
 
   return (
@@ -56,20 +39,23 @@ const PlayerCard = ({ player, playersMetrics }) => {
               </Grid>
               <Grid item container gap={2}>
                 <Grid item className="blueBackground w-36	text-center py-2 px-8 primary-border-green rounded">
-                  <Typography className="text-white text-lg	">{convertCmToFeetAndInches(player.height).string}</Typography>
+                  <Typography className="text-white text-lg	">{convertCmToFeetAndInches(player.roleData.height).string}</Typography>
                 </Grid>
                 <Grid item className="blueBackground w-36	text-center py-2 px-8 primary-border-green rounded">
-                  <Typography className="text-white text-lg	">{player.weight || 'N/A'}</Typography>
+                  <Typography className="text-white text-lg	">{player.roleData.weight} lbs</Typography>
                 </Grid>
               </Grid>
               <Grid item container gap={2} justifyContent={'space-between'}>
                 <Grid item display={playersMetrics ? 'none' : 'block'}>
-                  <button className="bg-white dark-blue-color font-bold rounded w-32 h-9  flex items-center justify-center text-base">
+                  <button onClick={() => {
+                    setSelectedPlayerId(player._id)
+                    setShowUploadModal(true)
+                  }} className="bg-white dark-blue-color font-bold rounded w-32 h-9  flex items-center justify-center text-base">
                     UPLOAD
                   </button>
                 </Grid>
                 <Grid item xs>
-                  <button onClick={() => router.replace('/metrics')} style={{ width: playersMetrics && '100%' }} className="bg-primary text-black rounded w-40 h-9 flex items-center justify-center text-base hover-button-shadow">
+                  <button onClick={() => router.push(`/metrics?playerId=${player._id}`)} style={{ width: playersMetrics && '100%' }} className="bg-primary text-black rounded w-40 h-9 flex items-center justify-center text-base hover-button-shadow">
                     VIEW METRICS
                   </button>
                 </Grid>
@@ -83,10 +69,13 @@ const PlayerCard = ({ player, playersMetrics }) => {
 }
 
 const AddPlayer = () => {
+  const userSession = useSession().data?.user || {}
   const [showModal, setShowModal] = useState(false)
   const [searchQuery, setSearchQuery] = useState("");
   const pathname = usePathname()
   const [players, setPlayers] = useState()
+  const [showUploadModal, setShowUploadModal] = useState(false)
+  const [selectedPlayerId, setSelectedPlayerId] = useState('')
 
   const playersMetrics = (pathname == '/players-metrics')
 
@@ -95,7 +84,7 @@ const AddPlayer = () => {
   }, [])
 
   const fetchPlayers = () => {
-    axios.get('/api/users', { params: { role: 'player' } }).then(res => {
+    axios.get('/api/users', { params: { role: 'player', trainerId: userSession._id } }).then(res => {
       setPlayers(res.data)
     }).catch(console.error)
   }
@@ -130,7 +119,7 @@ const AddPlayer = () => {
           <Grid container gap={2}>
             {filteredPlayers.map(player => (
               <Grid item key={player.id}>
-                <PlayerCard player={player} playersMetrics={playersMetrics} />
+                <PlayerCard setSelectedPlayerId={setSelectedPlayerId} setShowUploadModal={setShowUploadModal} player={player} playersMetrics={playersMetrics} />
               </Grid>
             ))}
             <Grid item onClick={() => setShowModal(true)} className="border primary-border rounded" alignItems={'center'} justifyContent={'center'} display={playersMetrics ? 'none' : 'flex'} sx={{ ':hover': { bgcolor: green[900], cursor: 'pointer' } }} minHeight={175} width={485}>
@@ -141,6 +130,7 @@ const AddPlayer = () => {
           </Grid>}
       </div>
       <AddNewPlayerModal onClose={() => setShowModal(false)} open={showModal} onSuccess={fetchPlayers} />
+      <UploadModal playerId={selectedPlayerId} open={showUploadModal} onClose={() => setShowUploadModal(false)} onSuccess={() => setShowUploadModal(false)} type={'upload'} />
     </div>
   );
 };

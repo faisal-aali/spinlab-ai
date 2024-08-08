@@ -64,7 +64,7 @@ const History = (props) => {
   );
 
   const fetchVideos = () => {
-    axios.get('/api/videos', { params: { userId: user._id } }).then(res => {
+    axios.get('/api/videos', { params: { userId: props.playerId || user._id } }).then(res => {
       setData(res.data)
     }).catch(console.error)
   }
@@ -76,7 +76,7 @@ const History = (props) => {
           <div className="flex gap-5 items-center">
             <div className="ml-4">
               <h2 className="font-normal">
-                Here’s your
+                Here's your
                 <span className="ml-2 text-primary font-semibold">History</span>
               </h2>
               <p className="text-white text-sm">
@@ -101,7 +101,7 @@ const History = (props) => {
                   </TableHead>
                   <TableBody className="leaderboard-table-body">
                     {paginatedData.map((row) => {
-                      const qbRating = row.assessmentDetails?.stats?.performance?.score1
+                      const qbRating = row.assessmentDetails?.stats?.performance?.score3[0]
                       const pdfUrl = row.assessmentDetails?.reportPdfUrl
                       const overlayVideoUrl = row.assessmentDetails?.overlayVideoUrl
 
@@ -134,7 +134,7 @@ const History = (props) => {
                           </TableCell>
                           <TableCell className="text-white">
                             <div className="grid grid-cols-2 items-center gap-4">
-                              <button className={`bg-white text-black px-5 py-3 rounded-lg ${!pdfUrl && 'hidden'}`}>
+                              <button onClick={() => window.open(pdfUrl)} className={`bg-white text-black px-5 py-3 rounded-lg ${!pdfUrl && 'hidden'}`}>
                                 DOWNLOAD PDF
                               </button>
                               <button onClick={() => setVideoSrc(overlayVideoUrl)} className={`bg-white text-black px-5 py-3 rounded-lg ${!overlayVideoUrl && 'hidden'}`}>

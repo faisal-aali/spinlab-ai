@@ -17,5 +17,5 @@ export interface IAssessmentDetails {
     reportPdfUrl: string,
     overlayVideoUrl: string,
     imgUrl: string | null,
-    stats: object | undefined
+    stats: any | undefined
 }

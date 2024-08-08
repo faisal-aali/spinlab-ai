@@ -66,7 +66,7 @@ const PlayerProfile = ({ setShowEditModal, setShowDeleteModal, setShowGiftModal,
                         Joining Date: <span className="text-primary">{new Date(userData.creationDate).toLocaleDateString()}</span>
                     </p>
                     <p className="text-base mb-2 pb-4 pt-2 border-b border-solid primary-border-color font-bold	">
-                        Remaining Credits: <span className="text-primary">{userData.credits}</span>
+                        Remaining Credits: <span className="text-primary">{userData.credits.remaining}</span>
                     </p>
                     <p className="text-base mb-2 pb-4 pt-2 font-bold	">
                         Subscription Plan: <span className="text-primary">{userData.plan || "N/A"}</span>
@@ -79,7 +79,7 @@ const PlayerProfile = ({ setShowEditModal, setShowDeleteModal, setShowGiftModal,
                 </div>
             </div>
             <div>
-                <Metrics omitPlayerCard={true} />
+                <Metrics omitPlayerCard={true} playerId={userData._id} />
             </div>
         </div>
     );
@@ -125,7 +125,7 @@ const TrainerProfile = ({ setShowEditModal, setShowDeleteModal, setShowGiftModal
                         Expiry Date: <span className="text-primary">{userData.expiryDate || 'N/A'}</span>
                     </p>
                     <p className="text-base mb-2 pb-4 pt-2 border-b border-solid primary-border-color font-bold	">
-                        Remaining Credits: <span className="text-primary">{userData.credits}</span>
+                        Remaining Credits: <span className="text-primary">{userData.credits.remaining}</span>
                     </p>
                     <p className="text-base mb-2 pb-4 pt-2 font-bold	">
                         Subscription Plan: <span className="text-primary">{userData.plan || 'N/A'}</span>
@@ -193,7 +193,7 @@ const StaffProfile = ({ setShowEditModal, setShowDeleteModal, userData }) => {
                         Expiry Date: <span className="text-primary">{userData.expiryDate || 'N/A'}</span>
                     </p>
                     <p className="text-base mb-2 pb-4 pt-2 border-b border-solid primary-border-color font-bold	">
-                        Remaining Credits: <span className="text-primary">{userData.credits}</span>
+                        Remaining Credits: <span className="text-primary">{userData.credits.remaining}</span>
                     </p>
                     <p className="text-base mb-2 pb-4 pt-2 font-bold	">
                         Subscription Plan: <span className="text-primary">{userData.plan || 'N/A'}</span>

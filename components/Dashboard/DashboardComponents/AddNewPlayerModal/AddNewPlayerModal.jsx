@@ -26,7 +26,7 @@ const style = {
 };
 
 const validationSchema = Yup.object({
-  email: Yup.string().email().required("Required"),
+  // email: Yup.string().email().required("Required"),
   firstName: Yup.string().required("Required"),
   lastName: Yup.string().required("Required"),
   heightFt: Yup.number().required("Required"),
@@ -64,7 +64,7 @@ const AddNewPlayerModal = ({ open, onClose, onSuccess }) => {
   const handleSubmit = async (values) => {
     return new Promise((resolve, reject) => {
       const data = {
-        email: values.email,
+        email: `trainer-${crypto.randomUUID()}@example.com`,
         name: `${values.firstName} ${values.lastName}`,
         height: convertFeetAndInchesToCm(values.heightFt, values.heightIn),
         weight: values.weight,
@@ -96,7 +96,6 @@ const AddNewPlayerModal = ({ open, onClose, onSuccess }) => {
         </h2>
         <Formik
           initialValues={{
-            email: "",
             firstName: "",
             lastName: "",
             heightFt: "",
@@ -200,7 +199,7 @@ const AddNewPlayerModal = ({ open, onClose, onSuccess }) => {
                     <MenuItem value={'right'}>Right</MenuItem>
                   </TextField>
                 </div>
-                <div className={`grid gap-2`}>
+                {/* <div className={`grid gap-2`}>
                   <div className="opacity-45">
                     <label htmlFor="">Email</label>
                   </div>
@@ -214,7 +213,7 @@ const AddNewPlayerModal = ({ open, onClose, onSuccess }) => {
                     name="email"
                     required
                   />
-                </div>
+                </div> */}
               </div>
               <div className="grid grid-cols-1 gap-4">
                 <div className="p-8 flex items-center justify-center flex-col rounded-lg w-full gap-4 border-dashed border-2 border-slate-800">

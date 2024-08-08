@@ -74,6 +74,9 @@ const updateAssessments = async () => {
         if (video.assessmentDetails.statusCode) return
         console.log('updating assessment details for', video.taskId)
         const assessmentDetails = await _3Motion.getAssessmentDetails({ taskId: video.taskId, taskType: video.taskType });
+
+        if (!assessmentDetails) return console.error('Invalid response for for', video.taskId)
+
         if (assessmentDetails.dataJsonUrl) {
             assessmentDetails.stats = await axios.get(assessmentDetails.dataJsonUrl).then(res => res.data);
         }

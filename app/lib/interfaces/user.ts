@@ -1,9 +1,12 @@
+import mongoose from "../mongodb";
+
 interface IRoleData {
     age: number | null;
     height: number | null;
     weight: number | null;
     handedness: 'left' | 'right' | null; // Example of a string union type
     anonymous: boolean | null;
+    trainerId: mongoose.Schema.Types.ObjectId | null;
 }
 
 export interface ICredit {
@@ -12,7 +15,7 @@ export interface ICredit {
     remaining: number
 }
 export interface IUser {
-    _id: string,
+    _id: mongoose.Schema.Types.ObjectId,
     name: string,
     email: string,
     password: string,

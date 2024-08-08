@@ -5,6 +5,7 @@ import { authOption } from "../auth/[...nextauth]/route";
 import { getServerSession } from "next-auth";
 import { User, Video } from "@/app/lib/models";
 import _3Motion from "@/app/lib/3motion";
+import mongoose from "@/app/lib/mongodb";
 
 export async function GET(req: NextRequest) {
     try {
@@ -34,8 +35,7 @@ export async function POST(req: NextRequest) {
     // return NextResponse.json({ message: `OK` }, { status: 200 });
     try {
         const session = await getServerSession(authOption);
-        console.log(session)
-        if (!session || !session.user || session.user.role !== 'player') return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+        if (!session || !session.user) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
 
 
         const formData = await req.formData();
@@ -43,10 +43,18 @@ export async function POST(req: NextRequest) {
         const uploadfile = formData.get('file') as File
         if (!uploadfile) return NextResponse.json({ message: 'File is required' }, { status: 400 });
 
-        const user = await User.findOne({ _id: session.user._id })
+        let userId = session.user._id
+        if (['trainer', 'staff'].includes(session.user.role)) {
+            userId = formData.get('playerId') as string
+            if (!userId) return NextResponse.json({ message: 'playerId is required' }, { status: 400 });
+        }
+
+        const user = await User.findOne({ _id: userId })
         if (!user) return NextResponse.json({ message: 'User not found' }, { status: 404 });
-        const credits = await calculateCredits({ user })
+
+        const credits = await calculateCredits(['trainer', 'staff'].includes(session.user.role) ? session.user._id : user._id.toString())
         if (credits.remaining < 1) return NextResponse.json({ message: 'Out of credits' }, { status: 403 });
+
         if (!user.roleData.weight || !user.roleData.height) return NextResponse.json({ message: 'Weight and height is required' }, { status: 400 });
 
         const height = Math.round(user.roleData.height)
@@ -61,7 +69,7 @@ export async function POST(req: NextRequest) {
         })
 
         const newVideo = await Video.create({
-            userId: session.user._id,
+            userId: userId,
             taskId: task.assessmentId,
             assessmentMappingId: task.assessmentMappingId,
             taskType: taskType,

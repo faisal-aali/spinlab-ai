@@ -10,20 +10,24 @@ import { getServerSession } from "next-auth";
 import mongoose from "@/app/lib/mongodb";
 
 export async function GET(req: NextRequest) {
+    await Video.deleteMany({ taskType: 'hit' })
     const { searchParams } = new URL(req.url);
     const id = searchParams.get('id')
     const role = searchParams.get('role')
+    const trainerId = searchParams.get('trainerId')
+    const includeMetrics = Number(searchParams.get('includeMetrics'));
 
     try {
         const session = await getServerSession(authOption);
         if (!session || !session.user) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
 
-        const query: { isDeleted: boolean, role?: string, _id?: mongoose.Types.ObjectId } = {
+        const query: { isDeleted: boolean, role?: string, _id?: mongoose.Types.ObjectId, 'roleData.trainerId'?: mongoose.Types.ObjectId } = {
             isDeleted: false
         };
 
         if (id) query._id = new mongoose.Types.ObjectId(id);
         if (role) query.role = role;
+        if (trainerId) query['roleData.trainerId'] = new mongoose.Types.ObjectId(trainerId);
 
         // const users = await User.find(query).populate('subscription')
 
@@ -92,10 +96,26 @@ export async function GET(req: NextRequest) {
         ]);
 
         await Promise.all(users.map((user) => (
-            calculateCredits({ user }).then(credits => {
+            calculateCredits(user._id).then(credits => {
                 user.credits = credits
             })
         )))
+
+        if (includeMetrics) {
+            await Promise.all(users.map((user) => {
+                return new Promise(async (resolve, reject) => {
+                    try {
+                        const videos = await Video.find({ userId: user._id, 'assessmentDetails.statusCode': 1 }, { assessmentDetails: { stats: { ARR: 0, ANG: 0, VEL: 0 } } })
+                        if (videos.length === 0) user.metrics = {}
+                        else user.metrics = videos.reduce((max, video) => video.assessmentDetails?.stats?.performance?.score3[0] > max.assessmentDetails?.stats?.performance?.score3[0] ? video : max).assessmentDetails
+                        console.log(user.metrics)
+                        resolve(true)
+                    } catch (err) {
+                        reject(err)
+                    }
+                })
+            }))
+        }
 
         return NextResponse.json(users)
     } catch (err: unknown) {

@@ -1,6 +1,6 @@
 // src/components/History/History.js
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Table,
     TableBody,
@@ -12,17 +12,12 @@ import {
     Box,
     Typography,
     LinearProgress,
+    CircularProgress,
 } from "@mui/material";
 import Pagination from '../../../Common/Pagination/Pagination'
-
-const data = Array.from({ length: 8 }).map((_, index) => ({
-    id: index + 1,
-    imageUrl: "/assets/player.png",
-    firstName: index == 1 ? 'Drake' : 'James',
-    lastName: index == 1 ? 'Johnson' : 'Anderson',
-    date: "04/29/2024",
-    overallQBRating: 86,
-}));
+import axios from 'axios'
+import { useSession } from "next-auth/react";
+import VideoPlayer from "@/components/Common/VideoPlayer/VideoPlayer";
 
 const CustomLinearProgress = ({ value, color }) => {
     return (
@@ -47,8 +42,19 @@ const CustomLinearProgress = ({ value, color }) => {
 };
 
 const PlayersHistory = (props) => {
+    const userSession = useSession().data?.user || {}
     const [page, setPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState('')
+    const [players, setPlayers] = useState()
+    const [videoSrc, setVideoSrc] = useState('')
+
+    useEffect(() => {
+        fetchData()
+    }, [])
+
+    const fetchData = () => {
+        axios.get('/api/users', { params: { trainerId: userSession._id, includeMetrics: 1 } }).then(res => setPlayers(res.data)).catch(console.error)
+    }
 
     const rowsPerPage = 5;
 
@@ -56,7 +62,7 @@ const PlayersHistory = (props) => {
         setPage(newPage);
     };
 
-    const paginatedData = data.filter((player) => `${player.firstName} ${player.lastName}`.toLowerCase().match(searchQuery.toLowerCase())).slice(
+    const paginatedData = players?.filter((player) => `${player.firstName} ${player.lastName}`.toLowerCase().match(searchQuery.toLowerCase())).slice(
         (page - 1) * rowsPerPage,
         page * rowsPerPage
     );
@@ -76,65 +82,67 @@ const PlayersHistory = (props) => {
                     />
                 </div>
             </div>
-            <div className="">
-                <TableContainer component={Paper} className="!bg-transparent">
-                    <Table>
-                        <TableHead className="leaderboard-table-head bg-primary-light uppercase">
-                            <TableRow>
-                                <TableCell className="!text-white"></TableCell>
-                                <TableCell className="!text-white">Name</TableCell>
-                                <TableCell className="!text-white">Date</TableCell>
-                                <TableCell className="!text-white">Overall QB Rating</TableCell>
-                                <TableCell className="!text-white">Reports</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody className="!leaderboard-table-body">
-                            {paginatedData.map((row) => (
-                                <TableRow key={row.id}>
-                                    <TableCell className="!text-white">
-                                        <img
-                                            src={row.imageUrl}
-                                            alt={row.firstName}
-                                            style={{ width: 50 }}
-                                        />
-                                    </TableCell>
-                                    <TableCell>
-                                        <Typography variant="body2" className="!text-white !text-lg" fontWeight={'bold'}>
-                                            {row.firstName} {row.lastName}
-                                        </Typography>
-                                    </TableCell>
-                                    <TableCell>
-                                        <Typography variant="caption" className="!text-white !text-lg">
-                                            {row.date}
-                                        </Typography>
-                                    </TableCell>
-                                    <TableCell className="!text-white">
-                                        <CustomLinearProgress
-                                            value={row.overallQBRating}
-                                            color="#00FF00"
-                                        />
-                                    </TableCell>
-                                    <TableCell className="!text-white">
-                                        <div className="grid grid-cols-2 items-center gap-4">
-                                            <button className="bg-white text-black px-5 py-3 rounded-lg">
-                                                DOWNLOAD PDF
-                                            </button>
-                                            <button className="bg-white text-black px-5 py-3 rounded-lg">
-                                                VIEW HERE
-                                            </button>
-                                        </div>
-                                    </TableCell>
+            {!players ? <CircularProgress /> :
+                <div className="">
+                    <TableContainer component={Paper} className="!bg-transparent">
+                        <Table>
+                            <TableHead className="leaderboard-table-head bg-primary-light uppercase">
+                                <TableRow>
+                                    <TableCell className="!text-white"></TableCell>
+                                    <TableCell className="!text-white">Name</TableCell>
+                                    <TableCell className="!text-white">Joining Date</TableCell>
+                                    <TableCell className="!text-white">Overall QB Rating</TableCell>
+                                    <TableCell className="!text-white">Reports</TableCell>
                                 </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-                <Pagination
-                    page={page}
-                    count={Math.ceil(data.length / rowsPerPage)}
-                    onChange={handlePageChange}
-                />
-            </div>
+                            </TableHead>
+                            <TableBody className="!leaderboard-table-body">
+                                {paginatedData.map((player) => (
+                                    <TableRow key={player._id}>
+                                        <TableCell className="!text-white">
+                                            <img
+                                                src={player.avatarUrl}
+                                                alt={player.name}
+                                                style={{ width: 50 }}
+                                            />
+                                        </TableCell>
+                                        <TableCell>
+                                            <Typography variant="body2" className="!text-white !text-lg" fontWeight={'bold'}>
+                                                {player.name}
+                                            </Typography>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Typography variant="caption" className="!text-white !text-lg">
+                                                {new Date(player.creationDate).toLocaleDateString()}
+                                            </Typography>
+                                        </TableCell>
+                                        <TableCell className="!text-white">
+                                            <CustomLinearProgress
+                                                value={player.metrics.stats?.performance.score3[0] || 0}
+                                                color="#00FF00"
+                                            />
+                                        </TableCell>
+                                        <TableCell className="!text-white">
+                                            <div className="grid grid-cols-2 items-center gap-4">
+                                                <button onClick={() => window.open(player.metrics.reportPdfUrl)} className={`bg-white text-black px-5 py-3 rounded-lg ${!player.metrics.reportPdfUrl && 'hidden'}`}>
+                                                    DOWNLOAD PDF
+                                                </button>
+                                                <button onClick={() => setVideoSrc(player.metrics.overlayVideoUrl)} className={`bg-white text-black px-5 py-3 rounded-lg ${!player.metrics.overlayVideoUrl && 'hidden'}`}>
+                                                    OVERLAY VIDEO
+                                                </button>
+                                            </div>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                    <Pagination
+                        page={page}
+                        count={Math.ceil(players.length / rowsPerPage)}
+                        onChange={handlePageChange}
+                    />
+                </div>}
+            <VideoPlayer open={videoSrc ? true : false} onClose={() => setVideoSrc('')} src={videoSrc} />
         </div >
     );
 };

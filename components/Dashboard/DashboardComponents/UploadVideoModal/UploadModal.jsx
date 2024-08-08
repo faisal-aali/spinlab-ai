@@ -30,7 +30,7 @@ const style = {
   overflow: 'auto'
 };
 
-const UploadModal = ({ open, onClose, onSuccess, type }) => {
+const UploadModal = ({ open, onClose, onSuccess, type, playerId }) => {
   const router = useRouter()
   const { showSnackbar, user, fetchUser } = useApp();
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -106,6 +106,7 @@ const UploadModal = ({ open, onClose, onSuccess, type }) => {
     console.log('thumbnail', thumbnail)
     const formData = new FormData()
     formData.append('file', file)
+    if (playerId) formData.append('playerId', playerId)
 
     console.log('calling api')
     axios.post('/api/videos', formData, {
