@@ -80,11 +80,11 @@ const RegisterForm = () => {
         ></div>
         <div
           className={`h-2 w-14 ${step === 5 ? "bg-primary" : "backgroundDisabledColor"
-            } rounded-sm`}
+            } rounded-sm mr-2`}
         ></div>
         <div
           className={`h-2 w-14 ${step === 6 ? "bg-primary" : "backgroundDisabledColor"
-            } rounded-sm`}
+            } rounded-sm mr-2`}
         ></div>
       </div>
       <div>

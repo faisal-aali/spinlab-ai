@@ -7,6 +7,7 @@ interface IRoleData {
     handedness: 'left' | 'right' | null; // Example of a string union type
     anonymous: boolean | null;
     trainerId: mongoose.Schema.Types.ObjectId | null;
+    linkedUserId?: mongoose.Schema.Types.ObjectId | null;
 }
 
 export interface ICredit {

@@ -85,13 +85,13 @@ const Subscriptions = () => {
             <div className="w-fit blueBackground text-center p-8 rounded-lg mx-auto">
               <div className="flex flex-col justify-center items-center h-full">
                 <h2 className="text-white text-3xl mt-2 mb-4 font-semibold capitalize">
-                  Active Subscription: {user.subscription.package.name}
+                  Active Subscription: {user.subscription.package?.name}
                 </h2>
                 <p className="text-white text-base mt-2">
                   Status: {user.subscription.status}
                 </p>
                 <p className="text-white text-base mt-2">
-                  Amount: ${(user.subscription.amount / 100).toFixed(2)} {user.subscription.package.plan}
+                  Amount: ${(user.subscription.amount / 100).toFixed(2)} {user.subscription.package?.plan}
                 </p>
                 <div className="flex flex-row gap-4">
                   <button

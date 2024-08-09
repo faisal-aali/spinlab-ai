@@ -77,6 +77,7 @@ export async function POST(req: NextRequest) {
 
         const newVideo = await Video.create({
             userId: userId,
+            uploadedBy: session.user._id,
             taskId: task.assessmentId,
             assessmentMappingId: task.assessmentMappingId,
             taskType: taskType,

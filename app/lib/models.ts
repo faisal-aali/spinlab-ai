@@ -48,6 +48,7 @@ const videoSchema = new mongoose.Schema({
     userId: { type: mongoose.Schema.Types.ObjectId, required: true },
     taskId: { type: String, required: true, unique: true },
     assessmentMappingId: { type: String, required: true, unique: true },
+    uploadedBy: { type: mongoose.Schema.Types.ObjectId, required: true },
     taskType: { type: String, required: true, },
     deliveryDate: { type: Date, required: true },
     creationDate: { type: Date, required: false, default: () => new Date().toISOString() },
