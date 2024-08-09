@@ -70,7 +70,7 @@ const EditVideoModal = ({ open, onClose, videoId, videoData, categories, onSucce
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
         >
-          {({ errors, touched, values, setFieldValue }) => (
+          {({isSubmitting, errors, touched, values, setFieldValue }) => (
             <Form>
               <div className="grid grid-cols-1 gap-4 mb-4">
                 <div className="grid gap-2">
@@ -122,7 +122,7 @@ const EditVideoModal = ({ open, onClose, videoId, videoData, categories, onSucce
                 </div>
               </div>
               <div className="flex justify-center mb-10 mt-6">
-                <button type="submit" className="bg-primary dark-blue-color rounded w-28 h-9 flex items-center justify-center text-lg font-bold hover-button-shadow">
+                <button type="submit" className="bg-primary dark-blue-color rounded w-28 h-9 flex items-center justify-center text-lg font-bold hover-button-shadow" disabled={isSubmitting}>
                   SUBMIT
                 </button>
               </div>
