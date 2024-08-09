@@ -125,6 +125,7 @@ const AccountSettings = () => {
       Object.keys(values).forEach(key => {
         data[key] = values[key] || (typeof values[key] === 'boolean' ? values[key] : null)
       })
+      console.log(data)
       axios.post(`/api/${(user.role === 'player' && 'players') || (user.role === 'trainer' && 'trainers') || (user.role === 'staff' && 'staff') || (user.role === 'admin' && 'admin')}/${user._id}`,).then(res => {
         showSnackbar('Saved changes!', 'success');
         resolve()

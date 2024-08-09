@@ -1,12 +1,12 @@
 import Layout from '../../components/Layout/Layout';
-import StaffCalendarPage from '../../components/Dashboard/DashboardComponents/StaffCalendar/StaffCalendar';
+import UpdateCalendarPage from '../../components/Dashboard/DashboardComponents/UpdateCalendar/UpdateCalendar';
 
-const StaffCalendar = () => {
+const UpdateCalendar = () => {
     return (
         <Layout>
-            <StaffCalendarPage />
+            <UpdateCalendarPage />
         </Layout>
     );
 };
 
-export default StaffCalendar;
+export default UpdateCalendar;

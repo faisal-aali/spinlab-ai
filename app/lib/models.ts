@@ -6,6 +6,7 @@ import { IVideo } from './interfaces/video';
 import { IPackage } from './interfaces/package';
 import { IHistory, ISubscription } from './interfaces/subscription';
 import { IPurchase } from './interfaces/purchase';
+import { ICalendar } from './interfaces/calendar';
 
 // const roleDataSchema = new mongoose.Schema({
 //     age: { type: Number, required: false, default: null },
@@ -93,6 +94,10 @@ const purchaseSchema = new mongoose.Schema({
     activateAfter: { type: Date, required: false, default: () => new Date().toISOString() },
 }, { minimize: false });
 
+const calendarSchema = new mongoose.Schema({
+    src: { type: String, required: true },
+});
+
 export const User: mongoose.Model<IUser> = mongoose.models.user || mongoose.model<IUser>('user', userSchema, 'users');
 
 export const Drill: mongoose.Model<IDrill> = mongoose.models.drill || mongoose.model<IDrill>('drill', drillSchema, 'drills');
@@ -106,3 +111,5 @@ export const Package: mongoose.Model<IPackage> = mongoose.models.package || mong
 export const Subscription: mongoose.Model<ISubscription> = mongoose.models.subscription || mongoose.model<ISubscription>('subscription', subscriptionSchema, 'subscriptions');
 
 export const Purchase: mongoose.Model<IPurchase> = mongoose.models.purchase || mongoose.model<IPurchase>('purchase', purchaseSchema, 'purchases');
+
+export const Calendar: mongoose.Model<ICalendar> = mongoose.models.calendar || mongoose.model<IPurchase>('calendar', calendarSchema, 'calendars');
