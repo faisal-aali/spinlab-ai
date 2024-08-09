@@ -107,9 +107,9 @@ const Sidebar = ({ showSidebar, setShowSidebar }) => {
       }
     },
     {
-      url: '/staff-calendar',
+      url: '/update-calendar',
       icon: '/assets/calender-icon.svg',
-      label: 'Staff Calendar',
+      label: 'Update Calendar',
       roles: ['admin']
     },
     {
@@ -155,8 +155,8 @@ const Sidebar = ({ showSidebar, setShowSidebar }) => {
               className="w-10 h-10 rounded-full object-cover"
             />
             <div>
-              <p className={`font-semibold ${pathname === '/profile' && 'text-black'}`}>{userSession.name} ({userSession.role})</p>
-              <p className={`text-sm ${pathname === '/profile' ? 'text-black' : 'text-zinc-400'}`}>{userSession.email}</p>
+              <p className={`font-semibold ${pathname === '/profile' && 'text-black'}`}>{user?.name} ({user?.role})</p>
+              <p className={`text-sm ${pathname === '/profile' ? 'text-black' : 'text-zinc-400'}`}>{user?.email}</p>
             </div>
           </div>
           <div className="mb-8">

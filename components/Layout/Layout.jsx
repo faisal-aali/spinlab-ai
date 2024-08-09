@@ -18,7 +18,8 @@ import {
   SnackbarContent,
   Tooltip,
   Typography,
-  Modal
+  Modal,
+  CircularProgress
 } from "@mui/material";
 import { Person } from "@mui/icons-material";
 import UploadModal from "../Dashboard/DashboardComponents/UploadVideoModal/UploadModal";
@@ -46,129 +47,212 @@ const style = {
   maxHeight: '90vh',
   overflow: 'auto'
 };
-const SwitchAccountModal = ({ open, onClose }) => {
+
+const RegisterAccount = ({ user, onClose }) => {
   const router = useRouter()
-  const { user } = useApp()
+  const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState()
-  const [showPassword, setShowPassword] = useState()
 
-  const RegisterAccount = () => {
-
-    const handleSubmit = (values) => {
-      axios.post('/api/trainers', {
+  const handleSubmit = (values, { setSubmitting }) => {
+    setSubmitting(true)
+    axios.post('/api/trainers', {
+      email: values.email,
+      password: values.password,
+      name: user.name,
+      city: user.city || undefined,
+      country: user.country || undefined,
+      avatarUrl: user.avatarUrl || undefined,
+    }).then(async () => {
+      const result = await signIn("credentials", {
         email: values.email,
         password: values.password,
-        name: user.name,
-        city: user.city,
-        country: user.country,
-        avatarUrl: user.avatarUrl,
-      }).then(() => {
-        // signOut({ redirect: false }).then(() => {
-        signIn('credentials', {
-          email: values.email,
-          password: values,
-          redirect: false
-        }).then(() => router.replace('/dashboard')).catch(err => setError('Error occured signing in'))
-        // }).catch(err => setError('Error occured signing out'))
-      }).catch(err => {
-        setError(`Error occured: ${err.response.data?.message || err.message}`)
+        redirect: false,
       })
-    }
 
-    const schema = Yup.object().shape({
-      email: Yup.string().email('Invalid email address').required('Email is required'),
-      password: Yup.string().required("Required"),
-      confirmPassword: Yup.string().oneOf([Yup.ref("password"), null], "Passwords must match").required("Required"),
-    });
+      if (!result.error) {
+        router.push('/dashboard')
+        onClose()
+      } else {
+        setError(result.status === 401 ? "Invalid email or password" : result.error);
+      }
+      setSubmitting(false)
+    }).catch(err => {
+      setSubmitting(false)
+      setError(`Error occured: ${err.response?.data?.message || err.message}`)
+    })
+  }
 
-    return (
-      <Formik
-        initialValues={{
-          email: '',
-          password: '',
-          confirmPassword: ''
-        }}
-        validationSchema={schema}
-        onSubmit={handleSubmit}
-      >
-        {({ errors, touched }) => (
-          <Form className="w-full p-8">
-            <div className="flex flex-col w-full gap-4">
-              <div className="w-full">
-                <div className="mb-1 opacity-45">
-                  <label htmlFor="">Email</label>
-                </div>
+  const schema = Yup.object().shape({
+    email: Yup.string().email('Invalid email address').required('Email is required'),
+    password: Yup.string().required("Required"),
+    confirmPassword: Yup.string().oneOf([Yup.ref("password"), null], "Passwords must match").required("Required"),
+  });
+
+  return (
+    <Formik
+      initialValues={{
+        email: '',
+        password: '',
+        confirmPassword: ''
+      }}
+      validationSchema={schema}
+      onSubmit={handleSubmit}
+    >
+      {({ errors, touched, isSubmitting }) => (
+        <Form className="w-full p-8">
+          <div className="flex flex-col w-full gap-4">
+            <div className="w-full">
+              <div className="mb-1 opacity-45">
+                <label htmlFor="">Email</label>
+              </div>
+              <Field
+                type="email"
+                name="email"
+                placeholder="Email"
+                className={`w-full py-3 px-3 bg-transparent primary-border rounded text-white rounded-lg focus:outline-none focus:outline-none focus:border-green-500 placeholder:opacity-45  ${errors.email && touched.email
+                  ? "border-red-900 border"
+                  : "primary-border focus:border-green-500"
+                  }`}
+              />
+            </div>
+            <div>
+              <div className="mb-1 opacity-45">
+                <label htmlFor="">New Password</label>
+              </div>
+              <div className="relative">
                 <Field
-                  type="email"
-                  name="email"
-                  placeholder="Email"
-                  className={`w-full py-3 px-3 bg-transparent primary-border rounded text-white rounded-lg focus:outline-none focus:outline-none focus:border-green-500 placeholder:opacity-45  ${errors.email && touched.email
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${errors.password && touched.password
                     ? "border-red-900 border"
                     : "primary-border focus:border-green-500"
                     }`}
+                  placeholder="Enter new password"
                 />
-              </div>
-              <div>
-                <div className="mb-1 opacity-45">
-                  <label htmlFor="">New Password</label>
-                </div>
-                <div className="relative">
-                  <Field
-                    name="password"
-                    type={showPassword ? "text" : "password"}
-                    className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${errors.password && touched.password
-                      ? "border-red-900 border"
-                      : "primary-border focus:border-green-500"
-                      }`}
-                    placeholder="Enter new password"
-                  />
-                  <div
-                    className="absolute inset right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-white"
-                    onClick={() => setShowPassword(v => !v)}
-                  >
-                    {showPassword ? <FaEyeSlash /> : <FaEye />}
-                  </div>
+                <div
+                  className="absolute inset right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-white"
+                  onClick={() => setShowPassword(v => !v)}
+                >
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
                 </div>
               </div>
-              <div>
-                <div className="mb-1 opacity-45">
-                  <label htmlFor="">Confirm Password</label>
-                </div>
-                <div className="relative">
-                  <Field
-                    name="confirmPassword"
-                    type={showPassword ? "text" : "password"}
-                    className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${errors.confirmPassword && touched.confirmPassword
-                      ? "border-red-900 border"
-                      : "primary-border focus:border-green-500"
-                      }`}
-                    placeholder="Confirm"
-                  />
-                  <div
-                    className="absolute inset right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-white"
-                    onClick={() =>
-                      setShowPassword(v => !v)
-                    }
-                  >
-                    {showPassword ? <FaEyeSlash /> : <FaEye />}
-                  </div>
-                </div>
-              </div>
-              {error ? <div className="text-red-500 text-sm">{error}</div> : null}
-              <button type="submit" className="w-full bg-green-500 bg-primary rounded-lg text-black font-normal py-3 rounded hover-shadow focus:outline-none">SWITCH</button>
-              <button onClick={onClose}>CANCEL</button>
             </div>
-          </Form>
-        )}
-      </Formik>
-    )
+            <div>
+              <div className="mb-1 opacity-45">
+                <label htmlFor="">Confirm Password</label>
+              </div>
+              <div className="relative">
+                <Field
+                  name="confirmPassword"
+                  type={showPassword ? "text" : "password"}
+                  className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${errors.confirmPassword && touched.confirmPassword
+                    ? "border-red-900 border"
+                    : "primary-border focus:border-green-500"
+                    }`}
+                  placeholder="Confirm"
+                />
+                <div
+                  className="absolute inset right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-white"
+                  onClick={() =>
+                    setShowPassword(v => !v)
+                  }
+                >
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                </div>
+              </div>
+            </div>
+            {error ? <div className="text-red-500 text-sm">{error}</div> : null}
+            <button disabled={isSubmitting} type="submit" className="w-full bg-green-500 bg-primary rounded-lg text-black font-normal py-3 rounded hover-shadow focus:outline-none">SWITCH</button>
+          </div>
+        </Form>
+      )}
+    </Formik>
+  )
+}
+
+const LoginDetails = ({ user, onClose }) => {
+  const router = useRouter()
+  const [showPassword, setShowPassword] = useState(false)
+  const [error, setError] = useState()
+
+  const handleSubmit = (values, { setSubmitting }) => {
+    axios.get('/api/users', { params: { id: user.roleData.linkedUserId } }).then(async res => {
+      const email = res.data[0]?.email
+      if (!email) return setError('Email not found')
+
+      const result = await signIn("credentials", {
+        email: email,
+        password: values.password,
+        redirect: false,
+      })
+
+      if (!result.error) {
+        router.push('/dashboard')
+        onClose()
+      } else {
+        setError(result.status === 401 ? "Invalid email or password" : result.error);
+      }
+      setSubmitting(false)
+    }).catch(() => {
+      setError('Error fetching linked user account')
+      setSubmitting(false)
+    })
   }
+
+  const schema = Yup.object().shape({
+    password: Yup.string().required("Required"),
+  });
+
+  return (
+    <Formik
+      initialValues={{
+        password: '',
+      }}
+      validationSchema={schema}
+      onSubmit={handleSubmit}
+    >
+      {({ errors, touched, isSubmitting }) => (
+        <Form className="w-full p-8 flex items-center">
+          <div className="flex flex-col w-full gap-8">
+            <div>
+              <div className="mb-1 opacity-45">
+                <label htmlFor="">Enter Password for {user?.role === 'trainer' ? 'Staff' : 'Trainer'} Account</label>
+              </div>
+              <div className="relative">
+                <Field
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${errors.password && touched.password
+                    ? "border-red-900 border"
+                    : "primary-border focus:border-green-500"
+                    }`}
+                  placeholder="Enter password"
+                />
+                <div
+                  className="absolute inset right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-white"
+                  onClick={() => setShowPassword(v => !v)}
+                >
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                </div>
+              </div>
+            </div>
+            {error ? <div className="text-red-500 text-sm">{error}</div> : null}
+            <button disabled={isSubmitting} type="submit" className="w-full bg-green-500 bg-primary rounded-lg text-black font-normal py-3 rounded hover-shadow focus:outline-none">SWITCH</button>
+          </div>
+        </Form>
+      )}
+    </Formik>
+  )
+}
+
+const SwitchAccountModal = ({ open, onClose }) => {
+  const { user } = useApp()
 
   return (
     <Modal open={open} onClose={onClose} aria-labelledby="upload-modal-title">
       <Box
         sx={style}
-        className="w-full max-w-2xl min-h-96 flex justify-center"
+        className="w-full max-w-2xl flex justify-center"
         style={{ backgroundColor: "rgba(9, 15, 33, 1)" }}
       >
         <IconButton className="!primary-border-parrot"
@@ -177,13 +261,16 @@ const SwitchAccountModal = ({ open, onClose }) => {
         >
           <CloseIcon />
         </IconButton>
-
+        {!user ? <CircularProgress /> :
+          user.roleData.linkedUserId ? <LoginDetails user={user} onClose={onClose} /> : <RegisterAccount user={user} onClose={onClose} />
+        }
       </Box>
     </Modal>
   )
 }
 
 const ProfileMenu = () => {
+  const { user } = useApp()
   const [anchorElUser, setAnchorElUser] = useState(null);
   const { data: session } = useSession();
   const [openSwitchAccount, setOpenSwitchAccount] = useState(false)
@@ -217,7 +304,7 @@ const ProfileMenu = () => {
       >
         <MenuItem
           disableRipple
-          sx={{ display: session?.user?.role === "staff" ? "flex" : "none" }}
+          sx={{ display: session?.user?.role === "staff" || user?.roleData.linkedUserId ? "flex" : "none" }}
         >
           <Grid container flexDirection={"column"} gap={1}>
             <Grid item>
@@ -304,14 +391,13 @@ const Layout = ({ children }) => {
             <div className="flex space-x-4 items-center">
               <button
                 onClick={() => setShowUploadModal(true)}
-                className={`bg-white text-black px-5 py-1 rounded-lg ${user.role === "trainer" && "hidden"
-                  }`}
+                className={`bg-white text-black px-5 py-1 rounded-lg ${user.role !== "player" && "hidden"}`}
               >
                 UPLOAD
               </button>
               <button
-                className={`bg-white text-black px-5 py-1 rounded-lg ${user.role === "admin" && "hidden"
-                  }`}
+                onClick={() => router.push('/purchases')}
+                className={`bg-white text-black px-5 py-1 rounded-lg ${['staff', 'admin'].includes(user.role) && "hidden"}`}
               >
                 PURCHASE
               </button>

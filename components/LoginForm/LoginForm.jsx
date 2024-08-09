@@ -17,6 +17,7 @@ const LoginForm = () => {
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const matches = useMediaQuery('(max-width:768px)');
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   // useEffect(() => {
   //   console.log('matches', matches)
@@ -58,6 +59,7 @@ const LoginForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    setIsSubmitting(true)
     const result = await signIn("credentials", {
       email: user.email,
       password: user.password,
@@ -78,6 +80,7 @@ const LoginForm = () => {
     } else {
       setError(result.status === 401 ? "Invalid email or password" : result.error);
     }
+    setIsSubmitting(false)
   };
 
   return (
@@ -148,6 +151,7 @@ const LoginForm = () => {
             </div>
             <button
               type="submit"
+              disabled={isSubmitting}
               className="w-full bg-primary rounded-lg text-black font-normal py-3 rounded hover-shadow focus:outline-none"
             >
               LOGIN

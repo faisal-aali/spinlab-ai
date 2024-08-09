@@ -117,9 +117,9 @@ const History = (props) => {
                             />
                           </TableCell>
                           <TableCell>
-                            <Typography variant="body2" className="!text-white">
+                            {/* <Typography variant="body2" className="!text-white">
                               Delivery in
-                            </Typography>
+                            </Typography> */}
                             <Typography variant="caption" className="!text-white">
                               {new Date(row.creationDate).toLocaleDateString()}
                             </Typography>

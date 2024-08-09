@@ -24,10 +24,14 @@ const AppProvider = ({ children }) => {
         fetchUser()
     }, [userSession])
 
-    const fetchUser = () => {
+    const fetchUser = (callback) => {
         console.log('fetchUser', userSession._id)
-        if (userSession._id)
-            axios.get('/api/users', { params: { id: userSession._id } }).then(res => setUser(res.data[0])).catch(console.error)
+        if (userSession._id) {
+            axios.get('/api/users', { params: { id: userSession._id } }).then(res => {
+                setUser(res.data[0])
+                callback && callback()
+            }).catch(console.error)
+        }
     }
 
     const showSnackbar = (message, severity = 'info') => {

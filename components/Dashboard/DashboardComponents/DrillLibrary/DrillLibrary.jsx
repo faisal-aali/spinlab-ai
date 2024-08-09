@@ -16,9 +16,10 @@ import AddVideoModal from "../AddVideoModal/AddVideoModal";
 import EditVideoModal from "../EditVideoModal/EditVideoModal";
 import DeleteVideoModal from "../DeleteVideoModal/DeleteVideoModal";
 import { useSession } from "next-auth/react";
+import { useApp } from "@/components/Context/AppContext";
 
 const DrillLibrary = () => {
-  const user = useSession().data?.user || {};
+  const { user } = useApp()
   const [selectedCategory, setSelectedCategory] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
@@ -29,10 +30,10 @@ const DrillLibrary = () => {
   const [categories, setCategories] = useState([]);
   const [selectedVideoId, setSelectedVideoId] = useState(null);
   const [selectedVideoData, setSelectedVideoData] = useState(null);
-  const [loading, setLoading] = useState(true);  
+  const [loading, setLoading] = useState(true);
 
   const fetchCategoriesAndVideos = async () => {
-    setLoading(true);  
+    setLoading(true);
     try {
       const categoryResponse = await axios.get("/api/categories");
       const categoryData = categoryResponse.data;
@@ -47,12 +48,17 @@ const DrillLibrary = () => {
       }
 
       const videoResponse = await axios.get("/api/drills");
+      videoResponse.data = videoResponse.data.filter(video =>
+        video.isFree ? true :
+          ['player', 'trainer'].includes(user.role) ? (user.subscription?.status === 'active' ? true : false) :
+            true
+      )
       setAllVideos(videoResponse.data);
       setVideos(videoResponse.data);
     } catch (error) {
       console.error("Error fetching categories and videos", error);
     } finally {
-      setLoading(false);  
+      setLoading(false);
     }
   };
 

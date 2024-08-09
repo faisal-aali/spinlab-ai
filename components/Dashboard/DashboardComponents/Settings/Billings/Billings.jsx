@@ -72,7 +72,7 @@ const BillingTab = () => {
   }
 
   return (
-    !customer || !paymentMethods ? <CircularProgress size={20} /> :
+    (!customer || !paymentMethods) && !profileError ? <CircularProgress /> :
       <>
         {/* {!paymentSuccess ? (
         <div className="p-8 border primary-border mt-8 rounded-lg">
@@ -165,7 +165,7 @@ const BillingTab = () => {
                     <h2 className="text-xl font-bold mt-2">Plan Details</h2>
                     <p className="mt-2">{user.subscription.package?.name || 'Free'}</p>
                     {user.subscription.package?.amount &&
-                      <p className="text-primary mt-2 font-bold">${(user.subscription.package?.amount / 100).toFixed(2)} {user.subscription.package?.plan}</p>}
+                      <p className="text-primary mt-2 font-bold">${(user.subscription.package?.amount / 100).toFixed(2)} {user.subscription.package?.plan}</p> || <></>}
                   </div>
                 </div>
               </div>

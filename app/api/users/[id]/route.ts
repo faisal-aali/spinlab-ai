@@ -23,9 +23,13 @@ export async function DELETE(req: NextRequest) {
         await user.save()
 
         const linkedUser = await User.findOne({ 'roleData.linkedUserId': user._id })
+        console.log('linkedUser', linkedUser)
         if (linkedUser) {
-            linkedUser.roleData.linkedUserId = null
-            await user.save()
+            linkedUser.roleData = {
+                ...linkedUser.roleData,
+                linkedUserId: null
+            }
+            await linkedUser.save()
         }
 
         return NextResponse.json({ message: 'User has been deleted' }, { status: 200 })
