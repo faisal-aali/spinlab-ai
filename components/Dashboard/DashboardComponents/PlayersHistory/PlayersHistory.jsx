@@ -53,7 +53,7 @@ const PlayersHistory = (props) => {
     }, [])
 
     const fetchData = () => {
-        axios.get('/api/users', { params: { trainerId: userSession._id, includeMetrics: 1 } }).then(res => setPlayers(res.data)).catch(console.error)
+        axios.get('/api/users', { params: { trainerId: props.trainerId || userSession._id, includeMetrics: 1 } }).then(res => setPlayers(res.data)).catch(console.error)
     }
 
     const rowsPerPage = 5;

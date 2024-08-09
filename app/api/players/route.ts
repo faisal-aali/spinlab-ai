@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
 
         let trainerId = null
         const session = await getServerSession(authOption);
-        if (session && session.user && ['trainer', 'staff'].includes(session.user.role)) trainerId = new mongoose.Schema.Types.ObjectId(session.user._id)
+        if (session && session.user && ['trainer', 'staff'].includes(session.user.role)) trainerId = new mongoose.Types.ObjectId(session.user._id)
 
         const user = await User.create({
             email: data.email,

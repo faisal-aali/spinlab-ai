@@ -34,6 +34,9 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
     try {
+        const session = await getServerSession(authOption);
+        const staff = (session && session.user && session.user.role === 'staff') ? await User.findOne({ _id: session?.user._id }) : undefined
+
         const data = await req.json()
 
         const schema = Yup.object({
@@ -48,14 +51,14 @@ export async function POST(req: NextRequest) {
 
         await schema.validate(data)
 
-        const randomPassword = data.password ? undefined : crypto.randomBytes(4).toString("hex");
+        const randomPassword = data.password || staff ? undefined : crypto.randomBytes(4).toString("hex");
 
         const dups = await User.find({ email: data.email })
         if (dups.length > 0) return NextResponse.json({ message: 'The email has already been registered.' }, { status: 400 })
 
         const user = await User.create({
             email: data.email,
-            password: bcrypt.hashSync((data.password || randomPassword), process.env.BCRYPT_SALT as string),
+            password: staff ? staff.password : bcrypt.hashSync((data.password || randomPassword), process.env.BCRYPT_SALT as string),
             name: data.name,
             avatarUrl: data.avatarUrl,
             city: data.city,
@@ -76,6 +79,19 @@ export async function POST(req: NextRequest) {
                     <p>Password: ${randomPassword}</p>
                 `
             }).catch(console.error)
+        }
+
+        if (staff) {
+            staff.roleData = {
+                ...staff.roleData,
+                linkedUserId: user._id
+            }
+            await staff.save()
+            user.roleData = {
+                ...user.roleData,
+                linkedUserId: staff._id,
+            }
+            await user.save()
         }
 
         return NextResponse.json({ message: `Trainer has been created with id ${user._id}` }, { status: 200 })

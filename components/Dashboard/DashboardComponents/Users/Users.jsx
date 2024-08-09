@@ -125,12 +125,12 @@ const Users = () => {
                     </TableCell>
                     <TableCell>
                       <Typography variant="body2" className="!text-primary !text-xl">
-                        {row.balance}
+                        {row.credits.remaining}
                       </Typography>
                     </TableCell>
                     <TableCell>
                       <Typography variant="body2" className="!text-primary !text-xl">
-                        {row.plan}
+                        {row.subscription.package?.name || 'Free'}
                       </Typography>
                     </TableCell>
                     {user.role === 'admin' &&

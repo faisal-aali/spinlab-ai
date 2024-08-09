@@ -13,7 +13,7 @@ import History from "../History/History";
 import PlayersHistory from "../PlayersHistory/PlayersHistory";
 import { convertCmToFeetAndInches } from "@/util/utils";
 
-const PlayerProfile = ({ setShowEditModal, setShowDeleteModal, setShowGiftModal, userData }) => {
+const PlayerProfile = ({ setGiftUserId, setShowEditModal, setShowDeleteModal, setShowGiftModal, userData }) => {
 
     const user = useSession().data?.user || {}
 
@@ -48,7 +48,7 @@ const PlayerProfile = ({ setShowEditModal, setShowDeleteModal, setShowGiftModal,
                     </p>
                     <div className="flex flex-col lg:flex-row">
                         <p className="flex-1 text-base mb-2 pb-4 pt-2 border-b border-solid primary-border-color font-bold	">
-                            Age: <span className="text-primary">{userData.age || "N/A"}</span>
+                            Age: <span className="text-primary">{userData.roleData.age || "N/A"}</span>
                         </p>
                         <p className="flex-1 text-base mb-2 pb-4 pt-2 border-b border-solid primary-border-color font-bold	">
                             Location: <span className="text-primary">{`${userData.city || ''}${userData.city && userData.country ? ',' : ''} ${userData.country || ''}`.trim() || "N/A"}</span>
@@ -69,10 +69,13 @@ const PlayerProfile = ({ setShowEditModal, setShowDeleteModal, setShowGiftModal,
                         Remaining Credits: <span className="text-primary">{userData.credits.remaining}</span>
                     </p>
                     <p className="text-base mb-2 pb-4 pt-2 font-bold	">
-                        Subscription Plan: <span className="text-primary">{userData.plan || "N/A"}</span>
+                        Subscription Plan: <span className="text-primary">{userData.subscription.package?.name || "Free"}</span>
                     </p>
                     <div className="flex justify-end">
-                        <button onClick={() => setShowGiftModal(true)} className="bg-primary dark-blue-color rounded w-40 h-9 flex items-center justify-center text-lg font-bold rounded-lg hover-button-shadow">
+                        <button onClick={() => {
+                            setGiftUserId(userData._id)
+                            setShowGiftModal(true)
+                        }} className="bg-primary dark-blue-color rounded w-40 h-9 flex items-center justify-center text-lg font-bold rounded-lg hover-button-shadow">
                             GIFT CREDITS
                         </button>
                     </div>
@@ -85,7 +88,7 @@ const PlayerProfile = ({ setShowEditModal, setShowDeleteModal, setShowGiftModal,
     );
 }
 
-const TrainerProfile = ({ setShowEditModal, setShowDeleteModal, setShowGiftModal, userData }) => {
+const TrainerProfile = ({ setGiftUserId, setShowEditModal, setShowDeleteModal, setShowGiftModal, userData }) => {
 
     const user = useSession().data?.user || {}
 
@@ -122,16 +125,19 @@ const TrainerProfile = ({ setShowEditModal, setShowDeleteModal, setShowGiftModal
                         Joining Date: <span className="text-primary">{new Date(userData.creationDate).toLocaleDateString()}</span>
                     </p>
                     <p className="text-base mb-2 pb-4 pt-2 border-b border-solid primary-border-color font-bold	">
-                        Expiry Date: <span className="text-primary">{userData.expiryDate || 'N/A'}</span>
+                        Expiry Date: <span className="text-primary">{(userData.subscription.currentPeriodEnd && new Date(userData.subscription.currentPeriodEnd).toLocaleDateString()) || 'N/A'}</span>
                     </p>
                     <p className="text-base mb-2 pb-4 pt-2 border-b border-solid primary-border-color font-bold	">
                         Remaining Credits: <span className="text-primary">{userData.credits.remaining}</span>
                     </p>
                     <p className="text-base mb-2 pb-4 pt-2 font-bold	">
-                        Subscription Plan: <span className="text-primary">{userData.plan || 'N/A'}</span>
+                        Subscription Plan: <span className="text-primary">{userData.subscription.package?.name || 'Free'}</span>
                     </p>
                     <div className="flex justify-end">
-                        <button onClick={() => setShowGiftModal(true)} className="bg-primary dark-blue-color rounded w-40 h-9 flex items-center justify-center text-lg font-bold rounded-lg">
+                        <button onClick={() => {
+                            setGiftUserId(userData._id)
+                            setShowGiftModal(true)
+                        }} className="bg-primary dark-blue-color rounded w-40 h-9 flex items-center justify-center text-lg font-bold rounded-lg">
                             GIFT CREDITS
                         </button>
                     </div>
@@ -147,7 +153,7 @@ const TrainerProfile = ({ setShowEditModal, setShowDeleteModal, setShowGiftModal
                 <h3>Players</h3>
             </div>
             <div className="-mt-8">
-                <PlayersHistory omitHeader />
+                <PlayersHistory omitHeader trainerId={userData._id} />
             </div>
         </div>
     );
@@ -189,15 +195,15 @@ const StaffProfile = ({ setShowEditModal, setShowDeleteModal, userData }) => {
                     <p className="text-base mb-2 pb-4 pt-2 border-b border-solid primary-border-color font-bold	">
                         Joining Date: <span className="text-primary">{new Date(userData.creationDate).toLocaleDateString()}</span>
                     </p>
-                    <p className="text-base mb-2 pb-4 pt-2 border-b border-solid primary-border-color font-bold	">
-                        Expiry Date: <span className="text-primary">{userData.expiryDate || 'N/A'}</span>
+                    {/* <p className="text-base mb-2 pb-4 pt-2 border-b border-solid primary-border-color font-bold	">
+                        Expiry Date: <span className="text-primary">{(userData.subscription.currentPeriodEnd && new Date(userData.subscription.currentPeriodEnd).toLocaleDateString()) || 'N/A'}</span>
                     </p>
                     <p className="text-base mb-2 pb-4 pt-2 border-b border-solid primary-border-color font-bold	">
                         Remaining Credits: <span className="text-primary">{userData.credits.remaining}</span>
                     </p>
-                    <p className="text-base mb-2 pb-4 pt-2 font-bold	">
-                        Subscription Plan: <span className="text-primary">{userData.plan || 'N/A'}</span>
-                    </p>
+                    <p className="text-base mb-2 pb-4 pt-2 font-bold">
+                        Subscription Plan: <span className="text-primary">{userData.subscription.package?.name || 'N/A'}</span>
+                    </p> */}
                     {/* <div className="flex justify-end">
                         <button className="bg-primary dark-blue-color rounded w-40 h-9 flex items-center justify-center text-lg font-bold rounded-lg">
                             VIEW UPLOADS
@@ -220,6 +226,7 @@ const UserProfile = () => {
     const [showEditModal, setShowEditModal] = useState(false)
     const [showDeleteModal, setShowDeleteModal] = useState(false)
     const [showGiftModal, setShowGiftModal] = useState(false)
+    const [giftUserId, setGiftUserId] = useState(false)
 
     useEffect(() => {
         fetchUser();
@@ -244,8 +251,8 @@ const UserProfile = () => {
             </div>
             <div>
                 {!userData ? <CircularProgress /> :
-                    role === 'player' ? <PlayerProfile setShowEditModal={setShowEditModal} setShowDeleteModal={setShowDeleteModal} setShowGiftModal={setShowGiftModal} userData={userData} /> :
-                        role === 'trainer' ? <TrainerProfile setShowEditModal={setShowEditModal} setShowDeleteModal={setShowDeleteModal} setShowGiftModal={setShowGiftModal} userData={userData} /> :
+                    role === 'player' ? <PlayerProfile setGiftUserId={setGiftUserId} setShowEditModal={setShowEditModal} setShowDeleteModal={setShowDeleteModal} setShowGiftModal={setShowGiftModal} userData={userData} /> :
+                        role === 'trainer' ? <TrainerProfile setGiftUserId={setGiftUserId} setShowEditModal={setShowEditModal} setShowDeleteModal={setShowDeleteModal} setShowGiftModal={setShowGiftModal} userData={userData} /> :
                             role === 'staff' ? <StaffProfile setShowEditModal={setShowEditModal} setShowDeleteModal={setShowDeleteModal} userData={userData} /> : <></>
                 }
             </div>
@@ -253,7 +260,10 @@ const UserProfile = () => {
                 <div>
                     <EditUserModal open={showEditModal} onClose={() => setShowEditModal(false)} userData={userData} onSuccess={fetchUser} />
                     <DeleteUserModal open={showDeleteModal} onClose={() => setShowDeleteModal(false)} userId={userId} onSuccess={() => router.back()} />
-                    <GiftUserModal open={showGiftModal} onClose={() => setShowGiftModal(false)} />
+                    <GiftUserModal onSuccess={() => {
+                        fetchUser()
+                        setShowGiftModal(false)
+                    }} userId={giftUserId} open={showGiftModal} onClose={() => setShowGiftModal(false)} />
                 </div>
             }
         </div>

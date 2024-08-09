@@ -6,6 +6,7 @@ import UpdateCardDetails from "@/components/Common/UpdateCardDetails/UpdateCardD
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import axios, { AxiosError } from 'axios'
+import { useApp } from "@/components/Context/AppContext";
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
 
@@ -20,6 +21,7 @@ const BillingSchema = Yup.object().shape({
 });
 
 const BillingTab = () => {
+  const { user } = useApp()
   const [profileError, setProfileError] = useState(false)
   const [customer, setCustomer] = useState()
   const [paymentMethods, setPaymentMethods] = useState()
@@ -161,8 +163,9 @@ const BillingTab = () => {
                 <div className="border primary-border py-8 flex pl-12 pr-16 justify-center flex-col rounded-lg w-fit 2xl:pr-[200px]">
                   <div>
                     <h2 className="text-xl font-bold mt-2">Plan Details</h2>
-                    <p className="mt-2">SpinLabAi Annual Subscription</p>
-                    <p className="text-primary mt-2 font-bold">Annual $400/yr</p>
+                    <p className="mt-2">{user.subscription.package?.name || 'Free'}</p>
+                    {user.subscription.package?.amount &&
+                      <p className="text-primary mt-2 font-bold">${(user.subscription.package?.amount / 100).toFixed(2)} {user.subscription.package?.plan}</p>}
                   </div>
                 </div>
               </div>

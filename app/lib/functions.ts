@@ -6,6 +6,7 @@ import { ICredit, IUser } from './interfaces/user';
 import { IPurchase } from './interfaces/purchase';
 import { Purchase, User, Video } from './models';
 import mongoose from './mongodb';
+import crypto from 'crypto'
 
 function validateError(err: any) {
     if (err instanceof Yup.ValidationError) {
@@ -51,7 +52,8 @@ function calculateCredits(userId: string): Promise<ICredit> {
                 credits.purchased += purchase.credits
             })
             videos.forEach(video => {
-                credits.used += 1
+                if (video.uploadedBy?.toString() === userId?.toString())
+                    credits.used += 1
             })
             credits.remaining = credits.purchased - credits.used
             console.log('calculateCredits', credits)
@@ -69,6 +71,8 @@ function calculatePlayerMetrics(playerId: string) {
             if (!player) return reject('Player not found')
 
             const videos = await Video.find({ userId: playerId })
+
+
         } catch (err) {
             reject(err)
         }
@@ -78,5 +82,5 @@ function calculatePlayerMetrics(playerId: string) {
 export {
     validateError,
     calculateCredits,
-    calculatePlayerMetrics
+    calculatePlayerMetrics,
 }

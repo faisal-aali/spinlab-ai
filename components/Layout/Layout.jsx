@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Sidebar from "../Sidebar/Sidebar";
-import { signOut, useSession } from "next-auth/react";
+import { signOut, useSession, signIn } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { FiLogOut } from "react-icons/fi";
@@ -18,7 +18,7 @@ import {
   SnackbarContent,
   Tooltip,
   Typography,
-  Modal,
+  Modal
 } from "@mui/material";
 import { Person } from "@mui/icons-material";
 import UploadModal from "../Dashboard/DashboardComponents/UploadVideoModal/UploadModal";
@@ -28,32 +28,171 @@ import {
   Close as CloseIcon,
   ArrowForward as ArrowForwardIcon,
 } from "@mui/icons-material";
+import { useApp } from "../Context/AppContext";
+import axios from 'axios';
+import * as Yup from 'yup'
+import { Field, Form, Formik } from "formik";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  bgcolor: "background.paper",
+  boxShadow: 24,
+  p: 4,
+  borderRadius: "8px",
+  maxHeight: '90vh',
+  overflow: 'auto'
+};
+const SwitchAccountModal = ({ open, onClose }) => {
+  const router = useRouter()
+  const { user } = useApp()
+  const [error, setError] = useState()
+  const [showPassword, setShowPassword] = useState()
+
+  const RegisterAccount = () => {
+
+    const handleSubmit = (values) => {
+      axios.post('/api/trainers', {
+        email: values.email,
+        password: values.password,
+        name: user.name,
+        city: user.city,
+        country: user.country,
+        avatarUrl: user.avatarUrl,
+      }).then(() => {
+        // signOut({ redirect: false }).then(() => {
+        signIn('credentials', {
+          email: values.email,
+          password: values,
+          redirect: false
+        }).then(() => router.replace('/dashboard')).catch(err => setError('Error occured signing in'))
+        // }).catch(err => setError('Error occured signing out'))
+      }).catch(err => {
+        setError(`Error occured: ${err.response.data?.message || err.message}`)
+      })
+    }
+
+    const schema = Yup.object().shape({
+      email: Yup.string().email('Invalid email address').required('Email is required'),
+      password: Yup.string().required("Required"),
+      confirmPassword: Yup.string().oneOf([Yup.ref("password"), null], "Passwords must match").required("Required"),
+    });
+
+    return (
+      <Formik
+        initialValues={{
+          email: '',
+          password: '',
+          confirmPassword: ''
+        }}
+        validationSchema={schema}
+        onSubmit={handleSubmit}
+      >
+        {({ errors, touched }) => (
+          <Form className="w-full p-8">
+            <div className="flex flex-col w-full gap-4">
+              <div className="w-full">
+                <div className="mb-1 opacity-45">
+                  <label htmlFor="">Email</label>
+                </div>
+                <Field
+                  type="email"
+                  name="email"
+                  placeholder="Email"
+                  className={`w-full py-3 px-3 bg-transparent primary-border rounded text-white rounded-lg focus:outline-none focus:outline-none focus:border-green-500 placeholder:opacity-45  ${errors.email && touched.email
+                    ? "border-red-900 border"
+                    : "primary-border focus:border-green-500"
+                    }`}
+                />
+              </div>
+              <div>
+                <div className="mb-1 opacity-45">
+                  <label htmlFor="">New Password</label>
+                </div>
+                <div className="relative">
+                  <Field
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${errors.password && touched.password
+                      ? "border-red-900 border"
+                      : "primary-border focus:border-green-500"
+                      }`}
+                    placeholder="Enter new password"
+                  />
+                  <div
+                    className="absolute inset right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-white"
+                    onClick={() => setShowPassword(v => !v)}
+                  >
+                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div className="mb-1 opacity-45">
+                  <label htmlFor="">Confirm Password</label>
+                </div>
+                <div className="relative">
+                  <Field
+                    name="confirmPassword"
+                    type={showPassword ? "text" : "password"}
+                    className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${errors.confirmPassword && touched.confirmPassword
+                      ? "border-red-900 border"
+                      : "primary-border focus:border-green-500"
+                      }`}
+                    placeholder="Confirm"
+                  />
+                  <div
+                    className="absolute inset right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-white"
+                    onClick={() =>
+                      setShowPassword(v => !v)
+                    }
+                  >
+                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                  </div>
+                </div>
+              </div>
+              {error ? <div className="text-red-500 text-sm">{error}</div> : null}
+              <button type="submit" className="w-full bg-green-500 bg-primary rounded-lg text-black font-normal py-3 rounded hover-shadow focus:outline-none">SWITCH</button>
+              <button onClick={onClose}>CANCEL</button>
+            </div>
+          </Form>
+        )}
+      </Formik>
+    )
+  }
+
+  return (
+    <Modal open={open} onClose={onClose} aria-labelledby="upload-modal-title">
+      <Box
+        sx={style}
+        className="w-full max-w-2xl min-h-96 flex justify-center"
+        style={{ backgroundColor: "rgba(9, 15, 33, 1)" }}
+      >
+        <IconButton className="!primary-border-parrot"
+          style={{ position: "absolute", top: 20, right: 20, color: "#fff", padding: "3px" }}
+          onClick={onClose}
+        >
+          <CloseIcon />
+        </IconButton>
+
+      </Box>
+    </Modal>
+  )
+}
 
 const ProfileMenu = () => {
   const [anchorElUser, setAnchorElUser] = useState(null);
-  const { data: session, update } = useSession();
-  const [userRole, setUserRole] = useState("");
+  const { data: session } = useSession();
+  const [openSwitchAccount, setOpenSwitchAccount] = useState(false)
   const router = useRouter();
-
-  useEffect(() => {
-    setUserRole(localStorage.getItem("userRole"));
-  }, []);
 
   const handleLogout = async () => {
     await signOut({ redirect: false });
     router.replace("/login");
     Cookies.remove("loggedin");
-  };
-
-  const handleRoleChange = (newRole) => {
-    console.log("handleRoleChange", newRole);
-    update({
-      user: {
-        role: newRole,
-      },
-    })
-      .then(console.log)
-      .catch(console.error);
   };
 
   return (
@@ -78,7 +217,7 @@ const ProfileMenu = () => {
       >
         <MenuItem
           disableRipple
-          sx={{ display: userRole === "staff" ? "flex" : "none" }}
+          sx={{ display: session?.user?.role === "staff" ? "flex" : "none" }}
         >
           <Grid container flexDirection={"column"} gap={1}>
             <Grid item>
@@ -93,7 +232,7 @@ const ProfileMenu = () => {
                     session?.user?.role === "staff" ? "contained" : "outlined"
                   }
                   size="small"
-                  onClick={() => handleRoleChange("staff")}
+                  onClick={() => setOpenSwitchAccount(true)}
                 >
                   Staff
                 </Button>
@@ -104,7 +243,7 @@ const ProfileMenu = () => {
                     session?.user?.role === "trainer" ? "contained" : "outlined"
                   }
                   size="small"
-                  onClick={() => handleRoleChange("trainer")}
+                  onClick={() => setOpenSwitchAccount(true)}
                 >
                   Trainer
                 </Button>
@@ -124,7 +263,8 @@ const ProfileMenu = () => {
           <FiLogOut className="text-primary text-lg cursor-pointer ml-2" />
         </MenuItem>
       </Menu>
-    </Box>
+      <SwitchAccountModal open={openSwitchAccount} onClose={() => setOpenSwitchAccount(false)} />
+    </Box >
   );
 };
 

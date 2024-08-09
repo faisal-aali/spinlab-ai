@@ -64,7 +64,7 @@ const AddNewPlayerModal = ({ open, onClose, onSuccess }) => {
   const handleSubmit = async (values) => {
     return new Promise((resolve, reject) => {
       const data = {
-        email: `trainer-${crypto.randomUUID()}@example.com`,
+        email: `player-${crypto.randomUUID().split('-').pop()}@random.com`,
         name: `${values.firstName} ${values.lastName}`,
         height: convertFeetAndInchesToCm(values.heightFt, values.heightIn),
         weight: values.weight,

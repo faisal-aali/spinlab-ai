@@ -8,6 +8,8 @@ import {
 import { blueGrey } from "@mui/material/colors";
 import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
+import axios from 'axios'
+import { useApp } from "@/components/Context/AppContext";
 
 const style = {
   position: "absolute",
@@ -25,7 +27,9 @@ const validationSchema = Yup.object({
   credits: Yup.number().required("Credits is required"),
 });
 
-const GiftUserModal = ({ open, onClose }) => {
+const GiftUserModal = ({ open, onClose, userId, onSuccess }) => {
+  const { showSnackbar } = useApp()
+
   useEffect(() => {
     const handleEsc = (event) => {
       if (event.keyCode === 27) {
@@ -37,6 +41,19 @@ const GiftUserModal = ({ open, onClose }) => {
       window.removeEventListener("keydown", handleEsc);
     };
   }, [onClose]);
+
+  const handleSubmit = async (values, { setSubmitting }) => {
+    try {
+      setSubmitting(true)
+      await axios.post('/api/users/giftCredits', { userId, credits: values.credits })
+      setSubmitting(false)
+      showSnackbar('Credits have been gifted!', 'success')
+      onSuccess && onSuccess()
+    } catch (err) {
+      setSubmitting(false)
+      showSnackbar(`Error occured: ${err.response.data?.message || err.message}`, 'error')
+    }
+  }
 
   return (
     <Modal open={open} onClose={onClose} aria-labelledby="upload-modal-title">
@@ -55,11 +72,9 @@ const GiftUserModal = ({ open, onClose }) => {
             credits: "",
           }}
           validationSchema={validationSchema}
-          onSubmit={(values) => {
-            console.log(values);
-          }}
+          onSubmit={handleSubmit}
         >
-          {({ errors, touched }) => (
+          {({ errors, touched, isSubmitting }) => (
             <Form>
               <div className="grid grid-cols-1 gap-4 mb-4">
                 <div className="grid gap-2">
@@ -80,10 +95,10 @@ const GiftUserModal = ({ open, onClose }) => {
                 </div>
               </div>
               <div className="flex justify-center mb-10 mt-6 gap-4">
-                <button type="submit" className="bg-white dark-blue-color rounded w-28 h-9 flex items-center justify-center text-lg font-bold" onClick={onClose}>
+                <button type="button" className="bg-white dark-blue-color rounded w-28 h-9 flex items-center justify-center text-lg font-bold" onClick={onClose}>
                   CANCEL
                 </button>
-                <button type="submit" className="bg-primary dark-blue-color rounded w-28 h-9 flex items-center justify-center text-lg font-bold hover-button-shadow" onClick={onClose}>
+                <button disabled={isSubmitting} type="submit" className="bg-primary dark-blue-color rounded w-28 h-9 flex items-center justify-center text-lg font-bold hover-button-shadow">
                   GIFT
                 </button>
               </div>

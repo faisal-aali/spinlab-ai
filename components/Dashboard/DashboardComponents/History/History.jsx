@@ -51,6 +51,7 @@ const History = (props) => {
   const rowsPerPage = 10;
 
   useEffect(() => {
+    console.log('History mounted')
     fetchVideos()
   }, [])
 
@@ -64,7 +65,8 @@ const History = (props) => {
   );
 
   const fetchVideos = () => {
-    axios.get('/api/videos', { params: { userId: props.trainerId || props.playerId || user._id } }).then(res => {
+    console.log('fetchVideos called', props)
+    axios.get('/api/videos', { params: { userId: props.playerId || user._id, trainerId: props.trainerId } }).then(res => {
       setData(res.data)
     }).catch(console.error)
   }
