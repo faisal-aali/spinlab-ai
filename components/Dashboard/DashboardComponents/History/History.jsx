@@ -64,7 +64,7 @@ const History = (props) => {
   );
 
   const fetchVideos = () => {
-    axios.get('/api/videos', { params: { userId: props.playerId || user._id } }).then(res => {
+    axios.get('/api/videos', { params: { userId: props.trainerId || props.playerId || user._id } }).then(res => {
       setData(res.data)
     }).catch(console.error)
   }

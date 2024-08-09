@@ -39,6 +39,8 @@ export async function POST(req: NextRequest) {
 
         const assessmentDetails = await _3Motion.getAssessmentDetails({ taskId: video.taskId, taskType: video.taskType });
 
+        console.log('[/api/3motion/webhook] assessmentDetails', assessmentDetails)
+
         if (assessmentDetails) {
             if (assessmentDetails.dataJsonUrl) {
                 assessmentDetails.stats = await axios.get(assessmentDetails.dataJsonUrl).then(res => res.data);

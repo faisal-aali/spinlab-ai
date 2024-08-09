@@ -22,7 +22,7 @@ const PlayerProfile = ({ setShowEditModal, setShowDeleteModal, setShowGiftModal,
             <div className="flex-col lg:flex-row max-w-4xl gap-4 p-8 rounded-2xl flex items-start" style={{ background: "linear-gradient(115.84deg, #32E100 -127.95%, #090F21 66.31%)", }} >
                 <div>
                     <img
-                        src="/assets/player-large.png"
+                        src={userData.avatarUrl || "/assets/player-large.png"}
                         alt={userData.name}
                         className="rounded-lg"
                         style={{ height: "429px", width: "304px", objectFit: 'cover' }}
@@ -141,7 +141,7 @@ const TrainerProfile = ({ setShowEditModal, setShowDeleteModal, setShowGiftModal
                 <h3>Videos Uploaded</h3>
             </div>
             <div>
-                <History omitHeader />
+                <History omitHeader trainerId={userData._id} />
             </div>
             <div>
                 <h3>Players</h3>

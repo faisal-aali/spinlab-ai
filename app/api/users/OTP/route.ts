@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
         const user = await User.findOne({ email: data.email })
         if (!user) return NextResponse.json({ message: `The email is not registered` }, { status: 404 })
 
-        const code = generateOtp(user._id)
+        const code = generateOtp(user._id.toString())
 
         console.log('/users/sendOTP code:', code)
 

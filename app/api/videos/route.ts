@@ -15,11 +15,18 @@ export async function GET(req: NextRequest) {
         const { searchParams } = new URL(req.url);
         const id = searchParams.get('id');
         const userId = searchParams.get('userId');
+        const trainerId = searchParams.get('trainerId');
 
-        const query: { _id?: string, userId?: string } = {};
+        const query: { _id?: string, userId?: string | object } = {};
 
         if (id) query._id = id;
         if (userId) query.userId = userId;
+        if (trainerId) {
+            const players = await User.find({ 'roleData.trainerId': new mongoose.Types.ObjectId(trainerId) })
+            query.userId = { $in: players.map(p => p._id) };
+        }
+
+        console.log(query)
 
         const videos = await Video.find(query, { assessmentDetails: { stats: { ARR: 0, ANG: 0, VEL: 0 } } }, { sort: { creationDate: -1 } });
 
