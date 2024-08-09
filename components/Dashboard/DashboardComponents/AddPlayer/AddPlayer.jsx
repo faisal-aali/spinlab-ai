@@ -29,7 +29,7 @@ const PlayerCard = ({ player, playersMetrics, setShowUploadModal, setSelectedPla
     <Card className="bg-transparent p-1 border primary-border">
       <Grid container padding={1} gap={2}>
         <Grid item>
-          <CardMedia component={'img'} image={'/assets/player.png'} />
+          <CardMedia component={'img'} style={{ width:140, height:165, borderRadius: '8px', objectFit: 'cover', objectPosition: '50% 10%' }} image={player.avatarUrl || '/assets/player.png'} />
         </Grid>
         <Grid item alignItems={'center'} display={'flex'} xs>
           <CardContent style={{ padding: 0 }}>
@@ -129,7 +129,7 @@ const AddPlayer = () => {
             </Grid>
           </Grid>}
       </div>
-      <AddNewPlayerModal onClose={() => setShowModal(false)} open={showModal} onSuccess={fetchPlayers} />
+      { showModal && <AddNewPlayerModal onClose={() => setShowModal(false)} open={showModal} onSuccess={fetchPlayers} />}
       <UploadModal playerId={selectedPlayerId} open={showUploadModal} onClose={() => setShowUploadModal(false)} onSuccess={() => setShowUploadModal(false)} type={'upload'} />
     </div>
   );

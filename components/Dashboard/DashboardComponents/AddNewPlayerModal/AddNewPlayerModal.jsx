@@ -40,6 +40,8 @@ const AddNewPlayerModal = ({ open, onClose, onSuccess }) => {
 
   const [response, setResponse] = useState({})
   const { showSnackbar } = useApp();
+  const [file, setFile] = useState(null);
+  const [imageSrc, setImageSrc] = useState("");
 
   const timeout = useRef()
   useEffect(() => {
@@ -61,25 +63,47 @@ const AddNewPlayerModal = ({ open, onClose, onSuccess }) => {
     };
   }, []);
 
-  const handleSubmit = async (values) => {
-    return new Promise((resolve, reject) => {
-      const data = {
-        email: `player-${crypto.randomUUID().split('-').pop()}@random.com`,
-        name: `${values.firstName} ${values.lastName}`,
-        height: convertFeetAndInchesToCm(values.heightFt, values.heightIn),
-        weight: values.weight,
+  const handleImageChange = (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setImageSrc(event.target.result);
       };
+      reader.readAsDataURL(selectedFile);
+      setFile(selectedFile);
+    }
+  };
 
-      axios.post(`/api/players`, data).then(res => {
+  const handleSubmit = async (values) => {
+    return new Promise(async (resolve, reject) => { 
+      let imageUrl = ""; 
+      try {
+        if (file) {
+          const formData = new FormData();
+          formData.append("file", file);
+          const res = await axios.post("/api/S3", formData); 
+          imageUrl = res.data.url; 
+        }
+  
+        const data = {
+          email: `player-${crypto.randomUUID().split('-').pop()}@random.com`,
+          name: `${values.firstName} ${values.lastName}`,
+          height: convertFeetAndInchesToCm(values.heightFt, values.heightIn),
+          weight: values.weight,
+          avatarUrl: imageUrl, 
+        };
+  
+        await axios.post(`/api/players`, data);
         showSnackbar('Player added!', 'success');
         onSuccess && onSuccess();
         onClose();
         resolve();
-      }).catch(err => {
+      } catch (err) {
         showSnackbar(err.response?.data?.message || err.message, 'error');
         reject(err);
-      })
-    })
+      }
+    });
   };
 
   return (
@@ -111,7 +135,7 @@ const AddNewPlayerModal = ({ open, onClose, onSuccess }) => {
             }).catch(console.error)
           }}
         >
-          {({ errors, touched, setFieldValue, values }) => (
+          {({isSubmitting, errors, touched, setFieldValue, values }) => (
             <Form>
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <div className="grid gap-2">
@@ -216,9 +240,24 @@ const AddNewPlayerModal = ({ open, onClose, onSuccess }) => {
                 </div> */}
               </div>
               <div className="grid grid-cols-1 gap-4">
-                <div className="p-8 flex items-center justify-center flex-col rounded-lg w-full gap-4 border-dashed border-2 border-slate-800">
+                <div className="p-8 flex items-center justify-center flex-col rounded-lg w-full py-4 gap-4 border-dashed border-2 border-slate-800">
+                  <div className="w-24">
+                        {imageSrc && (
+                          <img
+                            src={imageSrc}
+                            alt="Preview"
+                            className="object-cover object-top
+                            rounded-full w-[100px] h-[100px]"
+                          />
+                        )}
+                      </div>
                   <label className="cursor-pointer flex items-center justify-center">
-                    <input type="file" accept="image/*" className="hidden" />
+                    <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleImageChange}
+                  />
                     <img src="assets/upload-icon.svg" alt="" />
                   </label>
                   <div>
@@ -229,8 +268,14 @@ const AddNewPlayerModal = ({ open, onClose, onSuccess }) => {
               </div>
               {response.message && <div className={`flex justify-center col-span-2 mt-4 ${response.severity === 'success' ? 'text-primary' : 'text-error'}`}>{response.message}</div>}
               <div className="flex justify-center mt-4 mb-10">
-                <button type="submit" className="bg-primary dark-blue-color rounded w-28 h-9 flex items-center justify-center text-base font-bold hover-button-shadow">
-                  SUBMIT
+              <button
+                  type="submit"
+                  className={`bg-primary dark-blue-color rounded w-28 h-9 flex items-center justify-center text-lg font-bold hover-button-shadow ${
+                    isSubmitting ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? "Adding..." : "SUBMIT"}
                 </button>
               </div>
             </Form>

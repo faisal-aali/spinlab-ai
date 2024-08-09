@@ -84,7 +84,7 @@ const AddVideoModal = ({ open, onClose, categories, initialCategory, onSuccess }
           validationSchema={validationSchema}
           onSubmit={(values) => addNewDrill(values, onClose)}
         >
-          {({ errors, touched, setFieldValue, values }) => (
+          {({isSubmitting, errors, touched, setFieldValue, values }) => (
             <Form>
               <div className="grid grid-cols-1 gap-4 mb-4">
                 <div className="grid gap-2">
@@ -155,6 +155,7 @@ const AddVideoModal = ({ open, onClose, categories, initialCategory, onSuccess }
                 <button
                   type="submit"
                   className="bg-primary dark-blue-color rounded w-28 h-9 flex items-center justify-center text-lg font-bold"
+                  disabled={isSubmitting}
                 >
                   SUBMIT
                 </button>
