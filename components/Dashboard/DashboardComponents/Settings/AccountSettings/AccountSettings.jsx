@@ -203,7 +203,7 @@ const AccountSettings = ({ _user }) => {
                     <img
                       src={imageSrc || (user.avatarUrl ? user.avatarUrl : "https://placehold.co/100x100")}
                       alt="Profile"
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover w-[150px] h-[150px]"
                     />
                   </div>
                 </div>

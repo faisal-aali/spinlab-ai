@@ -152,7 +152,7 @@ const Sidebar = ({ showSidebar, setShowSidebar }) => {
             <img
               src={user?.avatarUrl ? user.avatarUrl : "https://placehold.co/100x100"}
               alt="User Avatar"
-              className="w-10 h-10 rounded-full"
+              className="w-10 h-10 rounded-full object-cover"
             />
             <div>
               <p className={`font-semibold ${pathname === '/profile' && 'text-black'}`}>{userSession.name} ({userSession.role})</p>

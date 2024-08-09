@@ -1,11 +1,10 @@
 // components/EditUserModal.js
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Modal, Box, IconButton, TextField, MenuItem, Snackbar } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
-import schemaValidators from "@/schema-validators";
 import { convertCmToFeetAndInches, convertFeetAndInchesToCm } from "@/util/utils";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useApp } from "../../../Context/AppContext";
@@ -44,11 +43,8 @@ const UpdatePasswordModal = ({ open, onClose, userId }) => {
 
   const [response, setResponse] = useState({})
   const { showSnackbar } = useApp();
-  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
-  const timeout = useRef()
 
   const handleChangePassword = (values) => {
     return new Promise((resolve, reject) => {
@@ -160,6 +156,8 @@ const EditUserModal = ({ open, onClose, userData, onSuccess }) => {
   const [user, setUser] = useState(userData)
   const [response, setResponse] = useState({})
   const { showSnackbar } = useApp();
+  const [file, setFile] = useState(null);
+
 
   const fetchUser = () => {
     return new Promise((resolve) => {
@@ -171,7 +169,6 @@ const EditUserModal = ({ open, onClose, userData, onSuccess }) => {
     })
   }
 
-  const timeout = useRef()
 
   useEffect(() => {
     const handleEsc = (event) => {
@@ -186,22 +183,42 @@ const EditUserModal = ({ open, onClose, userData, onSuccess }) => {
   }, [onClose]);
 
   const handleSubmit = async (values) => {
-    return new Promise((resolve, reject) => {
-      values.name = `${values.firstName} ${values.lastName}`.trim();
-      values.height = convertFeetAndInchesToCm(values.heightFt, values.heightIn) || null;
-      const data = {}
-      Object.keys(values).forEach(key => {
-        data[key] = values[key] || null
-      })
-      axios.post(`/api/${(userData.role === 'player' && 'players') || (userData.role === 'trainer' && 'trainers') || (userData.role === 'staff' && 'staff') || (userData.role === 'admin' && 'admin')}/${userData._id}`, data)
-        .then(res => {
-          showSnackbar(`${userData.role} has been updated`, 'success');
-          resolve();
-        }).catch(err => {
-          showSnackbar(err.response?.data?.message || err.message, 'error');
-          reject(err);
-        })
-    })
+    try {
+      let imageUrl = user.avatarUrl; 
+      if (file) {
+        const formData = new FormData();
+        formData.append("file", file); 
+        const res = await axios.post("/api/S3", formData); 
+        imageUrl = res.data.url; 
+      }
+  
+      const data = {
+        email: values.email,
+        name: `${values.firstName} ${values.lastName}`,
+        city: values.city,
+        country: values.country,
+        height: convertFeetAndInchesToCm(values.heightFt, values.heightIn),
+        weight: values.weight,
+        handedness: values.handedness,
+        avatarUrl: imageUrl, 
+      };
+  
+      await axios.post(
+        `/api/${
+          (userData.role === "player" && "players") ||
+          (userData.role === "trainer" && "trainers") ||
+          (userData.role === "staff" && "staff") ||
+          (userData.role === "admin" && "admin")
+        }/${userData._id}`,
+        data
+      );
+  
+      showSnackbar(`${userData.role} has been updated`, "success");
+      onSuccess && onSuccess();
+      onClose();
+    } catch (err) {
+      showSnackbar(err.response?.data?.message || err.message, "error");
+    }
   };
 
   return (
@@ -237,7 +254,7 @@ const EditUserModal = ({ open, onClose, userData, onSuccess }) => {
             }).catch(console.error)
           }}
         >
-          {({ errors, touched, setFieldValue, values }) => (
+          {({ isSubmitting, errors, touched, setFieldValue, values }) => (
             <Form>
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <div className="grid col-span-2 gap-2">
@@ -245,9 +262,20 @@ const EditUserModal = ({ open, onClose, userData, onSuccess }) => {
                     <label htmlFor="">Profile Photo</label>
                   </div>
                   <div className="grid grid-cols-1 gap-4">
-                    <div className="flex items-center justify-center flex-col blueBackground rounded-lg w-full h-52 gap-4 border-dashed border-2 border-slate-800">
+                    <div className="flex items-center justify-center flex-col blueBackground rounded-lg w-full py-4 gap-4 border-dashed border-2 border-slate-800">
+                      <div className="w-24">
+                        <img
+                          src={values.profilePhoto ? URL.createObjectURL(values.profilePhoto) : user.avatarUrl}
+                          alt="Preview"
+                          className="object-cover object-top
+                              rounded-full w-[100px] h-[100px]"
+                        />
+                      </div>
                       <label className="cursor-pointer flex items-center justify-center">
-                        <input type="file" accept="image/*" className="hidden" />
+                        <input type="file" accept="image/*" className="hidden" onChange={(event) => {
+                          setFieldValue('profilePhoto', event.currentTarget.files[0]);
+                          setFile(event.currentTarget.files[0]); 
+                        }}/>
                         <img src="/assets/upload-icon.svg" alt="" />
                       </label>
                       <div>
@@ -369,8 +397,14 @@ const EditUserModal = ({ open, onClose, userData, onSuccess }) => {
                 <button type="button" onClick={() => setShowPasswordModal(true)} className="bg-primary dark-blue-color uppercase rounded px-6 h-9 flex items-center justify-center text-lg font-bold hover-button-shadow">
                   Update Password
                 </button>
-                <button type="submit" className="bg-primary dark-blue-color rounded w-28 h-9 flex items-center justify-center text-lg font-bold hover-button-shadow">
-                  UPDATE
+                <button
+                  type="submit"
+                  className={`bg-primary dark-blue-color rounded w-28 h-9 flex items-center justify-center text-lg font-bold hover-button-shadow ${
+                    isSubmitting ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? "Updating..." : "UPDATE"}
                 </button>
               </div>
             </Form>

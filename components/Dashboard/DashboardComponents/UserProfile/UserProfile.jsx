@@ -94,7 +94,7 @@ const TrainerProfile = ({ setShowEditModal, setShowDeleteModal, setShowGiftModal
             <div className="flex flex-col lg:flex-row max-w-4xl gap-4 p-8 rounded-2xl items-start" style={{ background: "linear-gradient(115.84deg, #32E100 -127.95%, #090F21 66.31%)", }} >
                 <div>
                     <img
-                        src="/assets/player-large.png"
+                        src={userData.avatarUrl || "/assets/player-large.png"}
                         alt={userData.name}
                         className="rounded-lg"
                         style={{ height: "429px", width: "304px", objectFit: 'cover' }}
@@ -162,7 +162,7 @@ const StaffProfile = ({ setShowEditModal, setShowDeleteModal, userData }) => {
             <div className="flex-col lg:flex-row gap-4 max-w-4xl p-8 rounded-2xl flex items-start" style={{ background: "linear-gradient(115.84deg, #32E100 -127.95%, #090F21 66.31%)", }} >
                 <div>
                     <img
-                        src="/assets/player-large.png"
+                        src={userData.avatarUrl || "/assets/player-large.png"}
                         alt={userData.name}
                         className="rounded-lg"
                         style={{ height: "429px", width: "304px", objectFit: 'cover' }}

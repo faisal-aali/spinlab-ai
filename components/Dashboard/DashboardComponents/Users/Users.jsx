@@ -10,6 +10,7 @@ import {
   Paper,
   Typography,
   IconButton,
+  CircularProgress,
 } from "@mui/material";
 import Pagination from '../../../Common/Pagination/Pagination';
 import DeleteUserModal from '../DeleteUserModal/DeleteUserModal';
@@ -29,16 +30,20 @@ const Users = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [data, setData] = useState([]);
   const [userIdToDelete, setUserIdToDelete] = useState(null);
+  const [loading, setLoading] = useState(true); 
   const rowsPerPage = 5;
 
   const role = searchParams.get('role');
 
   const fetchData = async () => {
+    setLoading(true); 
     try {
       const response = await axios.get('/api/users', { params: { role } });
       setData(response.data);
     } catch (error) {
       console.error('Failed to fetch data:', error);
+    } finally {
+      setLoading(false); 
     }
   };
 
@@ -84,71 +89,78 @@ const Users = () => {
           </div>
         </div>
         <div className="">
-          <TableContainer component={Paper} className="!bg-transparent">
-            <Table sx={{ minWidth: 1000, overflow: 'auto' }}>
-              <TableHead className="leaderboard-table-head bg-primary-light uppercase">
-                <TableRow>
-                  <TableCell className="!text-white"></TableCell>
-                  <TableCell className="!text-white">Name</TableCell>
-                  <TableCell className="!text-white">Email</TableCell>
-                  <TableCell className="!text-white">Date of Joining</TableCell>
-                  <TableCell className="!text-white">Remaining Credits</TableCell>
-                  <TableCell className="!text-white">Subscription Plan</TableCell>
-                  {user.role === 'admin' && <TableCell className="!text-white">Delete {role === 'player' ? 'Player' : role === 'staff' ? 'Staff' : role === 'trainer' ? 'Trainer' : 'Invalid Role'}</TableCell>}
-                  <TableCell className="!text-white">{user.role !== 'admin' && 'Action'}</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody className="leaderboard-table-body">
-                {paginatedData.map((row) => (
-                  <TableRow key={row._id}>
-                    <TableCell className="!text-white" sx={{ minWidth: 100 }}>
-                      <img
-                        src={row.avatarUrl}
-                        alt={row.firstName}
-                        style={{ width: 54, height: 64 }}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Typography variant="body2" className="!text-white !text-lg !font-bold">
-                        {row.name}
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography variant="body2" className="!text-white !text-lg">
-                        {row.email}
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography variant="body2" className="!text-white !text-lg">
-                        {new Date(row.creationDate).toLocaleDateString()}
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography variant="body2" className="!text-primary !text-xl">
-                        {row.balance}
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography variant="body2" className="!text-primary !text-xl">
-                        {row.plan}
-                      </Typography>
-                    </TableCell>
-                    {user.role === 'admin' &&
-                      <TableCell className="!text-white">
-                        <IconButton onClick={() => handleDeleteClick(row._id)}>
-                          <img src="/assets/delete-icon.svg" />
-                        </IconButton>
-                      </TableCell>}
-                    <TableCell className="!text-white" sx={{ minWidth: 75 }}>
-                      <IconButton onClick={() => router.push(`/users/view?role=${role}&id=${row._id}`)}>
-                        <img src="/assets/open.svg" width={22} height={22} />
-                      </IconButton>
-                    </TableCell>
+          {loading ? ( 
+            <div className="flex justify-center py-16">
+              <CircularProgress />
+            </div>
+          ) : (
+            <TableContainer component={Paper} className="!bg-transparent">
+              <Table sx={{ minWidth: 1000, overflow: 'auto' }}>
+                <TableHead className="leaderboard-table-head bg-primary-light uppercase">
+                  <TableRow>
+                    <TableCell className="!text-white"></TableCell>
+                    <TableCell className="!text-white">Name</TableCell>
+                    <TableCell className="!text-white">Email</TableCell>
+                    <TableCell className="!text-white">Date of Joining</TableCell>
+                    <TableCell className="!text-white">Remaining Credits</TableCell>
+                    <TableCell className="!text-white">Subscription Plan</TableCell>
+                    {user.role === 'admin' && <TableCell className="!text-white">Delete {role === 'player' ? 'Player' : role === 'staff' ? 'Staff' : role === 'trainer' ? 'Trainer' : 'Invalid Role'}</TableCell>}
+                    <TableCell className="!text-white">{user.role !== 'admin' && 'Action'}</TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                </TableHead>
+                <TableBody className="leaderboard-table-body">
+                  {paginatedData.map((row) => (
+                    <TableRow key={row._id}>
+                      <TableCell className="!text-white" sx={{ minWidth: 100 }}>
+                        <img
+                          src={row.avatarUrl || '/assets/player.png'}
+                          alt={row.firstName}
+                          className="object-cover object-top
+                          rounded-lg w-[64px] h-[64px]"
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant="body2" className="!text-white !text-lg !font-bold">
+                          {row.name}
+                        </Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant="body2" className="!text-white !text-lg">
+                          {row.email}
+                        </Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant="body2" className="!text-white !text-lg">
+                          {new Date(row.creationDate).toLocaleDateString()}
+                        </Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant="body2" className="!text-primary !text-xl">
+                          {row.balance}
+                        </Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant="body2" className="!text-primary !text-xl">
+                          {row.plan}
+                        </Typography>
+                      </TableCell>
+                      {user.role === 'admin' &&
+                        <TableCell className="!text-white">
+                          <IconButton onClick={() => handleDeleteClick(row._id)}>
+                            <img src="/assets/delete-icon.svg" />
+                          </IconButton>
+                        </TableCell>}
+                      <TableCell className="!text-white" sx={{ minWidth: 75 }}>
+                        <IconButton onClick={() => router.push(`/users/view?role=${role}&id=${row._id}`)}>
+                          <img src="/assets/open.svg" width={22} height={22} />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
           <Pagination
             page={page}
             count={Math.ceil(data.length / rowsPerPage)}

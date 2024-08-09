@@ -116,7 +116,7 @@ const AddUserModal = ({ open, onClose, role, onSuccess }) => {
           <CloseIcon />
         </IconButton>
         <h2 className="text-2xl font-bold mb-8 text-center flex flex-col">
-          <span>To Add a New User, </span>Please enter the details below.
+          <span>To Add a New <span className="capitalize">{role}</span>, </span>Please enter the details below.
         </h2>
         <Formik
           initialValues={{
@@ -151,7 +151,8 @@ const AddUserModal = ({ open, onClose, role, onSuccess }) => {
                           <img
                             src={imageSrc}
                             alt="Preview"
-                            className="w-full h-full object-cover rounded-full"
+                            className="object-cover object-top
+                            rounded-full w-[100px] h-[100px]"
                           />
                         )}
                       </div>
