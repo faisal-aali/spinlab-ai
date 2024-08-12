@@ -9,12 +9,12 @@ const PickYourPlan = ({ onSubmit }) => {
 
     return (
         <div>
-            <div className="w-full p-4">
+            <div className="w-full p-0 md:p-4">
                 <div className={`mb-6 ${styles.pricePlanContainer}`}>
                     {["monthly", "yearly"].map((plan, index) => (
                         <div
                             key={index}
-                            className={`relative p-4 mb-8 flex items-center gap-12 cursor-pointer border primary-border rounded-lg ${selectedPlan === plan ? "hover-shadow-dark" : "hover-shadow-light"
+                            className={`relative p-4 mb-8 flex flex-col md:flex-row items-center gap-12 cursor-pointer border primary-border rounded-lg ${selectedPlan === plan ? "hover-shadow-dark" : "hover-shadow-light"
                                 }`}
                             onClick={() => setSelectedPlan(plan)}
                         >

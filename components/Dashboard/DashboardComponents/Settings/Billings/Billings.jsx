@@ -139,7 +139,7 @@ const BillingTab = () => {
             </div> :
             <div>
               <div className="flex gap-6 flex-col md:flex-row">
-                <div className="border primary-border py-8 pl-12 pr-16 flex justify-center flex-col rounded-lg w-fit 2xl:pr-[100px]">
+                <div className="border primary-border py-8 px-4 md:px-16 flex justify-center flex flex-col rounded-lg w-fit 2xl:pr-[100px] w-full md:w-auto">
                   <div>
                     <h2 className="text-xl font-bold">Billing Details</h2>
                     {profileError ?
@@ -160,7 +160,7 @@ const BillingTab = () => {
                     }
                   </div>
                 </div>
-                <div className="border primary-border py-8 flex pl-12 pr-16 justify-center flex-col rounded-lg w-fit 2xl:pr-[200px]">
+                <div className="border primary-border py-8 px-4 md:px-16 justify-center flex flex-col rounded-lg w-fit 2xl:pr-[200px] w-full md:w-auto">
                   <div>
                     <h2 className="text-xl font-bold mt-2">Plan Details</h2>
                     <p className="mt-2">{user.subscription.package?.name || 'Free'}</p>

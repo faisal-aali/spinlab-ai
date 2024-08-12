@@ -20,32 +20,21 @@ const Purchases = () => {
   return (
     <>
       <div className="flex-1">
-        <div className="blueBackground p-8 primary-border rounded-lg flex items-center justify-between w-3/5 mb-4">
-          <div className="flex flex-col ml-4 gap-5">
+        <div className="blueBackground p-8 primary-border rounded-lg flex items-center justify-between w-full md:w-3/5 mb-4">
+          <div className="flex flex-col gap-2 md:gap-5">
             <div>
-              <h2 className="font-normal">
-                Your Current Balance :
-                <span className="ml-2 text-primary font-semibold">
-                  {user?.credits.remaining}{" "}
-                  <span className="text-zinc-400 text-base font-normal">
-                    Credits
-                  </span>
-                </span>
+              <h2 className="text-sm md:text-4xl font-normal">
+                Your Current Balance : <span className="text-primary font-semibold"> {user?.credits.remaining} <span className="text-zinc-400 text-xs md:text-lg font-normal"> Credits </span></span>
               </h2>
             </div>
             <div>
-              <p className="ml-1.5 text-zinc-400 text-xl false">
-                Plan :
-                <span className="ml-2 text-primary font-semibold">
-                  {user?.subscription.package.name}
-                </span>
-              </p>
+              <p className="text-zinc-400 text-sm md:text-xl false"> Plan : <span className="text-primary font-semibold">{user?.subscription.package.name}</span> </p>
             </div>
           </div>
         </div>
 
         {!user ? <CircularProgress /> :
-          <div className="p-4">
+          <div className="p-0 md:p-4">
             {step === 1 && <PickCredits user={user} onSubmit={(credits) => {
               setCredits(credits)
               setStep(2)

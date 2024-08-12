@@ -77,9 +77,8 @@ const History = (props) => {
         <div className={`blueBackground p-4 primary-border rounded-lg flex items-center justify-between mb-4 h-32 w-full xl:w-3/5 ${props.omitHeader && 'hidden'}`}>
           <div className="flex gap-5 items-center">
             <div className="ml-4">
-              <h2 className="font-normal">
-                Here's your
-                <span className="ml-2 text-primary font-semibold">History</span>
+              <h2 className="text-lg md:text-4xl font-normal">
+                Here's your <span className="text-primary font-semibold">History</span>
               </h2>
               <p className="text-white text-sm">
                 You can view and download the report
@@ -117,12 +116,13 @@ const History = (props) => {
                                 alt={row.name}
                                 style={{ width: 75, height: 50, objectFit: 'cover', borderRadius: 8 }}
                               />
-                              <img
-                                className="absolute top-4 left-6"
-                                src={'/assets/play.svg'}
-                                alt={row.name}
-                                style={{ width: 20, height: 20, objectFit: 'cover', borderRadius: 8 }}
-                              />
+                              <div className="top-0 left-0 w-full h-full absolute flex justify-center items-center">
+                                <img
+                                  src={'/assets/play.svg'}
+                                  alt={row.name}
+                                  style={{ width: 20, height: 20, objectFit: 'cover', borderRadius: 8 }}
+                                />
+                              </div>
                             </button>
                           </TableCell>
                           <TableCell>

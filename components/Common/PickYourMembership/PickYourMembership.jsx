@@ -13,21 +13,21 @@ const PickYourMembership = ({ plan, role, onBack, onSubmit }) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        console.log( "User packageId: ", user?.subscription?.packageId)
-        console.log(packages )
+        console.log("User packageId: ", user?.subscription?.packageId)
+        console.log(packages)
         axios.get('/api/packages', {
             params: {
                 role: role,
                 plan: plan
             }
         }).then(res => setPackages(res.data))
-          .catch(console.error)
-          .finally(() => setLoading(false));
+            .catch(console.error)
+            .finally(() => setLoading(false));
     }, []);
 
     return (
         <div>
-            <div className="w-4/5 mx-auto p-4">
+            <div className="w-full md:w-4/5 mx-auto p-0 md:p-4">
                 <div className="text-center mb-8">
                     <h2 className="text-white text-3xl mb-2">Pick your Membership</h2>
                     <p className="text-primary">1 Credit = 1 Throw</p>

@@ -42,19 +42,23 @@ const PlayerCard = ({ player }) => {
 
     return (
         <Card className="!bg-transparent p-1 border primary-border-parrot rounded-lg">
-            <Grid container gap={1} padding={1} display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
-                <Grid item container xs='auto' gap={4} alignItems={'center'}>
-                    <Grid item>
-                        <img src={player.avatarUrl || '/assets/player.png'} alt={player.name} width={50} height={50} />
+            <Grid container gap={2} padding={1} display={'flex'} justifyContent={{ xs: 'center', sm: 'space-between' }} alignItems={'center'}>
+                <Grid item flexDirection={{ xs: 'column', sm: 'row' }} container xs='auto' gap={{ xs: 2, md: 4 }} alignItems={'center'}>
+                    <Grid item container xs='auto' alignItems={'center'} gap={4}>
+                        <Grid item>
+                            <img src={player.avatarUrl || '/assets/player.png'} alt={player.name} width={50} height={50} />
+                        </Grid>
+                        <Grid item>
+                            <Typography className="text-white text-2xl">{player.name}</Typography>
+                        </Grid>
                     </Grid>
-                    <Grid item>
-                        <Typography className="text-white text-2xl">{player.name}</Typography>
-                    </Grid>
-                    <Grid item className="blueBackground py-1 px-8 primary-border rounded" height={'100%'}>
-                        <Typography className="text-white text-lg">{convertCmToFeetAndInches(player.roleData.height).string}</Typography>
-                    </Grid>
-                    <Grid item className="blueBackground py-1 px-8 primary-border rounded" height={'100%'}>
-                        <Typography className="text-white text-lg">{player.roleData.weight} lbs</Typography>
+                    <Grid item container xs='auto' gap={2}>
+                        <Grid item className="blueBackground py-1 px-8 primary-border rounded" height={'100%'}>
+                            <Typography className="text-white text-lg">{convertCmToFeetAndInches(player.roleData.height).string}</Typography>
+                        </Grid>
+                        <Grid item className="blueBackground py-1 px-8 primary-border rounded" height={'100%'}>
+                            <Typography className="text-white text-lg">{player.roleData.weight} lbs</Typography>
+                        </Grid>
                     </Grid>
                 </Grid>
                 <Grid item className="mr-8">
@@ -163,7 +167,7 @@ const EfficiencyGraph = ({ videos }) => {
     };
 
     return (
-        <div style={{ width: '100%', height: '100%' }}>
+        <div className="flex flex-col" style={{ width: '100%', height: '100%', minWidth: 500 }}>
             <h2 className="text-2xl">Efficiency</h2>
             <LineGraph data={data} options={options} />
         </div>
@@ -235,14 +239,14 @@ export default function Metrics(props) {
                 <div className={`${props.omitPlayerCard && 'hidden'}`}>
                     <PlayerCard player={player} />
                 </div>
-                <div className="grid grid-cols-2 lg:grid-cols-3 gap-7">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
                     {KPIs.map((kpi, index) => (
                         <div key={index}>
                             <KPICard {...kpi} />
                         </div>
                     ))}
                 </div>
-                <div className="blueBackground border primary-border rounded-lg p-6">
+                <div className="blueBackground border primary-border rounded-lg p-6 overflow-auto">
                     <EfficiencyGraph videos={videos} />
                 </div>
                 <div>

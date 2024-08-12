@@ -30,12 +30,12 @@ export default function CoachingCall() {
             <div className="blueBackground p-4 primary-border rounded-lg flex items-center justify-between mb-4 h-32 w-full xl:w-3/5">
                 <div className="flex gap-5 items-center">
                     <div className="ml-4">
-                        <h2 className="font-normal">{user.role === 'player' ? 'Schedule your Call with a Coach' : 'Your Calendar'}</h2>
+                        <h2 className="text-xl md:text-4xl font-normal">{user.role === 'player' ? 'Schedule your Call with a Coach' : 'Your Calendar'}</h2>
                     </div>
                 </div>
             </div>
             {!calendar ? <CircularProgress /> :
-                <div className='grid grid-cols-2 gap-8'>
+                <div className='grid grid-cols-2 gap-8 overflow-auto'>
                     <iframe src={calendar.src} width={600} height={300} />
                 </div>}
         </div>

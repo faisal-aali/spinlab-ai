@@ -149,7 +149,7 @@ const _PaymentForm = ({ onPaymentSuccess, type, _package, credits, amount, onBac
 
     return (
         <div className="flex flex-col-reverse lg:flex-row gap-8">
-            <div className="px-8 py-6 bg-transparent border primary-border rounded-lg">
+            <div className="px-4 md:px-8 py-6 bg-transparent border primary-border rounded-lg">
                 <div className="text-center mb-4">
                     <h2 className="text-white font-bold mb-4 text-2xl">
                         Billing Details
@@ -174,8 +174,8 @@ const _PaymentForm = ({ onPaymentSuccess, type, _package, credits, amount, onBac
                         {({ errors, touched, isSubmitting }) => (
                             <Form className="flex justify-between gap-8 max-w-7xl">
                                 <div className="w-full">
-                                    <div className="flex items-center mb-4 gap-6">
-                                        <div className="w-1/2">
+                                    <div className="flex flex-col md:flex-row items-center mb-4 gap-6">
+                                        <div className="w-full md:w-1/2">
                                             <div className="mb-2 opacity-45">
                                                 <label htmlFor="">First Name</label>
                                             </div>
@@ -188,7 +188,7 @@ const _PaymentForm = ({ onPaymentSuccess, type, _package, credits, amount, onBac
                                                 <div className="text-red-500 text-sm">{errors.firstName}</div>
                                             )}
                                         </div>
-                                        <div className="w-1/2">
+                                        <div className="w-full md:w-1/2">
                                             <div className="mb-2 opacity-45">
                                                 <label htmlFor="">Last Name</label>
                                             </div>
@@ -215,8 +215,8 @@ const _PaymentForm = ({ onPaymentSuccess, type, _package, credits, amount, onBac
                                             <div className="text-red-500 text-sm">{errors.address}</div>
                                         )}
                                     </div>
-                                    <div className="flex mb-4 gap-6">
-                                        <div className="w-1/2">
+                                    <div className="flex flex-col md:flex-row mb-4 gap-6">
+                                        <div className="w-full md:w-1/2">
                                             <div className="mb-2 opacity-45">
                                                 <label htmlFor="">Credit Card Number</label>
                                             </div>
@@ -225,7 +225,7 @@ const _PaymentForm = ({ onPaymentSuccess, type, _package, credits, amount, onBac
                                                 className={`w-full py-4 px-3 bg-transparent primary-border rounded rounded-lg focus:outline-none focus:outline-none focus:border-green-500 placeholder:opacity-45 ${styles.backgroundImage} ${styles.backgroundImageCardNum}`}
                                             />
                                         </div>
-                                        <div className="w-1/2">
+                                        <div className="w-full md:w-1/2">
                                             <div className="mb-2 opacity-45">
                                                 <label htmlFor="">CVV</label>
                                             </div>
@@ -279,7 +279,7 @@ const _PaymentForm = ({ onPaymentSuccess, type, _package, credits, amount, onBac
                 </div>
             </div>
             {type === 'subscription' ?
-                <div className="w-full lg:w-2/5 pl-8 rounded-lg p-6 blueBackground flex justify-center items-center">
+                <div className="w-full lg:w-2/5 rounded-lg p-3 md:p-6 blueBackground flex justify-center items-center">
                     <div className="w-full justify-between text-white rounded-lg">
                         <h2 className="font-bold mb-4">SUMMARY</h2>
                         <div className="border-b-2 border-dashed mb-4"></div>

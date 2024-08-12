@@ -16,8 +16,8 @@ const PickCredits = ({ onSubmit, onBack, user }) => {
           Save money and get free credits when you buy in bulk
         </h2>
       </div>
-      <div className="flex flex-col	w-11/12">
-        <div className="mb-6 flex gap-6">
+      <div className="flex flex-col">
+        <div className="mb-6 flex flex-col md:flex-row gap-6 overflow-auto">
           {[1, 5, 10].map((credits, index) => (
             <div
               key={index}
@@ -42,7 +42,7 @@ const PickCredits = ({ onSubmit, onBack, user }) => {
             </div>
           ))}
         </div>
-        <div className="flex space-x-4 justify-end mt-4">
+        <div className="flex space-x-4 justify-center md:justify-end mt-4">
           {onBack &&
             <button
               className="bg-white dark-blue-color px-4 py-1 rounded font-bold"

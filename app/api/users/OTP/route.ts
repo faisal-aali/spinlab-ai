@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
             to: data.receiverEmail || data.email,
             subject: 'SpinLab Verification Code',
             html: `
-                <p>Hello, ${data.name}!</p>
+                <p>Hello, ${user.name}!</p>
                 <p>Please enter the following code on the website. This code will expire in 15 minutes.</p>
                 <p>Code: ${code}</p>
             `

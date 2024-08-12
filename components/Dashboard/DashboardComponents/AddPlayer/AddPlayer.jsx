@@ -27,21 +27,21 @@ const PlayerCard = ({ player, playersMetrics, setShowUploadModal, setSelectedPla
 
   return (
     <Card className="bg-transparent p-1 border primary-border">
-      <Grid container padding={1} gap={2}>
-        <Grid item>
-          <CardMedia component={'img'} style={{ width:140, height:165, borderRadius: '8px', objectFit: 'cover', objectPosition: '50% 10%' }} image={player.avatarUrl || '/assets/player.png'} />
+      <Grid container flexDirection={{ xs: 'column', sm: 'row' }} padding={1} gap={2}>
+        <Grid item display={'flex'} justifyContent={'center'}>
+          <CardMedia component={'img'} style={{ width: 140, height: 165, borderRadius: '8px', objectFit: 'cover', objectPosition: '50% 10%' }} image={player.avatarUrl || '/assets/player.png'} />
         </Grid>
-        <Grid item alignItems={'center'} display={'flex'} xs>
+        <Grid item alignItems={'center'} justifyContent={{ xs: 'center' }} display={'flex'} xs>
           <CardContent style={{ padding: 0 }}>
-            <Grid container flexDirection={'column'} gap={2}>
+            <Grid container flexDirection={'column'} display={'flex'} alignItems={{ xs: 'center', sm: 'start' }} gap={2}>
               <Grid item>
                 <Typography className="!text-white !text-2xl">{player.name}</Typography>
               </Grid>
               <Grid item container gap={2}>
-                <Grid item className="blueBackground w-36	text-center py-2 px-8 primary-border-green rounded">
+                <Grid item className="blueBackground w-32 md:w-36	text-center py-2 px-4 md:px-8 primary-border-green rounded">
                   <Typography className="text-white text-lg	">{convertCmToFeetAndInches(player.roleData.height).string}</Typography>
                 </Grid>
-                <Grid item className="blueBackground w-36	text-center py-2 px-8 primary-border-green rounded">
+                <Grid item className="blueBackground w-32 md:w-36	text-center py-2 px-4 md:px-8 primary-border-green rounded">
                   <Typography className="text-white text-lg	">{player.roleData.weight} lbs</Typography>
                 </Grid>
               </Grid>
@@ -50,12 +50,12 @@ const PlayerCard = ({ player, playersMetrics, setShowUploadModal, setSelectedPla
                   <button onClick={() => {
                     setSelectedPlayerId(player._id)
                     setShowUploadModal(true)
-                  }} className="bg-white dark-blue-color font-bold rounded w-32 h-9  flex items-center justify-center text-base">
+                  }} className="bg-white dark-blue-color font-bold rounded w-28 md:w-32 h-9  flex items-center justify-center text-base">
                     UPLOAD
                   </button>
                 </Grid>
                 <Grid item xs>
-                  <button onClick={() => router.push(`/metrics?playerId=${player._id}`)} style={{ width: playersMetrics && '100%' }} className="bg-primary text-black rounded w-40 h-9 flex items-center justify-center text-base hover-button-shadow">
+                  <button onClick={() => router.push(`/metrics?playerId=${player._id}`)} style={{ width: playersMetrics && '100%' }} className="bg-primary text-black rounded w-36 md:w-40 h-9 flex items-center justify-center text-base hover-button-shadow">
                     VIEW METRICS
                   </button>
                 </Grid>
@@ -101,11 +101,11 @@ const AddPlayer = () => {
 
   return (
     <div className="grid gap-4 py-8 ">
-      <div className="flex justify-between">
+      <div className="flex flex-col md:flex-row gap-4 justify-between">
         <div>
           <h3>{playersMetrics ? 'Players Metrics' : 'Added Players'}</h3>
         </div>
-        <div className="search-bar w-2/5">
+        <div className="search-bar w-full md:w-2/5">
           <input
             placeholder="Search..."
             value={searchQuery}
@@ -118,18 +118,18 @@ const AddPlayer = () => {
         {!players ? <CircularProgress /> :
           <Grid container gap={2}>
             {filteredPlayers.map(player => (
-              <Grid item key={player.id}>
+              <Grid item key={player.id} width={{ xs: '100%', sm: 'auto' }}>
                 <PlayerCard setSelectedPlayerId={setSelectedPlayerId} setShowUploadModal={setShowUploadModal} player={player} playersMetrics={playersMetrics} />
               </Grid>
             ))}
-            <Grid item onClick={() => setShowModal(true)} className="border primary-border rounded" alignItems={'center'} justifyContent={'center'} display={playersMetrics ? 'none' : 'flex'} sx={{ ':hover': { bgcolor: green[900], cursor: 'pointer' } }} minHeight={175} width={485}>
+            <Grid item onClick={() => setShowModal(true)} className="border primary-border rounded" alignItems={'center'} justifyContent={'center'} display={playersMetrics ? 'none' : 'flex'} sx={{ ':hover': { bgcolor: green[900], cursor: 'pointer' } }} minHeight={175} width={{ xs: '100%', sm: 485 }}>
               <IconButton>
                 <Add className="text-primary" fontSize="large" />
               </IconButton>
             </Grid>
           </Grid>}
       </div>
-      { showModal && <AddNewPlayerModal onClose={() => setShowModal(false)} open={showModal} onSuccess={fetchPlayers} />}
+      {showModal && <AddNewPlayerModal onClose={() => setShowModal(false)} open={showModal} onSuccess={fetchPlayers} />}
       <UploadModal playerId={selectedPlayerId} open={showUploadModal} onClose={() => setShowUploadModal(false)} onSuccess={() => setShowUploadModal(false)} type={'upload'} />
     </div>
   );

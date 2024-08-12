@@ -69,11 +69,11 @@ const PlayersHistory = (props) => {
 
     return (
         <div className="grid gap-4 py-8">
-            <div className={`flex justify-between ${props.omitHeader && 'hidden'} mb-4`}>
+            <div className={`flex flex-col md:flex-row gap-4 justify-between ${props.omitHeader && 'hidden'} mb-4`}>
                 <div>
                     <h2 className="font-normal ml-1.5">Players History</h2>
                 </div>
-                <div className="search-bar w-2/5">
+                <div className="search-bar w-full md:w-2/5">
                     <input
                         placeholder="Search..."
                         value={searchQuery}
@@ -83,7 +83,7 @@ const PlayersHistory = (props) => {
                 </div>
             </div>
             {!players ? <CircularProgress /> :
-                <div className="">
+                <div className="overflow-auto">
                     <TableContainer component={Paper} className="!bg-transparent">
                         <Table>
                             <TableHead className="leaderboard-table-head bg-primary-light uppercase">

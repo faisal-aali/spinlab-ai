@@ -134,7 +134,7 @@ const DrillLibrary = () => {
               variant="scrollable"
               scrollButtons="auto"
               aria-label="category tabs"
-              className="!blueBackground py-2.5 !px-2.5 rounded-lg"
+              className="w-full !blueBackground py-2.5 !px-2.5 rounded-lg"
               sx={{
                 color: "white",
                 ".MuiButtonBase-root.MuiTab-root": {
@@ -173,7 +173,7 @@ const DrillLibrary = () => {
                 />
               ))}
             </Tabs>
-            <div className="flex flex-row justify-end gap-[30px]">
+            <div className="flex flex-col md:flex-row justify-end gap-[30px] w-full">
               <div className="flex search-bar w-full md:w-[200px] 4xl:w-[580px] ">
                 <input
                   placeholder="Search..."
@@ -182,7 +182,7 @@ const DrillLibrary = () => {
                   className="w-full py-1 rounded-lg text-white h-12 search-background focus:outline-none focus:ring-1 focus:ring-green-500"
                 />
               </div>
-              <div className={`flex ${user?.role !== "admin" && "hidden"}`}>
+              <div className={`flex justify-center ${user?.role !== "admin" && "hidden"}`}>
                 <button
                   className="bg-white dark-blue-color rounded w-44 h-14 flex items-center justify-center text-lg rounded-lg"
                   onClick={() => setShowAddModal(true)}
@@ -216,29 +216,21 @@ const DrillLibrary = () => {
                         title={video.title}
                         className="rounded-lg"
                       />
-                      <CardContent className="pl-1 pt-2	">
+                      <CardContent className="pl-1 pt-2">
                         <Grid container gap={1} justifyContent={'space-between'}>
-                          <Grid item container flexDirection={'column'} xs='auto'>
-                            <Grid item xs>
-                              <Typography variant="body2" className="text-white">
+                          <Grid item container flexDirection={'column'} xs={true}>
+                            <Grid item>
+                              <p className="text-sm md:text-base font-semibold text-white">
                                 {video.title}
-                              </Typography>
+                              </p>
                             </Grid>
-                            <Grid item xs>
-                              <Typography variant="body2" className="text-white">
+                            <Grid item >
+                              <p className="text-xs md:text-sm text-white">
                                 {video.description}
-                              </Typography>
+                              </p>
                             </Grid>
                           </Grid>
-                          <Grid
-                            item
-                            container
-                            xs="auto"
-                            gap={2}
-                            sx={{
-                              display: user?.role === "admin" ? "flex" : "none",
-                            }}
-                          >
+                          <Grid item container gap={2} sx={{ display: user?.role === "admin" ? "flex" : "none" }} xs={'auto'}>
                             <Grid item>
                               <button
                                 onClick={() => handleEditClick(video._id)}

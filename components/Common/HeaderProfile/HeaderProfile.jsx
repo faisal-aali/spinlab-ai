@@ -11,7 +11,7 @@ export default function HeaderProfile() {
 
     return (
         !user ? <CircularProgress /> :
-            <div className="flex flex-col md:flex-row  blueBackground p-4 primary-border rounded-lg flex items-center justify-between mb-4 h-32 w-full xl:w-3/5">
+            <div className="flex flex-col md:flex-row  blueBackground p-4 primary-border rounded-lg flex items-center justify-center md:justify-between mb-4 h-32 w-full xl:w-3/5">
                 <div className="flex gap-5 items-center">
                     <img src="/assets/hello-icon.png" className="w-11" alt="" />
                     <div>

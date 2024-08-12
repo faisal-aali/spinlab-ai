@@ -193,7 +193,7 @@ const AccountSettings = () => {
         >
           {({ errors, touched, setFieldValue, values, isSubmitting, resetForm }) => (
             <Form>
-              <div className={`space-y-4 primary-border rounded-lg flex items-center p-4`}>
+              <div className={`flex flex-col md:flex-row space-y-4 primary-border rounded-lg flex items-center p-4`}>
                 <div className="basis-2/5 flex pl-6 2xl:pl-20 justify-between flex-col">
                   <div>
                     <h2 className="text-xl font-bold">Profile Photo</h2>
@@ -202,17 +202,17 @@ const AccountSettings = () => {
                     </p>
                   </div>
                 </div>
-                <div className={`flex space-x-4 basis-3/5 primary-border rounded-lg p-8 items-center`}>
-                  <div className="basis-1/4 flex items-center justify-center">
-                    <div className="relative rounded-full overflow-hidden">
+                <div className={`basis-3/5 flex flex-col gap-4 md:gap-4 md:flex-row primary-border rounded-lg p-2 md:p-8 items-center`}>
+                  <div className="flex items-center justify-center w-auto">
+                    <div className="relative rounded-full overflow-hidden w-[100px] md:w-[150px] h-[100px] md:h-[150px]">
                       <img
                         src={imageSrc || (user.avatarUrl ? user.avatarUrl : "https://placehold.co/100x100")}
                         alt="Profile"
-                        className="object-cover w-[150px] h-[150px]"
+                        className="object-cover w-full h-full"
                       />
                     </div>
                   </div>
-                  <div className="flex flex-col items-center basis-3/4">
+                  <div className="flex flex-col items-center w-full">
                     <div className="p-8 flex items-center justify-center flex-col blueBackground rounded-lg w-full gap-4 border-dashed border-2 border-slate-800">
                       <label className="cursor-pointer flex items-center justify-center">
                         <input
@@ -256,8 +256,8 @@ const AccountSettings = () => {
                   </div>
                 </div>
               </div>
-              <div className={`space-y-4 primary-border rounded-lg flex items-center p-4 mt-8`}>
-                <div className="basis-2/5 flex pl-6 2xl:pl-20 justify-between flex-col">
+              <div className={`flex flex-col md:flex-row space-y-4 primary-border rounded-lg flex items-center p-4 mt-8`}>
+                <div className="basis-2/5 flex pl-0 md:pl-6 2xl:pl-20 justify-between flex-col">
                   <div>
                     <h2 className="text-xl  font-bold">Personal Information</h2>
                     <p className="text-gray-400">
@@ -448,8 +448,8 @@ const AccountSettings = () => {
             </Form>
           )}
         </Formik>
-        <div className="space-y-4 primary-border rounded-lg flex items-center p-4 mt-8">
-          <div className="basis-2/5 flex pl-6 2xl:pl-20 justify-between flex-col">
+        <div className="flex flex-col md:flex-row space-y-4 primary-border rounded-lg flex items-start md:items-center p-4 mt-8">
+          <div className="basis-full md:basis-2/5 flex pl-0 md:pl-6 2xl:pl-20 justify-start md:justify-between flex-col">
             <div>
               <h2 className="text-xl font-bold">Email</h2>
               <p className="text-gray-400">
@@ -457,9 +457,9 @@ const AccountSettings = () => {
               </p>
             </div>
           </div>
-          <div className="basis-3/5">
+          <div className="basis-full md:basis-3/5 w-full">
             <div className="flex items-center mb-4 gap-6">
-              <div className="w-48-percent">
+              <div className="w-full md:w-1/2">
                 <div className="mb-1 opacity-45">
                   <label htmlFor="">Email</label>
                 </div>
@@ -496,8 +496,8 @@ const AccountSettings = () => {
         >
           {({ errors, touched, values }) => (
             <Form>
-              <div className="space-y-4 primary-border rounded-lg flex items-center p-4 mt-8">
-                <div className="basis-2/5 flex pl-6 2xl:pl-20 justify-between flex-col">
+              <div className="flex flex-col md:flex-row space-y-4 primary-border rounded-lg flex items-center p-4 mt-8">
+                <div className="basis-full md:basis-2/5 flex pl-0 md:pl-6 2xl:pl-20 justify-between flex-col">
                   <div>
                     <h2 className="text-xl font-bold">Password</h2>
                     <p className="text-gray-400">
@@ -505,9 +505,9 @@ const AccountSettings = () => {
                     </p>
                   </div>
                 </div>
-                <div className="basis-3/5">
-                  <div className="flex items-center mb-4 gap-6">
-                    <div className="w-48-percent">
+                <div className="basis-full md:basis-3/5 w-full">
+                  <div className="flex items-center mb-4 gap-6 w-full">
+                    <div className="w-full md:w-48-percent">
                       <div className="mb-1 opacity-45">
                         <label htmlFor="">Current Password</label>
                       </div>
@@ -533,8 +533,8 @@ const AccountSettings = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center mb-4 gap-6">
-                    <div className="w-1/2">
+                  <div className="flex flex-col md:flex-row items-center mb-4 gap-6">
+                    <div className="w-full md:w-48-percent">
                       <div className="mb-1 opacity-45">
                         <label htmlFor="">New Password</label>
                       </div>
@@ -556,7 +556,7 @@ const AccountSettings = () => {
                         </div>
                       </div>
                     </div>
-                    <div className="w-1/2">
+                    <div className="w-full md:w-1/2">
                       <div className="mb-1 opacity-45">
                         <label htmlFor="">Confirm Password</label>
                       </div>

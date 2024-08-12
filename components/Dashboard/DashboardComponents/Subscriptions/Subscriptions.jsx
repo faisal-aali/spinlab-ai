@@ -70,11 +70,11 @@ const Subscriptions = () => {
 
   return (
     <div className="flex-1 py-8">
-      <div className="p-4 flex items-center justify-between w-3/5 mb-4 -mt-16 h-32">
+      <div className="p-4 flex items-center justify-between w-full mb-4 -mt-16 h-32">
         <div className="flex gap-5 items-center">
-          <div className="ml-4">
-            <h2 className="font-normal">Change your Plan</h2>
-            <p className="text-white text-base mt-2">Update your plan here.</p>
+          <div className="ml-0 md:ml-4">
+            <h2 className="text-2xl md:text-4xl font-normal">Change your Plan</h2>
+            <p className="text:sm md:text-base text-white mt-2">Update your plan here.</p>
           </div>
         </div>
       </div>
@@ -83,27 +83,27 @@ const Subscriptions = () => {
         <div className="p-4">
           {step === 1 && (
             <div className="w-fit blueBackground text-center p-8 rounded-lg mx-auto">
-              <div className="flex flex-col justify-center items-center h-full">
-                <h2 className="text-white text-3xl mt-2 mb-4 font-semibold capitalize">
-                  Active Subscription: {user.subscription.package?.name}
+              <div className="flex flex-col justify-center items-center h-full gap-4">
+                <h2 className="text-white text-lg md:text-3xl font-semibold capitalize">
+                  Active Subscription: <span className="text-primary">{user.subscription.package?.name}</span>
                 </h2>
-                <p className="text-white text-base mt-2">
+                <p className="text-white text-base">
                   Status: {user.subscription.status}
                 </p>
-                <p className="text-white text-base mt-2">
+                <p className="text-white text-base">
                   Amount: ${(user.subscription.amount / 100).toFixed(2)} {user.subscription.package?.plan}
                 </p>
-                <div className="flex flex-row gap-4">
+                <div className="flex flex-col md:flex-row gap-4">
                   <button
                     variant="contained"
-                    className="bg-primary w-64 text-black font-bold px-12 py-1 rounded mt-4"
+                    className="bg-primary w-64 text-black font-bold px-12 py-1 rounded"
                     onClick={() => setStep(2)}
                   >
                     Change Plan
                   </button>
                   <button
                     variant="contained"
-                    className="bg-transparent border border-red-500 w-64 font-bold px-12 py-1 rounded mt-4"
+                    className="bg-transparent border border-red-500 w-64 font-bold px-12 py-1 rounded"
                     onClick={openConfirmationModal}
                   >
 
