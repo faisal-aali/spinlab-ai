@@ -37,13 +37,10 @@ const DrillLibrary = () => {
     try {
       const categoryResponse = await axios.get("/api/categories");
       const categoryData = categoryResponse.data;
-      const categoryList = [
-        { name: "All", _id: "all" },
-        ...categoryData.map((cat) => ({
-          name: cat.name,
-          _id: cat._id,
-        })),
-      ];
+      const categoryList = categoryData.map((cat) => ({
+        name: cat.name,
+        _id: cat._id,
+      }))
 
       setCategories(categoryList);
 
@@ -106,11 +103,10 @@ const DrillLibrary = () => {
   const filteredVideos = videos.filter((video) => {
     const searchLower = searchQuery.toLowerCase();
     const title = video.title ? video.title.toLowerCase() : "";
-    const description = video.description
-      ? video.description.toLowerCase() : "";
+    const description = video.description ? video.description.toLowerCase() : "";
 
     return title.includes(searchLower) || description.includes(searchLower);
-  });
+  }); 1
 
   return (
     <>
@@ -163,7 +159,7 @@ const DrillLibrary = () => {
                 },
               }}
             >
-              {categories.map((category) => (
+              {[{ name: 'All', _id: 'all' }].concat(categories).map((category) => (
                 <Tab
                   key={category._id}
                   label={category.name}
@@ -282,6 +278,8 @@ const DrillLibrary = () => {
           open={showAddModal}
           onClose={() => setShowAddModal(false)}
           categories={categories}
+          initialCategory={selectedCategory}
+          onSuccess={fetchCategoriesAndVideos}
         />
       )}
       {showEditModal && (
@@ -291,6 +289,7 @@ const DrillLibrary = () => {
           videoId={selectedVideoId}
           videoData={selectedVideoData}
           categories={categories}
+          onSuccess={fetchCategoriesAndVideos}
         />
       )}
       {showDeleteModal && (
@@ -298,6 +297,7 @@ const DrillLibrary = () => {
           open={showDeleteModal}
           onClose={() => setShowDeleteModal(false)}
           videoId={selectedVideoId}
+          onSuccess={fetchCategoriesAndVideos}
         />
       )}
     </>
