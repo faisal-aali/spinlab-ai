@@ -10,10 +10,10 @@ const stripeSecretKey: string = process.env.STRIPE_SECRET_KEY || "";
 const stripe = new Stripe(stripeSecretKey);
 
 export async function GET(req: NextRequest) {
-    try {
-        const session = await getServerSession(authOption);
-        if (!session || !session.user) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
+    const session = await getServerSession(authOption);
+    if (!session || !session.user) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
 
+    try {
         const user = await User.findOne({ _id: session.user._id })
         if (!user) return NextResponse.json({ message: 'User not found' }, { status: 404 })
         if (!user.stripeCustomerId) return NextResponse.json({ message: 'Stripe profile not found' }, { status: 404 })
@@ -58,11 +58,10 @@ export async function GET(req: NextRequest) {
 
         const pdfBytes = await pdfDoc.save();
 
-        const headers = new Headers();
-        headers.set('Content-Type', 'application/pdf');
-        headers.set('Content-Disposition', 'attachment; filename=payment_history.pdf');
-
-        return new NextResponse(Buffer.from(pdfBytes), { status: 200, statusText: "OK", headers });
+        return new NextResponse(Buffer.from(pdfBytes), {
+            status: 200,
+            statusText: "OK",
+        });
 
     } catch (err) {
         console.error(err)

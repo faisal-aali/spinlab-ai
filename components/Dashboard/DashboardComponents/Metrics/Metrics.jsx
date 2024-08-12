@@ -9,6 +9,7 @@ import axios from 'axios'
 import { convertCmToFeetAndInches } from "@/util/utils";
 import History from "../History/History";
 import UploadModal from "../UploadVideoModal/UploadModal";
+import LineGraph from "@/components/Common/LineGraph/LineGraph";
 
 const CustomLinearProgress = ({ value, color, textSize }) => {
     return (
@@ -44,7 +45,7 @@ const PlayerCard = ({ player }) => {
             <Grid container gap={1} padding={1} display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
                 <Grid item container xs='auto' gap={4} alignItems={'center'}>
                     <Grid item>
-                        <img src={player.avatarUrl} width={50} />
+                        <img src={player.avatarUrl || '/assets/player.png'} alt={player.name} width={50} height={50} />
                     </Grid>
                     <Grid item>
                         <Typography className="text-white text-2xl">{player.name}</Typography>
@@ -90,10 +91,82 @@ const KPICard = ({ icon, text, value, percentage, color }) => {
     )
 }
 
-const EfficiencyGraph = () => {
+const EfficiencyGraph = ({ videos }) => {
+
+    var _videos = videos.filter(video => video.assessmentDetails.statusCode === 1)
+    _videos = _videos
+
+    const data = {
+        labels: _videos.map(video => new Date(video.creationDate).toLocaleDateString()),
+        datasets: [
+            {
+                label: 'Kinetic Sequence Score',
+                data: _videos.map(video => video.assessmentDetails.stats.metrics.sequence_score),
+                fill: false,
+                borderColor: '#AD00FF',
+                tension: 0.1,
+                pointRadius: 7,
+                pointHoverRadius: 10,
+            },
+            {
+                label: 'Acceleration Score',
+                data: _videos.map(video => video.assessmentDetails.stats.metrics.acceleration_score),
+                fill: false,
+                borderColor: '#32E100',
+                tension: 0.1,
+                pointRadius: 7,
+                pointHoverRadius: 10,
+            },
+            {
+                label: 'Deceleration Score',
+                data: 0,
+                fill: false,
+                borderColor: '#F52323',
+                tension: 0.1,
+                pointRadius: 7,
+                pointHoverRadius: 10,
+            },
+            {
+                label: 'Velociy Efficiency Score',
+                data: 0,
+                fill: false,
+                borderColor: '#00B2FF',
+                tension: 0.1,
+                pointRadius: 7,
+                pointHoverRadius: 10,
+            },
+        ],
+    };
+
+    const options = {
+        scales: {
+            x: {
+                offset: true, // Adds space between the first tick and the edge of the chart
+                grid: {
+                    display: true, // Show grid lines
+                    color: '#BCBFC250', // Customize grid line color
+                    lineWidth: 1, // Customize grid line thickness
+                    drawTicks: true, // Ensure ticks are drawn along with the grid linesf
+                    drawOnChartArea: true, // Draw grid lines across the chart area
+                    drawBorder: false, // Optional: Hide the axis border if needed
+                },
+                ticks: {
+                    padding: 20, // Adds padding between the ticks and the chart area
+                },
+            },
+            y: {
+                beginAtZero: true,
+                min: 0,
+                max: 100,
+            }
+        }
+    };
 
     return (
-        <img src="/assets/efficiency-graph.png" width={'100%'} height={507} style={{ borderRadius: '8px' }} />
+        <div style={{ width: '100%', height: '100%' }}>
+            <h2 className="text-2xl">Efficiency</h2>
+            <LineGraph data={data} options={options} />
+        </div>
     )
 }
 
@@ -102,6 +175,7 @@ export default function Metrics(props) {
     const router = useRouter()
     const [player, setPlayer] = useState()
     const [loading, setLoading] = useState(true)
+    const [videos, setVideos] = useState()
 
     const searchParams = useSearchParams();
     const playerId = props.playerId || searchParams.get('playerId') || (user.role === 'player' && user._id)
@@ -110,7 +184,10 @@ export default function Metrics(props) {
         if (!playerId) return
         axios.get('/api/users', { params: { id: playerId, includeMetrics: 1 } }).then(res => {
             setPlayer(res.data[0])
-            setLoading(false)
+            axios.get('/api/videos', { params: { userId: playerId } }).then(res => {
+                setVideos(res.data)
+                setLoading(false)
+            })
         }).catch(console.error)
     }, [])
 
@@ -165,8 +242,8 @@ export default function Metrics(props) {
                         </div>
                     ))}
                 </div>
-                <div className="blueBackground border primary-border rounded-lg">
-                    <EfficiencyGraph />
+                <div className="blueBackground border primary-border rounded-lg p-6">
+                    <EfficiencyGraph videos={videos} />
                 </div>
                 <div>
                     <History playerId={playerId} omitHeader={true} />

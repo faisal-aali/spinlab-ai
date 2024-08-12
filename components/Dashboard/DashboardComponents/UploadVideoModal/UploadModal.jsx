@@ -13,7 +13,6 @@ import { Close as CloseIcon } from "@mui/icons-material";
 import axios from "axios";
 import { useApp } from "@/components/Context/AppContext";
 import Recorder from './Recorder'
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 
@@ -72,9 +71,11 @@ const UploadModal = ({ open, onClose, onSuccess, type, playerId }) => {
       const video = document.createElement('video');
       video.src = url;
       video.muted = true; // Ensure no audio plays
+      video.playsInline = true; // For compatibility with some devices
+      video.play();
 
       // Return a promise that resolves when the video is loaded
-      video.addEventListener('loadeddata', () => {
+      video.addEventListener('canplay', () => {
         // Create an offscreen canvas element
         const canvas = document.createElement('canvas');
         const context = canvas.getContext('2d');
@@ -82,6 +83,8 @@ const UploadModal = ({ open, onClose, onSuccess, type, playerId }) => {
         // Set canvas dimensions to match the video
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
+
+        console.log('video', video.videoWidth, video.videoHeight)
 
         // Draw the current video frame onto the canvas
         context.drawImage(video, 0, 0, canvas.width, canvas.height);
@@ -102,13 +105,22 @@ const UploadModal = ({ open, onClose, onSuccess, type, playerId }) => {
     setIsUploading(true);
     setUploadProgress(0);
 
-    const thumbnail = await getVideoThumbnail(file)
-    console.log('thumbnail', thumbnail)
+    const thumb = await getVideoThumbnail(file)
+    const data = new FormData()
+    data.append('file', thumb, 'video-thumb.png')
+    const thumbnailUrl = await axios.post('/api/S3', data, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      },
+    }).then(res => res.data.url).catch(err => {
+      console.error(err);
+      return null
+    })
     const formData = new FormData()
     formData.append('file', file)
+    if (thumbnailUrl) formData.append('thumbnailUrl', thumbnailUrl)
     if (playerId) formData.append('playerId', playerId)
 
-    console.log('calling api')
     axios.post('/api/videos', formData, {
       headers: {
         'Content-Type': 'multipart/form-data'

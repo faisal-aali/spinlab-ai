@@ -1,8 +1,7 @@
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
-import { Package, Subscription, User } from "@/app/lib/models";
-import { createCustomer, handlePaymentSuccess, updateCustomer } from "@/app/lib/stripe";
+import { User } from "@/app/lib/models";
 import { validateError } from "@/app/lib/functions";
 import { authOption } from "../../auth/[...nextauth]/route";
 
@@ -10,9 +9,10 @@ const stripeSecretKey: string = process.env.STRIPE_SECRET_KEY || "";
 const stripe = new Stripe(stripeSecretKey);
 
 export async function GET(req: NextRequest) {
+    const session = await getServerSession(authOption);
+    if (!session || !session.user) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
+
     try {
-        const session = await getServerSession(authOption);
-        if (!session || !session.user) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
 
         const user = await User.findOne({ _id: session.user._id })
         if (!user) return NextResponse.json({ message: 'User not found' }, { status: 404 })

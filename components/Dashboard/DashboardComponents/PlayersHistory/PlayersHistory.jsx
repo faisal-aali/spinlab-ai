@@ -100,9 +100,9 @@ const PlayersHistory = (props) => {
                                     <TableRow key={player._id}>
                                         <TableCell className="!text-white">
                                             <img
-                                                src={player.avatarUrl}
+                                                src={player.avatarUrl || '/assets/player.png'}
                                                 alt={player.name}
-                                                style={{ width: 50 }}
+                                                style={{ width: 50, height: 50, objectFit: 'cover' }}
                                             />
                                         </TableCell>
                                         <TableCell>

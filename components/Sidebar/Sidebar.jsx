@@ -56,7 +56,10 @@ const Sidebar = ({ showSidebar, setShowSidebar }) => {
       url: '/players-metrics',
       icon: '/assets/metrics-icon.svg',
       label: 'My Player Metrics',
-      roles: ['trainer']
+      roles: ['trainer'],
+      pathValidator: function (pathname, searchParams) {
+        return (pathname.startsWith(this.url) || pathname.startsWith('/metrics'))
+      }
     },
     {
       url: '/history',
@@ -77,9 +80,9 @@ const Sidebar = ({ showSidebar, setShowSidebar }) => {
       label: userSession.role === 'staff' ? 'Players Database' : userSession.role === 'admin' ? 'Manage Player Database' : 'Invalid role',
       roles: ['staff', 'admin'],
       pathValidator: function (pathname, searchParams) {
-        const query = Object.fromEntries(searchParams.entries())
-        const path = pathname + `?${Object.keys(query).map(k => `${k}=${query[k]}`).join('&')}`
-        return (path.startsWith(this.url) && path.endsWith(this.query))
+        // const query = Object.fromEntries(searchParams.entries())
+        // const path = pathname + `?${Object.keys(query).map(k => `${k}=${query[k]}`).join('&')}`
+        return (pathname.startsWith(this.url) && searchParams.get('role') === 'player')
       }
     },
     {
@@ -89,9 +92,10 @@ const Sidebar = ({ showSidebar, setShowSidebar }) => {
       label: 'Manage Staff Database',
       roles: ['admin'],
       pathValidator: function (pathname, searchParams) {
-        const query = Object.fromEntries(searchParams.entries())
-        const path = pathname + `?${Object.keys(query).map(k => `${k}=${query[k]}`).join('&')}`
-        return (path.startsWith(this.url) && path.endsWith(this.query))
+        // const query = Object.fromEntries(searchParams.entries())
+        // const path = pathname + `?${Object.keys(query).map(k => `${k}=${query[k]}`).join('&')}`
+        // return (path.startsWith(this.url) && path.endsWith(this.query))
+        return (pathname.startsWith(this.url) && searchParams.get('role') === 'staff')
       }
     },
     {
@@ -101,9 +105,10 @@ const Sidebar = ({ showSidebar, setShowSidebar }) => {
       label: 'Manage Trainer Database',
       roles: ['admin'],
       pathValidator: function (pathname, searchParams) {
-        const query = Object.fromEntries(searchParams.entries())
-        const path = pathname + `?${Object.keys(query).map(k => `${k}=${query[k]}`).join('&')}`
-        return (path.startsWith(this.url) && path.endsWith(this.query))
+        // const query = Object.fromEntries(searchParams.entries())
+        // const path = pathname + `?${Object.keys(query).map(k => `${k}=${query[k]}`).join('&')}`
+        // return (path.startsWith(this.url) && path.endsWith(this.query))
+        return (pathname.startsWith(this.url) && searchParams.get('role') === 'trainer')
       }
     },
     {

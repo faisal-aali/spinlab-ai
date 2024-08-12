@@ -6,13 +6,9 @@ import AccountSettings from "./AccountSettings/AccountSettings";
 import BillingTab from "./Billings/Billings";
 import { useSession } from "next-auth/react";
 
-const Settings = ({ _user }) => {
-  // const user = useSession().data?.user || {}
+const Settings = () => {
+  const user = useSession().data?.user || {}
   const [tabIndex, setTabIndex] = useState(0);
-
-  useEffect(() => {
-    console.log('user is', _user)
-  }, [])
 
   const handleTabChange = (event, newValue) => {
     setTabIndex(newValue);
@@ -62,13 +58,13 @@ const Settings = ({ _user }) => {
               }}
             >
               <Tab label="Account" />
-              {['player', 'trainer'].includes(_user.role) && <Tab label="Billing" />}
+              {['player', 'trainer'].includes(user.role) && <Tab label="Billing" />}
             </Tabs>
           </div>
 
           <div>
-            {tabIndex === 0 && <AccountSettings _user={_user} />}
-            {tabIndex === 1 && <BillingTab _user={_user} />}
+            {tabIndex === 0 && <AccountSettings />}
+            {tabIndex === 1 && <BillingTab />}
           </div>
         </div>
       </div>

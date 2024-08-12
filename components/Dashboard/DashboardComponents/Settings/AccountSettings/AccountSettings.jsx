@@ -126,7 +126,7 @@ const AccountSettings = () => {
         data[key] = values[key] || (typeof values[key] === 'boolean' ? values[key] : null)
       })
       console.log(data)
-      axios.post(`/api/${(user.role === 'player' && 'players') || (user.role === 'trainer' && 'trainers') || (user.role === 'staff' && 'staff') || (user.role === 'admin' && 'admin')}/${user._id}`,).then(res => {
+      axios.post(`/api/${(user.role === 'player' && 'players') || (user.role === 'trainer' && 'trainers') || (user.role === 'staff' && 'staff') || (user.role === 'admin' && 'admin')}/${user._id}`, data).then(res => {
         showSnackbar('Saved changes!', 'success');
         resolve()
       }).catch(err => {
@@ -191,7 +191,7 @@ const AccountSettings = () => {
             })
           }}
         >
-          {({ errors, touched, setFieldValue, values, isSubmitting }) => (
+          {({ errors, touched, setFieldValue, values, isSubmitting, resetForm }) => (
             <Form>
               <div className={`space-y-4 primary-border rounded-lg flex items-center p-4`}>
                 <div className="basis-2/5 flex pl-6 2xl:pl-20 justify-between flex-col">
@@ -430,6 +430,7 @@ const AccountSettings = () => {
                   <div className="flex justify-end gap-4 col-span-2">
                     <button
                       type="button"
+                      onClick={() => resetForm()}
                       className="bg-white dark-blue-color px-4 py-1 rounded font-bold uppercase text-sm"
                     >
                       Cancel

@@ -50,6 +50,7 @@ const videoSchema = new mongoose.Schema({
     taskId: { type: String, required: true, unique: true },
     assessmentMappingId: { type: String, required: true, unique: true },
     uploadedBy: { type: mongoose.Schema.Types.ObjectId, required: true },
+    thumbnailUrl: { type: String, required: false, default: null },
     taskType: { type: String, required: true, },
     deliveryDate: { type: Date, required: true },
     creationDate: { type: Date, required: false, default: () => new Date().toISOString() },
