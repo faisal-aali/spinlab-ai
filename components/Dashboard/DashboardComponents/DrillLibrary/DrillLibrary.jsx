@@ -19,8 +19,8 @@ import { useSession } from "next-auth/react";
 import { useApp } from "@/components/Context/AppContext";
 
 const DrillLibrary = () => {
-  const { user } = useApp()
-  const [selectedCategory, setSelectedCategory] = useState("");
+  const { user } = useApp();
+  const [selectedCategory, setSelectedCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -37,22 +37,26 @@ const DrillLibrary = () => {
     try {
       const categoryResponse = await axios.get("/api/categories");
       const categoryData = categoryResponse.data;
-      const categoryList = categoryData.map((cat) => ({
-        name: cat.name,
-        _id: cat._id,
-      }));
+      const categoryList = [
+        { name: "All", _id: "all" },
+        ...categoryData.map((cat) => ({
+          name: cat.name,
+          _id: cat._id,
+        })),
+      ];
 
       setCategories(categoryList);
-      if (categoryList.length > 0) {
-        setSelectedCategory(categoryList[0]._id);
-      }
 
       const videoResponse = await axios.get("/api/drills");
-      videoResponse.data = videoResponse.data.filter(video =>
-        video.isFree ? true :
-          ['player', 'trainer'].includes(user.role) ? (user.subscription?.status === 'active' ? true : false) :
-            true
-      )
+      videoResponse.data = videoResponse.data.filter((video) =>
+        video.isFree
+          ? true
+          : ["player", "trainer"].includes(user?.role)
+            ? user?.subscription?.status === "active"
+              ? true
+              : false
+            : true
+      );
       setAllVideos(videoResponse.data);
       setVideos(videoResponse.data);
     } catch (error) {
@@ -63,11 +67,15 @@ const DrillLibrary = () => {
   };
 
   useEffect(() => {
-    fetchCategoriesAndVideos();
-  }, []);
+    if (user) {
+      fetchCategoriesAndVideos();
+    }
+  }, [user]);
 
   useEffect(() => {
-    if (selectedCategory) {
+    if (selectedCategory === "all") {
+      setVideos(allVideos);
+    } else {
       const filteredVideos = allVideos.filter(
         (video) => video.categoryId === selectedCategory
       );
@@ -110,20 +118,18 @@ const DrillLibrary = () => {
         <div className="blueBackground p-4 primary-border rounded-lg flex items-center justify-between mb-4 h-32 w-full xl:w-3/5">
           <div className="flex gap-5 items-center">
             <div className="ml-4">
-              <h2 className="font-normal">
-                Here’s your
-                <span className="ml-2 text-primary font-semibold">
-                  Drill Library
-                </span>
+              <h2 className="text-base md:text-4xl font-normal">
+                Here's your
+                <span className="ml-2 text-primary font-semibold">Drill Library</span>
               </h2>
-              <p className="text-white text-sm">
+              <p className="text-white text-xs md:text-sm">
                 Please choose any category below to see the desired media.
               </p>
             </div>
           </div>
         </div>
         <div className="rounded-lg">
-          <div className="flex items-center justify-between gap-8 w-full justify-between">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-8 w-full justify-between">
             <Tabs
               value={selectedCategory}
               onChange={handleCategoryChange}
@@ -172,15 +178,15 @@ const DrillLibrary = () => {
               ))}
             </Tabs>
             <div className="flex flex-row justify-end gap-[30px]">
-              <div className="flex search-bar w-[200px] 4xl:w-[580px] ">
+              <div className="flex search-bar w-full md:w-[200px] 4xl:w-[580px] ">
                 <input
                   placeholder="Search..."
                   value={searchQuery}
                   onChange={handleSearchChange}
-                  className="w-full pl-2 py-1 rounded-lg text-white h-12 search-background focus:outline-none focus:ring-1 focus:ring-green-500"
+                  className="w-full py-1 rounded-lg text-white h-12 search-background focus:outline-none focus:ring-1 focus:ring-green-500"
                 />
               </div>
-              <div className={`flex ${user.role !== "admin" && "hidden"}`}>
+              <div className={`flex ${user?.role !== "admin" && "hidden"}`}>
                 <button
                   className="bg-white dark-blue-color rounded w-44 h-14 flex items-center justify-center text-lg rounded-lg"
                   onClick={() => setShowAddModal(true)}
@@ -209,17 +215,24 @@ const DrillLibrary = () => {
                     >
                       <CardMedia
                         component="iframe"
-                        height="238"
+                        height={268}
                         src={video.videoLink}
                         title={video.title}
                         className="rounded-lg"
                       />
                       <CardContent className="pl-1 pt-2	">
-                        <Grid container gap={1}>
-                          <Grid item xs>
-                            <Typography variant="body2" className="text-white">
-                              {video.title}
-                            </Typography>
+                        <Grid container gap={1} justifyContent={'space-between'}>
+                          <Grid item container flexDirection={'column'} xs='auto'>
+                            <Grid item xs>
+                              <Typography variant="body2" className="text-white">
+                                {video.title}
+                              </Typography>
+                            </Grid>
+                            <Grid item xs>
+                              <Typography variant="body2" className="text-white">
+                                {video.description}
+                              </Typography>
+                            </Grid>
                           </Grid>
                           <Grid
                             item
@@ -227,7 +240,7 @@ const DrillLibrary = () => {
                             xs="auto"
                             gap={2}
                             sx={{
-                              display: user.role === "admin" ? "flex" : "none",
+                              display: user?.role === "admin" ? "flex" : "none",
                             }}
                           >
                             <Grid item>
@@ -248,56 +261,45 @@ const DrillLibrary = () => {
                             </Grid>
                           </Grid>
                         </Grid>
-                        <Typography
-                          variant="body2"
-                          className="text-white watch-youtube-wrapper "
-                        >
-                          Watch on
-                          <YouTubeIcon
-                            className="ml-2 mr-0"
-                            sx={{ verticalAlign: "middle", marginRight: "5px" }}
-                          />
-                          <span className="font-semibold">YouTube</span>
-                        </Typography>
                       </CardContent>
+                      <div className="absolute left-2 -top-6">
+                        <YouTubeIcon className="text-red-500" />
+                      </div>
                     </Card>
                   </Grid>
                 ))
               ) : (
-                <Typography
-                  variant="h6"
-                  component="div"
-                  sx={{ margin: 2 }}
-                  color={"white"}
-                >
-                  No videos found.
-                </Typography>
+                <div className="flex justify-center items-center w-full pt-24">
+                  <p className="text-white">No videos available</p>
+                </div>
               )}
             </Grid>
           )}
         </div>
       </div>
-      <AddVideoModal
-        open={showAddModal}
-        onClose={() => setShowAddModal(false)}
-        categories={categories}
-        initialCategory={selectedCategory}
-        onSuccess={fetchCategoriesAndVideos}
-      />
-      <EditVideoModal
-        open={showEditModal}
-        onClose={() => setShowEditModal(false)}
-        categories={categories} // Pass categories to the EditVideo
-        videoId={selectedVideoId} // Replace with the actual video ID
-        videoData={selectedVideoData}
-        onSuccess={fetchCategoriesAndVideos}
-      />
-      <DeleteVideoModal
-        open={showDeleteModal}
-        onClose={() => setShowDeleteModal(false)}
-        videoId={selectedVideoId}
-        onSuccess={fetchCategoriesAndVideos}
-      />
+      {showAddModal && (
+        <AddVideoModal
+          open={showAddModal}
+          onClose={() => setShowAddModal(false)}
+          categories={categories}
+        />
+      )}
+      {showEditModal && (
+        <EditVideoModal
+          open={showEditModal}
+          onClose={() => setShowEditModal(false)}
+          videoId={selectedVideoId}
+          videoData={selectedVideoData}
+          categories={categories}
+        />
+      )}
+      {showDeleteModal && (
+        <DeleteVideoModal
+          open={showDeleteModal}
+          onClose={() => setShowDeleteModal(false)}
+          videoId={selectedVideoId}
+        />
+      )}
     </>
   );
 };

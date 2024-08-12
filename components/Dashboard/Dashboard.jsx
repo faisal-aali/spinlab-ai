@@ -42,8 +42,8 @@ const Dashboard = () => {
     videoSubmitted ? <VideoSubmittedScreen /> :
       <div className="flex-1 py-8">
         <div className="bg-transparent primary-border py-16 px-8 rounded-lg text-center">
-          <h2 className="text-5xl font-normal mb-8">Ready to enter the lab?</h2>
-          <div className="flex justify-center mb-10">
+          <h2 className="text-2xl md:text-5xl font-normal mb-8">Ready to enter the lab?</h2>
+          <div className="flex flex-col md:flex-row items-center justify-center mb-10 gap-4">
             <button
               className="bg-primary text-black rounded w-36 h-8 flex items-center justify-center text-base hover-button-shadow"
               onClick={() => {
@@ -55,7 +55,7 @@ const Dashboard = () => {
               UPLOAD VIDEO
             </button>
             <button
-              className="bg-primary text-black rounded w-36 h-8 flex items-center justify-center text-base ml-4 hover-button-shadow"
+              className="bg-primary text-black rounded w-36 h-8 flex items-center justify-center text-base hover-button-shadow"
               onClick={() => {
                 setUploadType('record')
                 setShowUploadModal(true);
@@ -79,11 +79,11 @@ const Dashboard = () => {
               VIEW PLAYERS
             </button>
           </div>
-          <p className="font-light text-sm mb-2">
+          <p className="font-light text-xs md:text-sm mb-2">
             Discover essential formats and metrics for optimal video results
             before uploading/recording.
           </p>
-          <a href="#" className="text-primary underline">
+          <a href="/drill-library" className="text-primary underline">
             Click here!
           </a>
         </div>

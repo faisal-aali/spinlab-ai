@@ -37,6 +37,7 @@ const drillSchema = new mongoose.Schema({
     categoryId: { type: mongoose.Schema.Types.ObjectId, required: true, },
     videoLink: { type: String, required: true },
     title: { type: String, required: true, },
+    description: { type: String, required: true, },
     isFree: { type: Boolean, required: true },
     creationDate: { type: Date, required: false, default: () => new Date().toISOString() },
 });

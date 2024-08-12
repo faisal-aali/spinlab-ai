@@ -23,6 +23,7 @@ export async function POST(req: NextRequest) {
             categoryId: Yup.string().optional(),
             videoLink: Yup.string().optional(),
             title: Yup.string().optional(),
+            description: Yup.string().optional(),
             isFree: Yup.boolean().optional(),
         });
 
@@ -38,6 +39,7 @@ export async function POST(req: NextRequest) {
         drill.categoryId = (data.categoryId || drill.categoryId);
         drill.videoLink = (data.videoLink || drill.videoLink);
         drill.title = (data.title || drill.title);
+        drill.description = (data.description || drill.description);
         drill.isFree = (data.isFree !== undefined ? data.isFree : drill.isFree);
 
         await drill.save()

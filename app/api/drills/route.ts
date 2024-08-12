@@ -38,6 +38,7 @@ export async function POST(req: NextRequest) {
             categoryId: Yup.string().required("Category Id is required"),
             videoLink: Yup.string().required("Video Link is required"),
             title: Yup.string().required("Title is required"),
+            description: Yup.string().required("Description is required"),
             isFree: Yup.boolean().required("isFree is required"),
         });
 
@@ -54,6 +55,7 @@ export async function POST(req: NextRequest) {
             categoryId: data.categoryId,
             videoLink: data.videoLink,
             title: data.title,
+            description: data.description,
             isFree: data.isFree,
         })
 

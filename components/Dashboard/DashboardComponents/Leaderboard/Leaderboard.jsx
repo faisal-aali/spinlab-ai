@@ -92,7 +92,7 @@ const Leaderboard = () => {
         <div className="blueBackground p-4 primary-border rounded-lg flex items-center justify-between mb-4 h-32 w-full xl:mt-0 xl:w-3/5">
           <div className="flex gap-5 items-center">
             <div className="ml-4">
-              <h2 className="font-normal">Leaderboard</h2>
+              <h2 className="text-2xl md:text-4xl font-normal">Leaderboard</h2>
               {userSession.role !== 'admin' && <p className="text-white text-sm">View below the Top 20 players</p>}
             </div>
           </div>

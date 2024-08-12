@@ -5,6 +5,7 @@ import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import { useApp } from '../../../Context/AppContext';
+import { generateYoutubeEmbedUrl } from "@/util/utils";
 
 const style = {
   position: "absolute",
@@ -22,6 +23,7 @@ const validationSchema = Yup.object({
   categoryId: Yup.string().required("Required"),
   videoLink: Yup.string().required("Required"),
   title: Yup.string().required("Required"),
+  description: Yup.string().required("Required"),
 });
 
 const EditVideoModal = ({ open, onClose, videoId, videoData, categories, onSuccess }) => {
@@ -42,7 +44,10 @@ const EditVideoModal = ({ open, onClose, videoId, videoData, categories, onSucce
 
   const handleSubmit = async (values) => {
     try {
-      await axios.post(`/api/drills/${videoId}`, values).then(res => {
+      await axios.post(`/api/drills/${videoId}`, {
+        ...values,
+        videoLink: generateYoutubeEmbedUrl(values.videoLink)
+      }).then(res => {
         showSnackbar('Saved Changes!', 'success');
         onSuccess && onSuccess();
         onClose();
@@ -66,11 +71,12 @@ const EditVideoModal = ({ open, onClose, videoId, videoData, categories, onSucce
             categoryId: videoData?.categoryId || "",
             videoLink: videoData?.videoLink || "",
             title: videoData?.title || "",
+            description: videoData?.description || "",
           }}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
         >
-          {({isSubmitting, errors, touched, values, setFieldValue }) => (
+          {({ isSubmitting, errors, touched, values, setFieldValue }) => (
             <Form>
               <div className="grid grid-cols-1 gap-4 mb-4">
                 <div className="grid gap-2">
@@ -115,6 +121,21 @@ const EditVideoModal = ({ open, onClose, videoId, videoData, categories, onSucce
                         : "primary-border focus:border-green-500"
                       }`}
                     name="title"
+                    as='input'
+                    required
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <div className="opacity-45">
+                    <label htmlFor="title">Description</label>
+                  </div>
+                  <Field
+                    className={`w-full bg-transparent px-3 rounded-lg py-3 text-primary rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
+                      ${errors.description && touched.description
+                        ? "border-red-900	border"
+                        : "primary-border focus:border-green-500"
+                      }`}
+                    name="description"
                     as='textarea'
                     rows={5}
                     required

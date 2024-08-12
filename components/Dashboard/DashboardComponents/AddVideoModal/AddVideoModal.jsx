@@ -5,6 +5,7 @@ import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import axios from 'axios';
 import { useApp } from '../../../Context/AppContext';
+import { generateYoutubeEmbedUrl } from "@/util/utils";
 
 
 const style = {
@@ -24,6 +25,7 @@ const validationSchema = Yup.object({
   categoryId: Yup.string().required("Required"),
   videoLink: Yup.string().url("Invalid URL").required("Required"),
   title: Yup.string().required("Required"),
+  description: Yup.string().required("Required"),
   isFree: Yup.boolean().required("Required"),
 });
 
@@ -50,7 +52,10 @@ const AddVideoModal = ({ open, onClose, categories, initialCategory, onSuccess }
 
   const addNewDrill = async (values, onClose) => {
     try {
-      await axios.post("/api/drills", values);
+      await axios.post("/api/drills", {
+        ...values,
+        videoLink: generateYoutubeEmbedUrl(values.videoLink)
+      });
       showSnackbar('Video has been added', 'success');
       onSuccess && onSuccess()
       onClose();
@@ -79,12 +84,13 @@ const AddVideoModal = ({ open, onClose, categories, initialCategory, onSuccess }
             categoryId: defaultCategoryId,
             videoLink: "",
             title: "",
+            description: "",
             isFree: false,
           }}
           validationSchema={validationSchema}
           onSubmit={(values) => addNewDrill(values, onClose)}
         >
-          {({isSubmitting, errors, touched, setFieldValue, values }) => (
+          {({ isSubmitting, errors, touched, setFieldValue, values }) => (
             <Form>
               <div className="grid grid-cols-1 gap-4 mb-4">
                 <div className="grid gap-2">
@@ -141,10 +147,24 @@ const AddVideoModal = ({ open, onClose, categories, initialCategory, onSuccess }
                   </div>
                   <Field
                     name="title"
+                    as="input"
+                    className={`w-full bg-transparent px-3 rounded-lg py-3 text-primary rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
+                      ${errors.title && touched.title
+                        ? "border-red-900 border"
+                        : "primary-border focus:border-green-500"
+                      }`}
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <div className="opacity-45">
+                    <label htmlFor="title">Description</label>
+                  </div>
+                  <Field
+                    name="description"
                     as="textarea"
                     rows={5}
                     className={`w-full bg-transparent px-3 rounded-lg py-3 text-primary rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
-                      ${errors.title && touched.title
+                      ${errors.description && touched.description
                         ? "border-red-900 border"
                         : "primary-border focus:border-green-500"
                       }`}
