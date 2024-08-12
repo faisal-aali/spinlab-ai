@@ -36,7 +36,7 @@ const UpdateEmailModal = ({ open, onClose, isVerification, onSuccess }) => {
     const [email, setEmail] = useState()
     const [currentStep, setCurrentStep] = useState(0);
     const [response, setResponse] = useState({});
-    const { showSnackbar } = useApp();
+    const { showSnackbar, fetchUser } = useApp();
 
 
     const timeout = useRef()
@@ -90,6 +90,7 @@ const UpdateEmailModal = ({ open, onClose, isVerification, onSuccess }) => {
                     emailVerified: true
                 }
             })
+            fetchUser()
             setCurrentStep(2)
             onSuccess && onSuccess()
         }).catch(err => {

@@ -104,17 +104,26 @@ const History = (props) => {
                   <TableBody className="leaderboard-table-body">
                     {paginatedData.map((row) => {
                       const qbRating = row.assessmentDetails?.stats?.performance?.score3[0]
+                      const fileUrl = row.assessmentDetails?.fileUrl
                       const pdfUrl = row.assessmentDetails?.reportPdfUrl
                       const overlayVideoUrl = row.assessmentDetails?.overlayVideoUrl
 
                       return (
                         <TableRow key={row.id}>
                           <TableCell className="!text-white">
-                            <img
-                              src={row.thumbnail}
-                              alt={row.name}
-                              style={{ width: 50, height: 50 }}
-                            />
+                            <button onClick={() => setVideoSrc(fileUrl)} className="relative">
+                              <img
+                                src={row.thumbnailUrl}
+                                alt={row.name}
+                                style={{ width: 75, height: 50, objectFit: 'cover', borderRadius: 8 }}
+                              />
+                              <img
+                                className="absolute top-4 left-6"
+                                src={'/assets/play.svg'}
+                                alt={row.name}
+                                style={{ width: 20, height: 20, objectFit: 'cover', borderRadius: 8 }}
+                              />
+                            </button>
                           </TableCell>
                           <TableCell>
                             {/* <Typography variant="body2" className="!text-white">

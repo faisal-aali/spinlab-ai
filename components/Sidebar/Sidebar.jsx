@@ -72,7 +72,10 @@ const Sidebar = ({ showSidebar, setShowSidebar }) => {
       icon: '/assets/metrics-icon.svg',
       label: 'My Player Metrics',
       roles: ['trainer'],
-      needVerification: true
+      needVerification: true,
+      pathValidator: function (pathname, searchParams) {
+        return (pathname.startsWith(this.url) || pathname.startsWith('/metrics'))
+      }
     },
     {
       url: '/history',
@@ -96,9 +99,9 @@ const Sidebar = ({ showSidebar, setShowSidebar }) => {
       roles: ['staff', 'admin'],
       needVerification: true,
       pathValidator: function (pathname, searchParams) {
-        const query = Object.fromEntries(searchParams.entries());
-        const path = pathname + `?${Object.keys(query).map(k => `${k}=${query[k]}`).join('&')}`;
-        return (path.startsWith(this.url) && path.endsWith(this.query));
+        // const query = Object.fromEntries(searchParams.entries());
+        // const path = pathname + `?${Object.keys(query).map(k => `${k}=${query[k]}`).join('&')}`;
+        return (pathname.startsWith(this.url) && searchParams.get('role') === 'player');
       }
     },
     {
@@ -109,9 +112,10 @@ const Sidebar = ({ showSidebar, setShowSidebar }) => {
       roles: ['admin'],
       needVerification: true,
       pathValidator: function (pathname, searchParams) {
-        const query = Object.fromEntries(searchParams.entries());
-        const path = pathname + `?${Object.keys(query).map(k => `${k}=${query[k]}`).join('&')}`;
-        return (path.startsWith(this.url) && path.endsWith(this.query));
+        // const query = Object.fromEntries(searchParams.entries());
+        // const path = pathname + `?${Object.keys(query).map(k => `${k}=${query[k]}`).join('&')}`;
+        // return (path.startsWith(this.url) && path.endsWith(this.query));
+        return (pathname.startsWith(this.url) && searchParams.get('role') === 'staff')
       }
     },
     {
@@ -122,9 +126,10 @@ const Sidebar = ({ showSidebar, setShowSidebar }) => {
       roles: ['admin'],
       needVerification: true,
       pathValidator: function (pathname, searchParams) {
-        const query = Object.fromEntries(searchParams.entries());
-        const path = pathname + `?${Object.keys(query).map(k => `${k}=${query[k]}`).join('&')}`;
-        return (path.startsWith(this.url) && path.endsWith(this.query));
+        // const query = Object.fromEntries(searchParams.entries());
+        // const path = pathname + `?${Object.keys(query).map(k => `${k}=${query[k]}`).join('&')}`;
+        // return (path.startsWith(this.url) && path.endsWith(this.query));
+        return (pathname.startsWith(this.url) && searchParams.get('role') === 'trainer')
       }
     },
     {

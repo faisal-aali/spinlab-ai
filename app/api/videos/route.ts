@@ -44,8 +44,8 @@ export async function POST(req: NextRequest) {
         const session = await getServerSession(authOption);
         if (!session || !session.user) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
 
-
         const formData = await req.formData();
+        console.log(formData)
 
         const uploadfile = formData.get('file') as File
         if (!uploadfile) return NextResponse.json({ message: 'File is required' }, { status: 400 });
@@ -78,6 +78,7 @@ export async function POST(req: NextRequest) {
         const newVideo = await Video.create({
             userId: userId,
             uploadedBy: session.user._id,
+            thumbnailUrl: formData.get('thumbnailUrl'),
             taskId: task.assessmentId,
             assessmentMappingId: task.assessmentMappingId,
             taskType: taskType,
