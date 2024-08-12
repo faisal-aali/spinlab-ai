@@ -232,6 +232,12 @@ h4 {
     align-items: center;
   }
 
+  .is-free-label{
+    position: absolute;
+    top: -5px;
+    right: -18px;
+    width: 100px;
+  }
   .h-500 {
     height: 500px;
   }

@@ -1,74 +1,92 @@
 "use client";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import profileStyle from './sidebar.module.css'
-import { useEffect, useState } from "react";
+import profileStyle from './sidebar.module.css';
 import { useSession } from "next-auth/react";
 import { useApp } from "../Context/AppContext";
 import { Menu } from "@mui/icons-material";
 
 const Sidebar = ({ showSidebar, setShowSidebar }) => {
-  const userSession = useSession().data?.user || {}
+  const userSession = useSession().data?.user || {};
   const pathname = usePathname();
-  const route = useRouter()
-  const searchParams = useSearchParams()
+  const route = useRouter();
+  const searchParams = useSearchParams();
   const { user } = useApp();
 
-  const linkClasses = (path, pathValidator) =>
-    `flex pl-2 py-1 ${(pathValidator ? pathValidator(pathname, searchParams) : pathname.startsWith(path)) ? "bg-primary rounded-lg min-w-[200px] w-fit items-center text-black" : "text-white"
+  const linkClasses = (path, pathValidator, disabled) =>
+    `flex pl-2 py-1 ${disabled ? "opacity-50 cursor-not-allowed" : ""} ${
+      (pathValidator
+        ? pathValidator(pathname, searchParams)
+        : pathname.startsWith(path)) && !disabled
+        ? "bg-primary rounded-lg min-w-[200px] w-fit items-center text-black"
+        : "text-white"
     }`;
 
-  const svgClasses = (path, pathValidator) =>
-    `${(pathValidator ? pathValidator(pathname, searchParams) : pathname.startsWith(path)) ? "mix-blend-difference" : "fill-current text-white"}`;
+  const svgClasses = (path, pathValidator, disabled) =>
+    `${disabled ? "opacity-50 cursor-not-allowed" : ""} ${
+      (pathValidator
+        ? pathValidator(pathname, searchParams)
+        : pathname.startsWith(path)) && !disabled
+        ? "mix-blend-difference"
+        : "fill-current text-white"
+    }`;
 
   const links = [
     {
       url: '/dashboard',
       icon: '/assets/dashboard-icon.svg',
       label: 'Dashboard',
-      roles: ['player', 'trainer', 'staff']
+      roles: ['player', 'trainer', 'staff'],
+      needVerification: false
     },
     {
       url: '/leaderboard',
       icon: '/assets/leaderboard-icon.svg',
       label: 'Leaderboard',
-      roles: ['player', 'trainer', 'staff', 'admin']
+      roles: ['player', 'trainer', 'staff', 'admin'],
+      needVerification: false
     },
     {
       url: '/drill-library',
       icon: '/assets/drill-library-icon.svg',
       label: 'Drill Library',
-      roles: ['player', 'trainer', 'staff', 'admin']
+      roles: ['player', 'trainer', 'staff', 'admin'],
+      needVerification: true
     },
     {
       url: '/add-player',
       icon: '/assets/add-player-icon.svg',
       label: 'Add Player',
-      roles: ['trainer']
+      roles: ['trainer'],
+      needVerification: true
     },
     {
       url: '/metrics',
       icon: '/assets/metrics-icon.svg',
       label: 'My Metrics',
-      roles: ['player']
+      roles: ['player'],
+      needVerification: true
     },
     {
       url: '/players-metrics',
       icon: '/assets/metrics-icon.svg',
       label: 'My Player Metrics',
-      roles: ['trainer']
+      roles: ['trainer'],
+      needVerification: true
     },
     {
       url: '/history',
       icon: '/assets/history-icon.svg',
       label: 'History',
-      roles: ['player']
+      roles: ['player'],
+      needVerification: true
     },
     {
       url: '/players-history',
       icon: '/assets/history-icon.svg',
       label: 'My Player History',
-      roles: ['trainer']
+      roles: ['trainer'],
+      needVerification: true
     },
     {
       url: '/users',
@@ -76,10 +94,11 @@ const Sidebar = ({ showSidebar, setShowSidebar }) => {
       icon: `/assets/${userSession.role === 'staff' ? 'players-database-icon.svg' : userSession.role === 'admin' ? 'add-player-icon.svg' : ''}`,
       label: userSession.role === 'staff' ? 'Players Database' : userSession.role === 'admin' ? 'Manage Player Database' : 'Invalid role',
       roles: ['staff', 'admin'],
+      needVerification: true,
       pathValidator: function (pathname, searchParams) {
-        const query = Object.fromEntries(searchParams.entries())
-        const path = pathname + `?${Object.keys(query).map(k => `${k}=${query[k]}`).join('&')}`
-        return (path.startsWith(this.url) && path.endsWith(this.query))
+        const query = Object.fromEntries(searchParams.entries());
+        const path = pathname + `?${Object.keys(query).map(k => `${k}=${query[k]}`).join('&')}`;
+        return (path.startsWith(this.url) && path.endsWith(this.query));
       }
     },
     {
@@ -88,10 +107,11 @@ const Sidebar = ({ showSidebar, setShowSidebar }) => {
       icon: '/assets/add-player-icon.svg',
       label: 'Manage Staff Database',
       roles: ['admin'],
+      needVerification: true,
       pathValidator: function (pathname, searchParams) {
-        const query = Object.fromEntries(searchParams.entries())
-        const path = pathname + `?${Object.keys(query).map(k => `${k}=${query[k]}`).join('&')}`
-        return (path.startsWith(this.url) && path.endsWith(this.query))
+        const query = Object.fromEntries(searchParams.entries());
+        const path = pathname + `?${Object.keys(query).map(k => `${k}=${query[k]}`).join('&')}`;
+        return (path.startsWith(this.url) && path.endsWith(this.query));
       }
     },
     {
@@ -100,43 +120,49 @@ const Sidebar = ({ showSidebar, setShowSidebar }) => {
       icon: '/assets/add-player-icon.svg',
       label: 'Manage Trainer Database',
       roles: ['admin'],
+      needVerification: true,
       pathValidator: function (pathname, searchParams) {
-        const query = Object.fromEntries(searchParams.entries())
-        const path = pathname + `?${Object.keys(query).map(k => `${k}=${query[k]}`).join('&')}`
-        return (path.startsWith(this.url) && path.endsWith(this.query))
+        const query = Object.fromEntries(searchParams.entries());
+        const path = pathname + `?${Object.keys(query).map(k => `${k}=${query[k]}`).join('&')}`;
+        return (path.startsWith(this.url) && path.endsWith(this.query));
       }
     },
     {
       url: '/update-calendar',
       icon: '/assets/calender-icon.svg',
       label: 'Update Calendar',
-      roles: ['admin']
+      roles: ['admin'],
+      needVerification: true
     },
     {
       url: '/coaching-call',
       icon: '/assets/phone-call-icon.svg',
       label: 'Coaching Call',
-      roles: ['player']
+      roles: ['player'],
+      needVerification: true
     },
     {
       url: '/purchases',
       icon: '/assets/purchase-icon.svg',
       label: 'Purchases',
-      roles: ['player', 'trainer']
+      roles: ['player', 'trainer'],
+      needVerification: true
     },
     {
       url: '/subscriptions',
       icon: '/assets/subscription-icon.svg',
       label: 'Subscriptions',
-      roles: ['player', 'trainer']
+      roles: ['player', 'trainer'],
+      needVerification: true
     },
     {
       url: '/settings',
       icon: '/assets/setting-icon.svg',
       label: 'Settings',
-      roles: ['player', 'trainer', 'staff', 'admin']
+      roles: ['player', 'trainer', 'staff', 'admin'],
+      needVerification: false
     },
-  ]
+  ];
 
   return (
     <div className={`bg-gray-900 pt-8 h-screen overflow-auto p-4 ${showSidebar ? 'w-80' : 'w-fit'} lg:w-80 ${showSidebar ? 'pl-12' : 'pl-4'} lg:pl-12 ${showSidebar ? 'absolute' : 'unset'} lg:unset`}>
@@ -146,7 +172,7 @@ const Sidebar = ({ showSidebar, setShowSidebar }) => {
       <div className={`${showSidebar ? 'flex' : 'hidden'} lg:flex`}>
         <div className="w-62">
           <div className="flex items-center mb-6">
-            <img src="/assets/spinlab-log.png" alt="Logo" className="w-48	" />
+            <img src="/assets/spinlab-log.png" alt="Logo" className="w-48" />
           </div>
           <div className={`${(userSession.role === 'staff' || userSession.role === 'admin') && profileStyle.profile} flex items-center space-x-2 mb-8 rounded-lg ${pathname === '/profile' && `bg-primary p-2`}`} onClick={(userSession.role === 'staff' || userSession.role === 'admin') && (() => route.replace('/profile')) || undefined}>
             <img
@@ -167,18 +193,26 @@ const Sidebar = ({ showSidebar, setShowSidebar }) => {
             />
           </div>
           <div className="flex flex-col space-y-2">
-            {links.filter(link => link.roles.includes(userSession.role)).map((link, index) => (
-              <Link key={index} href={`${link.url}${link.query || ''}`} className={linkClasses(link.url, link.pathValidator?.bind(link))}>
-                <img
-                  src={link.icon}
-                  className={svgClasses(link.url, link.pathValidator?.bind(link))}
-                  alt=""
-                  width={20}
-                  height={20}
-                />
-                <span className="flex items-center p-1.5 pl-4 text-inherit">{link.label}</span>
-              </Link>
-            ))}
+            {links.filter(link => link.roles.includes(userSession.role)).map((link, index) => {
+              const isDisabled = !user?.emailVerified && link.needVerification;
+              return (
+                <Link
+                  key={index}
+                  href={isDisabled ? "#" : `${link.url}${link.query || ''}`}
+                  onClick={(e) => isDisabled && e.preventDefault()}
+                  className={linkClasses(link.url, link.pathValidator?.bind(link), isDisabled)}
+                >
+                  <img
+                    src={link.icon}
+                    className={svgClasses(link.url, link.pathValidator?.bind(link), isDisabled)}
+                    alt=""
+                    width={20}
+                    height={20}
+                  />
+                  <span className={`flex items-center p-1.5 pl-4 text-inherit ${isDisabled ? "opacity-50 cursor-not-allowed" : ""}`}>{link.label}</span>
+                </Link>
+              );
+            })}
           </div>
         </div>
       </div>

@@ -59,8 +59,8 @@ const UpdateCalendar = () => {
                         </div>
                     </div>
                 </div>
-                <div className="flex flex-col gap-4">
-                    <div className="w-4/5">
+                <div className="flex flex-row gap-4">
+                    <div className="w-1/2">
                         <input
                             type='text'
                             placeholder="Update Iframe Source"
@@ -73,7 +73,7 @@ const UpdateCalendar = () => {
                         <button
                             onClick={handleSubmit}
                             disabled={!src || isSubmitting}
-                            className="bg-primary rounded-lg w-24 text-black font-normal py-3 hover-shadow focus:outline-none"
+                            className="bg-primary rounded-lg w-24 text-black font-semibold	 py-3 hover-shadow focus:outline-none"
                         >
                             Save
                         </button>

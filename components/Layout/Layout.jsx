@@ -390,12 +390,14 @@ const Layout = ({ children }) => {
           <div className="flex justify-between items-center mb-8 right-10 top-12 ml-auto z-10">
             <div className="flex space-x-4 items-center">
               <button
+                disabled= {!user.emailVerified}
                 onClick={() => setShowUploadModal(true)}
                 className={`bg-white text-black px-5 py-1 rounded-lg ${user.role !== "player" && "hidden"}`}
               >
                 UPLOAD
               </button>
               <button
+                disabled= {!user.emailVerified}
                 onClick={() => router.push('/purchases')}
                 className={`bg-white text-black px-5 py-1 rounded-lg ${['staff', 'admin'].includes(user.role) && "hidden"}`}
               >

@@ -15,7 +15,7 @@ import {
 import Pagination from '../../../Common/Pagination/Pagination';
 import DeleteUserModal from '../DeleteUserModal/DeleteUserModal';
 import AddUserModal from '../AddUserModal/AddUserModal';
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams, usePathname} from "next/navigation";
 import { useSession } from "next-auth/react";
 import axios from 'axios';
 
@@ -23,6 +23,7 @@ const Users = () => {
   const user = useSession().data?.user || {};
   const router = useRouter();
   const searchParams = useSearchParams();
+  const pathname = usePathname();
 
   const [page, setPage] = useState(1);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -46,6 +47,10 @@ const Users = () => {
       setLoading(false); 
     }
   };
+
+  useEffect(()=>{
+    setPage(1);
+  }, [searchParams, pathname])
 
   useEffect(() => {
     fetchData();
