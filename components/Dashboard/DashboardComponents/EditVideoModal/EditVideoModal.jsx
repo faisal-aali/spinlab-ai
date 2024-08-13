@@ -48,7 +48,7 @@ const EditVideoModal = ({ open, onClose, videoId, videoData, categories, onSucce
         ...values,
         videoLink: generateYoutubeEmbedUrl(values.videoLink)
       }).then(res => {
-        showSnackbar('Saved Changes!', 'success');
+        showSnackbar('Changes Saved!', 'success');
         onSuccess && onSuccess();
         onClose();
       });

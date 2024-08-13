@@ -149,7 +149,7 @@ const BillingTab = () => {
                         <p className="text-primary mt-1">xxxx-xxxx-xxxx-{defaultPaymentMethod.card.last4}</p>
                         <p className="text-primary mt-1">Expires on {defaultPaymentMethod.card.exp_month}/{defaultPaymentMethod.card.exp_year}</p>
                         <div>
-                          <button onClick={() => setUpdateDetails(true)} className="font-bold mt-2">EDIT DETAILS</button>
+                          <button onClick={() => setUpdateDetails(true)} className="font-bold mt-2">ADD NEW DETAILS</button>
                         </div>
                         <div>
                           <button className="font-bold mt-2" onClick={handleDownloadPaymentHistory}>

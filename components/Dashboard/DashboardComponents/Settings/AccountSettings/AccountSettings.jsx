@@ -147,7 +147,7 @@ const AccountSettings = () => {
       })
       console.log(data)
       axios.post(`/api/${(user.role === 'player' && 'players') || (user.role === 'trainer' && 'trainers') || (user.role === 'staff' && 'staff') || (user.role === 'admin' && 'admin')}/${user._id}`, data).then(res => {
-        showSnackbar('Saved changes!', 'success');
+        showSnackbar('Changes Saved!', 'success');
         resolve()
       }).catch(err => {
         showSnackbar(err.response?.data?.message || err.message, 'error');

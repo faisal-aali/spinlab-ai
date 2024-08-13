@@ -59,9 +59,10 @@ const LoginForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const trimmedEmail = user.email.trim();
     setIsSubmitting(true)
     const result = await signIn("credentials", {
-      email: user.email,
+      email: trimmedEmail,
       password: user.password,
       redirect: false,
       // callbackUrl: '/dashboard'
@@ -111,9 +112,14 @@ const LoginForm = () => {
                 onChange={(e) =>
                   setUser((prevUser) => ({
                     ...prevUser,
-                    email: e.target.value,
+                    email: e.target.value.trim(), 
                   }))
                 }
+                onKeyDown={(e) => {
+                  if (e.key === ' ') {
+                    e.preventDefault();
+                  }
+                }}
                 required
                 placeholder="Email"
               />
