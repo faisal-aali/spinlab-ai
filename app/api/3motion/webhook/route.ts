@@ -15,51 +15,53 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ message: `Invalid Request` }, { status: 400 })
         }
 
-        NextResponse.json({ message: `OK` }, { status: 200 })
-
-        await new Promise((resolve) => setTimeout(() => resolve('ok'), 60000))
-
-        const auth = _3Motion.getAuth()
-        if (!auth) {
-            console.log(new Date(), '[/api/3motion/webhook] Auth token not found')
-            return NextResponse.json({ message: `INTERNAL ERROR` }, { status: 500 })
-        }
-        if (auth.tenantId !== data.TenantId) {
-            console.log(new Date(), '[/api/3motion/webhook] Invalid TenantId')
-            return NextResponse.json({ message: `Invalid TenantId` }, { status: 404 })
-        }
-
-        const video = await Video.findOne({
-            $or: [{
-                taskId: data.TaskId.toString()
-            }, {
-                assessmentMappingId: data.TaskId.toString()
-            }]
-        })
-        if (!video) {
-            console.log(new Date(), '[/api/3motion/webhook] Invalid TaskId')
-            return NextResponse.json({ message: `Invalid TaskId` }, { status: 404 })
-        }
-
-        const assessmentDetails = await _3Motion.getAssessmentDetails({ taskId: video.taskId, taskType: video.taskType });
-
-        console.log(new Date(), '[/api/3motion/webhook] assessmentDetails', assessmentDetails)
-
-        if (assessmentDetails) {
-            if (assessmentDetails.dataJsonUrl) {
-                assessmentDetails.stats = await axios.get(assessmentDetails.dataJsonUrl).then(res => res.data);
-            } else {
-                console.log(new Date(), '[/api/3motion/webhook] dataJsonUrl is empty')
+        const updateAssessment = async () => {
+            const auth = _3Motion.getAuth()
+            if (!auth) {
+                console.log(new Date(), '[/api/3motion/webhook] Auth token not found')
+                return NextResponse.json({ message: `INTERNAL ERROR` }, { status: 500 })
+            }
+            if (auth.tenantId !== data.TenantId) {
+                console.log(new Date(), '[/api/3motion/webhook] Invalid TenantId')
+                return NextResponse.json({ message: `Invalid TenantId` }, { status: 404 })
             }
 
-            video.assessmentDetails = assessmentDetails
-        } else {
-            video.assessmentDetails = data
+            const video = await Video.findOne({
+                $or: [{
+                    taskId: data.TaskId.toString()
+                }, {
+                    assessmentMappingId: data.TaskId.toString()
+                }]
+            })
+            if (!video) {
+                console.log(new Date(), '[/api/3motion/webhook] Invalid TaskId')
+                return NextResponse.json({ message: `Invalid TaskId` }, { status: 404 })
+            }
+
+            const assessmentDetails = await _3Motion.getAssessmentDetails({ taskId: video.taskId, taskType: video.taskType });
+
+            console.log(new Date(), '[/api/3motion/webhook] assessmentDetails', assessmentDetails)
+
+            if (assessmentDetails) {
+                if (assessmentDetails.dataJsonUrl) {
+                    assessmentDetails.stats = await axios.get(assessmentDetails.dataJsonUrl).then(res => res.data);
+                } else {
+                    console.log(new Date(), '[/api/3motion/webhook] dataJsonUrl is empty')
+                }
+
+                video.assessmentDetails = assessmentDetails
+            } else {
+                video.assessmentDetails = data
+            }
+
+            await video.save()
+
+            console.log(new Date(), '[/api/3motion/webhook] assessmentDetails updated')
         }
 
-        await video.save()
+        setTimeout(updateAssessment, 5000);
 
-        console.log(new Date(), '[/api/3motion/webhook] assessmentDetails updated')
+        return NextResponse.json({ message: `OK` }, { status: 200 })
 
         // return NextResponse.json({ message: `OK` }, { status: 200 })
     } catch (err: unknown) {
