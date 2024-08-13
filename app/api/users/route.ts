@@ -8,6 +8,9 @@ import { calculateCredits, validateError } from "@/app/lib/functions";
 import { authOption } from "../auth/[...nextauth]/route";
 import { getServerSession } from "next-auth";
 import mongoose from "@/app/lib/mongodb";
+import { IVideo } from "@/app/lib/interfaces/video";
+import axios from 'axios'
+import _3Motion from "@/app/lib/3motion";
 
 export async function GET(req: NextRequest) {
     await Video.deleteMany({ taskType: 'hit' })
@@ -106,6 +109,19 @@ export async function GET(req: NextRequest) {
                 return new Promise(async (resolve, reject) => {
                     try {
                         const videos = await Video.find({ userId: user._id, 'assessmentDetails.statusCode': 1 }, { assessmentDetails: { stats: { ARR: 0, ANG: 0, VEL: 0 } } })
+
+                        for (const video of videos) {
+                            const url = new URL(video.assessmentDetails.fileUrl)
+                            const signatureExpiry = url.searchParams.get('se')
+                            console.log('signatureExpiry', signatureExpiry)
+                            if (new Date(signatureExpiry as string).getTime() < new Date().getTime()) {
+                                const assessmentDetails = await _3Motion.getAssessmentDetails({ taskId: video.taskId, taskType: video.taskType })
+                                if (assessmentDetails.dataJsonUrl) assessmentDetails.stats = await axios.get(assessmentDetails.dataJsonUrl).then(res => res.data);
+                                video.assessmentDetails = assessmentDetails
+                                video.save().then(() => console.log('updated assessmentDetails for', video.taskId))
+                            }
+                        }
+
                         if (videos.length === 0) user.metrics = {}
                         else user.metrics = videos.reduce((max, video) => video.assessmentDetails?.stats?.performance?.score3[0] > max.assessmentDetails?.stats?.performance?.score3[0] ? video : max).assessmentDetails
                         console.log(user.metrics)

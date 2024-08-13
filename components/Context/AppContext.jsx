@@ -43,7 +43,7 @@ const AppProvider = ({ children }) => {
     };
 
     const hideSnackbar = () => {
-        setSnackbar({ ...snackbar, open: false });
+        setSnackbar({ message: '', open: false });
     };
 
     return (

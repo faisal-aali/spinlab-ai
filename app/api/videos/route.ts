@@ -6,6 +6,7 @@ import { getServerSession } from "next-auth";
 import { User, Video } from "@/app/lib/models";
 import _3Motion from "@/app/lib/3motion";
 import mongoose from "@/app/lib/mongodb";
+import axios from 'axios'
 
 export async function GET(req: NextRequest) {
     try {
@@ -29,6 +30,18 @@ export async function GET(req: NextRequest) {
         console.log(query)
 
         const videos = await Video.find(query, { assessmentDetails: { stats: { ARR: 0, ANG: 0, VEL: 0 } } }, { sort: { creationDate: -1 } });
+
+        for (const video of videos) {
+            const url = new URL(video.assessmentDetails.fileUrl)
+            const signatureExpiry = url.searchParams.get('se')
+            console.log('signatureExpiry', signatureExpiry)
+            if (new Date(signatureExpiry as string).getTime() < new Date().getTime()) {
+                const assessmentDetails = await _3Motion.getAssessmentDetails({ taskId: video.taskId, taskType: video.taskType })
+                if (assessmentDetails.dataJsonUrl) assessmentDetails.stats = await axios.get(assessmentDetails.dataJsonUrl).then(res => res.data);
+                video.assessmentDetails = assessmentDetails
+                video.save().then(() => console.log('updated assessmentDetails for', video.taskId))
+            }
+        }
 
         return NextResponse.json(videos);
     } catch (err: unknown) {

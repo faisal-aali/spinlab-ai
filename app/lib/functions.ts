@@ -35,7 +35,7 @@ function calculateCredits(userId: string): Promise<ICredit> {
             if (['trainer', 'staff'].includes(user.role)) {
                 const players = await User.find({ 'roleData.trainerId': userId })
                 playerIds = players.map(p => p._id.toString())
-                console.log('playerIds', playerIds)
+                // console.log('playerIds', playerIds)
             }
 
             const videos = await Video.find({ userId: { $in: playerIds } })
@@ -56,7 +56,7 @@ function calculateCredits(userId: string): Promise<ICredit> {
                     credits.used += 1
             })
             credits.remaining = credits.purchased - credits.used
-            console.log('calculateCredits', credits)
+            // console.log('calculateCredits', credits)
             return resolve(credits)
         } catch (err) {
             reject(err)
