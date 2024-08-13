@@ -232,12 +232,13 @@ h4 {
     align-items: center;
   }
 
-  .is-free-label{
+  .is-free-label {
     position: absolute;
     top: -5px;
     right: -18px;
     width: 100px;
   }
+
   .h-500 {
     height: 500px;
   }
@@ -276,6 +277,7 @@ button[disabled] {
 /* For WebKit browsers (Chrome, Safari) */
 *::-webkit-scrollbar {
   width: 6px;
+  height: 6px;
 }
 
 *::-webkit-scrollbar-track {

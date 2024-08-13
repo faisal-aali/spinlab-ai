@@ -195,14 +195,14 @@ const EditUserModal = ({ open, onClose, userData, onSuccess }) => {
   };
   const handleSubmit = async (values) => {
     try {
-      let imageUrl = user.avatarUrl; 
+      let imageUrl = user.avatarUrl;
       if (file) {
         const formData = new FormData();
-        formData.append("file", file); 
-        const res = await axios.post("/api/S3", formData); 
-        imageUrl = res.data.url; 
+        formData.append("file", file);
+        const res = await axios.post("/api/S3", formData);
+        imageUrl = res.data.url;
       }
-  
+
       const data = {
         email: values.email,
         name: `${values.firstName} ${values.lastName}`,
@@ -211,19 +211,18 @@ const EditUserModal = ({ open, onClose, userData, onSuccess }) => {
         height: convertFeetAndInchesToCm(values.heightFt, values.heightIn),
         weight: values.weight,
         handedness: values.handedness,
-        avatarUrl: imageUrl, 
+        avatarUrl: imageUrl,
       };
-  
+
       await axios.post(
-        `/api/${
-          (userData.role === "player" && "players") ||
-          (userData.role === "trainer" && "trainers") ||
-          (userData.role === "staff" && "staff") ||
-          (userData.role === "admin" && "admin")
+        `/api/${(userData.role === "player" && "players") ||
+        (userData.role === "trainer" && "trainers") ||
+        (userData.role === "staff" && "staff") ||
+        (userData.role === "admin" && "admin")
         }/${userData._id}`,
         data
       );
-  
+
       showSnackbar(`${userData.role} has been updated`, "success");
       onSuccess && onSuccess();
       onClose();
@@ -273,7 +272,7 @@ const EditUserModal = ({ open, onClose, userData, onSuccess }) => {
                     <label htmlFor="">Profile Photo</label>
                   </div>
                   <div className="grid grid-cols-1 gap-4"
-                     onDragOver={(e) => {
+                    onDragOver={(e) => {
                       e.preventDefault();
                       setIsDragging(true);
                     }}
@@ -283,15 +282,14 @@ const EditUserModal = ({ open, onClose, userData, onSuccess }) => {
                     }}
                     onDrop={handleDrop}
                   >
-                    <div className={`flex items-center justify-center flex-col blueBackground rounded-lg w-full py-4 gap-4 border-dashed border-2 ${
-                    isDragging ? "border-green-500" : "border-slate-800"
-                  }`}>
+                    <div className={`flex items-center justify-center flex-col blueBackground rounded-lg w-full py-4 gap-4 border-dashed border-2 ${isDragging ? "border-green-500" : "border-slate-800"
+                      }`}>
                       <div className="w-24">
                         <img
                           src={
                             file
                               ? URL.createObjectURL(file)
-                              : user.avatarUrl
+                              : user.avatarUrl || "/assets/samples/150.png"
                           }
                           alt="Preview"
                           className="object-cover object-top
@@ -301,11 +299,11 @@ const EditUserModal = ({ open, onClose, userData, onSuccess }) => {
                       <label className="cursor-pointer flex items-center justify-center">
                         <input type="file" accept="image/*" className="hidden" onChange={(event) => {
                           setFieldValue('profilePhoto', event.currentTarget.files[0]);
-                          setFile(event.currentTarget.files[0]); 
-                        }}/>
+                          setFile(event.currentTarget.files[0]);
+                        }} />
                         <img src="/assets/upload-icon.svg" alt="" />
                       </label>
-                      <div>
+                      <div className="text-center">
                         <span className="text-primary text-2xl">Click to Upload image</span>
                         <span className="text-white mx-2 text-2xl">or drag and drop</span>
                       </div>
@@ -390,7 +388,7 @@ const EditUserModal = ({ open, onClose, userData, onSuccess }) => {
                     <div className="absolute bottom-3 right-4 opacity-50 text-white">lbs</div>
                   </div>}
                 {userData.role === 'player' &&
-                  <div className={`grid gap-2`}>
+                  <div className={`col-span-2 md:col-span-1 grid gap-2`}>
                     <div className="opacity-45">
                       <label htmlFor="">Handedness</label>
                     </div>
@@ -420,15 +418,14 @@ const EditUserModal = ({ open, onClose, userData, onSuccess }) => {
                 </div> */}
               </div>
               {response.message && <div className={`flex justify-end col-span-2 mb-4 ${response.severity === 'success' ? 'text-primary' : 'text-error'}`}>{response.message}</div>}
-              <div className="flex justify-end mb-10 gap-4">
+              <div className="flex flex-col-reverse md:flex-row justify-end mb-10 gap-4">
                 <button type="button" onClick={() => setShowPasswordModal(true)} className="bg-primary dark-blue-color uppercase rounded px-6 h-9 flex items-center justify-center text-lg font-bold hover-button-shadow">
                   Update Password
                 </button>
                 <button
                   type="submit"
-                  className={`bg-primary dark-blue-color rounded w-28 h-9 flex items-center justify-center text-lg font-bold hover-button-shadow ${
-                    isSubmitting ? "opacity-50 cursor-not-allowed" : ""
-                  }`}
+                  className={`bg-primary dark-blue-color rounded w-full md:w-28 h-9 flex items-center justify-center text-lg font-bold hover-button-shadow ${isSubmitting ? "opacity-50 cursor-not-allowed" : ""
+                    }`}
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? "Updating..." : "UPDATE"}

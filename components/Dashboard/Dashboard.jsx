@@ -12,10 +12,10 @@ const VideoSubmittedScreen = () => {
         <img src="/assets/success-large.svg" />
       </div>
       <div>
-        <p className="text-4xl">Video submitted Succesfully!</p>
+        <p className="text-center text-2xl md:text-4xl">Video submitted Succesfully!</p>
       </div>
       <div>
-        <p className="text-lg">We've received the footage. Typically, results are emailed within 5 minutes.</p>
+        <p className="text-center text:xs md:text-lg">We've received the footage. Typically, results are emailed within 5 minutes.</p>
       </div>
     </div>
   )

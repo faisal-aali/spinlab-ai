@@ -32,6 +32,7 @@ export async function GET(req: NextRequest) {
         const videos = await Video.find(query, { assessmentDetails: { stats: { ARR: 0, ANG: 0, VEL: 0 } } }, { sort: { creationDate: -1 } });
 
         for (const video of videos) {
+            if (!video.assessmentDetails.fileUrl) continue;
             const url = new URL(video.assessmentDetails.fileUrl)
             const signatureExpiry = url.searchParams.get('se')
             console.log('signatureExpiry', signatureExpiry)

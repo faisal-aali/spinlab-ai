@@ -215,6 +215,7 @@ const DrillLibrary = () => {
                         src={video.videoLink}
                         title={video.title}
                         className="rounded-lg"
+                        allowFullScreen
                       />
                       <CardContent className="pl-1 pt-2">
                         <Grid container gap={1} justifyContent={'space-between'}>

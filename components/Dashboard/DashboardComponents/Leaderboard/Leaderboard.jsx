@@ -124,21 +124,21 @@ const Leaderboard = () => {
                           {`${row.roleData.age || ''} ${(row.roleData.age && (row.city || row.country) && '|') || ''} ${`${row.city || ''}${row.city && row.country ? ',' : ''} ${row.country || ''}`.trim() || ""}`.trim()}
                         </div>
                       </TableCell>
-                      <TableCell className="!text-white flex-col-reverse">
+                      <TableCell className="!text-white flex-col-reverse min-w-40">
                         <CustomLinearProgress value={row.metrics.stats.performance.score3[0]} color="#FF4500" />
                       </TableCell>
-                      <TableCell className="!text-white">{row.metrics.stats.metrics.hand_speed} m/s</TableCell>
-                      <TableCell className="!text-white">{row.metrics.stats.metrics.release_time / 100} sec</TableCell>
-                      <TableCell className="!text-white">
+                      <TableCell className="!text-white min-w-24">{row.metrics.stats.metrics.hand_speed} m/s</TableCell>
+                      <TableCell className="!text-white min-w-28">{row.metrics.stats.metrics.release_time / 100} sec</TableCell>
+                      <TableCell className="!text-white min-w-48">
                         <CustomLinearProgress value={row.metrics.stats.performance.score3[0]} color="#00FF00" />
                       </TableCell>
-                      <TableCell className="!text-white">
+                      <TableCell className="!text-white min-w-40">
                         <CustomLinearProgress value={row.accelerationScore} color="#00BFFF" />
                       </TableCell>
-                      <TableCell className="!text-white">
+                      <TableCell className="!text-white min-w-40">
                         <CustomLinearProgress value={row.decelerationScore} color="#8A2BE2" />
                       </TableCell>
-                      <TableCell className="!text-white flex-col-reverse">
+                      <TableCell className="!text-white flex-col-reverse min-w-52">
                         <CustomLinearProgress value={row.velocityScore} color="#FF4500" />
                       </TableCell>
                     </TableRow>

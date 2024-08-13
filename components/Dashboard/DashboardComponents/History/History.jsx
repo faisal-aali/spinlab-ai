@@ -109,7 +109,7 @@ const History = (props) => {
 
                       return (
                         <TableRow key={row.id}>
-                          <TableCell className="!text-white">
+                          <TableCell className="!text-white min-w-40">
                             <button onClick={() => setVideoSrc(fileUrl)} className="relative">
                               <img
                                 src={row.thumbnailUrl}
@@ -136,15 +136,15 @@ const History = (props) => {
                           <TableCell className="!text-white">
                             {row.assessmentDetails?.statusText || 'Pending'}
                           </TableCell>
-                          <TableCell className="!text-white">
+                          <TableCell className="!text-white min-w-60">
                             {qbRating &&
                               <CustomLinearProgress
                                 value={qbRating}
                                 color="#00FF00"
                               />}
                           </TableCell>
-                          <TableCell className="text-white">
-                            <div className="grid grid-cols-2 items-center gap-4">
+                          <TableCell className="text-white min-w-60">
+                            <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-4">
                               <button onClick={() => window.open(pdfUrl)} className={`bg-white text-black px-5 py-3 rounded-lg ${!pdfUrl && 'hidden'}`}>
                                 DOWNLOAD PDF
                               </button>

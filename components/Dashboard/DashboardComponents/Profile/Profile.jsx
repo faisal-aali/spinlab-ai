@@ -11,30 +11,30 @@ const ProfilePage = () => {
 
   return (
     !user ? <CircularProgress /> :
-      <div className="p-4">
-        <div className="p-6 max-w-4xl w-full">
+      <div className="p-0 md:p-4">
+        <div className="p-0 md:p-6 max-w-4xl w-full">
           <h1 className="text-white text-3xl mb-6">Your Profile</h1>
           <div
-            className=" p-8 rounded-2xl flex items-start mt-12"
+            className="flex flex-col md:flex-row p-8 rounded-2xl flex md:items-start items-center mt-12 gap-4"
             style={{
               background:
                 "linear-gradient(115.84deg, #32E100 -127.95%, #090F21 66.31%)",
             }}
           >
-            <div className=" mr-4">
+            <div>
               <img
                 src={user.avatarUrl || '/assets/dummy-profile-image.png'}
                 alt={user.name}
-                className="rounded-lg"
-                style={{ height: "410px", width: '300px', objectFit: 'cover' }}
+                className="rounded-lg w-full md:w-[300px] h-[180px] md:h-[410px]"
+                style={{ objectFit: 'cover' }}
               />
             </div>
-            <div className="flex-1">
+            <div className="flex-1 w-full">
               <div
                 className="flex justify-between items-center mb-2 rounded-lg p-4"
                 style={{ background: "#32E1004D", padding: "11px 12px" }}
               >
-                <h2 className="text-4xl font-normal">{user.name}</h2>
+                <h2 className="text-lg md:text-4xl font-normal">{user.name}</h2>
                 <button onClick={() => route.replace('/settings')} className="bg-white text-green-600 rounded-lg p-2 focus:outline-none">
                   <img src="assets/edit-icon.svg" alt="" />
                 </button>

@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
             avatarUrl: Yup.string().optional().nullable(),
             name: Yup.string().matches(/^[A-Za-z\s]+$/, 'Name should only contain alphabets').max(40, 'Name must not be bigger than 40 characters').optional(),
             age: Yup.number().min(1).optional().nullable().strict(),
-            height: Yup.number().min(100, 'Height must be between 100cm to 220cm').max(220, 'Height must be between 100cm to 220cm').optional().nullable().strict(),
+            height: Yup.number().min(100, `Height must be between 3'3" to 6'7"`).max(220, `Height must be between 3'3" to 6'7"`).optional().nullable().strict(),
             weight: Yup.number().min(40, 'Weight must be between 40lbs to 500lbs').max(500, 'Weight must be between 40lbs to 500lbs').optional().nullable().strict(),
             handedness: Yup.string().oneOf(['left', 'right']).optional().nullable(),
             anonymous: Yup.boolean().optional(),

@@ -16,7 +16,7 @@ export default function HeaderProfile() {
                     <img src="/assets/hello-icon.png" className="w-11" alt="" />
                     <div>
                         <h2 className="text-sm md:text-4xl font-normal">
-                            Hello <span className="font-semibold capitalize">{userSession.name.split(' ')[0]}</span>
+                            Hello <span className="font-semibold capitalize">{user.name.split(' ')[0]}</span>
                         </h2>
                         <p className={`text-zinc-400 text-sm ${(userSession.role === 'staff' || userSession.role === 'admin') && 'hidden'}`}>
                             Credits Available: <span className="text-primary">{user?.credits.remaining}</span>

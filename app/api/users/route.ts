@@ -111,6 +111,7 @@ export async function GET(req: NextRequest) {
                         const videos = await Video.find({ userId: user._id, 'assessmentDetails.statusCode': 1 }, { assessmentDetails: { stats: { ARR: 0, ANG: 0, VEL: 0 } } })
 
                         for (const video of videos) {
+                            if (!video.assessmentDetails.fileUrl) continue;
                             const url = new URL(video.assessmentDetails.fileUrl)
                             const signatureExpiry = url.searchParams.get('se')
                             console.log('signatureExpiry', signatureExpiry)

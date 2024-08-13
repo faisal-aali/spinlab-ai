@@ -22,23 +22,23 @@ const PlayerProfile = ({ setGiftUserId, setShowEditModal, setShowDeleteModal, se
             <div className="flex-col lg:flex-row max-w-4xl gap-4 p-8 rounded-2xl flex items-start" style={{ background: "linear-gradient(115.84deg, #32E100 -127.95%, #090F21 66.31%)", }} >
                 <div>
                     <img
+                        className="w-[304px] h-[180px] md:h-[429px] rounded-lg"
                         src={userData.avatarUrl || "/assets/player-large.png"}
                         alt={userData.name}
-                        className="rounded-lg"
-                        style={{ height: "429px", width: "304px", objectFit: 'cover' }}
+                        style={{ objectFit: 'cover' }}
                     />
                 </div>
-                <div className="flex-1">
+                <div className="flex-1 w-full">
                     <div
-                        className="flex justify-between items-center mb-2 rounded-lg p-4 gap-4"
+                        className="flex flex-col md:flex-row justify-between items-center mb-2 rounded-lg p-4 gap-4"
                         style={{ background: "#32E1004D", padding: "11px 12px" }}
                     >
-                        <h2 className="text-4xl font-normal capitalize">{userData.name}</h2>
+                        <h2 className="text-2xl md:text-4xl font-normal capitalize">{userData.name}</h2>
                         <div className={`flex gap-4 ${user.role !== 'admin' && 'hidden'}`}>
-                            <button onClick={() => setShowEditModal(true)} className="bg-white flex justify-center items-center w-12 text-green-600 rounded-lg p-2 focus:outline-none">
+                            <button onClick={() => setShowEditModal(true)} className="bg-white flex justify-center items-center w-8 h-8 md:w-12 md:h-12 text-green-600 rounded-lg p-2 focus:outline-none">
                                 <img src="/assets/edit-icon.svg" alt="" />
                             </button>
-                            <button onClick={() => setShowDeleteModal(true)} className="button-danger flex justify-center items-center w-12 rounded-lg p-2 focus:outline-none">
+                            <button onClick={() => setShowDeleteModal(true)} className="button-danger flex justify-center items-center w-8 h-8 md:w-12 md:h-12 rounded-lg p-2 focus:outline-none">
                                 <img src="/assets/delete-icon-white.svg" alt="" />
                             </button>
                         </div>
@@ -71,7 +71,7 @@ const PlayerProfile = ({ setGiftUserId, setShowEditModal, setShowDeleteModal, se
                     <p className="text-base mb-2 pb-4 pt-2 font-bold	">
                         Subscription Plan: <span className="text-primary">{userData.subscription.package?.name || "Free"}</span>
                     </p>
-                    <div className="flex justify-end">
+                    <div className={`flex justify-end ${user?.role !== 'admin' && 'hidden'}`}>
                         <button onClick={() => {
                             setGiftUserId(userData._id)
                             setShowGiftModal(true)
@@ -97,23 +97,23 @@ const TrainerProfile = ({ setGiftUserId, setShowEditModal, setShowDeleteModal, s
             <div className="flex flex-col lg:flex-row max-w-4xl gap-4 p-8 rounded-2xl items-start" style={{ background: "linear-gradient(115.84deg, #32E100 -127.95%, #090F21 66.31%)", }} >
                 <div>
                     <img
+                        className="w-[304px] h-[180px] md:h-[429px] rounded-lg"
                         src={userData.avatarUrl || "/assets/player-large.png"}
                         alt={userData.name}
-                        className="rounded-lg"
-                        style={{ height: "429px", width: "304px", objectFit: 'cover' }}
+                        style={{ objectFit: 'cover' }}
                     />
                 </div>
-                <div className="flex-1">
+                <div className="flex-1 w-full">
                     <div
-                        className="flex justify-between items-center mb-2 rounded-lg p-4 gap-4"
+                        className="flex flex-col md:flex-row justify-between items-center mb-2 rounded-lg p-4 gap-4"
                         style={{ background: "#32E1004D", padding: "11px 12px" }}
                     >
-                        <h2 className="text-4xl font-normal">{userData.name}</h2>
+                        <h2 className="text-2xl md:text-4xl font-normal">{userData.name}</h2>
                         <div className={`flex gap-4 ${user.role !== 'admin' && 'hidden'}`}>
-                            <button onClick={() => setShowEditModal(true)} className="bg-white flex justify-center items-center w-12 text-green-600 rounded-lg p-2 focus:outline-none">
+                            <button onClick={() => setShowEditModal(true)} className="bg-white flex justify-center items-center w-8 h-8 md:w-12 md:h-12 text-green-600 rounded-lg p-2 focus:outline-none">
                                 <img src="/assets/edit-icon.svg" alt="" />
                             </button>
-                            <button onClick={() => setShowDeleteModal(true)} className="button-danger flex justify-center items-center w-12 rounded-lg p-2 focus:outline-none">
+                            <button onClick={() => setShowDeleteModal(true)} className="button-danger flex justify-center items-center w-8 h-8 md:w-12 md:h-12 rounded-lg p-2 focus:outline-none">
                                 <img src="/assets/delete-icon-white.svg" alt="" />
                             </button>
                         </div>
@@ -133,7 +133,7 @@ const TrainerProfile = ({ setGiftUserId, setShowEditModal, setShowDeleteModal, s
                     <p className="text-base mb-2 pb-4 pt-2 font-bold	">
                         Subscription Plan: <span className="text-primary">{userData.subscription.package?.name || 'Free'}</span>
                     </p>
-                    <div className="flex justify-end">
+                    <div className={`flex justify-end ${user?.role !== 'admin' && 'hidden'}`}>
                         <button onClick={() => {
                             setGiftUserId(userData._id)
                             setShowGiftModal(true)
@@ -168,23 +168,23 @@ const StaffProfile = ({ setShowEditModal, setShowDeleteModal, userData }) => {
             <div className="flex-col lg:flex-row gap-4 max-w-4xl p-8 rounded-2xl flex items-start" style={{ background: "linear-gradient(115.84deg, #32E100 -127.95%, #090F21 66.31%)", }} >
                 <div>
                     <img
+                        className="w-[304px] h-[180px] md:h-[429px] rounded-lg"
                         src={userData.avatarUrl || "/assets/player-large.png"}
                         alt={userData.name}
-                        className="rounded-lg"
-                        style={{ height: "429px", width: "304px", objectFit: 'cover' }}
+                        style={{ objectFit: 'cover' }}
                     />
                 </div>
-                <div className="flex-1">
+                <div className="flex-1 w-full">
                     <div
-                        className="flex justify-between items-center mb-2 rounded-lg p-4 gap-4"
+                        className="flex flex-col md:flex-row justify-between items-center mb-2 rounded-lg p-4 gap-4"
                         style={{ background: "#32E1004D", padding: "11px 12px" }}
                     >
-                        <h2 className="text-4xl font-normal">{userData.name}</h2>
+                        <h2 className="text-2xl md:text-4xl font-normal">{userData.name}</h2>
                         <div className={`flex gap-4 ${user.role !== 'admin' && 'hidden'}`}>
-                            <button onClick={() => setShowEditModal(true)} className="bg-white flex justify-center items-center w-12 text-green-600 rounded-lg p-2 focus:outline-none">
+                            <button onClick={() => setShowEditModal(true)} className="bg-white flex justify-center items-center w-8 h-8 md:w-12 md:h-12 text-green-600 rounded-lg p-2 focus:outline-none">
                                 <img src="/assets/edit-icon.svg" alt="" />
                             </button>
-                            <button onClick={() => setShowDeleteModal(true)} className="button-danger flex justify-center items-center w-12 rounded-lg p-2 focus:outline-none">
+                            <button onClick={() => setShowDeleteModal(true)} className="button-danger flex justify-center items-center w-8 h-8 md:w-12 md:h-12 rounded-lg p-2 focus:outline-none">
                                 <img src="/assets/delete-icon-white.svg" alt="" />
                             </button>
                         </div>

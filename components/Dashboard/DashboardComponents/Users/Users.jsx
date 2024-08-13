@@ -15,7 +15,7 @@ import {
 import Pagination from '../../../Common/Pagination/Pagination';
 import DeleteUserModal from '../DeleteUserModal/DeleteUserModal';
 import AddUserModal from '../AddUserModal/AddUserModal';
-import { useRouter, useSearchParams, usePathname} from "next/navigation";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import axios from 'axios';
 
@@ -31,24 +31,24 @@ const Users = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [data, setData] = useState([]);
   const [userIdToDelete, setUserIdToDelete] = useState(null);
-  const [loading, setLoading] = useState(true); 
+  const [loading, setLoading] = useState(true);
   const rowsPerPage = 5;
 
   const role = searchParams.get('role');
 
   const fetchData = async () => {
-    setLoading(true); 
+    setLoading(true);
     try {
       const response = await axios.get('/api/users', { params: { role } });
       setData(response.data);
     } catch (error) {
       console.error('Failed to fetch data:', error);
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     setPage(1);
   }, [searchParams, pathname])
 
@@ -73,12 +73,12 @@ const Users = () => {
   return (
     <>
       <div className="flex flex-col py-8 gap-8">
-        <div className="flex justify-between">
+        <div className="flex flex-col md:flex-row gap-4 justify-between">
           <div>
-            <p className="text-4xl">{role === 'player' ? 'Players' : role === 'staff' ? 'Staff' : role === 'trainer' ? 'Trainers' : 'Invalid Role'} Database</p>
+            <p className="text-2xl md:text-4xl">{role === 'player' ? 'Players' : role === 'staff' ? 'Staff' : role === 'trainer' ? 'Trainers' : 'Invalid Role'} Database</p>
           </div>
-          <div className="flex flex-row gap-4 w-2/5">
-            <div className="search-bar flex-1">
+          <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-2/5">
+            <div className="search-bar flex-1 w-full">
               <input
                 placeholder="Search..."
                 value={searchQuery}
@@ -94,7 +94,7 @@ const Users = () => {
           </div>
         </div>
         <div className="">
-          {loading ? ( 
+          {loading ? (
             <div className="flex justify-center py-16">
               <CircularProgress />
             </div>

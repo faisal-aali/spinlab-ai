@@ -85,7 +85,6 @@ export default function Recorder({ onSubmit }) {
                 <p>{`Error: ${errorMessage}`}</p>
             </div>
             <div className="grid grid-cols-custom gap-4">
-                <button onClick={() => clearAllRecordings()}>clear all</button>
                 {activeRecordings?.map((recording) => (
                     <div className="bg-blueBackground rounded-lg" key={recording.id}>
                         <div className="text-white grid grid-cols-1">

@@ -62,7 +62,7 @@ const PlayersHistory = (props) => {
         setPage(newPage);
     };
 
-    const paginatedData = players?.filter((player) => `${player.firstName} ${player.lastName}`.toLowerCase().match(searchQuery.toLowerCase())).slice(
+    const paginatedData = players?.filter((player) => `${player.name}`.toLowerCase().match(searchQuery.toLowerCase())).slice(
         (page - 1) * rowsPerPage,
         page * rowsPerPage
     );
@@ -98,7 +98,7 @@ const PlayersHistory = (props) => {
                             <TableBody className="!leaderboard-table-body">
                                 {paginatedData.map((player) => (
                                     <TableRow key={player._id}>
-                                        <TableCell className="!text-white">
+                                        <TableCell className="!text-white min-w-40">
                                             <img
                                                 src={player.avatarUrl || '/assets/player.png'}
                                                 alt={player.name}
@@ -115,14 +115,14 @@ const PlayersHistory = (props) => {
                                                 {new Date(player.creationDate).toLocaleDateString()}
                                             </Typography>
                                         </TableCell>
-                                        <TableCell className="!text-white">
+                                        <TableCell className="!text-white min-w-60">
                                             <CustomLinearProgress
                                                 value={player.metrics.stats?.performance.score3[0] || 0}
                                                 color="#00FF00"
                                             />
                                         </TableCell>
-                                        <TableCell className="!text-white">
-                                            <div className="grid grid-cols-2 items-center gap-4">
+                                        <TableCell className="!text-white min-w-60">
+                                            <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-4">
                                                 <button onClick={() => window.open(player.metrics.reportPdfUrl)} className={`bg-white text-black px-5 py-3 rounded-lg ${!player.metrics.reportPdfUrl && 'hidden'}`}>
                                                     DOWNLOAD PDF
                                                 </button>

@@ -114,6 +114,7 @@ const UploadModal = ({ open, onClose, onSuccess, type, playerId }) => {
 
   const handleUploadVideo = async (file) => {
     if (!file) return console.error('no file selected')
+    if (!file.type.startsWith("video/")) return showSnackbar("Please drop a valid video file.", "error");
     setIsUploading(true);
     setUploadProgress(0);
 
@@ -210,13 +211,13 @@ const UploadModal = ({ open, onClose, onSuccess, type, playerId }) => {
                       <label className="cursor-pointer flex items-center justify-center">
                         <img src="assets/upload-icon.svg" alt="" />
                       </label>
-                      <div>
-                        <span className="text-primary text-2xl">Click to Upload</span>
-                        <span className="text-white mx-2 text-2xl">
+                      <div className="text-center">
+                        <span className="text-primary text-xl md:text-2xl">Click to Upload</span>
+                        <span className="text-white mx-2 text-xl md:text-2xl">
                           or drag and drop
                         </span>
                       </div>
-                      <p className="text-white text-lg">
+                      <p className="text-white text-base md:text-lg text-center">
                         MP4 or HD (Recommended size 1000x1000px)
                       </p>
                       <div className="flex justify-center mb-10">
@@ -232,7 +233,7 @@ const UploadModal = ({ open, onClose, onSuccess, type, playerId }) => {
                   </div>}
                 {isUploading &&
                   <div className="flex flex-col items-center justify-center text-center gap-7	">
-                    <h2 className="text-3xl	mb-6 text-white">
+                    <h2 className="text-xl md:text-3xl	mb-6 text-white">
                       Please hold, your video is uploading
                     </h2>
                     <LinearProgress
@@ -302,12 +303,12 @@ const UploadModal = ({ open, onClose, onSuccess, type, playerId }) => {
                   </div>}
                 {type === 'record' && !recordVideo && !isUploading && !uploadSuccess && !uploadFailed &&
                   <div className="flex flex-col items-center text-center text-white">
-                    <h2 className="text-4xl	mb-6">
+                    <h2 className="text-lg md:text-4xl	mb-6">
                       Here's how to
                       <span className="text-primary"> Record your Video!</span>
                     </h2>
                     <div className="px-8 py-6 primary-border rounded-3xl	">
-                      <div className="relative my-4" style={{ width: "31rem" }}>
+                      <div className="relative my-4">
                         <img
                           src="assets/record-video-picture.png"
                           alt="Record your Video"
