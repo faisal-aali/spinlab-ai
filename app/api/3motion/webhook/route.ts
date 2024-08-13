@@ -6,22 +6,22 @@ import axios from 'axios'
 
 export async function POST(req: NextRequest) {
     try {
-        console.log('[/api/3motion/webhook] called')
+        console.log(new Date(), '[/api/3motion/webhook] called')
         const data = await req.json()
 
-        console.log('[/api/3motion/webhook] data', data)
+        console.log(new Date(), '[/api/3motion/webhook] data', data)
         if (!data.TenantId || !data.TaskId) {
-            console.log('[/api/3motion/webhook] Invalid Request')
+            console.log(new Date(), '[/api/3motion/webhook] Invalid Request')
             return NextResponse.json({ message: `Invalid Request` }, { status: 400 })
         }
 
         const auth = _3Motion.getAuth()
         if (!auth) {
-            console.log('[/api/3motion/webhook] Auth token not found')
+            console.log(new Date(), '[/api/3motion/webhook] Auth token not found')
             return NextResponse.json({ message: `INTERNAL ERROR` }, { status: 500 })
         }
         if (auth.tenantId !== data.TenantId) {
-            console.log('[/api/3motion/webhook] Invalid TenantId')
+            console.log(new Date(), '[/api/3motion/webhook] Invalid TenantId')
             return NextResponse.json({ message: `Invalid TenantId` }, { status: 404 })
         }
 
@@ -33,19 +33,19 @@ export async function POST(req: NextRequest) {
             }]
         })
         if (!video) {
-            console.log('[/api/3motion/webhook] Invalid TaskId')
+            console.log(new Date(), '[/api/3motion/webhook] Invalid TaskId')
             return NextResponse.json({ message: `Invalid TaskId` }, { status: 404 })
         }
 
         const assessmentDetails = await _3Motion.getAssessmentDetails({ taskId: video.taskId, taskType: video.taskType });
 
-        console.log('[/api/3motion/webhook] assessmentDetails', assessmentDetails)
+        console.log(new Date(), '[/api/3motion/webhook] assessmentDetails', assessmentDetails)
 
         if (assessmentDetails) {
             if (assessmentDetails.dataJsonUrl) {
                 assessmentDetails.stats = await axios.get(assessmentDetails.dataJsonUrl).then(res => res.data);
             } else {
-                console.log('[/api/3motion/webhook] dataJsonUrl is empty')
+                console.log(new Date(), '[/api/3motion/webhook] dataJsonUrl is empty')
             }
 
             video.assessmentDetails = assessmentDetails
@@ -55,27 +55,30 @@ export async function POST(req: NextRequest) {
 
         await video.save()
 
-        console.log('[/api/3motion/webhook] assessmentDetails updated')
+        console.log(new Date(), '[/api/3motion/webhook] assessmentDetails updated')
 
         return NextResponse.json({ message: `OK` }, { status: 200 })
     } catch (err: unknown) {
-        console.error('[/api/3motion/webhook] error:', err)
+        console.error(new Date(), '[/api/3motion/webhook] error:', err)
         const obj = validateError(err)
         return NextResponse.json({ message: obj.message }, { status: obj.status })
     }
 }
 
-// update pending assessment every one hour
+// update pending assessment every 5 minutes
 setInterval(() => {
     updateAssessments()
-}, 3600000);
+}, 300000);
+// 3600000  
 
 const updateAssessments = async () => {
+    console.log(new Date(), 'updateAssessments timer called')
     const videos = await Video.find({}, { assessmentDetails: { stats: { ARR: 0, ANG: 0, VEL: 0 } } });
     videos.forEach(async video => {
         if (video.assessmentDetails.statusCode) return
-        console.log('updating assessment details for', video.taskId)
+        console.log(new Date(), 'updating pending assessment details for', video.taskId)
         const assessmentDetails = await _3Motion.getAssessmentDetails({ taskId: video.taskId, taskType: video.taskType });
+        console.log(new Date(), 'assessmentDetails', assessmentDetails)
 
         if (!assessmentDetails) return console.error('Invalid response for for', video.taskId)
 
@@ -87,6 +90,6 @@ const updateAssessments = async () => {
 
         await video.save()
 
-        console.log('updated assessment details for', video.taskId)
+        console.log(new Date(), 'updated assessment details for', video.taskId)
     })
 }
