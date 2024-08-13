@@ -27,6 +27,8 @@ const AccountSettings = () => {
   const [showUpdateEmailModal, setShowUpdateEmailModal] = useState(false)
   const { showSnackbar } = useApp();
   const [loading, setLoading] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+
 
 
   // const reinitializeForm = (user) => {
@@ -76,13 +78,31 @@ const AccountSettings = () => {
 
   const handleImageChange = (e) => {
     const selectedFile = e.target.files[0];
-    if (selectedFile) {
+    if (selectedFile && selectedFile.type.startsWith("image/")) {
       const reader = new FileReader();
       reader.onload = (event) => {
         setImageSrc(event.target.result);
       };
       reader.readAsDataURL(selectedFile);
       setFile(selectedFile);
+    } else {
+      showSnackbar("Please upload a valid image file.", "error");
+    }
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const droppedFile = e.dataTransfer.files[0];
+    if (droppedFile && droppedFile.type.startsWith("image/")) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setImageSrc(event.target.result);
+      };
+      reader.readAsDataURL(droppedFile);
+      setFile(droppedFile);
+    } else {
+      showSnackbar("Please drop a valid image file.", "error");
     }
   };
 
@@ -213,7 +233,18 @@ const AccountSettings = () => {
                     </div>
                   </div>
                   <div className="flex flex-col items-center w-full">
-                    <div className="p-8 flex items-center justify-center flex-col blueBackground rounded-lg w-full gap-4 border-dashed border-2 border-slate-800">
+                    <div className={`p-8 flex items-center justify-center flex-col blueBackground rounded-lg w-full gap-4 border-dashed border-2  ${
+                    isDragging ? "border-green-500" : "border-slate-800"}`}
+                    onDragOver={(e) => {
+                      e.preventDefault();
+                      setIsDragging(true);
+                    }}
+                    onDragLeave={(e) => {
+                      e.preventDefault();
+                      setIsDragging(false);
+                    }}
+                    onDrop={handleDrop}
+                    >
                       <label className="cursor-pointer flex items-center justify-center">
                         <input
                           type="file"

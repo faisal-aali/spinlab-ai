@@ -25,6 +25,7 @@ const AddUserModal = ({ open, onClose, role, onSuccess }) => {
   const [file, setFile] = useState(null);
   const [imageSrc, setImageSrc] = useState("");
   const [response, setResponse] = useState({});
+  const [isDragging, setIsDragging] = useState(false);
 
   const timeout = useRef();
   useEffect(() => {
@@ -48,13 +49,31 @@ const AddUserModal = ({ open, onClose, role, onSuccess }) => {
 
   const handleImageChange = (e) => {
     const selectedFile = e.target.files[0];
-    if (selectedFile) {
+    if (selectedFile && selectedFile.type.startsWith("image/")) {
       const reader = new FileReader();
       reader.onload = (event) => {
         setImageSrc(event.target.result);
       };
       reader.readAsDataURL(selectedFile);
       setFile(selectedFile);
+    } else {
+      showSnackbar("Please upload a valid image file.", "error");
+    }
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const droppedFile = e.dataTransfer.files[0];
+    if (droppedFile && droppedFile.type.startsWith("image/")) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setImageSrc(event.target.result);
+      };
+      reader.readAsDataURL(droppedFile);
+      setFile(droppedFile);
+    } else {
+      showSnackbar("Please drop a valid image file.", "error");
     }
   };
 
@@ -144,8 +163,20 @@ const AddUserModal = ({ open, onClose, role, onSuccess }) => {
                   <div className="opacity-45">
                     <label htmlFor="">Profile Photo</label>
                   </div>
-                  <div className="grid grid-cols-1 gap-4 h-auto">
-                    <div className="flex items-center justify-center flex-col blueBackground rounded-lg w-full py-4 gap-4 border-dashed border-2 border-slate-800">
+                  <div className="grid grid-cols-1 gap-4 h-auto"
+                   onDragOver={(e) => {
+                    e.preventDefault();
+                    setIsDragging(true);
+                  }}
+                  onDragLeave={(e) => {
+                    e.preventDefault();
+                    setIsDragging(false);
+                  }}
+                  onDrop={handleDrop}
+                >
+                    <div className={`flex items-center justify-center flex-col blueBackground rounded-lg w-full py-4 gap-4 border-dashed border-2 ${
+                    isDragging ? "border-green-500" : "border-slate-800"
+                  }`}>
                       <div className="w-24">
                         {imageSrc && (
                           <img

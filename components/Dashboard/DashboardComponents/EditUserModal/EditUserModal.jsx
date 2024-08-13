@@ -157,6 +157,7 @@ const EditUserModal = ({ open, onClose, userData, onSuccess }) => {
   const [response, setResponse] = useState({})
   const { showSnackbar } = useApp();
   const [file, setFile] = useState(null);
+  const [isDragging, setIsDragging] = useState(false);
 
 
   const fetchUser = () => {
@@ -182,6 +183,16 @@ const EditUserModal = ({ open, onClose, userData, onSuccess }) => {
     };
   }, [onClose]);
 
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const droppedFile = e.dataTransfer.files[0];
+    if (droppedFile && droppedFile.type.startsWith("image/")) {
+      setFile(droppedFile);
+    } else {
+      showSnackbar("Please drop a valid image file.", "error");
+    }
+  };
   const handleSubmit = async (values) => {
     try {
       let imageUrl = user.avatarUrl; 
@@ -261,11 +272,27 @@ const EditUserModal = ({ open, onClose, userData, onSuccess }) => {
                   <div className="opacity-45">
                     <label htmlFor="">Profile Photo</label>
                   </div>
-                  <div className="grid grid-cols-1 gap-4">
-                    <div className="flex items-center justify-center flex-col blueBackground rounded-lg w-full py-4 gap-4 border-dashed border-2 border-slate-800">
+                  <div className="grid grid-cols-1 gap-4"
+                     onDragOver={(e) => {
+                      e.preventDefault();
+                      setIsDragging(true);
+                    }}
+                    onDragLeave={(e) => {
+                      e.preventDefault();
+                      setIsDragging(false);
+                    }}
+                    onDrop={handleDrop}
+                  >
+                    <div className={`flex items-center justify-center flex-col blueBackground rounded-lg w-full py-4 gap-4 border-dashed border-2 ${
+                    isDragging ? "border-green-500" : "border-slate-800"
+                  }`}>
                       <div className="w-24">
                         <img
-                          src={values.profilePhoto ? URL.createObjectURL(values.profilePhoto) : user.avatarUrl}
+                          src={
+                            file
+                              ? URL.createObjectURL(file)
+                              : user.avatarUrl
+                          }
                           alt="Preview"
                           className="object-cover object-top
                               rounded-full w-[100px] h-[100px]"

@@ -1,4 +1,3 @@
-// components/UploadModal.js
 import React, { useEffect, useRef, useState } from "react";
 import { Modal, Box, IconButton, TextField, MenuItem } from "@mui/material";
 import {
@@ -42,8 +41,10 @@ const AddNewPlayerModal = ({ open, onClose, onSuccess }) => {
   const { showSnackbar } = useApp();
   const [file, setFile] = useState(null);
   const [imageSrc, setImageSrc] = useState("");
+  const [isDragging, setIsDragging] = useState(false);
 
-  const timeout = useRef()
+  const timeout = useRef();
+
   useEffect(() => {
     if (response.message) {
       clearTimeout(timeout.current)
@@ -65,13 +66,31 @@ const AddNewPlayerModal = ({ open, onClose, onSuccess }) => {
 
   const handleImageChange = (e) => {
     const selectedFile = e.target.files[0];
-    if (selectedFile) {
+    if (selectedFile && selectedFile.type.startsWith("image/")) {
       const reader = new FileReader();
       reader.onload = (event) => {
         setImageSrc(event.target.result);
       };
       reader.readAsDataURL(selectedFile);
       setFile(selectedFile);
+    } else {
+      showSnackbar("Please upload a valid image file.", "error");
+    }
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const droppedFile = e.dataTransfer.files[0];
+    if (droppedFile && droppedFile.type.startsWith("image/")) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setImageSrc(event.target.result);
+      };
+      reader.readAsDataURL(droppedFile);
+      setFile(droppedFile);
+    } else {
+      showSnackbar("Please drop a valid image file.", "error");
     }
   };
 
@@ -95,12 +114,12 @@ const AddNewPlayerModal = ({ open, onClose, onSuccess }) => {
         };
 
         await axios.post(`/api/players`, data);
-        showSnackbar('Player added!', 'success');
+        showSnackbar("Player added!", "success");
         onSuccess && onSuccess();
         onClose();
         resolve();
       } catch (err) {
-        showSnackbar(err.response?.data?.message || err.message, 'error');
+        showSnackbar(err.response?.data?.message || err.message, "error");
         reject(err);
       }
     });
@@ -110,7 +129,7 @@ const AddNewPlayerModal = ({ open, onClose, onSuccess }) => {
     <Modal open={open} onClose={onClose} aria-labelledby="upload-modal-title">
       <Box sx={style} className="w-full max-w-2xl blueBackground">
         <IconButton
-          style={{ position: "absolute", top: 10, right: 10, color: '#fff' }}
+          style={{ position: "absolute", top: 10, right: 10, color: "#fff" }}
           onClick={onClose}
         >
           <CloseIcon />
@@ -126,14 +145,17 @@ const AddNewPlayerModal = ({ open, onClose, onSuccess }) => {
             heightIn: "",
             weight: "",
             handedness: "",
-            email: ""
+            email: "",
           }}
           validationSchema={validationSchema}
-          onSubmit={(values, { resetForm }) => {
-            handleSubmit(values).then(() => {
-              resetForm()
-              router.push('/add-player')
-            }).catch(console.error)
+          onSubmit={(values, { resetForm, setSubmitting }) => {
+            handleSubmit(values)
+              .then(() => {
+                resetForm();
+                router.push("/add-player");
+              })
+              .catch(console.error)
+              .finally(() => setSubmitting(false));
           }}
         >
           {({ isSubmitting, errors, touched, setFieldValue, values }) => (
@@ -145,10 +167,11 @@ const AddNewPlayerModal = ({ open, onClose, onSuccess }) => {
                   </div>
                   <Field
                     className={`w-full text-primary bg-transparent px-3 rounded-lg py-3 text-white rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
-                    ${errors.firstName && touched.firstName
+                    ${
+                      errors.firstName && touched.firstName
                         ? "border-red-900	border"
                         : "primary-border focus:border-green-500"
-                      }`}
+                    }`}
                     type="text"
                     name="firstName"
                     required
@@ -160,10 +183,11 @@ const AddNewPlayerModal = ({ open, onClose, onSuccess }) => {
                   </div>
                   <Field
                     className={`w-full text-primary bg-transparent px-3 rounded-lg py-3 text-white rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
-                    ${errors.lastName && touched.lastName
+                    ${
+                      errors.lastName && touched.lastName
                         ? "border-red-900	border"
                         : "primary-border focus:border-green-500"
-                      }`}
+                    }`}
                     type="text"
                     name="lastName"
                     required
@@ -177,24 +201,30 @@ const AddNewPlayerModal = ({ open, onClose, onSuccess }) => {
                     <div className="relative">
                       <Field
                         name="heightFt"
-                        type='number'
-                        className={`py-3 px-3 blueBackground rounded-lg w-full text-primary focus:outline-none placeholder:opacity-45 ${errors.heightFt && touched.heightFt
-                          ? "border-red-900	border"
-                          : "primary-border focus:border-green-500"
-                          }`}
+                        type="number"
+                        className={`py-3 px-3 blueBackground rounded-lg w-full text-primary focus:outline-none placeholder:opacity-45 ${
+                          errors.heightFt && touched.heightFt
+                            ? "border-red-900	border"
+                            : "primary-border focus:border-green-500"
+                        }`}
                       />
-                      <div className="absolute bottom-3 right-4 opacity-50 text-white">ft</div>
+                      <div className="absolute bottom-3 right-4 opacity-50 text-white">
+                        ft
+                      </div>
                     </div>
                     <div className="relative">
                       <Field
                         name="heightIn"
-                        type='number'
-                        className={`py-3 px-3 blueBackground rounded-lg  w-full text-primary focus:outline-none placeholder:opacity-45 ${errors.heightIn && touched.heightIn
-                          ? "border-red-900	border"
-                          : "primary-border focus:border-green-500"
-                          }`}
+                        type="number"
+                        className={`py-3 px-3 blueBackground rounded-lg  w-full text-primary focus:outline-none placeholder:opacity-45 ${
+                          errors.heightIn && touched.heightIn
+                            ? "border-red-900	border"
+                            : "primary-border focus:border-green-500"
+                        }`}
                       />
-                      <div className="absolute bottom-3 right-4 opacity-50 text-white">in</div>
+                      <div className="absolute bottom-3 right-4 opacity-50 text-white">
+                        in
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -204,24 +234,52 @@ const AddNewPlayerModal = ({ open, onClose, onSuccess }) => {
                   </div>
                   <Field
                     className={`w-full text-primary bg-transparent px-3 rounded-lg py-3 text-white rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
-                    ${errors.weight && touched.weight
+                    ${
+                      errors.weight && touched.weight
                         ? "border-red-900	border"
                         : "primary-border focus:border-green-500"
-                      }`}
+                    }`}
                     type="number"
                     name="weight"
                     required
                   />
-                  <div className="absolute bottom-3 right-4 opacity-50 text-white">lbs</div>
+                  <div className="absolute bottom-3 right-4 opacity-50 text-white">
+                    lbs
+                  </div>
                 </div>
                 <div className="grid gap-2">
                   <div className="opacity-45">
                     <label htmlFor="">Handedness</label>
                   </div>
 
-                  <TextField error={Boolean(errors.handedness && touched.handedness)} variant="outlined" select value={values.handedness} InputProps={{ sx: { height: 50 } }} fullWidth onChange={(e) => setFieldValue('handedness', e.target.value)}>
-                    <MenuItem value={'left'}>Left</MenuItem>
-                    <MenuItem value={'right'}>Right</MenuItem>
+                  <TextField
+                    error={Boolean(errors.handedness && touched.handedness)}
+                    variant="outlined"
+                    select
+                    value={values.handedness}
+                    onChange={(e) =>
+                      setFieldValue("handedness", e.target.value)
+                    }
+                    className={`w-full text-primary blueBackground rounded-lg text-white focus:outline-none placeholder:opacity-45 ${
+                      errors.handedness && touched.handedness
+                        ? "border-red-900	border"
+                        : "primary-border focus:border-green-500"
+                    }`}
+                  >
+                    <MenuItem
+                      className="bg-slate-700"
+                      value="left"
+                      style={{ color: "#FFF" }}
+                    >
+                      Left
+                    </MenuItem>
+                    <MenuItem
+                      className="bg-slate-700"
+                      value="right"
+                      style={{ color: "#FFF" }}
+                    >
+                      Right
+                    </MenuItem>
                   </TextField>
                 </div>
                 <div className={`grid gap-2`}>
@@ -230,25 +288,41 @@ const AddNewPlayerModal = ({ open, onClose, onSuccess }) => {
                   </div>
                   <Field
                     className={`w-full text-primary bg-transparent px-3 rounded-lg py-3 text-white rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
-                    ${errors.email && touched.email
+                    ${
+                      errors.email && touched.email
                         ? "border-red-900	border"
                         : "primary-border focus:border-green-500"
-                      }`}
+                    }`}
                     type="text"
                     name="email"
                     required
                   />
                 </div>
               </div>
-              <div className="grid grid-cols-1 gap-4">
-                <div className="p-8 flex items-center justify-center flex-col rounded-lg w-full py-4 gap-4 border-dashed border-2 border-slate-800">
+              <div
+                className="grid grid-cols-1 gap-4"
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  setIsDragging(true);
+                }}
+                onDragLeave={(e) => {
+                  e.preventDefault();
+                  setIsDragging(false);
+                }}
+                onDrop={handleDrop}
+              >
+                <div
+                  className={`p-8 flex items-center justify-center flex-col rounded-lg w-full py-4 gap-4 border-dashed border-2 ${
+                    isDragging ? "border-green-500" : "border-slate-800"
+                  }`}
+                >
                   <div className="w-24">
                     {imageSrc && (
                       <img
                         src={imageSrc}
                         alt="Preview"
                         className="object-cover object-top
-                            rounded-full w-[100px] h-[100px]"
+                          rounded-full w-[100px] h-[100px]"
                       />
                     )}
                   </div>
@@ -262,17 +336,23 @@ const AddNewPlayerModal = ({ open, onClose, onSuccess }) => {
                     <img src="assets/upload-icon.svg" alt="" />
                   </label>
                   <div>
-                    <span className="text-primary text-2xl">Click to Upload</span>
-                    <span className="text-white mx-2 text-2xl">or drag and drop</span>
+                    <span className="text-primary text-2xl">
+                      Click to Upload
+                    </span>
+                    <span className="text-white mx-2 text-2xl">
+                      or drag and drop
+                    </span>
                   </div>
                 </div>
               </div>
-              {response.message && <div className={`flex justify-center col-span-2 mt-4 ${response.severity === 'success' ? 'text-primary' : 'text-error'}`}>{response.message}</div>}
+
+              {/* {response.message && <div className={`flex justify-center col-span-2 mt-4 ${response.severity === 'success' ? 'text-primary' : 'text-error'}`}>{response.message}</div>} */}
               <div className="flex justify-center mt-4 mb-10">
                 <button
                   type="submit"
-                  className={`bg-primary dark-blue-color rounded w-28 h-9 flex items-center justify-center text-lg font-bold hover-button-shadow ${isSubmitting ? "opacity-50 cursor-not-allowed" : ""
-                    }`}
+                  className={`bg-primary dark-blue-color rounded w-28 h-9 flex items-center justify-center text-lg font-bold hover-button-shadow ${
+                    isSubmitting ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? "Adding..." : "SUBMIT"}
