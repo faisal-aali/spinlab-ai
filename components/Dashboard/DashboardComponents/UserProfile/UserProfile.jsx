@@ -259,7 +259,7 @@ const UserProfile = () => {
             {userData &&
                 <div>
                     {showEditModal && <EditUserModal open={showEditModal} onClose={() => setShowEditModal(false)} userData={userData} onSuccess={fetchUser} />}
-                    {showEditModal && <DeleteUserModal open={showDeleteModal} onClose={() => setShowDeleteModal(false)} userId={userId} onSuccess={() => router.back()} />}
+                    <DeleteUserModal open={showDeleteModal} onClose={() => setShowDeleteModal(false)} userId={userId} onSuccess={() => router.back()} />
                     <GiftUserModal onSuccess={() => {
                         fetchUser()
                         setShowGiftModal(false)
