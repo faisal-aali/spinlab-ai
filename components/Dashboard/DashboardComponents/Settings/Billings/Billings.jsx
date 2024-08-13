@@ -7,6 +7,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import axios, { AxiosError } from 'axios'
 import { useApp } from "@/components/Context/AppContext";
+import  RefundCancellationPolicyDialog  from "../../../../Refund&Cancellation/Refund&Cancellation"
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
 
@@ -31,7 +32,8 @@ const BillingTab = () => {
 
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const formikRef = useRef()
+  const formikRef = useRef();
+  const [openModal, setOpenModal] = useState(false);
 
   const defaultPaymentMethod = (customer && paymentMethods && paymentMethods.find(pm => pm.id === customer.invoice_settings.default_payment_method))
 
@@ -70,6 +72,9 @@ const BillingTab = () => {
       setDownloading(false)
     })
   }
+
+  const handleOpenModal = () => setOpenModal(true);
+  const handleCloseModal = () => setOpenModal(false);
 
   return (
     (!customer || !paymentMethods) && !profileError ? <CircularProgress /> :
@@ -173,7 +178,7 @@ const BillingTab = () => {
                 <p>Want to cancel your subscription?</p>
                 <p>
                   We're sad to see you go. Please read our
-                  <a href="#" className="text-primary ml-1 font-bold">
+                  <a href="#" className="text-primary ml-1 font-bold" onClick={handleOpenModal}>
                     Refund and Cancelation Policy
                   </a>
                 </p>
@@ -188,6 +193,7 @@ const BillingTab = () => {
                 </p>
               </div>
             </div>}
+            <RefundCancellationPolicyDialog openModal={openModal} handleCloseModal={handleCloseModal} />
       </>
   );
 };
