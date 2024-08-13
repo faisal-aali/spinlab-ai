@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ message: `Invalid Request` }, { status: 400 })
         }
 
-        await new Promise((resolve) => setTimeout(() => resolve('ok'), 3000))
+        await new Promise((resolve) => setTimeout(() => resolve('ok'), 60000))
 
         const auth = _3Motion.getAuth()
         if (!auth) {
