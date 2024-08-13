@@ -1,18 +1,32 @@
-import { createTransport } from "nodemailer";
+import { createTransport, TransportOptions } from "nodemailer";
+import { google } from 'googleapis';
+
+const CLIENT_ID = process.env.GMAIL_CLIENT_ID;
+const CLIENT_SECRET = process.env.GMAIL_CLIENT_SECRET;
+const REFRESH_TOKEN = process.env.GMAIL_REFRESH_TOKEN;
+const REDIRECT_URIS = process.env.GMAIL_REDIRECT_URIS;
+
+const oAuth2Client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_URIS);
+oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
 
 async function sendEmail({ to, subject, html }: { to: string; subject: string; html: string; }) {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
+        const accessToken = await oAuth2Client.getAccessToken();
+
         const transporter = createTransport({
-            host: process.env.SMTP_HOST,
-            port: 587,
+            service: 'gmail',
             auth: {
-                user: process.env.SMTP_USER,
-                pass: process.env.SMTP_PASSWORD,
+                type: 'OAuth2',
+                user: 'no-reply@spinlabai.com',
+                clientId: CLIENT_ID,
+                clientSecret: CLIENT_SECRET,
+                refreshToken: REFRESH_TOKEN,
+                accessToken: accessToken.token,
             },
-        });
+        } as TransportOptions);
 
         const mailOptions = {
-            from: process.env.SMTP_USER,
+            from: `Spin Lab AI <no-reply@spinlabai.com>`,
             to,
             subject: subject,
             html: html

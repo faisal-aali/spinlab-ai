@@ -41,7 +41,7 @@ export async function PATCH(req: NextRequest) {
 
         sendEmail({
             to: oldEmail,
-            subject: 'SpinLab email has been updated',
+            subject: 'Email has been updated',
             html: `
                 <p>Hello, ${user.name}!</p>
                 <p>This is to notify you that your email has been updated to ${newEmail}. If you do not recognize this action, please contact an administrator.</p>

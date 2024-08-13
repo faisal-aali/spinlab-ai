@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
         if (randomPassword) {
             sendEmail({
                 to: data.email,
-                subject: 'Welcome to SpinLab',
+                subject: 'Welcome to Spin Lab AI',
                 html: `
                     <p>Hello, ${data.name}!</p>
                     <p>Please use the following credentials to login to the dashboard</p>

@@ -31,7 +31,7 @@ export async function PATCH(req: NextRequest) {
 
         sendEmail({
             to: user.email,
-            subject: 'SpinLab password has been reset',
+            subject: 'Password has been reset',
             html: `
                 <p>Hello, ${user.name}!</p>
                 <p>This is to notify you that your password has been reset. If you do not recognize this action, please contact an administrator.</p>

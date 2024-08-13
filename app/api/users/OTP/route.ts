@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
 
         await sendEmail({
             to: data.receiverEmail || data.email,
-            subject: 'SpinLab Verification Code',
+            subject: 'Verification Code',
             html: `
                 <p>Hello, ${user.name}!</p>
                 <p>Please enter the following code on the website. This code will expire in 15 minutes.</p>
