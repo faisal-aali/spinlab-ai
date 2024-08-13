@@ -12,6 +12,7 @@ export async function GET(req: NextRequest) {
         console.log('assessmentDetails', assessmentDetails)
 
 
+        return NextResponse.json({ message: `OK` })
     } catch (err) {
         console.error(err)
     }
