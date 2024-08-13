@@ -28,6 +28,12 @@ export default function Recorder({ onSubmit }) {
     const [videoDeviceId, setVideoDeviceId] = useState('');
 
     useEffect(() => {
+        return () => {
+            clearAllRecordings()
+        }
+    }, [])
+
+    useEffect(() => {
         setVideoDeviceId(devicesByType?.video[0].deviceId || '')
     }, [devicesByType])
 
@@ -79,6 +85,7 @@ export default function Recorder({ onSubmit }) {
                 <p>{`Error: ${errorMessage}`}</p>
             </div>
             <div className="grid grid-cols-custom gap-4">
+                <button onClick={() => clearAllRecordings()}>clear all</button>
                 {activeRecordings?.map((recording) => (
                     <div className="bg-blueBackground rounded-lg" key={recording.id}>
                         <div className="text-white grid grid-cols-1">
@@ -92,27 +99,17 @@ export default function Recorder({ onSubmit }) {
                             <video ref={recording.webcamRef} loop autoPlay playsInline />
                             <div className="space-x-1 space-y-1 my-2">
                                 <Button
-                                    inverted
-                                    disabled={
-                                        recording.status === 'RECORDING' ||
-                                        recording.status === 'PAUSED'
-                                    }
+                                    // inverted
+                                    disabled={recording.status === 'RECORDING' || recording.status === 'PAUSED'}
                                     onClick={() => startRecording(recording.id)}
                                 >
-                                    Record
+                                    {recording.status === 'RECORDING' ? 'Recording...' : recording.status === 'PAUSED' ? 'Paused' : 'Record'}
                                 </Button>
                                 <Button
-                                    inverted
-                                    disabled={
-                                        recording.status !== 'RECORDING' &&
-                                        recording.status !== 'PAUSED'
-                                    }
-                                    toggled={recording.status === 'PAUSED'}
-                                    onClick={() =>
-                                        recording.status === 'PAUSED'
-                                            ? resumeRecording(recording.id)
-                                            : pauseRecording(recording.id)
-                                    }
+                                    // inverted
+                                    disabled={recording.status !== 'RECORDING' && recording.status !== 'PAUSED'}
+                                    // toggled={recording.status === 'PAUSED'}
+                                    onClick={() => recording.status === 'PAUSED' ? resumeRecording(recording.id) : pauseRecording(recording.id)}
                                 >
                                     {recording.status === 'PAUSED' ? 'Resume' : 'Pause'}
                                 </Button>
@@ -123,13 +120,18 @@ export default function Recorder({ onSubmit }) {
                                 >
                                     Mute
                                 </Button> */}
-                                <Button inverted onClick={() => {
-                                    stopRecording(recording.id)
-                                    // closeCamera(recording.id)
-                                }}>
+                                <Button
+                                    // inverted 
+                                    disabled={recording.status !== 'RECORDING' && recording.status !== 'PAUSED'}
+                                    onClick={() => {
+                                        stopRecording(recording.id)
+                                        // closeCamera(recording.id)
+                                    }}>
                                     Stop
                                 </Button>
-                                <Button inverted onClick={() => cancelRecording(recording.id)}>
+                                <Button
+                                    // inverted 
+                                    onClick={() => cancelRecording(recording.id)}>
                                     Cancel
                                 </Button>
                             </div>

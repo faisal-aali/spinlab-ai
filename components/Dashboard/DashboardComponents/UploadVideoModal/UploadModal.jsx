@@ -37,6 +37,7 @@ const UploadModal = ({ open, onClose, onSuccess, type, playerId }) => {
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [uploadFailed, setUploadFailed] = useState(false);
   const [recordVideo, setRecordVideo] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
     const handleEsc = (event) => {
@@ -99,6 +100,17 @@ const UploadModal = ({ open, onClose, onSuccess, type, playerId }) => {
       });
     });
   }
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const droppedFile = e.dataTransfer.files[0];
+    if (droppedFile && droppedFile.type.startsWith("video/")) {
+      handleUploadVideo(droppedFile)
+    } else {
+      showSnackbar("Please drop a valid video file.", "error");
+    }
+  };
 
   const handleUploadVideo = async (file) => {
     if (!file) return console.error('no file selected')
@@ -183,8 +195,18 @@ const UploadModal = ({ open, onClose, onSuccess, type, playerId }) => {
             </div> :
               <div className="flex items-center justify-center">
                 {type === 'upload' && !isUploading && !uploadSuccess && !uploadFailed &&
-                  <div className="grid grid-cols-1 gap-4">
-                    <div className="flex items-center justify-center flex-col rounded-lg w-full gap-4">
+                  <div className="grid grid-cols-1 gap-4"
+                    onDragOver={(e) => {
+                      e.preventDefault();
+                      setIsDragging(true);
+                    }}
+                    onDragLeave={(e) => {
+                      e.preventDefault();
+                      setIsDragging(false);
+                    }}
+                    onDrop={handleDrop}
+                  >
+                    <div className={`flex items-center justify-center flex-col rounded-lg w-full gap-4 ${isDragging ? "p-4 border-dashed border-2 border-green-500" : "border-slate-800"}`}>
                       <label className="cursor-pointer flex items-center justify-center">
                         <img src="assets/upload-icon.svg" alt="" />
                       </label>

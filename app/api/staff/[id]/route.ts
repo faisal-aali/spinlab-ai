@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
 
         const schema = Yup.object({
             avatarUrl: Yup.string().optional().nullable(),
-            name: Yup.string().optional(),
+            name: Yup.string().matches(/^[A-Za-z\s]+$/, 'Name should only contain alphabets').max(40, 'Name must not be bigger than 40 characters').optional(),
             bio: Yup.string().optional().nullable(),
             city: Yup.string().optional().nullable(),
             country: Yup.string().optional().nullable(),

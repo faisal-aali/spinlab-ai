@@ -431,7 +431,7 @@ const Layout = ({ children }) => {
           {children}
         </div>
       </div>
-      <UploadModal open={showUploadModal} onClose={() => setShowUploadModal(false)} type={'upload'} onSuccess={() => setShowUploadModal(false)} />
+      {showUploadModal && <UploadModal open={showUploadModal} onClose={() => setShowUploadModal(false)} type={'upload'} onSuccess={() => setShowUploadModal(false)} />}
 
       <Snackbar
         open={snackbarOpen}

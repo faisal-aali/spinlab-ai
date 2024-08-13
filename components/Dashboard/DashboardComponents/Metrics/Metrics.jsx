@@ -67,7 +67,7 @@ const PlayerCard = ({ player }) => {
                     </button>
                 </Grid>
             </Grid>
-            <UploadModal playerId={player._id} open={showUploadModal} onClose={() => setShowUploadModal(false)} onSuccess={() => setShowUploadModal(false)} type={'upload'} />
+            {showUploadModal && <UploadModal playerId={player._id} open={showUploadModal} onClose={() => setShowUploadModal(false)} onSuccess={() => setShowUploadModal(false)} type={'upload'} />}
         </Card>
     )
 }

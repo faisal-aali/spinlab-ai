@@ -87,7 +87,7 @@ const Dashboard = () => {
             Click here!
           </a>
         </div>
-        <UploadModal open={showUploadModal} onClose={() => setShowUploadModal(false)} onSuccess={() => setVideoSubmitted(true)} type={uploadType} />
+        {showUploadModal && <UploadModal open={showUploadModal} onClose={() => setShowUploadModal(false)} onSuccess={() => setVideoSubmitted(true)} type={uploadType} />}
         {showPlayerModal && <AddNewPlayerModal open={showPlayerModal} onClose={() => setShowPlayerModal(false)} />}
       </div>
   );

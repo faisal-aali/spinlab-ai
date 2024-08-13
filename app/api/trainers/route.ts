@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
         const schema = Yup.object({
             email: Yup.string().email('Email must be valid').required("Email is required"),
             password: Yup.string().min(8, "Password must be at least 8 characters").optional(),
-            name: Yup.string().required("Name is required"),
+            name: Yup.string().matches(/^[A-Za-z\s]+$/, 'Name should only contain alphabets').max(40, 'Name must not be bigger than 40 characters').required("Name is required"),
             avatarUrl: Yup.string().optional(),
             city: Yup.string().optional(),
             country: Yup.string().optional(),

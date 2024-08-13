@@ -130,7 +130,7 @@ const AddPlayer = () => {
           </Grid>}
       </div>
       {showModal && <AddNewPlayerModal onClose={() => setShowModal(false)} open={showModal} onSuccess={fetchPlayers} />}
-      <UploadModal playerId={selectedPlayerId} open={showUploadModal} onClose={() => setShowUploadModal(false)} onSuccess={() => setShowUploadModal(false)} type={'upload'} />
+      {showUploadModal && <UploadModal playerId={selectedPlayerId} open={showUploadModal} onClose={() => setShowUploadModal(false)} onSuccess={() => setShowUploadModal(false)} type={'upload'} />}
     </div>
   );
 };
