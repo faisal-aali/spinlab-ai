@@ -15,6 +15,8 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ message: `Invalid Request` }, { status: 400 })
         }
 
+        NextResponse.json({ message: `OK` }, { status: 200 })
+
         await new Promise((resolve) => setTimeout(() => resolve('ok'), 60000))
 
         const auth = _3Motion.getAuth()
@@ -59,7 +61,7 @@ export async function POST(req: NextRequest) {
 
         console.log(new Date(), '[/api/3motion/webhook] assessmentDetails updated')
 
-        return NextResponse.json({ message: `OK` }, { status: 200 })
+        // return NextResponse.json({ message: `OK` }, { status: 200 })
     } catch (err: unknown) {
         console.error(new Date(), '[/api/3motion/webhook] error:', err)
         const obj = validateError(err)
