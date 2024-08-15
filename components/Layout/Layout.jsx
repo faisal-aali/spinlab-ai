@@ -392,14 +392,14 @@ const Layout = ({ children }) => {
               <button
                 disabled={!user.emailVerified}
                 onClick={() => setShowUploadModal(true)}
-                className={`bg-white text-xs md:text-base text-black px-5 py-1 rounded-lg ${user.role !== "player" && "hidden"}`}
+                className={`bg-white text-xs md:text-base text-black px-4 md:px-5 py-1 rounded-lg ${user.role !== "player" && "hidden"}`}
               >
                 UPLOAD
               </button>
               <button
                 disabled={!user.emailVerified}
                 onClick={() => router.push('/purchases')}
-                className={`bg-white text-xs md:text-base text-black px-5 py-1 rounded-lg ${['staff', 'admin'].includes(user.role) && "hidden"}`}
+                className={`bg-white text-xs md:text-base text-black px-4 md:px-5 py-1 rounded-lg ${['staff', 'admin'].includes(user.role) && "hidden"}`}
               >
                 PURCHASE
               </button>

@@ -172,7 +172,7 @@ const Sidebar = ({ showSidebar, setShowSidebar }) => {
   return (
     <div className={`bg-gray-900 pt-8 h-screen overflow-auto p-4 ${showSidebar ? 'w-80' : 'w-fit'} lg:w-80 ${showSidebar ? 'pl-12' : 'pl-4'} lg:pl-12 ${showSidebar ? 'absolute' : 'unset'} lg:unset`}>
       <div className={`${showSidebar ? 'hidden' : 'flex'} lg:hidden`} onClick={() => setShowSidebar(true)}>
-        <Menu />
+        <Menu sx={{ color: '#ffffff' }}/>
       </div>
       <div className={`${showSidebar ? 'flex' : 'hidden'} lg:flex`}>
         <div className="w-62">

@@ -413,7 +413,7 @@ const AccountSettings = () => {
                         <Field
                           name="heightFt"
                           type='number'
-                          className={`py-3 px-3 dark-blue-background rounded-lg w-full text-primary focus:outline-none placeholder:opacity-45 ${errors.heightFt && touched.heightFt
+                          className={`py-3 px-3 pl-[6px] md:pl-3 dark-blue-background rounded-lg w-full text-primary focus:outline-none placeholder:opacity-45 ${errors.heightFt && touched.heightFt
                             ? "border-red-900	border"
                             : "primary-border focus:border-green-500"
                             }`}
@@ -424,12 +424,12 @@ const AccountSettings = () => {
                         <Field
                           name="heightIn"
                           type='number'
-                          className={`py-3 px-3 dark-blue-background rounded-lg  w-full text-primary focus:outline-none placeholder:opacity-45 ${errors.heightIn && touched.heightIn
+                          className={`py-3 px-3 pl-[6px] md:pl-3 dark-blue-background rounded-lg  w-full text-primary focus:outline-none placeholder:opacity-45 ${errors.heightIn && touched.heightIn
                             ? "border-red-900	border"
                             : "primary-border focus:border-green-500"
                             }`}
                         />
-                        <div className="absolute bottom-3 right-4 opacity-50 text-white">in</div>
+                        <div className="absolute bottom-3 right-2 md:right-4 opacity-50 text-white">in</div>
                       </div>
                     </div>
                   </div>

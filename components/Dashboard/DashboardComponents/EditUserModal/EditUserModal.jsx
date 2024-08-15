@@ -63,7 +63,7 @@ const UpdatePasswordModal = ({ open, onClose, userId }) => {
 
   return (
     <Modal open={open} onClose={onClose} aria-labelledby="upload-modal-title">
-      <Box sx={style} className="blueBackground px-16">
+      <Box sx={style} className="blueBackground px-16 w-full max-w-2xl">
         <IconButton
           style={{ position: "absolute", top: 10, right: 10, color: '#fff' }}
           onClick={onClose}
@@ -84,8 +84,8 @@ const UpdatePasswordModal = ({ open, onClose, userId }) => {
           {({ errors, touched, values }) => (
             <Form>
               <div className="flex flex-col items-center p-4 mt-8">
-                <div className="flex items-center mb-4 gap-6">
-                  <div className="w-1/2">
+                <div className="flex items-center flex-col md:flex-row w-full mb-4 gap-6">
+                  <div className="w-full md:w-1/2">
                     <div className="mb-1 opacity-45">
                       <label htmlFor="">New Password</label>
                     </div>
@@ -107,7 +107,7 @@ const UpdatePasswordModal = ({ open, onClose, userId }) => {
                       </div>
                     </div>
                   </div>
-                  <div className="w-1/2">
+                  <div className="w-full md:w-1/2">
                     <div className="mb-1 opacity-45">
                       <label htmlFor="">Confirm Password</label>
                     </div>

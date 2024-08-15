@@ -112,6 +112,7 @@ const AddUserModal = ({ open, onClose, role, onSuccess }) => {
       onClose();
     } catch (err) {
       showSnackbar(err.response?.data?.message || err.message, "error");
+      throw err
     }
   };
 
