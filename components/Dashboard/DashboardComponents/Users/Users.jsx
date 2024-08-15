@@ -65,14 +65,25 @@ const Users = () => {
     setShowDeleteModal(true);
   };
 
-  const filteredData = data.filter((u) =>
-    u.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+const handleSearchChange = (e) => {  
+  setSearchQuery(e.target.value);  
+  setPage(1); 
+};  
 
-  const paginatedData = filteredData.slice(
-    (page - 1) * rowsPerPage,
-    page * rowsPerPage
-  );
+const filteredData = data.filter((u) =>  
+  u.name.toLowerCase().includes(searchQuery.toLowerCase())  
+);  
+
+const totalPages = Math.ceil(filteredData.length / rowsPerPage);  
+
+if (page > totalPages && totalPages > 0) {  
+  setPage(totalPages);  
+}  
+
+const paginatedData = filteredData.slice(  
+  (page - 1) * rowsPerPage,  
+  page * rowsPerPage  
+);  
 
   return (
     <>
@@ -86,7 +97,7 @@ const Users = () => {
               <input
                 placeholder="Search..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={ handleSearchChange}
                 className="w-full pl-2 py-1 rounded-lg h-full text-white search-background focus:outline-none focus:ring-1 focus:ring-green-500"
               />
             </div>
@@ -172,9 +183,9 @@ const Users = () => {
           )}
           <Pagination
             page={page}
-            count={Math.ceil(data.length / rowsPerPage)}
-            onChange={handlePageChange}
-          />
+            count={totalPages}  
+            onChange={(event, value) => setPage(value)} 
+            />
           {showAddModal && <AddUserModal open={showAddModal} onClose={() => setShowAddModal(false)} role={role} onSuccess={fetchData} />}
           <DeleteUserModal
             open={showDeleteModal}
