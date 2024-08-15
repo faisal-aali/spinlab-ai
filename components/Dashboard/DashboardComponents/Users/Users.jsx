@@ -65,7 +65,11 @@ const Users = () => {
     setShowDeleteModal(true);
   };
 
-  const paginatedData = data.filter(u => u.name.toLowerCase().includes(searchQuery.toLowerCase())).slice(
+  const filteredData = data.filter((u) =>
+    u.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const paginatedData = filteredData.slice(
     (page - 1) * rowsPerPage,
     page * rowsPerPage
   );
