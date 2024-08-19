@@ -7,6 +7,7 @@ import { IPackage } from './interfaces/package';
 import { IHistory, ISubscription } from './interfaces/subscription';
 import { IPurchase } from './interfaces/purchase';
 import { ICalendar } from './interfaces/calendar';
+import { INotification } from './interfaces/notification';
 
 // const roleDataSchema = new mongoose.Schema({
 //     age: { type: Number, required: false, default: null },
@@ -100,6 +101,14 @@ const calendarSchema = new mongoose.Schema({
     src: { type: String, required: true },
 });
 
+const notificationSchema = new mongoose.Schema({
+    userId: { type: mongoose.Schema.Types.ObjectId, required: true },
+    message: { type: String, required: true },
+    type: { type: String, required: true },
+    isRead: { type: Boolean, required: false, default: false },
+    creationDate: { type: Date, required: false, default: () => new Date().toISOString() },
+});
+
 export const User: mongoose.Model<IUser> = mongoose.models.user || mongoose.model<IUser>('user', userSchema, 'users');
 
 export const Drill: mongoose.Model<IDrill> = mongoose.models.drill || mongoose.model<IDrill>('drill', drillSchema, 'drills');
@@ -114,4 +123,6 @@ export const Subscription: mongoose.Model<ISubscription> = mongoose.models.subsc
 
 export const Purchase: mongoose.Model<IPurchase> = mongoose.models.purchase || mongoose.model<IPurchase>('purchase', purchaseSchema, 'purchases');
 
-export const Calendar: mongoose.Model<ICalendar> = mongoose.models.calendar || mongoose.model<IPurchase>('calendar', calendarSchema, 'calendars');
+export const Calendar: mongoose.Model<ICalendar> = mongoose.models.calendar || mongoose.model<ICalendar>('calendar', calendarSchema, 'calendars');
+
+export const Notification: mongoose.Model<INotification> = mongoose.models.notification || mongoose.model<INotification>('notification', notificationSchema, 'notifications');

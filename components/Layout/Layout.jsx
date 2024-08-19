@@ -19,9 +19,10 @@ import {
   Tooltip,
   Typography,
   Modal,
-  CircularProgress
+  CircularProgress,
+  Badge
 } from "@mui/material";
-import { Person } from "@mui/icons-material";
+import { Person, VideoCameraBack } from "@mui/icons-material";
 import UploadModal from "../Dashboard/DashboardComponents/UploadVideoModal/UploadModal";
 import UpdateEmailModal from "../Dashboard/DashboardComponents/UpdateEmailModal/UpdateEmailModal";
 import {
@@ -355,6 +356,85 @@ const ProfileMenu = () => {
   );
 };
 
+const NotificationsMenu = () => {
+  const { user } = useApp()
+  const router = useRouter()
+  const [notifications, setNotifications] = useState()
+
+  useEffect(() => {
+    fetchData()
+  }, [])
+
+  const fetchData = () => {
+    axios.get('/api/notifications').then(res => setNotifications(res.data)).catch(console.error)
+  }
+
+  const markAsRead = () => {
+    axios.patch('/api/notifications/isRead').catch(console.error)
+  }
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handleClick = (event) => {
+    markAsRead()
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    fetchData()
+    setAnchorEl(null);
+  };
+
+  return (
+    <>
+      <IconButton onClick={handleClick}>
+        <Badge badgeContent={notifications?.filter(n => !n.isRead).length} color="primary">
+          <IoNotificationsOutline className="text-primary text-3xl cursor-pointer" />
+        </Badge>
+      </IconButton>
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+        sx={{
+          maxHeight: '50vh',
+          minWidth: '50vw',
+          overflow: 'auto'
+        }}
+      >
+        {!notifications ? <CircularProgress /> :
+          notifications.map(notification => (
+            <MenuItem onClick={() => {
+              if (notification.type === 'video') {
+                if (user.role === 'player') router.push('/history')
+                if (user.role === 'trainer') router.push('/players-history')
+              }
+              handleClose()
+            }} sx={{ minWidth: '20vw' }}>
+              <Grid container alignItems={'center'} gap={2}>
+                <Grid item>
+                  {notification.type === 'video' && <VideoCameraBack color={notification.isRead ? "white" : "primary"} />}
+                </Grid>
+                <Grid item container xs='auto' flexDirection={'column'} gap={2}>
+                  <Grid item>
+                    <p className={`text-white ${!notification.isRead && 'font-bold text-primary'}`}>
+                      {notification.message}
+                    </p>
+                  </Grid>
+                  <Grid item>
+                    <p className={`text-sm text-white ${!notification.isRead && 'font-bold'}`}>
+                      {new Date(notification.creationDate).getTime() < new Date(new Date().setHours(0, 0, 0, 0)).getTime() ? new Date(notification.creationDate).toLocaleString() : new Date(notification.creationDate).toLocaleTimeString()}
+                    </p>
+                  </Grid>
+                </Grid>
+              </Grid>
+            </MenuItem>
+          ))
+        }
+      </Menu >
+    </>
+  );
+}
+
 const Layout = ({ children }) => {
   const router = useRouter();
   const user = useSession().data?.user || {};
@@ -403,9 +483,13 @@ const Layout = ({ children }) => {
               >
                 PURCHASE
               </button>
-              <div className="flex">
-                <IoNotificationsOutline className="mr-4 text-primary text-3xl cursor-pointer" />
-                <ProfileMenu key={"ProfileMenu"} />
+              <div className="flex items-center gap-4">
+                <div>
+                  <NotificationsMenu />
+                </div>
+                <div>
+                  <ProfileMenu key={"ProfileMenu"} />
+                </div>
               </div>
             </div>
           </div>

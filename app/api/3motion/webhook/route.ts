@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Video } from "@/app/lib/models";
+import { Notification, User, Video } from "@/app/lib/models";
 import { validateError } from "@/app/lib/functions";
 import _3Motion from "@/app/lib/3motion";
 import axios from 'axios'
+import { IVideo } from "@/app/lib/interfaces/video";
+import { sendEmail } from "@/app/lib/sendEmail";
 
 export async function POST(req: NextRequest) {
     try {
@@ -42,6 +44,10 @@ export async function POST(req: NextRequest) {
 
             console.log(new Date(), '[/api/3motion/webhook] assessmentDetails', assessmentDetails)
 
+            if (assessmentDetails.statusCode) {
+                sendNotification(video)
+            }
+
             if (assessmentDetails) {
                 if (assessmentDetails.dataJsonUrl) {
                     assessmentDetails.stats = await axios.get(assessmentDetails.dataJsonUrl).then(res => res.data);
@@ -71,6 +77,50 @@ export async function POST(req: NextRequest) {
     }
 }
 
+const sendNotification = async (_video: IVideo) => {
+    try {
+        const video = await Video.findOne({ _id: _video._id })
+        if (!video) return console.error('[sendNotification] error: could not find video')
+
+        const user = await User.findOne({ _id: video.userId })
+        if (!user) return console.error('[sendNotification] error: could not find user')
+
+        var trainer;
+
+        if (user.roleData.trainerId) {
+            trainer = await User.findOne({ _id: user.roleData.trainerId })
+            if (!trainer) return console.error('[sendNotification] error: could not find trainer')
+        }
+
+        Notification.create({ message: 'Your video has been processed!', userId: user._id, type: 'video' })
+        if (trainer) Notification.create({ message: 'Your player\'s video has been processed!', userId: trainer._id, type: 'video' })
+
+        sendEmail({
+            to: user.email,
+            subject: 'Processing Completed',
+            html: `
+                <p>Hello, ${user.name}!</p>
+                <p>Your video processing has been finished</p>
+            `
+        }).catch(console.error)
+
+
+        if (trainer) {
+            sendEmail({
+                to: trainer.email,
+                subject: 'Processing Completed',
+                html: `
+                    <p>Hello, ${trainer.name}!</p>
+                    <p>Your video processing has been finished</p>
+                `
+            }).catch(console.error)
+        }
+
+    } catch (err) {
+        console.error('[sendNotification] unexpected error:', err)
+    }
+}
+
 // update pending assessment every 5 minutes
 setInterval(() => {
     updateAssessments()
@@ -87,6 +137,10 @@ const updateAssessments = async () => {
         console.log(new Date(), 'assessmentDetails', assessmentDetails)
 
         if (!assessmentDetails) return console.error('Invalid response for for', video.taskId)
+
+        if (assessmentDetails.statusCode) {
+            sendNotification(video)
+        }
 
         if (assessmentDetails.dataJsonUrl) {
             assessmentDetails.stats = await axios.get(assessmentDetails.dataJsonUrl).then(res => res.data);
