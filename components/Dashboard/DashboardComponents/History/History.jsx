@@ -18,6 +18,9 @@ import { useSession } from "next-auth/react";
 import axios from 'axios';
 import Pagination from "../../../Common/Pagination/Pagination";
 import VideoPlayer from "../../../Common/VideoPlayer/VideoPlayer";
+import DownloadIcon from '@mui/icons-material/Download';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import DownloadForOfflineIcon from '@mui/icons-material/DownloadForOffline';
 
 const CustomLinearProgress = ({ value, color }) => {
   return (
@@ -145,10 +148,12 @@ const History = (props) => {
                           </TableCell>
                           <TableCell className="text-white min-w-60">
                             <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-4">
-                              <button onClick={() => window.open(pdfUrl)} className={`bg-white text-black px-5 py-3 rounded-lg ${!pdfUrl && 'hidden'}`}>
+                              <button onClick={() => window.open(pdfUrl)} className={`bg-white flex justify-center items-center gap-2 text-black px-5 py-3 rounded-lg ${!pdfUrl && 'hidden'}`}>
+                                <DownloadIcon/>
                                 DOWNLOAD PDF
                               </button>
-                              <button onClick={() => setVideoSrc(overlayVideoUrl)} className={`bg-white text-black px-5 py-3 rounded-lg ${!overlayVideoUrl && 'hidden'}`}>
+                              <button onClick={() => setVideoSrc(overlayVideoUrl)} className={`bg-white flex justify-center items-center gap-2 text-black px-5 py-3 rounded-lg ${!overlayVideoUrl && 'hidden'}`}>
+                               <PlayArrowIcon/>
                                 OVERLAY VIDEO
                               </button>
                             </div>

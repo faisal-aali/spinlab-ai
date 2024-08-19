@@ -13,7 +13,7 @@ const PickCredits = ({ onSubmit, onBack, user }) => {
     <div>
       <div>
         <h2 className="text-xl mb-6">
-          Save money and get free credits when you buy in bulk
+          Save money when purchasing annual subscription
         </h2>
       </div>
       <div className="flex flex-col">

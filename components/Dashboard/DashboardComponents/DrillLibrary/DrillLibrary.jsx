@@ -221,7 +221,7 @@ const DrillLibrary = () => {
                         <Grid container gap={1} justifyContent={'space-between'}>
                           <Grid item container flexDirection={'column'} xs={true}>
                             <Grid item>
-                              <p className="text-sm md:text-base font-semibold text-white">
+                              <p className="text-sm md:text-xl font-semibold text-white">
                                 {video.title}
                               </p>
                             </Grid>

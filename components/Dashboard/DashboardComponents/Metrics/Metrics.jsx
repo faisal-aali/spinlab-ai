@@ -97,7 +97,7 @@ const KPICard = ({ icon, text, value, percentage, color }) => {
 
 const EfficiencyGraph = ({ videos }) => {
 
-    var _videos = videos.filter(video => video.assessmentDetails.statusCode === 1)
+    var _videos = videos.filter(video => video.assessmentDetails.statusCode === 1).sort((a,b) => new Date(a.creationDate).getTime() - new Date(b.creationDate).getTime())
     _videos = _videos
 
     const data = {

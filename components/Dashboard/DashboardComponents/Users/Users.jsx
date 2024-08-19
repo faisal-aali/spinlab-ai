@@ -71,7 +71,8 @@ const handleSearchChange = (e) => {
 };  
 
 const filteredData = data.filter((u) =>  
-  u.name.toLowerCase().includes(searchQuery.toLowerCase())  
+  u.name.toLowerCase().includes(searchQuery.toLowerCase())  ||
+  u.email.toLowerCase().includes(searchQuery.toLowerCase())
 );  
 
 const totalPages = Math.ceil(filteredData.length / rowsPerPage);  

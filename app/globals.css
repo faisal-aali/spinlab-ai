@@ -305,6 +305,14 @@ button[disabled] {
   color: #ffffff45;
 }
 
+.DatePicker .MuiOutlinedInput-input{
+  color: #ffffff26 !important;
+}
+.MuiFilledInput-root .MuiFilledInput-input {
+  padding: 7px 4px;
+  color: #fff;
+}
+
 .MuiSelect-select.MuiSelect-filled {
   color: #ffffff !important;
 }
