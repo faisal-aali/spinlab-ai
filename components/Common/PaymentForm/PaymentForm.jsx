@@ -38,13 +38,18 @@ const PaymentForm = ({ onPaymentSuccess, type, _package, credits, amount, onBack
     )
 }
 
+
 const _PaymentForm = ({ onPaymentSuccess, type, _package, credits, amount, onBack }) => {
     const stripe = useStripe();
     const elements = useElements();
     const [paymentError, setPaymentError] = useState(null);
-    const formikRef = useRef()
-    const [isSubmitting, setIsSubmitting] = useState(false)
-    const { fetchUser } = useApp()
+    const formikRef = useRef();
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const { fetchUser } = useApp();
+
+    const [promocode, setPromocode] = useState();
+    const [code, setCode] = useState('');
+    const [promocodeError, setPromocodeError] = useState('');
 
     const handleSubmit = async (values) => {
         console.log(formikRef.current)
@@ -90,7 +95,8 @@ const _PaymentForm = ({ onPaymentSuccess, type, _package, credits, amount, onBac
                 if (!credits) throw new Error('No credits selected')
                 res = await axios.post("/api/stripe/payment", {
                     paymentMethodId: paymentMethod.id,
-                    credits: credits
+                    credits: credits,
+                    promocodeId: promocode?._id
                 }).then(res => res.data)
             } else {
                 throw new Error('Invalid payment type')
@@ -132,6 +138,15 @@ const _PaymentForm = ({ onPaymentSuccess, type, _package, credits, amount, onBac
         }
     };
 
+    const applyPromocode = () => {
+        axios.get('/api/promocodes', { params: { code } }).then(res => {
+            setPromocode(res.data[0])
+            setPromocodeError('')
+        }).catch(err => {
+            setPromocodeError(err.response.data?.message || err.message)
+        })
+    }
+
     const customStyles = {
         style: {
             base: {
@@ -146,6 +161,12 @@ const _PaymentForm = ({ onPaymentSuccess, type, _package, credits, amount, onBac
             },
         },
     };
+
+    const discountedAmount = promocode ? amount * (1 - (promocode.discountPercentage / 100)) : amount
+
+    const parseAmount = (amount) => (
+        (amount / 100).toFixed(2)
+    )
 
     return (
         <div className="flex flex-col-reverse lg:flex-row gap-8">
@@ -261,9 +282,7 @@ const _PaymentForm = ({ onPaymentSuccess, type, _package, credits, amount, onBac
                                             )}
                                         </div>
                                     </div>
-                                    {paymentError && (
-                                        <div className="text-red-500 text-lg mb-4">{paymentError}</div>
-                                    )}
+                                    {paymentError && (<div className="text-red-500 text-lg mb-4">{paymentError}</div>)}
                                     <div>
                                         <Image
                                             src="/assets/payment-cards.png"
@@ -289,7 +308,7 @@ const _PaymentForm = ({ onPaymentSuccess, type, _package, credits, amount, onBac
                                 <h2 className="text-primary">${(_package.amount / 100).toFixed(2)} {_package.plan}</h2>
                             </div>
                         </div>
-                        <div className="my-12">
+                        <div className="my-8">
                             <div className="mb-4">
                                 <div className="flex justify-between">
                                     <h3 className="text-xl">SubTotal</h3>
@@ -328,56 +347,88 @@ const _PaymentForm = ({ onPaymentSuccess, type, _package, credits, amount, onBac
                                 </button>}
                         </div>
                     </div>
-                </div> : type === 'purchase' ? <div className="w-full lg:w-2/5 pl-8 rounded-lg p-6 blueBackground flex justify-center items-center">
-                    <div className="w-full justify-between text-white rounded-lg">
-                        <h2 className="font-bold mb-4">SUMMARY</h2>
-                        <div className="border-b-2 border-dashed mb-4"></div>
-                        <div className="mb-4">
-                            <div className="">
-                                <h3 className="capitalize">{credits} Credits</h3>
-                                <h2 className="text-primary">${amount}</h2>
-                            </div>
-                        </div>
-                        <div className="my-12">
+                </div> : type === 'purchase' ?
+                    <div className="w-full lg:w-2/5 pl-8 rounded-lg p-6 blueBackground flex justify-center items-center">
+                        <div className="w-full justify-between text-white rounded-lg">
+                            <h2 className="font-bold mb-4">SUMMARY</h2>
+                            <div className="border-b-2 border-dashed mb-4"></div>
                             <div className="mb-4">
-                                <div className="flex justify-between">
-                                    <h3 className="text-xl">SubTotal</h3>
-                                    <h3 className="text-xl">${amount}</h3>
+                                <div className="">
+                                    <h3 className="capitalize">{credits} Credits</h3>
+                                    <div className="flex flex-row gap-1">
+                                        <h2 className={`text-white line-through text-3xl ${amount === discountedAmount && 'hidden'}`}>${parseAmount(amount)}</h2>
+                                        <h2 className="text-primary">${parseAmount(discountedAmount)}</h2>
+                                    </div>
                                 </div>
                             </div>
-                            <div className="mb-4">
-                                <div className="flex justify-between">
-                                    <h3 className="text-xl">Total</h3>
-                                    <h3 className="text-xl">${amount}</h3>
+                            <div className="my-8">
+                                <div className="mb-4">
+                                    <div className="flex justify-between">
+                                        <h3 className="text-xl">SubTotal</h3>
+                                        <h3 className="text-xl">${parseAmount(discountedAmount)}</h3>
+                                    </div>
+                                </div>
+                                <div className="mb-4">
+                                    <div className="flex justify-between">
+                                        <h3 className="text-xl">Total</h3>
+                                        <h3 className="text-xl">${parseAmount(discountedAmount)}</h3>
+                                    </div>
+                                </div>
+                                <div className="mb-4">
+                                    <div className="flex justify-between">
+                                        <h3 className="text-xl">Due Today</h3>
+                                        <h3 className="text-xl">${parseAmount(discountedAmount)}</h3>
+                                    </div>
+                                </div>
+                                {promocode &&
+                                    <div className="mb-4">
+                                        <div className="flex justify-between">
+                                            <h3 className="text-xl text-primary">Promo code</h3>
+                                            <h3 className="text-xl text-primary">{promocode.code}</h3>
+                                        </div>
+                                    </div>}
+                            </div>
+                            <div className="flex gap-4 justify-center">
+                                <div>
+                                    <input
+                                        className="w-full py-3.5 px-3 bg-transparent primary-border h-full rounded text-white rounded-lg focus:outline-none focus:outline-none focus:border-green-500 placeholder:opacity-45"
+                                        placeholder="Enter promo code"
+                                        value={code}
+                                        onChange={(e) => setCode(e.target.value)}
+                                    />
+                                </div>
+                                <div>
+                                    <button
+                                        onClick={applyPromocode}
+                                        disabled={promocode ? true : false}
+                                        type="button"
+                                        className="bg-primary h-full w-24 rounded-lg text-black font-normal hover-shadow focus:outline-none"
+                                    >
+                                        Apply
+                                    </button>
                                 </div>
                             </div>
-                            <div className="mb-4">
-                                <div className="flex justify-between">
-                                    <h3 className="text-xl">Due Today</h3>
-                                    <h3 className="text-xl">${amount}</h3>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="flex flex-col gap-4">
-                            <button
-                                onClick={() => formikRef.current.handleSubmit()}
-                                disabled={isSubmitting}
-                                className="bg-primary rounded-lg text-black font-normal py-3 hover-shadow focus:outline-none"
-                            >
-                                {/* {isSubmitting ? "Processing..." : "START YOUR FREE TRIAL"} */}
-                                PAY
-                            </button>
-                            {onBack &&
+                            {promocodeError && (<div className="justify-center flex text-red-500 text-lg my-2">{promocodeError}</div>)}
+                            <div className="mt-4 flex flex-col gap-4">
                                 <button
-                                    onClick={onBack}
-                                    className="bg-white rounded-lg text-black font-normal py-3 hover-shadow focus:outline-none"
+                                    onClick={() => formikRef.current.handleSubmit()}
+                                    disabled={isSubmitting}
+                                    className="bg-primary rounded-lg text-black font-normal py-3 hover-shadow focus:outline-none"
                                 >
                                     {/* {isSubmitting ? "Processing..." : "START YOUR FREE TRIAL"} */}
-                                    BACK
-                                </button>}
+                                    PAY
+                                </button>
+                                {onBack &&
+                                    <button
+                                        onClick={onBack}
+                                        className="bg-white rounded-lg text-black font-normal py-3 hover-shadow focus:outline-none"
+                                    >
+                                        {/* {isSubmitting ? "Processing..." : "START YOUR FREE TRIAL"} */}
+                                        BACK
+                                    </button>}
+                            </div>
                         </div>
-                    </div>
-                </div> : <></>
+                    </div> : <></>
             }
         </div>
     );

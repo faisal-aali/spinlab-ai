@@ -11,7 +11,7 @@ export async function GET(req: NextRequest) {
     if (!email) return NextResponse.json({ message: 'Email is required' }, { status: 400 })
 
     try {
-        const user = await User.findOne({ email })
+        const user = await User.findOne({ email: email.toLowerCase().trim() })
 
         if (user) return NextResponse.json(true, { status: 200 })
         else return NextResponse.json(false, { status: 200 })

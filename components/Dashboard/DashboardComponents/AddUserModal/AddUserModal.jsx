@@ -99,11 +99,10 @@ const AddUserModal = ({ open, onClose, role, onSuccess }) => {
       };
 
       await axios.post(
-        `/api/${
-          (role === "player" && "players") ||
-          (role === "trainer" && "trainers") ||
-          (role === "staff" && "staff") ||
-          (role === "admin" && "admin")
+        `/api/${(role === "player" && "players") ||
+        (role === "trainer" && "trainers") ||
+        (role === "staff" && "staff") ||
+        (role === "admin" && "admin")
         }`,
         data
       );
@@ -165,19 +164,18 @@ const AddUserModal = ({ open, onClose, role, onSuccess }) => {
                     <label htmlFor="">Profile Photo</label>
                   </div>
                   <div className="grid grid-cols-1 gap-4 h-auto"
-                   onDragOver={(e) => {
-                    e.preventDefault();
-                    setIsDragging(true);
-                  }}
-                  onDragLeave={(e) => {
-                    e.preventDefault();
-                    setIsDragging(false);
-                  }}
-                  onDrop={handleDrop}
-                >
-                    <div className={`flex items-center justify-center flex-col blueBackground rounded-lg w-full py-4 gap-4 border-dashed border-2 ${
-                    isDragging ? "border-green-500" : "border-slate-800"
-                  }`}>
+                    onDragOver={(e) => {
+                      e.preventDefault();
+                      setIsDragging(true);
+                    }}
+                    onDragLeave={(e) => {
+                      e.preventDefault();
+                      setIsDragging(false);
+                    }}
+                    onDrop={handleDrop}
+                  >
+                    <div className={`flex items-center justify-center flex-col blueBackground rounded-lg w-full py-4 gap-4 border-dashed border-2 ${isDragging ? "border-green-500" : "border-slate-800"
+                      }`}>
                       <div className="w-24">
                         {imageSrc && (
                           <img
@@ -214,11 +212,10 @@ const AddUserModal = ({ open, onClose, role, onSuccess }) => {
                   </div>
                   <Field
                     className={`w-full text-primary bg-transparent px-3 rounded-lg py-3 text-white rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
-                    ${
-                      errors.firstName && touched.firstName
+                    ${errors.firstName && touched.firstName
                         ? "border-red-900	border"
                         : "primary-border focus:border-green-500"
-                    }`}
+                      }`}
                     type="text"
                     name="firstName"
                     required
@@ -230,11 +227,10 @@ const AddUserModal = ({ open, onClose, role, onSuccess }) => {
                   </div>
                   <Field
                     className={`w-full text-primary bg-transparent px-3 rounded-lg py-3 text-white rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
-                    ${
-                      errors.lastName && touched.lastName
+                    ${errors.lastName && touched.lastName
                         ? "border-red-900	border"
                         : "primary-border focus:border-green-500"
-                    }`}
+                      }`}
                     type="text"
                     name="lastName"
                     required
@@ -242,9 +238,8 @@ const AddUserModal = ({ open, onClose, role, onSuccess }) => {
                 </div>
                 {role === "player" && (
                   <div
-                    className={`grid gap-2 relative ${
-                      role !== "player" && "hidden"
-                    }`}
+                    className={`grid gap-2 relative ${role !== "player" && "hidden"
+                      }`}
                   >
                     <div className="opacity-45">
                       <label htmlFor="">Height</label>
@@ -254,11 +249,10 @@ const AddUserModal = ({ open, onClose, role, onSuccess }) => {
                         <Field
                           name="heightFt"
                           type="number"
-                          className={`py-3 px-3 blueBackground rounded-lg w-full text-primary focus:outline-none placeholder:opacity-45 ${
-                            errors.heightFt && touched.heightFt
+                          className={`py-3 px-3 blueBackground rounded-lg w-full text-primary focus:outline-none placeholder:opacity-45 ${errors.heightFt && touched.heightFt
                               ? "border-red-900	border"
                               : "primary-border focus:border-green-500"
-                          }`}
+                            }`}
                         />
                         <div className="absolute bottom-3 right-4 opacity-50 text-white">
                           ft
@@ -268,11 +262,10 @@ const AddUserModal = ({ open, onClose, role, onSuccess }) => {
                         <Field
                           name="heightIn"
                           type="number"
-                          className={`py-3 px-3 blueBackground rounded-lg  w-full text-primary focus:outline-none placeholder:opacity-45 ${
-                            errors.heightIn && touched.heightIn
+                          className={`py-3 px-3 blueBackground rounded-lg  w-full text-primary focus:outline-none placeholder:opacity-45 ${errors.heightIn && touched.heightIn
                               ? "border-red-900	border"
                               : "primary-border focus:border-green-500"
-                          }`}
+                            }`}
                         />
                         <div className="absolute bottom-3 right-4 opacity-50 text-white">
                           in
@@ -288,11 +281,10 @@ const AddUserModal = ({ open, onClose, role, onSuccess }) => {
                     </div>
                     <Field
                       className={`w-full text-primary bg-transparent px-3 rounded-lg py-3 text-white rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
-                    ${
-                      errors.weight && touched.weight
-                        ? "border-red-900	border"
-                        : "primary-border focus:border-green-500"
-                    }`}
+                    ${errors.weight && touched.weight
+                          ? "border-red-900	border"
+                          : "primary-border focus:border-green-500"
+                        }`}
                       type="number"
                       name="weight"
                       required
@@ -336,11 +328,10 @@ const AddUserModal = ({ open, onClose, role, onSuccess }) => {
                   </div>
                   <Field
                     className={`w-full text-primary bg-transparent px-3 rounded-lg py-3 text-white rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
-                    ${
-                      errors.email && touched.email
+                    ${errors.email && touched.email
                         ? "border-red-900	border"
                         : "primary-border focus:border-green-500"
-                    }`}
+                      }`}
                     type="text"
                     name="email"
                     required
@@ -349,11 +340,10 @@ const AddUserModal = ({ open, onClose, role, onSuccess }) => {
               </div>
               {response.message && (
                 <div
-                  className={`flex justify-end col-span-2 mb-4 ${
-                    response.severity === "success"
+                  className={`flex justify-end col-span-2 mb-4 ${response.severity === "success"
                       ? "text-primary"
                       : "text-error"
-                  }`}
+                    }`}
                 >
                   {response.message}
                 </div>
@@ -361,9 +351,8 @@ const AddUserModal = ({ open, onClose, role, onSuccess }) => {
               <div className="flex justify-end mb-10">
                 <button
                   type="submit"
-                  className={`bg-primary dark-blue-color rounded w-28 h-9 flex items-center justify-center text-lg font-bold hover-button-shadow ${
-                    isSubmitting ? "opacity-50 cursor-not-allowed" : ""
-                  }`}
+                  className={`bg-primary dark-blue-color rounded w-28 h-9 flex items-center justify-center text-lg font-bold hover-button-shadow ${isSubmitting ? "opacity-50 cursor-not-allowed" : ""
+                    }`}
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? "Adding..." : "ADD"}

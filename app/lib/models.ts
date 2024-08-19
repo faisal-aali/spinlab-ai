@@ -8,6 +8,7 @@ import { IHistory, ISubscription } from './interfaces/subscription';
 import { IPurchase } from './interfaces/purchase';
 import { ICalendar } from './interfaces/calendar';
 import { INotification } from './interfaces/notification';
+import { IPromocode } from './interfaces/promocode';
 
 // const roleDataSchema = new mongoose.Schema({
 //     age: { type: Number, required: false, default: null },
@@ -87,6 +88,7 @@ const purchaseSchema = new mongoose.Schema({
     userId: { type: mongoose.Schema.Types.ObjectId, required: true },
     stripeSubscriptionId: { type: String, required: false, default: null },
     stripeIntentId: { type: String, required: false, default: null },
+    promocodeId: { type: mongoose.Schema.Types.ObjectId, required: false, default: null },
     amount: { type: Number, required: false, default: 0 },
     credits: { type: Number, required: true },
     type: { type: String, required: true, enum: ['purchase', 'subscription', 'gift'] },
@@ -109,6 +111,18 @@ const notificationSchema = new mongoose.Schema({
     creationDate: { type: Date, required: false, default: () => new Date().toISOString() },
 });
 
+const promocodeSchema = new mongoose.Schema({
+    code: { type: String, required: true, unique: true },
+    description: { type: String, required: true },
+    discountPercentage: { type: Number, required: true },
+    uses: { type: Number, required: true },
+    type: { type: String, required: true },
+    productId: { type: mongoose.Schema.Types.ObjectId, required: false, default: null },
+    creationDate: { type: Date, required: false, default: () => new Date().toISOString() },
+    expirationDate: { type: Date, required: true },
+    isDeleted: { type: Boolean, required: false, default: false },
+});
+
 export const User: mongoose.Model<IUser> = mongoose.models.user || mongoose.model<IUser>('user', userSchema, 'users');
 
 export const Drill: mongoose.Model<IDrill> = mongoose.models.drill || mongoose.model<IDrill>('drill', drillSchema, 'drills');
@@ -126,3 +140,5 @@ export const Purchase: mongoose.Model<IPurchase> = mongoose.models.purchase || m
 export const Calendar: mongoose.Model<ICalendar> = mongoose.models.calendar || mongoose.model<ICalendar>('calendar', calendarSchema, 'calendars');
 
 export const Notification: mongoose.Model<INotification> = mongoose.models.notification || mongoose.model<INotification>('notification', notificationSchema, 'notifications');
+
+export const Promocode: mongoose.Model<IPromocode> = mongoose.models.promocode || mongoose.model<IPromocode>('promocode', promocodeSchema, 'promocodes');

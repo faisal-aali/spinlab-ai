@@ -134,7 +134,7 @@ const DrillLibrary = () => {
               variant="scrollable"
               scrollButtons="auto"
               aria-label="category tabs"
-              className="w-full !blueBackground py-2.5 !px-2.5 rounded-lg"
+              className="w-full md:w-fit !blueBackground py-2.5 !px-2.5 rounded-lg"
               sx={{
                 color: "white",
                 ".MuiButtonBase-root.MuiTab-root": {
@@ -173,7 +173,7 @@ const DrillLibrary = () => {
                 />
               ))}
             </Tabs>
-            <div className="flex flex-col md:flex-row justify-end gap-[30px] w-full">
+            <div className="flex flex-col md:flex-row justify-end gap-[30px]">
               <div className="flex search-bar w-full md:w-[200px] 4xl:w-[580px] ">
                 <input
                   placeholder="Search..."

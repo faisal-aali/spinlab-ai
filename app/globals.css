@@ -300,14 +300,18 @@ button[disabled] {
   /* Hide the up and down buttons */
 }
 
+::-webkit-calendar-picker-indicator {
+  filter: invert(0.7);
+}
 
 .MuiFormControl-root label {
   color: #ffffff45;
 }
 
-.DatePicker .MuiOutlinedInput-input{
+.DatePicker .MuiOutlinedInput-input {
   color: #ffffff26 !important;
 }
+
 .MuiFilledInput-root .MuiFilledInput-input {
   padding: 7px 4px;
   color: #fff;

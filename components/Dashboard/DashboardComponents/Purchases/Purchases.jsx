@@ -14,7 +14,7 @@ const Purchases = () => {
   const { user, fetchUser } = useApp()
 
   const calculateAmount = () => (
-    ((!user.subscription.status || user.subscription.status !== 'active' ? credits * user.subscription.freePackage?.amountPerCredit : credits * user.subscription.package.amountPerCredit) / 100).toFixed(2)
+    (!user.subscription.status || user.subscription.status !== 'active' ? credits * user.subscription.freePackage?.amountPerCredit : credits * user.subscription.package.amountPerCredit)
   )
 
   return (

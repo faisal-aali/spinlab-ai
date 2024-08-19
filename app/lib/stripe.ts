@@ -157,6 +157,7 @@ async function handlePaymentSuccess({ paymentIntent }: { paymentIntent: Stripe.P
                 userId: user._id,
                 amount: paymentIntent.amount,
                 credits: paymentIntent.metadata.credits,
+                promocodeId: paymentIntent.metadata.promocodeId || null,
                 stripeIntentId: paymentIntent.id,
                 type: 'purchase',
             })

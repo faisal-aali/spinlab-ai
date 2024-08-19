@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
         if (dups.length > 0) return NextResponse.json({ message: 'The email has already been registered.' }, { status: 400 })
 
         const user = await User.create({
-            email: data.email,
+            email: data.email.toLowerCase().trim(),
             password: bcrypt.hashSync((data.password || randomPassword), process.env.BCRYPT_SALT as string),
             name: data.name,
             avatarUrl: data.avatarUrl,

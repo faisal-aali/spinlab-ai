@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
         if (session && session.user && session.user.role === 'trainer') trainerId = new mongoose.Types.ObjectId(session.user._id)
 
         const user = await User.create({
-            email: data.email,
+            email: data.email.toLowerCase().trim(),
             password: bcrypt.hashSync((data.password || randomPassword), process.env.BCRYPT_SALT as string),
             name: data.name,
             avatarUrl: data.avatarUrl,

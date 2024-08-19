@@ -14,21 +14,19 @@ const Sidebar = ({ showSidebar, setShowSidebar }) => {
   const { user } = useApp();
 
   const linkClasses = (path, pathValidator, disabled) =>
-    `flex pl-2 py-1 ${disabled ? "opacity-50 cursor-not-allowed" : ""} ${
-      (pathValidator
-        ? pathValidator(pathname, searchParams)
-        : pathname.startsWith(path)) && !disabled
-        ? "bg-primary rounded-lg min-w-[200px] w-fit items-center text-black"
-        : "text-white"
+    `flex pl-2 py-1 ${disabled ? "opacity-50 cursor-not-allowed" : ""} ${(pathValidator
+      ? pathValidator(pathname, searchParams)
+      : pathname.startsWith(path)) && !disabled
+      ? "bg-primary rounded-lg min-w-[200px] w-fit items-center text-black"
+      : "text-white"
     }`;
 
   const svgClasses = (path, pathValidator, disabled) =>
-    `${disabled ? "opacity-50 cursor-not-allowed" : ""} ${
-      (pathValidator
-        ? pathValidator(pathname, searchParams)
-        : pathname.startsWith(path)) && !disabled
-        ? "mix-blend-difference"
-        : "fill-current text-white"
+    `${disabled ? "opacity-50 cursor-not-allowed" : ""} ${(pathValidator
+      ? pathValidator(pathname, searchParams)
+      : pathname.startsWith(path)) && !disabled
+      ? "mix-blend-difference"
+      : "fill-current text-white"
     }`;
 
   const links = [
@@ -161,6 +159,13 @@ const Sidebar = ({ showSidebar, setShowSidebar }) => {
       needVerification: true
     },
     {
+      url: '/promo-codes',
+      icon: '/assets/setting-icon.svg',
+      label: 'Promo Codes',
+      roles: ['admin'],
+      needVerification: true
+    },
+    {
       url: '/settings',
       icon: '/assets/setting-icon.svg',
       label: 'Settings',
@@ -172,7 +177,7 @@ const Sidebar = ({ showSidebar, setShowSidebar }) => {
   return (
     <div className={`bg-gray-900 pt-8 h-screen overflow-auto p-4 ${showSidebar ? 'w-80' : 'w-fit'} lg:w-80 ${showSidebar ? 'pl-12' : 'pl-4'} lg:pl-12 ${showSidebar ? 'absolute' : 'unset'} lg:unset`}>
       <div className={`${showSidebar ? 'hidden' : 'flex'} lg:hidden`} onClick={() => setShowSidebar(true)}>
-        <Menu sx={{ color: '#ffffff' }}/>
+        <Menu sx={{ color: '#ffffff' }} />
       </div>
       <div className={`${showSidebar ? 'flex' : 'hidden'} lg:flex`}>
         <div className="w-62">

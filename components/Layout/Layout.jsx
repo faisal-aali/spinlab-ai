@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Sidebar from "../Sidebar/Sidebar";
 import { signOut, useSession, signIn } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
@@ -361,8 +361,15 @@ const NotificationsMenu = () => {
   const router = useRouter()
   const [notifications, setNotifications] = useState()
 
+  const interval = useRef()
   useEffect(() => {
     fetchData()
+
+    interval.current = setInterval(fetchData, 60 * 1000);
+
+    return () => {
+      clearTimeout(interval.current)
+    }
   }, [])
 
   const fetchData = () => {
@@ -402,33 +409,34 @@ const NotificationsMenu = () => {
         }}
       >
         {!notifications ? <CircularProgress /> :
-          notifications.map(notification => (
-            <MenuItem onClick={() => {
-              if (notification.type === 'video') {
-                if (user.role === 'player') router.push('/history')
-                if (user.role === 'trainer') router.push('/players-history')
-              }
-              handleClose()
-            }} sx={{ minWidth: '20vw' }}>
-              <Grid container alignItems={'center'} gap={2}>
-                <Grid item>
-                  {notification.type === 'video' && <VideoCameraBack color={notification.isRead ? "white" : "primary"} />}
-                </Grid>
-                <Grid item container xs='auto' flexDirection={'column'} gap={2}>
+          notifications.length == 0 ? <p>No notifications at this moment</p> :
+            notifications.map(notification => (
+              <MenuItem onClick={() => {
+                if (notification.type === 'video') {
+                  if (user.role === 'player') router.push('/history')
+                  if (user.role === 'trainer') router.push('/players-history')
+                }
+                handleClose()
+              }} sx={{ minWidth: '20vw' }}>
+                <Grid container alignItems={'center'} gap={2}>
                   <Grid item>
-                    <p className={`text-white ${!notification.isRead && 'font-bold text-primary'}`}>
-                      {notification.message}
-                    </p>
+                    {notification.type === 'video' && <VideoCameraBack color={notification.isRead ? "white" : "primary"} />}
                   </Grid>
-                  <Grid item>
-                    <p className={`text-sm text-white ${!notification.isRead && 'font-bold'}`}>
-                      {new Date(notification.creationDate).getTime() < new Date(new Date().setHours(0, 0, 0, 0)).getTime() ? new Date(notification.creationDate).toLocaleString() : new Date(notification.creationDate).toLocaleTimeString()}
-                    </p>
+                  <Grid item container xs='auto' flexDirection={'column'} gap={2}>
+                    <Grid item>
+                      <p className={`text-white ${!notification.isRead && 'font-bold text-primary'}`}>
+                        {notification.message}
+                      </p>
+                    </Grid>
+                    <Grid item>
+                      <p className={`text-sm text-white ${!notification.isRead && 'font-bold'}`}>
+                        {new Date(notification.creationDate).getTime() < new Date(new Date().setHours(0, 0, 0, 0)).getTime() ? new Date(notification.creationDate).toLocaleString() : new Date(notification.creationDate).toLocaleTimeString()}
+                      </p>
+                    </Grid>
                   </Grid>
                 </Grid>
-              </Grid>
-            </MenuItem>
-          ))
+              </MenuItem>
+            ))
         }
       </Menu >
     </>
