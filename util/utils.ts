@@ -15,6 +15,24 @@ const convertFeetAndInchesToCm = (feet: number, inches: number) => {
     return (feet * 30.48 + inches * 2.54) || null
 }
 
+const convertDoBToAge = (dob: string) => {
+    if (!dob) return ''
+    // Convert the input string to a Date object
+    const birthDate = new Date(dob);
+    const today = new Date();
+
+    // Calculate the difference in years
+    let age = today.getFullYear() - birthDate.getFullYear();
+
+    // Adjust the age if the birthday hasn't occurred yet this year
+    const monthDifference = today.getMonth() - birthDate.getMonth();
+    if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+    }
+
+    return age;
+}
+
 function generateYoutubeEmbedUrl(url: string) {
     const regex = /(?:youtube\.com\/(?:.*v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
     const match = url.match(regex);
@@ -25,5 +43,6 @@ function generateYoutubeEmbedUrl(url: string) {
 export {
     convertCmToFeetAndInches,
     convertFeetAndInchesToCm,
-    generateYoutubeEmbedUrl
+    generateYoutubeEmbedUrl,
+    convertDoBToAge
 }

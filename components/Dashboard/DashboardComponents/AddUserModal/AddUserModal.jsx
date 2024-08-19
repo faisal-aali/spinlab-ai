@@ -95,6 +95,7 @@ const AddUserModal = ({ open, onClose, role, onSuccess }) => {
         height: convertFeetAndInchesToCm(values.heightFt, values.heightIn),
         weight: values.weight,
         handedness: values.handedness,
+        dob: values.dob,
         avatarUrl: imageUrl,
       };
 
@@ -123,6 +124,7 @@ const AddUserModal = ({ open, onClose, role, onSuccess }) => {
     heightIn: role === "player" && Yup.number().max(11).required("Required"),
     weight: role === "player" && Yup.number().required("Required"),
     handedness: role === "player" && schemaValidators.user.handedness,
+    dob: role === "player" && Yup.date().required("Required"),
   });
 
   return (
@@ -147,6 +149,7 @@ const AddUserModal = ({ open, onClose, role, onSuccess }) => {
             handedness: "",
             email: "",
             password: "",
+            dob: ""
           }}
           validationSchema={validationSchema}
           onSubmit={(values, { resetForm, setSubmitting }) => {
@@ -250,8 +253,8 @@ const AddUserModal = ({ open, onClose, role, onSuccess }) => {
                           name="heightFt"
                           type="number"
                           className={`py-3 px-3 blueBackground rounded-lg w-full text-primary focus:outline-none placeholder:opacity-45 ${errors.heightFt && touched.heightFt
-                              ? "border-red-900	border"
-                              : "primary-border focus:border-green-500"
+                            ? "border-red-900	border"
+                            : "primary-border focus:border-green-500"
                             }`}
                         />
                         <div className="absolute bottom-3 right-4 opacity-50 text-white">
@@ -263,8 +266,8 @@ const AddUserModal = ({ open, onClose, role, onSuccess }) => {
                           name="heightIn"
                           type="number"
                           className={`py-3 px-3 blueBackground rounded-lg  w-full text-primary focus:outline-none placeholder:opacity-45 ${errors.heightIn && touched.heightIn
-                              ? "border-red-900	border"
-                              : "primary-border focus:border-green-500"
+                            ? "border-red-900	border"
+                            : "primary-border focus:border-green-500"
                             }`}
                         />
                         <div className="absolute bottom-3 right-4 opacity-50 text-white">
@@ -337,12 +340,26 @@ const AddUserModal = ({ open, onClose, role, onSuccess }) => {
                     required
                   />
                 </div>
+                {role === 'player' &&
+                  <div>
+                    <div className="mb-1 opacity-45">
+                      <label htmlFor="dob">Date of Birth</label>
+                    </div>
+                    <Field
+                      name="dob"
+                      type='date'
+                      className={`w-full py-3 px-3 blueBackground rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${errors.dob && touched.dob
+                        ? "border-red-900	border"
+                        : "primary-border focus:border-green-500"
+                        }`}
+                    />
+                  </div>}
               </div>
               {response.message && (
                 <div
                   className={`flex justify-end col-span-2 mb-4 ${response.severity === "success"
-                      ? "text-primary"
-                      : "text-error"
+                    ? "text-primary"
+                    : "text-error"
                     }`}
                 >
                   {response.message}

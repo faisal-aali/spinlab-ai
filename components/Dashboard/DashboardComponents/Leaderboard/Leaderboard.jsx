@@ -15,6 +15,7 @@ import {
 import Pagination from "../../../Common/Pagination/Pagination";
 import { useSession } from "next-auth/react";
 import axios from 'axios'
+import { convertDoBToAge } from "@/util/utils";
 
 const CustomLinearProgress = ({ value, color }) => {
   const progressStyle = {
@@ -121,7 +122,7 @@ const Leaderboard = () => {
                       <TableCell className="!text-white text-base">
                         {row.roleData.anonymous ? 'Anonymous' : row.name}
                         <div className={`text-primary text-xs ${row.roleData.anonymous && 'hidden'}`}>
-                          {`${row.roleData.age || ''} ${(row.roleData.age && (row.city || row.country) && '|') || ''} ${`${row.city || ''}${row.city && row.country ? ',' : ''} ${row.country || ''}`.trim() || ""}`.trim()}
+                          {`${convertDoBToAge(row.roleData.dob) || ''} ${(row.roleData.dob && (row.city || row.country) && '|') || ''} ${`${row.city || ''}${row.city && row.country ? ',' : ''} ${row.country || ''}`.trim() || ""}`.trim()}
                         </div>
                       </TableCell>
                       <TableCell className="!text-white flex-col-reverse min-w-40">

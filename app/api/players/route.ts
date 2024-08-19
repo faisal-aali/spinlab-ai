@@ -19,9 +19,10 @@ export async function POST(req: NextRequest) {
             password: Yup.string().min(8, "Password must be at least 8 characters").optional(),
             name: Yup.string().matches(/^[A-Za-z\s]+$/, 'Name should only contain alphabets').max(40, 'Name must not be bigger than 40 characters').required("Name is required"),
             avatarUrl: Yup.string().optional(),
-            height: Yup.number().min(100, `Height must be between 3'3" to 6'7"`).max(220, `Height must be between 3'3" to 6'7"`).optional(),
-            weight: Yup.number().min(40, 'Weight must be between 40lbs to 500lbs').max(500, 'Weight must be between 40lbs to 500lbs').optional(),
-            handedness: Yup.string().oneOf(['left', 'right']).optional(),
+            dob: Yup.date().max(new Date(), 'DoB cannot be in the future').required(),
+            height: Yup.number().min(100, `Height must be between 3'3" to 6'7"`).max(220, `Height must be between 3'3" to 6'7"`).required(),
+            weight: Yup.number().min(40, 'Weight must be between 40lbs to 500lbs').max(500, 'Weight must be between 40lbs to 500lbs').required(),
+            handedness: Yup.string().oneOf(['left', 'right']).required(),
             city: Yup.string().optional(),
             country: Yup.string().optional(),
             emailVerified: Yup.boolean().optional(),
@@ -48,10 +49,10 @@ export async function POST(req: NextRequest) {
             emailVerified: data.emailVerified,
             role: 'player',
             roleData: {
-                age: null,
-                height: data.height || null,
-                weight: data.weight || null,
-                handedness: data.handedness || null,
+                dob: data.dob,
+                height: data.height,
+                weight: data.weight,
+                handedness: data.handedness,
                 anonymous: false,
                 trainerId: trainerId
             }

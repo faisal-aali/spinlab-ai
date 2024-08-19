@@ -161,7 +161,7 @@ const AccountSettings = () => {
     lastName: Yup.string().required("Required"),
     // email: Yup.string().email("Invalid email address").required("Required"),
     bio: Yup.string().optional(),
-    age: Yup.number().optional().nullable(),
+    dob: Yup.date().max(new Date(), 'DoB cannot be in the future').optional(),
     heightFt: Yup.number().optional(),
     heightIn: Yup.number().max(11).optional(),
     handedness: Yup.string().optional(),
@@ -192,7 +192,7 @@ const AccountSettings = () => {
             bio: user.bio || "",
             city: user.city || "",
             country: user.country || "",
-            age: user.roleData?.age || "",
+            dob: user.roleData?.dob || "",
             heightFt: convertCmToFeetAndInches(user.roleData?.height).feet,
             heightIn: convertCmToFeetAndInches(user.roleData?.height).inches,
             handedness: user.roleData?.handedness || "",
@@ -233,17 +233,16 @@ const AccountSettings = () => {
                     </div>
                   </div>
                   <div className="flex flex-col items-center w-full">
-                    <div className={`p-8 flex items-center justify-center flex-col blueBackground rounded-lg w-full gap-4 border-dashed border-2  ${
-                    isDragging ? "border-green-500" : "border-slate-800"}`}
-                    onDragOver={(e) => {
-                      e.preventDefault();
-                      setIsDragging(true);
-                    }}
-                    onDragLeave={(e) => {
-                      e.preventDefault();
-                      setIsDragging(false);
-                    }}
-                    onDrop={handleDrop}
+                    <div className={`p-8 flex items-center justify-center flex-col blueBackground rounded-lg w-full gap-4 border-dashed border-2  ${isDragging ? "border-green-500" : "border-slate-800"}`}
+                      onDragOver={(e) => {
+                        e.preventDefault();
+                        setIsDragging(true);
+                      }}
+                      onDragLeave={(e) => {
+                        e.preventDefault();
+                        setIsDragging(false);
+                      }}
+                      onDrop={handleDrop}
                     >
                       <label className="cursor-pointer flex items-center justify-center">
                         <input
@@ -382,18 +381,16 @@ const AccountSettings = () => {
                   </div>
                   <div className={`${user.role !== 'player' && 'hidden'}`}>
                     <div className="mb-1 opacity-45">
-                      <label htmlFor="">Age</label>
+                      <label htmlFor="dob">Date of Birth</label>
                     </div>
                     <Field
-                      name="age"
-                      type='number'
-                      className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${errors.age && touched.age
+                      name="dob"
+                      type='date'
+                      className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${errors.dob && touched.dob
                         ? "border-red-900	border"
                         : "primary-border focus:border-green-500"
                         }`}
-                      placeholder="Age"
                     />
-                    <TextField className="w-full" type="date"></TextField>
                   </div>
                   <div className={`${user.role !== 'player' && 'hidden'}`}>
                     <div className="mb-1 opacity-45">
@@ -409,8 +406,8 @@ const AccountSettings = () => {
                     <div className="opacity-45">
                       <label htmlFor="">Height</label>
                     </div>
-                    <div className="flex gap-2">
-                      <div className="relative">
+                    <div className="flex w-full gap-2">
+                      <div className="relative w-1/2">
                         <Field
                           name="heightFt"
                           type='number'
@@ -421,7 +418,7 @@ const AccountSettings = () => {
                         />
                         <div className="absolute bottom-3 right-4 opacity-50 text-white">ft</div>
                       </div>
-                      <div className="relative">
+                      <div className="relative w-1/2">
                         <Field
                           name="heightIn"
                           type='number'

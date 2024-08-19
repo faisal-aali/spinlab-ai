@@ -1,7 +1,7 @@
 import mongoose from "../mongodb";
 
 interface IRoleData {
-    age: number | null;
+    dob: Date | null;
     height: number | null;
     weight: number | null;
     handedness: 'left' | 'right' | null; // Example of a string union type

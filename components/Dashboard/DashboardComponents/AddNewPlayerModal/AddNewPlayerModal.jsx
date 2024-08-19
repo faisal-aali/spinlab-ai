@@ -32,6 +32,7 @@ const validationSchema = Yup.object({
   heightIn: Yup.number().max(11).required("Required"),
   handedness: schemaValidators.user.handedness,
   weight: Yup.number().required("Required"),
+  dob: Yup.date().max(new Date(), 'DoB cannot be in the future').required("Required"),
 });
 
 const AddNewPlayerModal = ({ open, onClose, onSuccess }) => {
@@ -110,6 +111,8 @@ const AddNewPlayerModal = ({ open, onClose, onSuccess }) => {
           name: `${values.firstName} ${values.lastName}`,
           height: convertFeetAndInchesToCm(values.heightFt, values.heightIn),
           weight: values.weight,
+          handedness: values.handedness,
+          dob: values.dob,
           avatarUrl: imageUrl,
         };
 
@@ -146,6 +149,7 @@ const AddNewPlayerModal = ({ open, onClose, onSuccess }) => {
             weight: "",
             handedness: "",
             email: "",
+            dob: ""
           }}
           validationSchema={validationSchema}
           onSubmit={(values, { resetForm, setSubmitting }) => {
@@ -167,11 +171,10 @@ const AddNewPlayerModal = ({ open, onClose, onSuccess }) => {
                   </div>
                   <Field
                     className={`w-full text-primary bg-transparent px-3 rounded-lg py-3 text-white rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
-                    ${
-                      errors.firstName && touched.firstName
+                    ${errors.firstName && touched.firstName
                         ? "border-red-900	border"
                         : "primary-border focus:border-green-500"
-                    }`}
+                      }`}
                     type="text"
                     name="firstName"
                     required
@@ -183,11 +186,10 @@ const AddNewPlayerModal = ({ open, onClose, onSuccess }) => {
                   </div>
                   <Field
                     className={`w-full text-primary bg-transparent px-3 rounded-lg py-3 text-white rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
-                    ${
-                      errors.lastName && touched.lastName
+                    ${errors.lastName && touched.lastName
                         ? "border-red-900	border"
                         : "primary-border focus:border-green-500"
-                    }`}
+                      }`}
                     type="text"
                     name="lastName"
                     required
@@ -202,11 +204,10 @@ const AddNewPlayerModal = ({ open, onClose, onSuccess }) => {
                       <Field
                         name="heightFt"
                         type="number"
-                        className={`py-3 px-3 blueBackground rounded-lg w-full text-primary focus:outline-none placeholder:opacity-45 ${
-                          errors.heightFt && touched.heightFt
-                            ? "border-red-900	border"
-                            : "primary-border focus:border-green-500"
-                        }`}
+                        className={`py-3 px-3 blueBackground rounded-lg w-full text-primary focus:outline-none placeholder:opacity-45 ${errors.heightFt && touched.heightFt
+                          ? "border-red-900	border"
+                          : "primary-border focus:border-green-500"
+                          }`}
                       />
                       <div className="absolute bottom-3 right-4 opacity-50 text-white">
                         ft
@@ -216,11 +217,10 @@ const AddNewPlayerModal = ({ open, onClose, onSuccess }) => {
                       <Field
                         name="heightIn"
                         type="number"
-                        className={`py-3 px-3 blueBackground rounded-lg  w-full text-primary focus:outline-none placeholder:opacity-45 ${
-                          errors.heightIn && touched.heightIn
-                            ? "border-red-900	border"
-                            : "primary-border focus:border-green-500"
-                        }`}
+                        className={`py-3 px-3 blueBackground rounded-lg  w-full text-primary focus:outline-none placeholder:opacity-45 ${errors.heightIn && touched.heightIn
+                          ? "border-red-900	border"
+                          : "primary-border focus:border-green-500"
+                          }`}
                       />
                       <div className="absolute bottom-3 right-4 opacity-50 text-white">
                         in
@@ -234,11 +234,10 @@ const AddNewPlayerModal = ({ open, onClose, onSuccess }) => {
                   </div>
                   <Field
                     className={`w-full text-primary bg-transparent px-3 rounded-lg py-3 text-white rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
-                    ${
-                      errors.weight && touched.weight
+                    ${errors.weight && touched.weight
                         ? "border-red-900	border"
                         : "primary-border focus:border-green-500"
-                    }`}
+                      }`}
                     type="number"
                     name="weight"
                     required
@@ -260,11 +259,10 @@ const AddNewPlayerModal = ({ open, onClose, onSuccess }) => {
                     onChange={(e) =>
                       setFieldValue("handedness", e.target.value)
                     }
-                    className={`w-full text-primary blueBackground rounded-lg text-white focus:outline-none placeholder:opacity-45 ${
-                      errors.handedness && touched.handedness
-                        ? "border-red-900	border"
-                        : "primary-border focus:border-green-500"
-                    }`}
+                    className={`w-full text-primary blueBackground rounded-lg text-white focus:outline-none placeholder:opacity-45 ${errors.handedness && touched.handedness
+                      ? "border-red-900	border"
+                      : "primary-border focus:border-green-500"
+                      }`}
                   >
                     <MenuItem
                       className="bg-slate-700"
@@ -288,14 +286,26 @@ const AddNewPlayerModal = ({ open, onClose, onSuccess }) => {
                   </div>
                   <Field
                     className={`w-full text-primary bg-transparent px-3 rounded-lg py-3 text-white rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
-                    ${
-                      errors.email && touched.email
+                    ${errors.email && touched.email
                         ? "border-red-900	border"
                         : "primary-border focus:border-green-500"
-                    }`}
+                      }`}
                     type="text"
                     name="email"
                     required
+                  />
+                </div>
+                <div>
+                  <div className="mb-1 opacity-45">
+                    <label htmlFor="dob">Date of Birth</label>
+                  </div>
+                  <Field
+                    name="dob"
+                    type='date'
+                    className={`w-full py-3 px-3 blueBackground rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${errors.dob && touched.dob
+                      ? "border-red-900	border"
+                      : "primary-border focus:border-green-500"
+                      }`}
                   />
                 </div>
               </div>
@@ -312,9 +322,8 @@ const AddNewPlayerModal = ({ open, onClose, onSuccess }) => {
                 onDrop={handleDrop}
               >
                 <div
-                  className={`p-8 flex items-center justify-center flex-col rounded-lg w-full py-4 gap-4 border-dashed border-2 ${
-                    isDragging ? "border-green-500" : "border-slate-800"
-                  }`}
+                  className={`p-8 flex items-center justify-center flex-col rounded-lg w-full py-4 gap-4 border-dashed border-2 ${isDragging ? "border-green-500" : "border-slate-800"
+                    }`}
                 >
                   <div className="w-24">
                     {imageSrc && (
@@ -350,9 +359,8 @@ const AddNewPlayerModal = ({ open, onClose, onSuccess }) => {
               <div className="flex justify-center mt-4 mb-10">
                 <button
                   type="submit"
-                  className={`bg-primary dark-blue-color rounded w-28 h-9 flex items-center justify-center text-lg font-bold hover-button-shadow ${
-                    isSubmitting ? "opacity-50 cursor-not-allowed" : ""
-                  }`}
+                  className={`bg-primary dark-blue-color rounded w-28 h-9 flex items-center justify-center text-lg font-bold hover-button-shadow ${isSubmitting ? "opacity-50 cursor-not-allowed" : ""
+                    }`}
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? "Adding..." : "SUBMIT"}

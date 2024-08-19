@@ -11,7 +11,7 @@ import { useSession } from "next-auth/react";
 import Metrics from "../Metrics/Metrics";
 import History from "../History/History";
 import PlayersHistory from "../PlayersHistory/PlayersHistory";
-import { convertCmToFeetAndInches } from "@/util/utils";
+import { convertCmToFeetAndInches, convertDoBToAge } from "@/util/utils";
 
 const PlayerProfile = ({ setGiftUserId, setShowEditModal, setShowDeleteModal, setShowGiftModal, userData }) => {
 
@@ -48,7 +48,7 @@ const PlayerProfile = ({ setGiftUserId, setShowEditModal, setShowDeleteModal, se
                     </p>
                     <div className="flex flex-col lg:flex-row">
                         <p className="flex-1 text-base mb-2 pb-4 pt-2 border-b border-solid primary-border-color font-bold	">
-                            Age: <span className="text-primary">{userData.roleData.age || "N/A"}</span>
+                            Age: <span className="text-primary">{convertDoBToAge(userData.roleData.dob) || "N/A"}</span>
                         </p>
                         <p className="flex-1 text-base mb-2 pb-4 pt-2 border-b border-solid primary-border-color font-bold	">
                             Location: <span className="text-primary">{`${userData.city || ''}${userData.city && userData.country ? ',' : ''} ${userData.country || ''}`.trim() || "N/A"}</span>

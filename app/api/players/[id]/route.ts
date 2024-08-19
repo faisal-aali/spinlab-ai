@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
         const schema = Yup.object({
             avatarUrl: Yup.string().optional().nullable(),
             name: Yup.string().matches(/^[A-Za-z\s]+$/, 'Name should only contain alphabets').max(40, 'Name must not be bigger than 40 characters').optional(),
-            age: Yup.number().min(1).optional().nullable().strict(),
+            dob: Yup.date().max(new Date(), 'DoB cannot be in the future').optional(),
             height: Yup.number().min(100, `Height must be between 3'3" to 6'7"`).max(220, `Height must be between 3'3" to 6'7"`).optional().nullable().strict(),
             weight: Yup.number().min(40, 'Weight must be between 40lbs to 500lbs').max(500, 'Weight must be between 40lbs to 500lbs').optional().nullable().strict(),
             handedness: Yup.string().oneOf(['left', 'right']).optional().nullable(),
@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
         user.city = (data.city === null ? null : data.city || user.city);
         user.country = (data.country === null ? null : data.country || user.country);
         user.roleData = {
-            age: (data.age === null ? null : data.age || user.roleData.age),
+            dob: (data.dob === null ? null : data.dob || user.roleData.dob),
             height: (data.height === null ? null : data.height || user.roleData.height),
             handedness: (data.handedness === null ? null : data.handedness || user.roleData.handedness),
             weight: (data.weight === null ? null : data.weight || user.roleData.weight),

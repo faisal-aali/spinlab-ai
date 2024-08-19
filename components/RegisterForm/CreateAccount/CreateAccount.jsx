@@ -36,7 +36,7 @@ const accountSchema = Yup.object().shape({
     .typeError("Height (in) must be a number"),
   handedness: Yup.string()
     .required("Handedness is required"),
-    weight: Yup.number()
+  weight: Yup.number()
     .required("Weight is required")
     .typeError("Weight must be a number"),
   password: Yup.string()
@@ -45,9 +45,11 @@ const accountSchema = Yup.object().shape({
   confirmPassword: Yup.string()
     .oneOf([Yup.ref("password"), null], "Passwords must match")
     .required("Confirm password is required"),
+  dob: Yup.date().max(new Date(), 'DoB cannot be in the future').required('Date of Birth is required')
 });
 
 const CreateAccount = ({ nextStep, values }) => {
+  const [agree, setAgree] = useState(false)
   const [error, setError] = useState('')
   const countries = getNames();
   const { showSnackbar } = useApp();
@@ -59,7 +61,7 @@ const CreateAccount = ({ nextStep, values }) => {
 
       axios.post(values.role === 'player' ? "/api/players" : values.role === 'trainer' ? "/api/trainers" : "invalid_role", {
         ...values,
-        height: heightInCm, 
+        height: heightInCm,
         name: `${values.firstName} ${values.lastName}`.trim()
       }).then(res => {
         resolve('User created')
@@ -76,7 +78,12 @@ const CreateAccount = ({ nextStep, values }) => {
     <Formik
       initialValues={values}
       validationSchema={accountSchema}
-      onSubmit={(values, {setSubmitting}) => {
+      onSubmit={(values, { setSubmitting }) => {
+        if (!agree) {
+          setSubmitting(false)
+          setError('Must agree to ToS and Privacy Policy')
+          return
+        }
         console.log("Account Details:", values);
         onSubmit(values).then(async res => {
           await signIn('credentials', { email: values.email, password: values.password, redirect: false }).catch(err => signOut({ redirect: false }))
@@ -84,25 +91,12 @@ const CreateAccount = ({ nextStep, values }) => {
         }).catch(err => {
           setError(err)
         })
-        .finally(() => setSubmitting(false));
+          .finally(() => setSubmitting(false));
       }}
     >
       {({ isSubmitting, errors, touched, setFieldValue }) => (
         <div className="bg-transparent border primary-border rounded-lg max-w-7xl w-[34rem]">
           <Form className="w-full p-8">
-          <div className=" flex gap-4 items-center mb-4">
-                  <div>
-                    <Checkbox
-                      sx={{ width: 10, height: 10, color: '#FFFFFF30' }}
-                      disableRipple
-                      checked={values.isFree}
-                      onChange={(e) => setFieldValue('isFree', e.target.checked)}
-                    />
-                  </div>
-                  <div className="opacity-45">
-                    <label>TOS and privacy policy</label>
-                  </div>
-          </div>
             <h2 className="text-white text-3xl font-bold mb-6 text-center">
               Create your Account
             </h2>
@@ -143,54 +137,58 @@ const CreateAccount = ({ nextStep, values }) => {
                   <div className="text-red-500 text-sm">{errors.city}</div>
                 ) : null}
               </div>
-              <div className="DatePicker">
-                <TextField className="w-full" type="date"></TextField>
+              <div>
+                <Field
+                  type="date"
+                  name="dob"
+                  className="w-full py-3 px-3 bg-transparent primary-border rounded text-white rounded-lg focus:outline-none focus:outline-none focus:border-green-500 placeholder:opacity-45"
+                />
+                {errors.dob && touched.dob ? (
+                  <div className="text-red-500 text-sm">{errors.dob}</div>
+                ) : null}
               </div>
               <div className="">
-              <Autocomplete
-                options={countries}
-                getOptionLabel={(option) => option}
-                onChange={(event, value) => setFieldValue("country", value)}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant="filled"
-                    label="Country"
-                    fullWidth
-                    error={touched.country && Boolean(errors.country)}
-                    helperText={touched.country && errors.country}
-                  />
-                )}
-                renderOption={(props, option) => (
-                  <MenuItem {...props} key={option} value={option}>
-                    {option}
-                  </MenuItem>
-                )}
-                filterOptions={(options, { inputValue }) =>
-                  options.filter((option) =>
-                    option.toLowerCase().startsWith(inputValue.toLowerCase())
-                  )
-                }
-              />
+                <Autocomplete
+                  options={countries}
+                  getOptionLabel={(option) => option}
+                  onChange={(event, value) => setFieldValue("country", value)}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant="filled"
+                      label="Country"
+                      fullWidth
+                      error={touched.country && Boolean(errors.country)}
+                      helperText={touched.country && errors.country}
+                    />
+                  )}
+                  renderOption={(props, option) => (
+                    <MenuItem {...props} key={option} value={option}>
+                      {option}
+                    </MenuItem>
+                  )}
+                  filterOptions={(options, { inputValue }) =>
+                    options.filter((option) =>
+                      option.toLowerCase().startsWith(inputValue.toLowerCase())
+                    )
+                  }
+                />
                 {errors.country && touched.country ? (
                   <div className="text-red-500 text-sm">{errors.country}</div>
                 ) : null}
               </div>
               <div className={`flex gap-6 ${values.role !== 'player' && 'hidden'}`}>
-              <div className="w-1/2 relative">
-                  <div className="opacity-45">
-                    <label htmlFor="">Height</label>
-                  </div>
+                <div className="w-1/2 relative">
                   <div className="flex gap-2">
                     <div className="relative">
                       <Field
+                        placeholder='Height'
                         name="heightFt"
                         type="number"
-                        className={`py-3 px-3 bg-transparent rounded-lg w-full text-white focus:outline-none placeholder:opacity-45 ${
-                          errors.heightFt && touched.heightFt
-                            ? "border-red-900	border"
-                            : "primary-border focus:border-green-500"
-                        }`}
+                        className={`py-3 px-3 bg-transparent rounded-lg w-full text-white focus:outline-none placeholder:opacity-45 ${errors.heightFt && touched.heightFt
+                          ? "border-red-900	border"
+                          : "primary-border focus:border-green-500"
+                          }`}
                       />
                       <div className="absolute bottom-3 right-4 opacity-50 text-white">
                         ft
@@ -198,13 +196,13 @@ const CreateAccount = ({ nextStep, values }) => {
                     </div>
                     <div className="relative">
                       <Field
+                        placeholder='Height'
                         name="heightIn"
                         type="number"
-                        className={`py-3 px-3 bg-transparent rounded-lg  w-full text-white focus:outline-none placeholder:opacity-45 ${
-                          errors.heightIn && touched.heightIn
-                            ? "border-red-900	border"
-                            : "primary-border focus:border-green-500"
-                        }`}
+                        className={`py-3 px-3 bg-transparent rounded-lg  w-full text-white focus:outline-none placeholder:opacity-45 ${errors.heightIn && touched.heightIn
+                          ? "border-red-900	border"
+                          : "primary-border focus:border-green-500"
+                          }`}
                       />
                       <div className="absolute bottom-3 right-4 opacity-50 text-white">
                         in
@@ -213,18 +211,15 @@ const CreateAccount = ({ nextStep, values }) => {
                   </div>
                 </div>
                 <div className="w-1/2 relative">
-                  <div className="opacity-45">
-                    <label htmlFor="">Weight</label>
-                  </div>
                   <Field
                     className={`w-full bg-transparent px-3 rounded-lg py-3 text-white rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
-                    ${
-                      errors.weight && touched.weight
+                    ${errors.weight && touched.weight
                         ? "border-red-900	border"
                         : "primary-border focus:border-green-500"
-                    }`}
+                      }`}
                     type="number"
                     name="weight"
+                    placeholder='Weight'
                     required
                   />
                   <div className="absolute bottom-3 right-4 opacity-50 text-white">
@@ -233,37 +228,36 @@ const CreateAccount = ({ nextStep, values }) => {
                 </div>
               </div>
               <div className={`${values.role !== 'player' && 'hidden'}`}>
-                  <TextField
-                    error={Boolean(errors.handedness && touched.handedness)}
-                    variant="outlined"
-                    select
-                    label="Handedness"
-                    value={values.handedness}
-                    onChange={(e) =>
-                      setFieldValue("handedness", e.target.value)
-                    }
-                    className={`w-full text-primary bg-transparent rounded-lg text-white focus:outline-none focus:border-green-500 placeholder:opacity-45 ${
-                      errors.handedness && touched.handedness
-                        ? "border-red-900	border"
-                        : "primary-border focus:border-green-500"
+                <TextField
+                  error={Boolean(errors.handedness && touched.handedness)}
+                  variant="outlined"
+                  select
+                  label="Handedness"
+                  value={values.handedness}
+                  onChange={(e) =>
+                    setFieldValue("handedness", e.target.value)
+                  }
+                  className={`w-full text-primary bg-transparent rounded-lg text-white focus:outline-none focus:border-green-500 placeholder:opacity-45 ${errors.handedness && touched.handedness
+                    ? "border-red-900	border"
+                    : "primary-border focus:border-green-500"
                     }`}
+                >
+                  <MenuItem
+                    className="bg-slate-700"
+                    value="left"
+                    style={{ color: "#FFF" }}
                   >
-                    <MenuItem
-                      className="bg-slate-700"
-                      value="left"
-                      style={{ color: "#FFF" }}
-                    >
-                      Left
-                    </MenuItem>
-                    <MenuItem
-                      className="bg-slate-700"
-                      value="right"
-                      style={{ color: "#FFF" }}
-                    >
-                      Right
-                    </MenuItem>
-                  </TextField>
-                </div>
+                    Left
+                  </MenuItem>
+                  <MenuItem
+                    className="bg-slate-700"
+                    value="right"
+                    style={{ color: "#FFF" }}
+                  >
+                    Right
+                  </MenuItem>
+                </TextField>
+              </div>
               <div>
                 <Field
                   name="password"
@@ -288,16 +282,29 @@ const CreateAccount = ({ nextStep, values }) => {
                   </div>
                 ) : null}
               </div>
+              <div className=" flex gap-4 items-center mb-4">
+                <div>
+                  <Checkbox
+                    name=""
+                    sx={{ width: 10, height: 10, color: '#FFFFFF30' }}
+                    disableRipple
+                    checked={agree}
+                    onChange={(e) => setAgree(e.target.checked)}
+                  />
+                </div>
+                <div className="opacity-45">
+                  <label>I agree to the <span className="text-primary font-bold underline cursor-pointer">Terms of Service</span> and <span className="text-primary font-bold underline cursor-pointer">Privacy Policy</span></label>
+                </div>
+              </div>
               <div className={`text-error ${!error && 'hidden'}`}>
                 {error}
               </div>
               <div className="text-center">
                 <button
                   type="submit"
-                  disabled={isSubmitting}
-                  className={`w-full bg-green-500 bg-primary rounded-lg text-black font-normal py-3 rounded hover-shadow focus:outline-none ${
-                    isSubmitting ? "opacity-50 cursor-not-allowed" : ""
-                  }`}
+                  disabled={isSubmitting || !agree}
+                  className={`w-full bg-green-500 bg-primary rounded-lg text-black font-normal py-3 rounded hover-shadow focus:outline-none ${isSubmitting ? "opacity-50 cursor-not-allowed" : ""
+                    }`}
                 >
                   CONTINUE
                 </button>
