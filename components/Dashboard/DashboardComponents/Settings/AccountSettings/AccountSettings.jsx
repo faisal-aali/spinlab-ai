@@ -393,6 +393,7 @@ const AccountSettings = () => {
                         }`}
                       placeholder="Age"
                     />
+                    <TextField className="w-full" type="date"></TextField>
                   </div>
                   <div className={`${user.role !== 'player' && 'hidden'}`}>
                     <div className="mb-1 opacity-45">

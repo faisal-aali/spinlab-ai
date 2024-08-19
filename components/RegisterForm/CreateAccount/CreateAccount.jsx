@@ -2,7 +2,7 @@
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { getNames } from "country-list";
-import { MenuItem, TextField, Autocomplete } from "@mui/material";
+import { MenuItem, TextField, Autocomplete, Checkbox } from "@mui/material";
 import { useState } from "react";
 import axios, { AxiosError } from 'axios'
 import { convertFeetAndInchesToCm } from "@/util/utils";
@@ -90,6 +90,19 @@ const CreateAccount = ({ nextStep, values }) => {
       {({ isSubmitting, errors, touched, setFieldValue }) => (
         <div className="bg-transparent border primary-border rounded-lg max-w-7xl w-[34rem]">
           <Form className="w-full p-8">
+          <div className=" flex gap-4 items-center mb-4">
+                  <div>
+                    <Checkbox
+                      sx={{ width: 10, height: 10, color: '#FFFFFF30' }}
+                      disableRipple
+                      checked={values.isFree}
+                      onChange={(e) => setFieldValue('isFree', e.target.checked)}
+                    />
+                  </div>
+                  <div className="opacity-45">
+                    <label>TOS and privacy policy</label>
+                  </div>
+          </div>
             <h2 className="text-white text-3xl font-bold mb-6 text-center">
               Create your Account
             </h2>
