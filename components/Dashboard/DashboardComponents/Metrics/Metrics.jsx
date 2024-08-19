@@ -97,7 +97,7 @@ const KPICard = ({ icon, text, value, percentage, color }) => {
 
 const EfficiencyGraph = ({ videos }) => {
 
-    var _videos = videos.filter(video => video.assessmentDetails.statusCode === 1).sort((a,b) => new Date(a.creationDate).getTime() - new Date(b.creationDate).getTime())
+    var _videos = videos.filter(video => video.assessmentDetails.statusCode === 1).sort((a, b) => new Date(a.creationDate).getTime() - new Date(b.creationDate).getTime())
     _videos = _videos
 
     const data = {
@@ -211,7 +211,7 @@ export default function Metrics(props) {
         color: '#00B2FF'
     }, {
         text: 'Release Time',
-        value: `${(player?.metrics?.stats?.metrics.release_time || 0) / 100} sec`,
+        value: `${player?.metrics?.stats?.metrics.release_time || 0} msec`,
         icon: '/assets/metrics/release-time.svg',
         color: '#D9D9D9'
     }, {

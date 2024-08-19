@@ -129,7 +129,7 @@ const Leaderboard = () => {
                         <CustomLinearProgress value={row.metrics.stats.performance.score3[0]} color="#FF4500" />
                       </TableCell>
                       <TableCell className="!text-white min-w-24">{row.metrics.stats.metrics.hand_speed} m/s</TableCell>
-                      <TableCell className="!text-white min-w-28">{row.metrics.stats.metrics.release_time} ms</TableCell>
+                      <TableCell className="!text-white min-w-28">{row.metrics.stats.metrics.release_time} msec</TableCell>
                       <TableCell className="!text-white min-w-48">
                         <CustomLinearProgress value={row.metrics.stats.performance.score3[0]} color="#00FF00" />
                       </TableCell>
