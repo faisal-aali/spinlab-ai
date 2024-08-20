@@ -410,7 +410,7 @@ const NotificationsMenu = () => {
       >
         {!notifications ? <CircularProgress /> :
           notifications.length == 0 ? <p>No notifications at this moment</p> :
-            notifications.map(notification => (
+            notifications.sort((a, b) => new Date(b.creationDate).getTime() - new Date(a.creationDate).getTime()).map(notification => (
               <MenuItem onClick={() => {
                 if (notification.type === 'video') {
                   if (user.role === 'player') router.push('/history')
