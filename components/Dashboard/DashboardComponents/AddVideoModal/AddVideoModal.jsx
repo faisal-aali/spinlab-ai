@@ -54,7 +54,7 @@ const AddVideoModal = ({ open, onClose, categories, initialCategory, onSuccess }
     try {
       await axios.post("/api/drills", {
         ...values,
-        videoLink: generateYoutubeEmbedUrl(values.videoLink)
+        videoLink: (values.videoLink.match('youtube') || values.videoLink.match('youtu.be')) ? generateYoutubeEmbedUrl(values.videoLink) : values.videoLink
       });
       showSnackbar('Video has been added', 'success');
       onSuccess && onSuccess()
