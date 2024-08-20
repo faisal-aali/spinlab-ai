@@ -17,7 +17,7 @@ const PickCredits = ({ onSubmit, onBack, user }) => {
         </h2>
       </div>
       <div className="flex flex-col">
-        <div className="mb-6 flex flex-col md:flex-row gap-6 overflow-auto">
+        <div className="mb-6 flex flex-col md:flex-row gap-6 overflow-auto p-2">
           {[1, 5, 10].map((credits, index) => (
             <div
               key={index}
