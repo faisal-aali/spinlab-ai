@@ -17,6 +17,7 @@ import EditVideoModal from "../EditVideoModal/EditVideoModal";
 import DeleteVideoModal from "../DeleteVideoModal/DeleteVideoModal";
 import { useSession } from "next-auth/react";
 import { useApp } from "@/components/Context/AppContext";
+import { convertVimeoUrlToEmbed } from "@/util/utils";
 
 const DrillLibrary = () => {
   const { user } = useApp();
@@ -212,7 +213,7 @@ const DrillLibrary = () => {
                       <CardMedia
                         component="iframe"
                         height={268}
-                        src={video.videoLink}
+                        src={video.videoLink.match('vimeo') ? convertVimeoUrlToEmbed(video.videoLink) : video.videoLink}
                         title={video.title}
                         className="rounded-lg"
                         allowFullScreen

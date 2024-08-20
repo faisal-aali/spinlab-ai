@@ -40,9 +40,18 @@ function generateYoutubeEmbedUrl(url: string) {
     return `https://www.youtube.com/embed/${videoId}`;
 }
 
+function convertVimeoUrlToEmbed(url: string) {
+    const path = url.split('?')[0]; // 'https://vimeo.com/1000614318/c52820ac64'
+    const arr = path.split('/')
+    const hash = arr.pop()
+    const id = arr.pop()
+    return `https://player.vimeo.com/video/${id}?h=${hash}`
+}
+
 export {
     convertCmToFeetAndInches,
     convertFeetAndInchesToCm,
     generateYoutubeEmbedUrl,
-    convertDoBToAge
+    convertDoBToAge,
+    convertVimeoUrlToEmbed
 }
