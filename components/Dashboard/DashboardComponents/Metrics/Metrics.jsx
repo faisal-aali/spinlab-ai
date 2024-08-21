@@ -104,7 +104,7 @@ const EfficiencyGraph = ({ videos }) => {
         labels: _videos.map(video => new Date(video.creationDate).toLocaleDateString()),
         datasets: [
             {
-                label: 'Kinetic Sequence Score',
+                label: 'Kinematic Sequence Score',
                 data: _videos.map(video => video.assessmentDetails.stats.metrics.sequence_score),
                 fill: false,
                 borderColor: '#32E100',
@@ -131,7 +131,7 @@ const EfficiencyGraph = ({ videos }) => {
                 pointHoverRadius: 10,
             },
             {
-                label: 'Velociy Efficiency Score',
+                label: 'Velocity Efficiency Score',
                 data: 0,
                 fill: false,
                 borderColor: '#F52323',
