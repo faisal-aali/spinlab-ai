@@ -41,11 +41,11 @@ function generateYoutubeEmbedUrl(url: string) {
 }
 
 function convertVimeoUrlToEmbed(url: string) {
-    const path = url.split('?')[0]; // 'https://vimeo.com/1000614318/c52820ac64'
+    const path = url.split('?')[0];
     const arr = path.split('/')
-    const hash = arr.pop()
-    const id = arr.pop()
-    return `https://player.vimeo.com/video/${id}?h=${hash}`
+    const hash = arr[4];
+    const id = arr[3];
+    return `https://player.vimeo.com/video/${id || hash}?h=${hash}`
 }
 
 export {
