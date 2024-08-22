@@ -17,7 +17,11 @@
   --background-disabled: rgba(50, 225, 0, 0.15);
   --hover-shadow-light: 0px 0px 7px 3px #3CE10A5C;
   --hover-shadow-dark: 0px 0px 1px 4px #3CE10A5C;
-
+  --swiper-theme-color: rgb(50, 225, 0);
+  --swiper-navigation-color: rgb(50, 225, 0);
+  --swiper-pagination-color: rgb(50, 225, 0);
+  --swiper-scrollbar-color: rgb(50, 225, 0);
+  --swiper-pagination-bullet-inactive-color: #fff;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -351,4 +355,8 @@ button[disabled] {
 
 .MuiInputBase-root .MuiSvgIcon-root {
   color: rgb(var(--primary-color)) !important;
+}
+
+.swiper-pagination {
+  bottom: 0 !important;
 }

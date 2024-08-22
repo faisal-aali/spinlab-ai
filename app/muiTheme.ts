@@ -54,7 +54,10 @@ const theme = createTheme({
             styleOverrides: {
                 root: {
                     color: '#ffffff45',
-                }
+                    '&.Mui-disabled': {
+                        color: '#ffffff30'
+                    }
+                },
             }
         },
         MuiSelect: {

@@ -7,6 +7,7 @@ import { createCustomer, handlePaymentSuccess, handleSubscriptionCancel, handleS
 import { validateError } from "@/app/lib/functions";
 import { IPackage } from "@/app/lib/interfaces/package";
 import { headers } from "next/headers";
+import { PostSubscriptionUpdate } from "@/app/lib/zapier";
 
 const stripeSecretKey: string = process.env.STRIPE_SECRET_KEY || "";
 const stripe = new Stripe(stripeSecretKey);
@@ -45,6 +46,10 @@ export async function POST(req: NextRequest) {
                 }, {
                     status: updatedSubscription.status
                 })
+
+                Subscription.findOne({ stripeSubscriptionId: updatedSubscription.id }).then(subscription => {
+                    if (subscription) PostSubscriptionUpdate(subscription.userId).catch(err => console.error('[Zapier] FATAL ERROR:', err))
+                }).catch(console.error)
 
                 break;
             case 'customer.subscription.deleted':

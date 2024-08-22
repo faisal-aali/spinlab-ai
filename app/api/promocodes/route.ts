@@ -4,6 +4,7 @@ import * as Yup from 'yup'
 import { validateError } from "@/app/lib/functions";
 import { authOption } from "../auth/[...nextauth]/route";
 import { getServerSession } from "next-auth";
+import { IPurchase } from "@/app/lib/interfaces/purchase";
 
 export async function GET(req: NextRequest) {
     try {
@@ -37,7 +38,8 @@ export async function GET(req: NextRequest) {
 
         if (session.user.role !== 'admin') {
             const promocode = promocodes[0]
-            if (!promocode) return NextResponse.json({ message: "Invalid promo code provided" }, { status: 400 });
+            if (!promocode || promocode.type !== 'purchase_discount') return NextResponse.json({ message: "Invalid promo code provided" }, { status: 400 });
+            if (promocode.products.some((purchase: IPurchase) => purchase.userId.toString() === session.user._id.toString())) return NextResponse.json({ message: "You have already claimed that promo code" }, { status: 400 });
             if (new Date(promocode.expirationDate).getTime() < new Date().getTime()) return NextResponse.json({ message: "Promo code has expired" }, { status: 400 });
             if (promocode.products.length >= promocode.uses) return NextResponse.json({ message: "Promo code has reached usage limit" }, { status: 400 });
         }
@@ -60,9 +62,18 @@ export async function POST(req: NextRequest) {
         const schema = Yup.object({
             code: Yup.string().required("Code is required"),
             description: Yup.string().required("Description is required"),
-            discountPercentage: Yup.number().min(1, 'Discount % must be greater than 0').max(100, 'Discount % must be less than 101').required("Discount % is required").strict(),
+            discountPercentage: Yup.number().min(1, 'Discount % must be greater than 0').max(100, 'Discount % must be less than 101').strict().when('type', {
+                is: 'purchase_discount',
+                then: schema => schema.required('Discount % is required'),
+                otherwise: schema => schema.optional().nullable(),
+            }),
+            claimCredits: Yup.number().min(1, 'Credits must be greater than 0').optional().strict().when('type', {
+                is: 'free_credits',
+                then: schema => schema.required('Credits is required'),
+                otherwise: schema => schema.optional().nullable(),
+            }),
             uses: Yup.number().min(1, 'Uses must be greater than 0').required("Uses is required").strict(),
-            type: Yup.string().oneOf(['purchase'], 'Invalid type provided').required("Type is required"),
+            type: Yup.string().oneOf(['purchase_discount', 'free_credits'], 'Invalid type provided').required("Type is required"),
             productId: Yup.string().optional(),
             expirationDate: Yup.date().required('Date is required'),
         });
@@ -78,6 +89,7 @@ export async function POST(req: NextRequest) {
             code: data.code,
             description: data.description,
             discountPercentage: data.discountPercentage,
+            claimCredits: data.claimCredits,
             uses: data.uses,
             type: data.type,
             productId: data.productId || null,

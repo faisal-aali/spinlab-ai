@@ -8,6 +8,7 @@ import { validateError } from "@/app/lib/functions";
 import { authOption } from "../auth/[...nextauth]/route";
 import { getServerSession } from "next-auth";
 import mongoose from "@/app/lib/mongodb";
+import { PostAccountCreation } from "@/app/lib/zapier";
 
 export async function POST(req: NextRequest) {
     try {
@@ -70,6 +71,8 @@ export async function POST(req: NextRequest) {
                 `
             }).catch(console.error)
         }
+
+        PostAccountCreation(user._id.toString()).catch(err => console.error('[Zapier] FATAL ERROR:', err))
 
         return NextResponse.json({ message: `Player has been created with id ${user._id}` }, { status: 200 })
     } catch (err: unknown) {

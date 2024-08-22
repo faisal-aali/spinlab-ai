@@ -3,17 +3,30 @@
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import axios from 'axios'
-import { CircularProgress, IconButton, Tab, Tabs } from '@mui/material';
+import { Checkbox, CircularProgress, IconButton, Tab, Tabs } from '@mui/material';
 import AddPromocodeModal from '../AddPromocodeModal/AddPromocodeModal';
 import { Delete } from '@mui/icons-material';
 import DeletePromocodeModal from '../DeletePromocodeModal/DeletePromocodeModal';
+import { useApp } from '@/components/Context/AppContext';
 
 
-const Promocode = ({ promocode, setDeletePromo }) => {
+const Promocode = ({ promocode, setDeletePromo, showSnackbar, fetchData }) => {
+    const [handlingPopup, setHandlingPopup] = useState(false)
+
+    const handleShowPopup = (showPopup) => {
+        setHandlingPopup(true)
+        axios.patch('/api/promocodes/' + promocode._id, { showPopup })
+            .then(() => {
+                showSnackbar('Promo code has been updated!', 'success')
+                fetchData()
+            }).catch(err => {
+                showSnackbar(err?.response?.data?.message || err?.message || 'Unexpected error occured', 'error')
+            }).finally(() => setHandlingPopup(false))
+    }
 
     return (
-        <div className="blueBackground p-4 primary-border rounded-lg flex items-center justify-between gap-4">
-            <div className="flex flex-col gap-4">
+        <div className="blueBackground w-full md:w-fit p-4 primary-border rounded-lg flex items-start justify-between gap-4">
+            <div className="flex w-full flex-col gap-4">
                 <div className='flex justify-between gap-4'>
                     <p className="text-lg font-bold text-primary md:text-2xl font-normal">
                         {promocode.code}
@@ -31,12 +44,17 @@ const Promocode = ({ promocode, setDeletePromo }) => {
                 <div className='flex flex-col gap-1'>
                     <div>
                         <p className="text-sm md:text-lg font-normal">
-                            Type: {promocode.type === 'purchase' && 'Credits Purchase'}
+                            Type: {promocode.type === 'purchase_discount' && 'Credits Purchase Discount' || promocode.type === 'free_credits' && 'Free Credits'}
                         </p>
                     </div>
-                    <div>
-                        <p className="text-sm md:text-lg font-normal">
+                    <div className={`${promocode.type !== 'purchase_discount' && 'hidden'}`}>
+                        <p className={`text-sm md:text-lg font-normal`}>
                             Discount: {promocode.discountPercentage}%
+                        </p>
+                    </div>
+                    <div className={`${promocode.type !== 'free_credits' && 'hidden'}`}>
+                        <p className={`text-sm md:text-lg font-normal`}>
+                            Credits: {promocode.claimCredits}
                         </p>
                     </div>
                     <div>
@@ -49,6 +67,14 @@ const Promocode = ({ promocode, setDeletePromo }) => {
                             Expires On: {new Date(promocode.expirationDate).toLocaleDateString()}
                         </p>
                     </div>
+                    <div className={`flex gap-2 items-center ${(promocode.products.length >= promocode.uses || new Date(promocode.expirationDate).getTime() < new Date().getTime()) && 'hidden'}`}>
+                        <div>
+                            <Checkbox disabled={handlingPopup} checked={promocode.showPopup} sx={{ width: 20, color: 'white' }} onChange={(e) => handleShowPopup(e.target.checked)} />
+                        </div>
+                        <div>
+                            <label htmlFor="" className={handlingPopup && 'opacity-45'}>Show in Popup</label>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -57,6 +83,7 @@ const Promocode = ({ promocode, setDeletePromo }) => {
 
 export default function Promocodes() {
 
+    const { showSnackbar } = useApp()
     const [tabIndex, setTabIndex] = useState(0)
     const [searchQuery, setSearchQuery] = useState('')
     const [showAddModal, setShowAddModal] = useState(false)
@@ -162,10 +189,10 @@ export default function Promocodes() {
                     </div>
                 </div>
             </div>
-            <div className='flex flex-col md:flex-row mt-4 gap-4'>
+            <div className='flex flex-row flex-wrap mt-4 gap-4'>
                 {!filteredPromocodes ? <CircularProgress /> :
                     filteredPromocodes.length === 0 ? <p>No promo codes available</p> :
-                        filteredPromocodes.map(promocode => <Promocode promocode={promocode} setDeletePromo={setDeletePromo} />)}
+                        filteredPromocodes.map(promocode => <Promocode promocode={promocode} setDeletePromo={setDeletePromo} showSnackbar={showSnackbar} fetchData={fetchData} />)}
             </div>
             <AddPromocodeModal open={showAddModal} onClose={() => setShowAddModal(false)} onSuccess={fetchData} />
             <DeletePromocodeModal open={deletePromo ? true : false} onClose={() => setDeletePromo()} promocodeId={deletePromo} onSuccess={fetchData} />

@@ -7,7 +7,7 @@ import Cookies from "js-cookie";
 import { FiLogOut } from "react-icons/fi";
 import { IoNotificationsOutline } from "react-icons/io5";
 import HeaderProfile from "../Common/HeaderProfile/HeaderProfile";
-import CouponCodePopup from './CouponCodePopup';
+import PromoCodesPopup from './PromoCodesPopup';
 import {
   Box,
   Button,
@@ -564,7 +564,7 @@ const Layout = ({ children }) => {
         />
       </Snackbar>
       {showUpdateEmailModal && <UpdateEmailModal open={showUpdateEmailModal} onClose={() => setShowUpdateEmailModal(false)} isVerification={user.emailVerified ? false : true} />}
-      <CouponCodePopup open={false} onClose={() => { }} />
+      <PromoCodesPopup />
     </div>
   );
 };

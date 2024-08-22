@@ -30,10 +30,11 @@ export async function POST(req: NextRequest) {
 
         var discount = 0;
         if (promocodeId) {
-            const promocode = await Promocode.findOne({ _id: promocodeId })
-            if (!promocode) return NextResponse.json({ message: "Invalid promo code provided" }, { status: 400 });
-            if (new Date(promocode.expirationDate).getTime() < new Date().getTime()) return NextResponse.json({ message: "Promo code has expired" }, { status: 400 });
+            const promocode = await Promocode.findOne({ _id: promocodeId, isDeleted: false })
+            if (!promocode || promocode.type !== 'purchase_discount') return NextResponse.json({ message: "Invalid promo code provided" }, { status: 400 });
             const purchases = await Purchase.find({ promocodeId: promocode._id })
+            if (purchases.some((purchase) => purchase.userId.toString() === session.user._id.toString())) return NextResponse.json({ message: "You have already claimed that promo code" }, { status: 400 });
+            if (new Date(promocode.expirationDate).getTime() < new Date().getTime()) return NextResponse.json({ message: "Promo code has expired" }, { status: 400 });
             if (purchases.length >= promocode.uses) return NextResponse.json({ message: "Promo code has reached usage limit" }, { status: 400 });
             discount = promocode.discountPercentage / 100
         }
@@ -43,7 +44,7 @@ export async function POST(req: NextRequest) {
         else customer = await updateCustomer({ user, paymentMethodId })
 
         const paymentIntent = await stripe.paymentIntents.create({
-            amount: (credits * _package.amountPerCredit) * (1 - discount), // Amount in cents
+            amount: Math.round((credits * _package.amountPerCredit) * (1 - discount)), // Amount in cents
             currency: 'usd',
             payment_method: paymentMethodId,
             automatic_payment_methods: {

@@ -160,7 +160,7 @@ const Sidebar = ({ showSidebar, setShowSidebar }) => {
     },
     {
       url: '/promo-codes',
-      icon: '/assets/setting-icon.svg',
+      icon: '/assets/promo-codes.svg',
       label: 'Promo Codes',
       roles: ['admin'],
       needVerification: true

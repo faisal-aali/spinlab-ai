@@ -48,10 +48,29 @@ function convertVimeoUrlToEmbed(url: string) {
     return `https://player.vimeo.com/video/${id || hash}?h=${hash}`
 }
 
+function convertMsToRelativeTime(ms: number) {
+    const pluralize = (value: number, unit: string) => `${value} ${unit}${value !== 1 ? 's' : ''}`;
+
+    const days = Math.floor(ms / (24 * 60 * 60 * 1000));
+    ms %= 24 * 60 * 60 * 1000;
+
+    const hours = Math.floor(ms / (60 * 60 * 1000));
+    ms %= 60 * 60 * 1000;
+
+    const minutes = Math.floor(ms / (60 * 1000));
+
+    const dayStr = days > 0 ? pluralize(days, 'day') : '';
+    const hourStr = hours > 0 ? pluralize(hours, 'hour') : '';
+    const minuteStr = minutes > 0 ? pluralize(minutes, 'minute') : '';
+
+    return [dayStr, hourStr, minuteStr].filter(Boolean).join(', ');
+}
+
 export {
     convertCmToFeetAndInches,
     convertFeetAndInchesToCm,
     generateYoutubeEmbedUrl,
     convertDoBToAge,
-    convertVimeoUrlToEmbed
+    convertVimeoUrlToEmbed,
+    convertMsToRelativeTime
 }

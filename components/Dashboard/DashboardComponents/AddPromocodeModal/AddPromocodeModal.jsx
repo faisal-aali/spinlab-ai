@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
-import { Modal, Box, IconButton, MenuItem, TextField, Checkbox } from "@mui/material";
-import { Close as CloseIcon } from "@mui/icons-material";
+import { Modal, Box, IconButton, MenuItem, TextField, Checkbox, Tooltip } from "@mui/material";
+import { Close as CloseIcon, Info } from "@mui/icons-material";
 import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import axios from 'axios';
@@ -23,9 +23,18 @@ const style = {
 const validationSchema = Yup.object({
   code: Yup.string().required("Code is required"),
   description: Yup.string().required("Description is required"),
-  discountPercentage: Yup.number().min(1, 'Discount % must be greater than 0').max(100, 'Discount % must be less than 101').required("Discount % is required").strict(),
+  discountPercentage: Yup.number().min(1, 'Discount % must be greater than 0').max(100, 'Discount % must be less than 101').strict().when('type', {
+    is: 'purchase_discount',
+    then: schema => schema.required('Discount % is required'),
+    otherwise: schema => schema.optional(),
+  }),
+  claimCredits: Yup.number().min(1, 'Credits must be greater than 0').optional().strict().when('type', {
+    is: 'free_credits',
+    then: schema => schema.required('Credits is required'),
+    otherwise: schema => schema.optional(),
+  }),
   uses: Yup.number().min(1, 'Uses must be greater than 0').required("Uses is required").strict(),
-  type: Yup.string().oneOf(['purchase'], 'Invalid type provided').required("Type is required"),
+  type: Yup.string().oneOf(['purchase_discount', 'free_credits'], 'Invalid type provided').required("Type is required"),
   productId: Yup.string().optional(),
   expirationDate: Yup.date().required('Date is required'),
 });
@@ -49,7 +58,11 @@ const AddPromocodeModal = ({ open, onClose, onSuccess }) => {
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
       setSubmitting(true)
-      await axios.post("/api/promocodes", values);
+      await axios.post("/api/promocodes", {
+        ...values,
+        discountPercentage: (values.type === 'purchase_discount' && values.discountPercentage) || null,
+        claimCredits: (values.type === 'free_credits' && values.claimCredits) || null,
+      });
       showSnackbar('Promo code has been added', 'success');
       onSuccess && onSuccess()
       onClose();
@@ -77,8 +90,9 @@ const AddPromocodeModal = ({ open, onClose, onSuccess }) => {
             code: "",
             description: "",
             discountPercentage: "",
+            claimCredits: "",
             uses: "",
-            type: "",
+            type: "purchase_discount",
             productId: "",
             expirationDate: "",
           }}
@@ -104,8 +118,13 @@ const AddPromocodeModal = ({ open, onClose, onSuccess }) => {
                   />
                 </div>
                 <div className="grid col-span-2 gap-2">
-                  <div className="opacity-45">
+                  <div className="flex opacity-45 gap-2 items-center">
                     <label htmlFor="description">Description</label>
+                    <Tooltip title="This description will be displayed on popup (if enabled)" sx={{ backgroundColor: 'red' }}>
+                      <IconButton disableRipple sx={{ color: 'white', width: 20, height: 20 }}>
+                        <Info />
+                      </IconButton>
+                    </Tooltip>
                   </div>
                   <Field
                     name="description"
@@ -133,7 +152,7 @@ const AddPromocodeModal = ({ open, onClose, onSuccess }) => {
                       }`}
                   />
                 </div>
-                <div className="grid gap-2">
+                <div className={`grid gap-2 ${values.type !== 'purchase_discount' && 'hidden'}`}>
                   <div className="opacity-45">
                     <label htmlFor="discountPercentage">Discount</label>
                   </div>
@@ -153,6 +172,21 @@ const AddPromocodeModal = ({ open, onClose, onSuccess }) => {
                     </div>
                   </div>
                 </div>
+                <div className={`grid gap-2 ${values.type !== 'free_credits' && 'hidden'}`}>
+                  <div className="opacity-45">
+                    <label htmlFor="claimCredits">Credits</label>
+                  </div>
+                  <Field
+                    name="claimCredits"
+                    as="input"
+                    type="number"
+                    className={`w-full bg-transparent px-3 rounded-lg py-3 text-primary rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
+                      ${errors.claimCredits && touched.claimCredits
+                        ? "border-red-900 border"
+                        : "primary-border focus:border-green-500"
+                      }`}
+                  />
+                </div>
                 <div className="grid gap-2">
                   <div className="opacity-45">
                     <label htmlFor="type">Product Type</label>
@@ -166,7 +200,10 @@ const AddPromocodeModal = ({ open, onClose, onSuccess }) => {
                     onChange={(e) => setFieldValue('type', e.target.value)}
                     InputProps={{ style: { height: 50 } }}
                   >
-                    {[{ name: 'Credits Purchase', value: 'purchase' }].map((obj) => (
+                    {[
+                      { name: 'Credits Purchase Discount', value: 'purchase_discount' },
+                      { name: 'Claim Free Credits', value: 'free_credits' }
+                    ].map((obj) => (
                       <MenuItem key={obj.value} value={obj.value}>
                         {obj.name}
                       </MenuItem>
@@ -202,7 +239,7 @@ const AddPromocodeModal = ({ open, onClose, onSuccess }) => {
           )}
         </Formik>
       </Box>
-    </Modal>
+    </Modal >
   );
 };
 
