@@ -141,6 +141,7 @@ const AccountSettings = () => {
     return new Promise((resolve, reject) => {
       values.name = `${values.firstName} ${values.lastName}`.trim();
       values.height = convertFeetAndInchesToCm(values.heightFt, values.heightIn) || null;
+      if (values.dob) values.dob = new Date(values.dob);
       const data = {}
       Object.keys(values).forEach(key => {
         data[key] = values[key] || (typeof values[key] === 'boolean' ? values[key] : null)
@@ -192,7 +193,7 @@ const AccountSettings = () => {
             bio: user.bio || "",
             city: user.city || "",
             country: user.country || "",
-            dob: user.roleData?.dob || "",
+            dob: (user.roleData?.dob && new Date(user.roleData.dob).toISOString().split('T')[0]) || "2000-12-12",
             heightFt: convertCmToFeetAndInches(user.roleData?.height).feet,
             heightIn: convertCmToFeetAndInches(user.roleData?.height).inches,
             handedness: user.roleData?.handedness || "",

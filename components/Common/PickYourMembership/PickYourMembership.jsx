@@ -42,11 +42,10 @@ const PickYourMembership = ({ plan, role, onBack, onSubmit }) => {
                             <div
                                 key={index}
                                 className={`relative p-4 flex flex-col items-center text-center cursor-pointer blueBackground rounded-lg ${selectedPackage === _package._id ? "hover-shadow-dark" : "hover-shadow-light"
-                                    } ${user?.subscription?.packageId === _package._id ? "opacity-50 cursor-not-allowed" : ""}`}
+                                    } ${user?.subscription?.status === 'active' && user?.subscription?.packageId === _package._id ? "opacity-50 cursor-not-allowed" : ""}`}
                                 onClick={() => {
-                                    if (user?.subscription?.packageId !== _package._id) {
-                                        setSelectedPackage(_package._id);
-                                    }
+                                    if (user?.subscription?.status === 'active' && user?.subscription?.packageId === _package._id) return
+                                    setSelectedPackage(_package._id);
                                 }}
                             >
                                 {selectedPackage === _package._id && (

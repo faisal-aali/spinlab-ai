@@ -29,8 +29,11 @@ const style = {
 };
 
 const PromoCodesPopup = () => {
+    const popupExpiration = localStorage.getItem('popupExpiration') || new Date().getTime()
+    if (popupExpiration <= new Date().getTime()) localStorage.setItem('popupExpiration', new Date().getTime() + 86400000)
+
     const { user } = useApp()
-    const [open, setOpen] = useState(true)
+    const [open, setOpen] = useState(popupExpiration <= new Date().getTime() ? true : false)
     const [promocodes, setPromocodes] = useState()
 
     useEffect(() => {

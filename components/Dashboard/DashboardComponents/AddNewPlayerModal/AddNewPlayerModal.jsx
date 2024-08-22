@@ -112,7 +112,7 @@ const AddNewPlayerModal = ({ open, onClose, onSuccess }) => {
           height: convertFeetAndInchesToCm(values.heightFt, values.heightIn),
           weight: values.weight,
           handedness: values.handedness,
-          dob: values.dob,
+          dob: new Date(values.dob),
           avatarUrl: imageUrl,
         };
 
