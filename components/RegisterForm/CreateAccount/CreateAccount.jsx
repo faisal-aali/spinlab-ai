@@ -221,7 +221,7 @@ const CreateAccount = ({ nextStep, values }) => {
                   variant="outlined"
                   select
                   label="Handedness"
-                  value={values.handedness || ''}
+                  value={values.handedness}
                   onChange={(e) =>
                     setFieldValue("handedness", e.target.value)
                   }
