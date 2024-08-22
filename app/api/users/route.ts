@@ -13,7 +13,6 @@ import axios from 'axios'
 import _3Motion from "@/app/lib/3motion";
 
 export async function GET(req: NextRequest) {
-    await Video.deleteMany({ taskType: 'hit' })
     const { searchParams } = new URL(req.url);
     const id = searchParams.get('id')
     const role = searchParams.get('role')

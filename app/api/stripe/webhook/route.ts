@@ -1,11 +1,8 @@
-import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
-import { authOption } from "../../auth/[...nextauth]/route";
-import { Package, Subscription, User } from "@/app/lib/models";
-import { createCustomer, handlePaymentSuccess, handleSubscriptionCancel, handleSubscriptionSuccess, updateCustomer } from "@/app/lib/stripe";
+import { Subscription, User } from "@/app/lib/models";
+import { handlePaymentSuccess, handleSubscriptionCancel, handleSubscriptionSuccess, updateCustomer } from "@/app/lib/stripe";
 import { validateError } from "@/app/lib/functions";
-import { IPackage } from "@/app/lib/interfaces/package";
 import { headers } from "next/headers";
 import { PostSubscriptionUpdate } from "@/app/lib/zapier";
 
@@ -35,6 +32,12 @@ export async function POST(req: NextRequest) {
                 }
                 if (!subscription || typeof subscription === 'string') return NextResponse.json({ message: 'Invalid request' }, { status: 400 })
                 await handleSubscriptionSuccess({ subscription })
+
+                // POST to Zapier
+                User.findOne({ stripeCustomerId: subscription.customer }).then(user => {
+                    if (user) PostSubscriptionUpdate(user._id.toString()).catch(err => console.error('[Zapier] FATAL ERROR:', err))
+                })
+
                 break;
             case 'customer.subscription.updated':
                 console.log('subscription updated')
@@ -47,6 +50,7 @@ export async function POST(req: NextRequest) {
                     status: updatedSubscription.status
                 })
 
+                // POST to Zapier
                 Subscription.findOne({ stripeSubscriptionId: updatedSubscription.id }).then(subscription => {
                     if (subscription) PostSubscriptionUpdate(subscription.userId).catch(err => console.error('[Zapier] FATAL ERROR:', err))
                 }).catch(console.error)
@@ -63,7 +67,7 @@ export async function POST(req: NextRequest) {
                 await handleSubscriptionCancel({ userId: dbSubscription.userId })
                 break;
             case 'payment_intent.succeeded':
-                console.log('payement succeed')
+                console.log('payment succeed')
                 const paymentIntent = event.data.object;
                 if (paymentIntent.metadata.userId)
                     handlePaymentSuccess({ paymentIntent });
