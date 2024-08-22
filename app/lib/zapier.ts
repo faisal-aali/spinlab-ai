@@ -45,7 +45,7 @@ async function PostAccountCreation(userId: string) {
     return new Promise(async (resolve, reject) => {
         try {
             const user = await getUserObject(userId)
-            console.log('sending data', user)
+            console.log('[Zapier] PostAccountCreation', user)
             axios.post(ZAPIER_WEBHOOK_ACCOUNT_CREATION, user).then(() => resolve({ message: 'Success' })).catch(reject)
         } catch (err) {
             reject(err)
@@ -57,7 +57,7 @@ async function PostSubscriptionUpdate(userId: string) {
     return new Promise(async (resolve, reject) => {
         try {
             const user = await getUserObject(userId)
-            console.log('sending data', user)
+            console.log('[Zapier] PostSubscriptionUpdate', user)
             axios.post(ZAPIER_WEBHOOK_SUBSCRIPTION_UPDATE, user).then(() => resolve({ message: 'Success' })).catch(reject)
         } catch (err) {
             reject(err)

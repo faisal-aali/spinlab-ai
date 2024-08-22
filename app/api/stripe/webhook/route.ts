@@ -47,7 +47,8 @@ export async function POST(req: NextRequest) {
                 await Subscription.updateOne({
                     stripeSubscriptionId: updatedSubscription.id
                 }, {
-                    status: updatedSubscription.status
+                    status: updatedSubscription.status,
+                    lastUpdated: new Date()
                 })
 
                 // POST to Zapier
@@ -65,6 +66,10 @@ export async function POST(req: NextRequest) {
                 if (!dbSubscription) return NextResponse.json({ message: 'Invalid request' }, { status: 400 })
 
                 await handleSubscriptionCancel({ userId: dbSubscription.userId })
+
+                // POST to Zapier
+                PostSubscriptionUpdate(dbSubscription.userId).catch(err => console.error('[Zapier] FATAL ERROR:', err))
+
                 break;
             case 'payment_intent.succeeded':
                 console.log('payment succeed')
