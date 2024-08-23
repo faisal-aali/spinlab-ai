@@ -26,8 +26,9 @@ export async function GET(req: NextRequest) {
 
         for (const drill of drills) {
             if (!drill.isFree)
-                if (!subscription || subscription.status !== 'active')
-                    drill.videoLink = ''
+                if (['player', 'trainer'].includes(session.user.role))
+                    if (!subscription || subscription.status !== 'active')
+                        drill.videoLink = ''
         }
 
         return NextResponse.json(drills)
