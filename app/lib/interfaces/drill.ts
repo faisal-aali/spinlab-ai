@@ -8,4 +8,5 @@ export interface IDrill {
     description: string,
     isFree: boolean,
     creationDate: Date,
+    thumbnailUrl?: string
 }

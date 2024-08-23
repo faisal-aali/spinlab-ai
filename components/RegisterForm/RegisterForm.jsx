@@ -1,13 +1,9 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import SelectRole from "../../components/RegisterForm/SelectRole/SelectRole";
-import EmailConfirmed from "../../components/RegisterForm/EmailConfirmed/EmailConfirmed";
-import PickPlan from "../../components/RegisterForm/PickPlan/PickPlan";
 import CreateAccount from "../../components/RegisterForm/CreateAccount/CreateAccount";
 import OpenDashboard from "../../components/RegisterForm/OpenDashboard/OpenDashboard";
-import StripeAccount from "../../components/RegisterForm/StripeAccount/StripeAccount";
 import { useRouter, useSearchParams } from "next/navigation";
-import PickYourPlan from "../Common/PickYourPlan/PickYourPlan";
 import PickYourMembership from "../Common/PickYourMembership/PickYourMembership";
 import PaymentForm from "../Common/PaymentForm/PaymentForm";
 import { useSession } from "next-auth/react";
@@ -110,7 +106,7 @@ const RegisterForm = () => {
           </div>
         )} */}
         {step === 2 && (
-          <div className="bg-transparent max-w-[90rem] px-6">
+          <div className="bg-transparent max-w-[90rem] p-6 border primary-border rounded-lg">
             <PickYourMembership
               plan={values.plan}
               role={values.role}

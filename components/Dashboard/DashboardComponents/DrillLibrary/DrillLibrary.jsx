@@ -27,7 +27,6 @@ const DrillLibrary = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [videos, setVideos] = useState([]);
-  const [allVideos, setAllVideos] = useState([]);
   const [categories, setCategories] = useState([]);
   const [selectedVideoId, setSelectedVideoId] = useState(null);
   const [selectedVideoData, setSelectedVideoData] = useState(null);
@@ -45,18 +44,8 @@ const DrillLibrary = () => {
 
       setCategories(categoryList);
 
-      const videoResponse = await axios.get("/api/drills");
-      videoResponse.data = videoResponse.data.filter((video) =>
-        video.isFree
-          ? true
-          : ["player", "trainer"].includes(user?.role)
-            ? user?.subscription?.status === "active"
-              ? true
-              : false
-            : true
-      );
-      setAllVideos(videoResponse.data);
-      setVideos(videoResponse.data);
+      const videosResponse = await axios.get("/api/drills");
+      setVideos(videosResponse.data);
     } catch (error) {
       console.error("Error fetching categories and videos", error);
     } finally {
@@ -65,21 +54,8 @@ const DrillLibrary = () => {
   };
 
   useEffect(() => {
-    if (user) {
-      fetchCategoriesAndVideos();
-    }
-  }, [user]);
-
-  useEffect(() => {
-    if (selectedCategory === "all") {
-      setVideos(allVideos);
-    } else {
-      const filteredVideos = allVideos.filter(
-        (video) => video.categoryId === selectedCategory
-      );
-      setVideos(filteredVideos);
-    }
-  }, [selectedCategory, allVideos]);
+    fetchCategoriesAndVideos();
+  }, []);
 
   const handleCategoryChange = (event, newValue) => {
     setSelectedCategory(newValue);
@@ -90,7 +66,7 @@ const DrillLibrary = () => {
   };
 
   const handleEditClick = (videoId) => {
-    const video = allVideos.find((v) => v._id === videoId);
+    const video = videos.find((v) => v._id === videoId);
     setSelectedVideoId(videoId);
     setSelectedVideoData(video);
     setShowEditModal(true);
@@ -101,7 +77,9 @@ const DrillLibrary = () => {
     setShowDeleteModal(true);
   };
 
-  const filteredVideos = videos.filter((video) => {
+  const filteredVideos = videos.filter((v) =>
+    selectedCategory && selectedCategory !== 'all' ? v.categoryId === selectedCategory : true
+  ).filter((video) => {
     const searchLower = searchQuery.toLowerCase();
     const title = video.title ? video.title.toLowerCase() : "";
     const description = video.description ? video.description.toLowerCase() : "";

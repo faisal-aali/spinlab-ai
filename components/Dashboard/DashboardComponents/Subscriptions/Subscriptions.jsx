@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import PickYourPlan from '../../../Common/PickYourPlan/PickYourPlan';
 import PickYourMembership from '../../../Common/PickYourMembership/PickYourMembership';
 import PaymentForm from "@/components/Common/PaymentForm/PaymentForm";
 import axios from 'axios';
@@ -114,33 +113,24 @@ const Subscriptions = () => {
             </div>
           )}
           {step === 2 && (
-            <PickYourPlan
-              onSubmit={(plan) => {
-                setPlan(plan);
+            <PickYourMembership
+              role={user.role}
+              excludeFree={true}
+              onSubmit={(_package) => {
+                setPackage(_package);
                 setStep(3);
               }}
             />
           )}
           {step === 3 && (
-            <PickYourMembership
-              plan={plan}
-              role={user.role}
-              onSubmit={(_package) => {
-                setPackage(_package);
-                setStep(4);
-              }}
-              onBack={() => setStep(2)}
-            />
-          )}
-          {step === 4 && (
             <PaymentForm
-              onBack={() => setStep(3)}
-              onPaymentSuccess={() => setStep(5)}
+              onBack={() => setStep(2)}
+              onPaymentSuccess={() => setStep(4)}
               _package={_package}
               type="subscription"
             />
           )}
-          {step === 5 && (
+          {step === 4 && (
             <div className="text-center p-8 rounded-lg mx-auto">
               <div className="flex flex-col justify-center items-center h-full">
                 <img
@@ -149,7 +139,7 @@ const Subscriptions = () => {
                   className="w-24 h-24 mb-4"
                 />
                 <h2 className="text-white text-3xl mt-2 mb-4 font-semibold capitalize">
-                  Your {plan} plan has been activated!
+                  Your {_package.plan} plan has been activated!
                 </h2>
                 <button
                   variant="contained"

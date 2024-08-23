@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Category, Drill, User } from "@/app/lib/models";
+import { Category, Drill, Subscription, User } from "@/app/lib/models";
 import * as Yup from 'yup'
 import { validateError } from "@/app/lib/functions";
 import { authOption } from "../auth/[...nextauth]/route";
 import { getServerSession } from "next-auth";
+import axios from 'axios'
+
+const thumbnails: Record<string, string> = {}
 
 export async function GET(req: NextRequest) {
     try {
@@ -17,8 +20,25 @@ export async function GET(req: NextRequest) {
 
         if (id) query._id = id;
 
-        const drill = await Drill.find(query)
-        return NextResponse.json(drill)
+        const drills = await Drill.find(query)
+
+        const subscription = await Subscription.findOne({ userId: session.user._id })
+
+        for (const drill of drills) {
+            if (drill.isFree) {
+                if (!subscription || subscription.status !== 'active') {
+                    drill.videoLink = 'REDACTED'
+                }
+                if (drill.videoLink.match('vimeo')) {
+                    if (!thumbnails[drill._id])
+                        thumbnails[drill._id] = await axios.get(`https://vimeo.com/api/oembed.json?url=${drill.videoLink}`).then(res => res.data.thumbnail_url).catch(console.error)
+                    drill.thumbnailUrl = thumbnails[drill._id]
+                }
+                console.log('drill thumbnailurl', drill.thumbnailUrl)
+            }
+        }
+
+        return NextResponse.json(drills)
     } catch (err: unknown) {
         console.error(err)
         const obj = validateError(err)
