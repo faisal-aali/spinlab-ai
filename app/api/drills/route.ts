@@ -25,17 +25,9 @@ export async function GET(req: NextRequest) {
         const subscription = await Subscription.findOne({ userId: session.user._id })
 
         for (const drill of drills) {
-            if (drill.isFree) {
-                if (!subscription || subscription.status !== 'active') {
-                    drill.videoLink = 'REDACTED'
-                }
-                if (drill.videoLink.match('vimeo')) {
-                    if (!thumbnails[drill._id])
-                        thumbnails[drill._id] = await axios.get(`https://vimeo.com/api/oembed.json?url=${drill.videoLink}`).then(res => res.data.thumbnail_url).catch(console.error)
-                    drill.thumbnailUrl = thumbnails[drill._id]
-                }
-                console.log('drill thumbnailurl', drill.thumbnailUrl)
-            }
+            if (!drill.isFree)
+                if (!subscription || subscription.status !== 'active')
+                    drill.videoLink = ''
         }
 
         return NextResponse.json(drills)
@@ -67,6 +59,16 @@ export async function POST(req: NextRequest) {
         const category = await Category.findOne({ _id: data.categoryId })
         if (!category) return NextResponse.json({ message: 'Invalid category Id' }, { status: 400 });
 
+        var thumbnailUrl = null;
+        if (data.videoLink.match('vimeo')) {
+            thumbnailUrl = await axios.get(`https://vimeo.com/api/oembed.json?url=${data.videoLink}`)
+                .then(res => res.data.thumbnail_url)
+                .catch(err => {
+                    console.error(err)
+                    return null
+                })
+        }
+
         // const user = await User.findOne({ _id: data.userId })
         // if (!user) return NextResponse.json({ message: 'Invalid user Id' }, { status: 400 });
 
@@ -77,6 +79,7 @@ export async function POST(req: NextRequest) {
             title: data.title,
             description: data.description,
             isFree: data.isFree,
+            thumbnailUrl: thumbnailUrl
         })
 
         return NextResponse.json({ message: `Drill has been created with id ${drill._id}` }, { status: 200 })

@@ -41,6 +41,7 @@ const drillSchema = new mongoose.Schema({
     title: { type: String, required: true, },
     description: { type: String, required: true, },
     isFree: { type: Boolean, required: true },
+    thumbnailUrl: { type: String, required: false, default: null },
     creationDate: { type: Date, required: false, default: () => new Date().toISOString() },
 });
 
