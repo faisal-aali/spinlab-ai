@@ -189,13 +189,37 @@ const DrillLibrary = () => {
                       className="relative"
                     >
                       <CardMedia
-                        component="iframe"
+                        component={video.videoLink ? "iframe":"img"}
                         height={268}
-                        src={video.videoLink.match('vimeo') ? convertVimeoUrlToEmbed(video.videoLink) : video.videoLink}
+                        src={
+                          video.videoLink ? (video.videoLink.match('vimeo')
+                              ? convertVimeoUrlToEmbed(video.videoLink)
+                              : video.videoLink)
+                            : video.thumbnailUrl
+                        }
                         title={video.title}
-                        className="rounded-lg"
+                        className="rounded-lg "
                         allowFullScreen
+                        style={{
+                          filter: !video.videoLink ? "blur(5px)" : "none", 
+                          position: "relative",
+                        }}
                       />
+                       {!video.videoLink && (
+                      <div
+                        className="absolute inset-0 flex items-center justify-center"
+                        style={{
+                          backgroundColor: "rgba(0, 0, 0, 0.5)", 
+                          borderRadius: "10px", 
+                        }}
+                      >
+                        <img
+                          src="/assets/lock-icon.png" 
+                          alt="Locked"
+                          className="h-12 w-12"
+                        />
+                      </div>
+                    )}
                       <CardContent className="pl-1 pt-2">
                         <Grid container gap={1} justifyContent={'space-between'}>
                           <Grid item container flexDirection={'column'} xs={true}>
