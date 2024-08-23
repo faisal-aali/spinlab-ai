@@ -6,13 +6,20 @@ import PickPlan from "../../components/RegisterForm/PickPlan/PickPlan";
 import CreateAccount from "../../components/RegisterForm/CreateAccount/CreateAccount";
 import OpenDashboard from "../../components/RegisterForm/OpenDashboard/OpenDashboard";
 import StripeAccount from "../../components/RegisterForm/StripeAccount/StripeAccount";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import PickYourPlan from "../Common/PickYourPlan/PickYourPlan";
 import PickYourMembership from "../Common/PickYourMembership/PickYourMembership";
 import PaymentForm from "../Common/PaymentForm/PaymentForm";
+import { useSession } from "next-auth/react";
 
 const RegisterForm = () => {
+  const router = useRouter()
   const searchParams = useSearchParams()
+  const userSession = useSession().data?.user || {};
+
+  useEffect(() => {
+    if (userSession.role) router.replace("/dashboard");
+  }, [userSession]);
 
   const [step, setStep] = useState(1);
   const [values, setValues] = useState({
