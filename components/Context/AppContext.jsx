@@ -21,7 +21,9 @@ const AppProvider = ({ children }) => {
     });
 
     useEffect(() => {
-        fetchUser()
+        console.log('appcontext userSession', userSession)
+        if (!userSession.role) setUser(null)
+        else fetchUser()
     }, [userSession])
 
     const fetchUser = (callback) => {

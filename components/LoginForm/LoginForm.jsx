@@ -39,21 +39,6 @@ const LoginForm = () => {
       console.error('Error while continuing via google', err)
       setError("Error occured. Please try again");
     })
-
-    // if (!result.error) {
-    //   let userSession = await getSession().then(data => data?.user).catch(console.error)
-    //   if (userSession) {
-    //     if (!userSession.role) {
-    //       return router.push(`/register?${new URLSearchParams(userSession).toString()}`)
-    //     }
-    //     localStorage.setItem('userRole', userSession.role)
-    //   } else {
-    //     return setError("Error occured. Please try again");
-    //   }
-    //   router.push('/dashboard')
-    // } else {
-    //   setError("Error occured. Please try again");
-    // }
   }
 
   const handleSubmit = async (e) => {
@@ -69,14 +54,6 @@ const LoginForm = () => {
     })
 
     if (!result.error) {
-      let userSession = await getSession().then(data => data?.user).catch(console.error)
-      if (userSession) {
-        localStorage.setItem('userRole', userSession.role)
-      }
-      else {
-        return setError("Error occured. Please try again");
-      }
-      // router.push(searchParams.get('callbackUrl') || '/dashboard')
       router.push('/dashboard')
     } else {
       setError(result.status === 401 ? "Invalid email or password" : result.error);
@@ -112,7 +89,7 @@ const LoginForm = () => {
                 onChange={(e) =>
                   setUser((prevUser) => ({
                     ...prevUser,
-                    email: e.target.value.trim(), 
+                    email: e.target.value.trim(),
                   }))
                 }
                 onKeyDown={(e) => {

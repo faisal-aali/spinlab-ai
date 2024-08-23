@@ -29,22 +29,25 @@ const style = {
 };
 
 const PromoCodesPopup = () => {
-    const popupExpiration = localStorage.getItem('popupExpiration') || new Date().getTime()
-    if (popupExpiration <= new Date().getTime()) localStorage.setItem('popupExpiration', new Date().getTime() + 86400000)
-
     const { user } = useApp()
-    const [open, setOpen] = useState(popupExpiration <= new Date().getTime() ? true : false)
+    const [open, setOpen] = useState(false)
     const [promocodes, setPromocodes] = useState()
 
     useEffect(() => {
         fetchData()
+
+        const popupExpiration = localStorage.getItem('popupExpiration')
+        if (!popupExpiration || popupExpiration < new Date().getTime()) setOpen(true)
     }, [])
 
     const fetchData = () => {
         axios.get('/api/promocodes/popup').then(res => setPromocodes(res.data)).catch(console.error)
     }
 
-    const onClose = () => setOpen(false)
+    const onClose = () => {
+        localStorage.setItem('popupExpiration', new Date().getTime() + 86400000)
+        setOpen(false)
+    }
 
     return (
         user && ['player', 'trainer'].includes(user.role) && promocodes && promocodes.length > 0 &&
