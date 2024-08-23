@@ -10,42 +10,27 @@ import { signIn, signOut } from "next-auth/react";
 import { useApp } from '../../Context/AppContext';
 
 
-const accountSchema = Yup.object().shape({
-  firstName: Yup.string()
-    .matches(
-      /^(?=.*[a-zA-Z])[a-zA-Z0-9\s]*$/,
-      "First name must contain at least one letter and can only contain letters and numbers"
-    )
-    .required("First name is required"),
-  lastName: Yup.string()
-    .matches(
-      /^(?=.*[a-zA-Z])[a-zA-Z0-9\s]*$/,
-      "Last name must contain at least one letter and can only contain letters and numbers"
-    )
-    .required("Last name is required"),
-  city: Yup.string()
-    .matches(/^[a-zA-Z\s]*$/, "City must contain only alphabets")
-    .required("City is required"),
+const playerAccountSchema = Yup.object().shape({
+  firstName: Yup.string().matches(/^(?=.*[a-zA-Z])[a-zA-Z0-9\s]*$/, "First name must contain at least one letter and can only contain letters and numbers").required("First name is required"),
+  lastName: Yup.string().matches(/^(?=.*[a-zA-Z])[a-zA-Z0-9\s]*$/, "Last name must contain at least one letter and can only contain letters and numbers").required("Last name is required"),
+  city: Yup.string().matches(/^[a-zA-Z\s]*$/, "City must contain only alphabets").required("City is required"),
   country: Yup.string().required("Country is required"),
-  heightFt: Yup.number()
-    .required("Height (ft) is required")
-    .typeError("Height (ft) must be a number"),
-  heightIn: Yup.number()
-    .max(11, "Height (in) must be between 0 and 11 inches")
-    .required("Height (in) is required")
-    .typeError("Height (in) must be a number"),
-  handedness: Yup.string()
-    .required("Handedness is required"),
-  weight: Yup.number()
-    .required("Weight is required")
-    .typeError("Weight must be a number"),
-  password: Yup.string()
-    .min(8, "Password must be at least 8 characters long")
-    .required("Password is required"),
-  confirmPassword: Yup.string()
-    .oneOf([Yup.ref("password"), null], "Passwords must match")
-    .required("Confirm password is required"),
+  heightFt: Yup.number().required("Height (ft) is required"),
+  heightIn: Yup.number().max(11, "Height (in) must be between 0 and 11 inches").required("Height (in) is required"),
+  handedness: Yup.string().required("Handedness is required"),
+  weight: Yup.number().required("Weight is required"),
+  password: Yup.string().min(8, "Password must be at least 8 characters long").required("Password is required"),
+  confirmPassword: Yup.string().oneOf([Yup.ref("password"), null], "Passwords must match").required("Confirm password is required"),
   dob: Yup.date().max(new Date(), 'DoB cannot be in the future').required('Date of Birth is required')
+});
+
+const trainerAccountSchema = Yup.object().shape({
+  firstName: Yup.string().matches(/^(?=.*[a-zA-Z])[a-zA-Z0-9\s]*$/, "First name must contain at least one letter and can only contain letters and numbers").required("First name is required"),
+  lastName: Yup.string().matches(/^(?=.*[a-zA-Z])[a-zA-Z0-9\s]*$/, "Last name must contain at least one letter and can only contain letters and numbers").required("Last name is required"),
+  city: Yup.string().matches(/^[a-zA-Z\s]*$/, "City must contain only alphabets").required("City is required"),
+  country: Yup.string().required("Country is required"),
+  password: Yup.string().min(8, "Password must be at least 8 characters long").required("Password is required"),
+  confirmPassword: Yup.string().oneOf([Yup.ref("password"), null], "Passwords must match").required("Confirm password is required"),
 });
 
 const CreateAccount = ({ nextStep, values }) => {
@@ -58,6 +43,7 @@ const CreateAccount = ({ nextStep, values }) => {
     return new Promise((resolve, reject) => {
       if (!values) reject('Invalid request')
       const heightInCm = convertFeetAndInchesToCm(values.heightFt, values.heightIn);
+      if (values.dob) values.dob = new Date(values.dob);
 
       axios.post(values.role === 'player' ? "/api/players" : values.role === 'trainer' ? "/api/trainers" : "invalid_role", {
         ...values,
@@ -77,7 +63,7 @@ const CreateAccount = ({ nextStep, values }) => {
   return (
     <Formik
       initialValues={values}
-      validationSchema={accountSchema}
+      validationSchema={values.role === 'player' ? playerAccountSchema : trainerAccountSchema}
       onSubmit={(values, { setSubmitting }) => {
         if (!agree) {
           setSubmitting(false)
@@ -137,7 +123,7 @@ const CreateAccount = ({ nextStep, values }) => {
                   <div className="text-red-500 text-sm">{errors.city}</div>
                 ) : null}
               </div>
-              <div>
+              <div className={`${values.role !== 'player' && 'hidden'}`}>
                 <Field
                   type="date"
                   name="dob"
@@ -149,6 +135,7 @@ const CreateAccount = ({ nextStep, values }) => {
               </div>
               <div className="">
                 <Autocomplete
+                  autoFocus={false}
                   options={countries}
                   getOptionLabel={(option) => option}
                   onChange={(event, value) => setFieldValue("country", value)}
@@ -177,56 +164,57 @@ const CreateAccount = ({ nextStep, values }) => {
                   <div className="text-red-500 text-sm">{errors.country}</div>
                 ) : null}
               </div>
-              <div className={`flex gap-6 ${values.role !== 'player' && 'hidden'}`}>
-                <div className="w-1/2 relative">
-                  <div className="flex gap-2">
-                    <div className="relative">
-                      <Field
-                        placeholder='Height'
-                        name="heightFt"
-                        type="number"
-                        className={`py-3 px-3 bg-transparent rounded-lg w-full text-white focus:outline-none placeholder:opacity-45 ${errors.heightFt && touched.heightFt
-                          ? "border-red-900	border"
-                          : "primary-border focus:border-green-500"
-                          }`}
-                      />
-                      <div className="absolute bottom-3 right-4 opacity-50 text-white">
-                        ft
+              {values.role === 'player' &&
+                <div className={`flex gap-6`}>
+                  <div className="w-1/2 relative">
+                    <div className="flex gap-2">
+                      <div className="relative">
+                        <Field
+                          placeholder='Height'
+                          name="heightFt"
+                          type="number"
+                          className={`py-3 px-3 bg-transparent rounded-lg w-full text-white focus:outline-none placeholder:opacity-45 ${errors.heightFt && touched.heightFt
+                            ? "border-red-900	border"
+                            : "primary-border focus:border-green-500"
+                            }`}
+                        />
+                        <div className="absolute bottom-3 right-4 opacity-50 text-white">
+                          ft
+                        </div>
                       </div>
-                    </div>
-                    <div className="relative">
-                      <Field
-                        placeholder='Height'
-                        name="heightIn"
-                        type="number"
-                        className={`py-3 px-3 bg-transparent rounded-lg  w-full text-white focus:outline-none placeholder:opacity-45 ${errors.heightIn && touched.heightIn
-                          ? "border-red-900	border"
-                          : "primary-border focus:border-green-500"
-                          }`}
-                      />
-                      <div className="absolute bottom-3 right-4 opacity-50 text-white">
-                        in
+                      <div className="relative">
+                        <Field
+                          placeholder='Height'
+                          name="heightIn"
+                          type="number"
+                          className={`py-3 px-3 bg-transparent rounded-lg  w-full text-white focus:outline-none placeholder:opacity-45 ${errors.heightIn && touched.heightIn
+                            ? "border-red-900	border"
+                            : "primary-border focus:border-green-500"
+                            }`}
+                        />
+                        <div className="absolute bottom-3 right-4 opacity-50 text-white">
+                          in
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-                <div className="w-1/2 relative">
-                  <Field
-                    className={`w-full bg-transparent px-3 rounded-lg py-3 text-white rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
+                  <div className="w-1/2 relative">
+                    <Field
+                      className={`w-full bg-transparent px-3 rounded-lg py-3 text-white rounded focus:outline-none focus:border-green-500 placeholder:opacity-45
                     ${errors.weight && touched.weight
-                        ? "border-red-900	border"
-                        : "primary-border focus:border-green-500"
-                      }`}
-                    type="number"
-                    name="weight"
-                    placeholder='Weight'
-                    required
-                  />
-                  <div className="absolute bottom-3 right-4 opacity-50 text-white">
-                    lbs
+                          ? "border-red-900	border"
+                          : "primary-border focus:border-green-500"
+                        }`}
+                      type="number"
+                      name="weight"
+                      placeholder='Weight'
+                      required
+                    />
+                    <div className="absolute bottom-3 right-4 opacity-50 text-white">
+                      lbs
+                    </div>
                   </div>
-                </div>
-              </div>
+                </div>}
               <div className={`${values.role !== 'player' && 'hidden'}`}>
                 <TextField
                   error={Boolean(errors.handedness && touched.handedness)}

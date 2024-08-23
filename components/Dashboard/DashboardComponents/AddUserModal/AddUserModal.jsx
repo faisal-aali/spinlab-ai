@@ -95,7 +95,7 @@ const AddUserModal = ({ open, onClose, role, onSuccess }) => {
         height: convertFeetAndInchesToCm(values.heightFt, values.heightIn),
         weight: values.weight,
         handedness: values.handedness,
-        dob: values.dob,
+        dob: new Date(values.dob),
         avatarUrl: imageUrl,
       };
 
