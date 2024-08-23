@@ -197,7 +197,7 @@ export default function Metrics(props) {
 
     const KPIs = [{
         text: 'Arm Speed',
-        value: `${player?.metrics?.stats?.metrics.hand_speed || 0} m/s`,
+        value: `${player?.metrics?.stats?.metrics.hand_speed || 0} mph`,
         icon: '/assets/metrics/arm-speed.svg'
     }, {
         text: 'Kinematic Sequence Score',
