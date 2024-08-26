@@ -13,7 +13,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Spin Lab AI",
-  description: "A Generative ai tool"
+  description: "A Generative ai tool",
 };
 
 export default async function RootLayout({
@@ -25,15 +25,11 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <head>
-        <link rel="icon" href="/assets/favicon.ico" type="image/x-icon" />
-      </head>
       <AppRouterCacheProvider>
         <AuthProvider session={session}>
           <ThemeProvider theme={theme}>
             <AppProvider>
               <body className={inter.className}>{children}</body>
-
             </AppProvider>
           </ThemeProvider>
         </AuthProvider>
