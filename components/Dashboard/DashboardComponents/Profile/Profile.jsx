@@ -4,6 +4,7 @@ import { useApp } from "@/components/Context/AppContext";
 import { CircularProgress } from "@mui/material";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { formatLocation } from "@/util/utils";
 
 const ProfilePage = () => {
   const { user } = useApp()
@@ -45,11 +46,11 @@ const ProfilePage = () => {
               <p className="text-base mb-2 pb-4 pt-2 border-b border-solid primary-border-color font-bold	">
                 Email: <span className="font-normal">{user.email}</span>
               </p>
-              {/* <p className="text-base mb-2 pb-4 pt-2 border-b border-solid primary-border-color font-bold	">
+              {/* <p className="text-base mb-2 pb-4 pt-2 border-b border-solid primary-border-color font-bold	">  
                 Date of Birth: <span className="text-primary">05/03/2004</span>
               </p> */}
               <p className={`text-base mb-2 pb-4 pt-2 border-b border-solid primary-border-color font-bold `}>
-                Location: <span className="text-primary">{`${user.city || ''}${user.city && user.country ? ',' : ''} ${user.country || ''}`.trim() || "N/A"}</span>
+                Location: <span className="text-primary capitalize">{formatLocation(user.city, user.state, user.country)}</span>
               </p>
               {/* <p className={`text-base mb-2 pb-4 pt-2 border-b border-solid primary-border-color font-bold ${user.role === 'admin' && 'hidden'}`}>
                 Complete Calls (Monthly): <span className="text-primary">40</span>

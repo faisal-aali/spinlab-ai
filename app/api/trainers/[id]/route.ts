@@ -27,6 +27,7 @@ export async function POST(req: NextRequest) {
             name: Yup.string().matches(/^[A-Za-z\s]+$/, 'Name should only contain alphabets').max(40, 'Name must not be bigger than 40 characters').optional(),
             bio: Yup.string().optional().nullable(),
             city: Yup.string().optional().nullable(),
+            state: Yup.string().optional().nullable(),
             country: Yup.string().optional().nullable(),
         });
 
@@ -38,6 +39,7 @@ export async function POST(req: NextRequest) {
         user.name = (data.name || user.name);
         user.bio = (data.bio === null ? null : data.bio || user.bio);
         user.city = (data.city === null ? null : data.city || user.city);
+        user.state = (data.state === null ? null : data.state || user.state);
         user.country = (data.country === null ? null : data.country || user.country);
 
         await user.save()

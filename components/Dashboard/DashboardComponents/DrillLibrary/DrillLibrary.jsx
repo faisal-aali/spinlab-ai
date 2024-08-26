@@ -15,6 +15,7 @@ import YouTubeIcon from "@mui/icons-material/YouTube";
 import AddVideoModal from "../AddVideoModal/AddVideoModal";
 import EditVideoModal from "../EditVideoModal/EditVideoModal";
 import DeleteVideoModal from "../DeleteVideoModal/DeleteVideoModal";
+import PayToWatchDialog from "../../../Common/PayToWatchDialog/PayToWatchDialog";
 import { useSession } from "next-auth/react";
 import { useApp } from "@/components/Context/AppContext";
 import { convertVimeoUrlToEmbed } from "@/util/utils";
@@ -31,6 +32,7 @@ const DrillLibrary = () => {
   const [selectedVideoId, setSelectedVideoId] = useState(null);
   const [selectedVideoData, setSelectedVideoData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const fetchCategoriesAndVideos = async () => {
     setLoading(true);
@@ -75,6 +77,14 @@ const DrillLibrary = () => {
   const handleDeleteClick = (videoId) => {
     setSelectedVideoId(videoId);
     setShowDeleteModal(true);
+  };
+
+  const handleOpenPayModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
   };
 
   const filteredVideos = videos.filter((v) =>
@@ -207,11 +217,12 @@ const DrillLibrary = () => {
                       />
                        {!video.videoLink && (
                       <div
-                        className="absolute inset-0 flex items-center justify-center"
+                        className="absolute inset-0 flex items-center justify-center cursor-pointer	"
                         style={{
                           backgroundColor: "rgba(0, 0, 0, 0.5)", 
                           borderRadius: "10px", 
                         }}
+                        onClick={handleOpenPayModal}
                       >
                         <img
                           src="/assets/lock-icon.png" 
@@ -269,6 +280,7 @@ const DrillLibrary = () => {
           )}
         </div>
       </div>
+      
       {showAddModal && (
         <AddVideoModal
           open={showAddModal}
@@ -296,6 +308,9 @@ const DrillLibrary = () => {
           onSuccess={fetchCategoriesAndVideos}
         />
       )}
+      <PayToWatchDialog  
+      open={isModalOpen}
+      onClose={handleCloseModal}/>
     </>
   );
 };

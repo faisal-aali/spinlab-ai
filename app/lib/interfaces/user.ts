@@ -21,6 +21,7 @@ export interface IUser {
     email: string,
     password: string,
     city: string | null,
+    state: string | null,
     country: string | null,
     avatarUrl: string | null,
     bio: string | null,

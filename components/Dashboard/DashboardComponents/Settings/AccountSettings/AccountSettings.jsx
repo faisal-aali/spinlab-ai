@@ -168,6 +168,7 @@ const AccountSettings = () => {
     handedness: Yup.string().optional(),
     weight: Yup.number().optional(),
     city: Yup.string().optional(),
+    state: Yup.string().optional(),
     country: Yup.string().optional(),
     anonymous: Yup.boolean().optional(),
   });
@@ -192,6 +193,7 @@ const AccountSettings = () => {
             // email: user.email,
             bio: user.bio || "",
             city: user.city || "",
+            state: user.state || "",
             country: user.country || "",
             dob: (user.roleData?.dob && new Date(user.roleData.dob).toISOString().split('T')[0]) || "2000-12-12",
             heightFt: convertCmToFeetAndInches(user.roleData?.height).feet,
@@ -371,6 +373,19 @@ const AccountSettings = () => {
                   </div>
                   <div>
                     <div className="mb-1 opacity-45">
+                      <label htmlFor="">State</label>
+                    </div>
+                    <Field
+                      name="state"
+                      className={`w-full py-3 px-3 dark-blue-background rounded-lg text-primary focus:outline-none placeholder:opacity-45 ${errors.state && touched.state
+                        ? "border-red-900	border"
+                        : "primary-border focus:border-green-500"
+                        }`}
+                      placeholder="state"
+                    />
+                  </div>
+                  <div>
+                    <div className="mb-1 opacity-45">
                       <label htmlFor="">Country</label>
                     </div>
                     <TextField variant="outlined" select value={values.country} fullWidth InputProps={{ sx: { height: '50px' } }} onChange={(e) => setFieldValue('country', e.target.value)}>
@@ -392,16 +407,6 @@ const AccountSettings = () => {
                         : "primary-border focus:border-green-500"
                         }`}
                     />
-                  </div>
-                  <div className={`${user.role !== 'player' && 'hidden'}`}>
-                    <div className="mb-1 opacity-45">
-                      <label htmlFor="">Handedness</label>
-                    </div>
-                    <TextField variant="outlined" placeholder="Select" select value={values.handedness} fullWidth InputProps={{ style: { height: 50 } }} onChange={(e) => setFieldValue('handedness', e.target.value)}>
-                      {/* <MenuItem value={''} disabled>Select</MenuItem> */}
-                      <MenuItem value={'left'}>Left</MenuItem>
-                      <MenuItem value={'right'}>Right</MenuItem>
-                    </TextField>
                   </div>
                   <div className={`flex flex-col gap-1 ${user.role !== 'player' && 'hidden'}`}>
                     <div className="opacity-45">
@@ -446,6 +451,16 @@ const AccountSettings = () => {
                       placeholder="Weight"
                     />
                     <div className="absolute bottom-3 right-4 opacity-50 text-white">lbs</div>
+                  </div>
+                  <div className={`${user.role !== 'player' && 'hidden'}`}>
+                    <div className="mb-1 opacity-45">
+                      <label htmlFor="">Handedness</label>
+                    </div>
+                    <TextField variant="outlined" placeholder="Select" select value={values.handedness} fullWidth InputProps={{ style: { height: 50 } }} onChange={(e) => setFieldValue('handedness', e.target.value)}>
+                      {/* <MenuItem value={''} disabled>Select</MenuItem> */}
+                      <MenuItem value={'left'}>Left</MenuItem>
+                      <MenuItem value={'right'}>Right</MenuItem>
+                    </TextField>
                   </div>
                   <div className={`flex flex-row col-span-2 items-center gap-2 mt-2 ${user.role !== 'player' && 'hidden'}`}>
                     <div>

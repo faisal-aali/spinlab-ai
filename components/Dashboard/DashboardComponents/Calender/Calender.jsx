@@ -33,8 +33,8 @@ export default function Calender() {
                     </div>
                 </div>
             </div>
-            <div>
-                <iframe src={calendar.src} width={600} height={300} />
+            <div className='overflow-auto'>
+                <iframe className='w-full' src={calendar.src} height={800} />
             </div>
         </div>
     )

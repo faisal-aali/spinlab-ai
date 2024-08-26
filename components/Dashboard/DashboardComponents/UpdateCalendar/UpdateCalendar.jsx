@@ -79,9 +79,9 @@ const UpdateCalendar = () => {
                         </button>
                     </div>
                 </div>
-                <div>
-                    <iframe width={600} height={300} src={calendar.src} />
-                </div>
+                <div className='overflow-auto'>
+                <iframe className='w-full' src={calendar.src} height={800} />
+            </div>
             </div>
     );
 };

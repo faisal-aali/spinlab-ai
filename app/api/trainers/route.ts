@@ -22,6 +22,7 @@ export async function POST(req: NextRequest) {
             name: Yup.string().matches(/^[A-Za-z\s]+$/, 'Name should only contain alphabets').max(40, 'Name must not be bigger than 40 characters').required("Name is required"),
             avatarUrl: Yup.string().optional(),
             city: Yup.string().optional(),
+            state: Yup.string().optional(),
             country: Yup.string().optional(),
             emailVerified: Yup.boolean().optional(),
         });
@@ -39,6 +40,7 @@ export async function POST(req: NextRequest) {
             name: data.name,
             avatarUrl: data.avatarUrl,
             city: data.city,
+            state: data.state,
             country: data.country,
             emailVerified: data.emailVerified,
             role: 'trainer',

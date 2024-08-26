@@ -14,6 +14,7 @@ const playerAccountSchema = Yup.object().shape({
   firstName: Yup.string().matches(/^(?=.*[a-zA-Z])[a-zA-Z0-9\s]*$/, "First name must contain at least one letter and can only contain letters and numbers").required("First name is required"),
   lastName: Yup.string().matches(/^(?=.*[a-zA-Z])[a-zA-Z0-9\s]*$/, "Last name must contain at least one letter and can only contain letters and numbers").required("Last name is required"),
   city: Yup.string().matches(/^[a-zA-Z\s]*$/, "City must contain only alphabets").required("City is required"),
+  state: Yup.string().matches(/^[a-zA-Z\s]*$/, "State must contain only alphabets").required("State is required"),
   country: Yup.string().required("Country is required"),
   heightFt: Yup.number().required("Height (ft) is required"),
   heightIn: Yup.number().max(11, "Height (in) must be between 0 and 11 inches").required("Height (in) is required"),
@@ -28,6 +29,7 @@ const trainerAccountSchema = Yup.object().shape({
   firstName: Yup.string().matches(/^(?=.*[a-zA-Z])[a-zA-Z0-9\s]*$/, "First name must contain at least one letter and can only contain letters and numbers").required("First name is required"),
   lastName: Yup.string().matches(/^(?=.*[a-zA-Z])[a-zA-Z0-9\s]*$/, "Last name must contain at least one letter and can only contain letters and numbers").required("Last name is required"),
   city: Yup.string().matches(/^[a-zA-Z\s]*$/, "City must contain only alphabets").required("City is required"),
+  state: Yup.string().matches(/^[a-zA-Z\s]*$/, "State must contain only alphabets").required("State is required"),
   country: Yup.string().required("Country is required"),
   password: Yup.string().min(8, "Password must be at least 8 characters long").required("Password is required"),
   confirmPassword: Yup.string().oneOf([Yup.ref("password"), null], "Passwords must match").required("Confirm password is required"),
@@ -121,6 +123,16 @@ const CreateAccount = ({ nextStep, values }) => {
                 />
                 {errors.city && touched.city ? (
                   <div className="text-red-500 text-sm">{errors.city}</div>
+                ) : null}
+              </div>
+              <div>
+                <Field
+                  name="state"
+                  className="w-full py-3 px-3 bg-transparent primary-border rounded text-white rounded-lg focus:outline-none focus:outline-none focus:border-green-500 placeholder:opacity-45"
+                  placeholder="State"
+                />
+                {errors.state && touched.state ? (
+                  <div className="text-red-500 text-sm">{errors.state}</div>
                 ) : null}
               </div>
               <div className={`${values.role !== 'player' && 'hidden'}`}>

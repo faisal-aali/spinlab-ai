@@ -25,6 +25,7 @@ export async function POST(req: NextRequest) {
             weight: Yup.number().min(40, 'Weight must be between 40lbs to 500lbs').max(500, 'Weight must be between 40lbs to 500lbs').required(),
             handedness: Yup.string().oneOf(['left', 'right']).required(),
             city: Yup.string().optional(),
+            state: Yup.string().optional(),
             country: Yup.string().optional(),
             emailVerified: Yup.boolean().optional(),
         });
@@ -46,6 +47,7 @@ export async function POST(req: NextRequest) {
             name: data.name,
             avatarUrl: data.avatarUrl,
             city: data.city,
+            state: data.state,
             country: data.country,
             emailVerified: data.emailVerified,
             role: 'player',

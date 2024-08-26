@@ -32,6 +32,7 @@ export async function POST(req: NextRequest) {
             anonymous: Yup.boolean().optional(),
             bio: Yup.string().optional().nullable(),
             city: Yup.string().optional().nullable(),
+            state: Yup.string().optional().nullable(),
             country: Yup.string().optional().nullable(),
         });
 
@@ -45,6 +46,7 @@ export async function POST(req: NextRequest) {
         user.name = (data.name || user.name);
         user.bio = (data.bio === null ? null : data.bio || user.bio);
         user.city = (data.city === null ? null : data.city || user.city);
+        user.state = (data.state === null ? null : data.state || user.state);
         user.country = (data.country === null ? null : data.country || user.country);
         user.roleData = {
             dob: (data.dob === null ? null : data.dob || user.roleData.dob),

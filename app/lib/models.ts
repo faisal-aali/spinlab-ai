@@ -23,6 +23,7 @@ const userSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     city: { type: String, required: false, default: null },
+    state: { type: String, required: false, default: null },
     country: { type: String, required: false, default: null },
     avatarUrl: { type: String, required: false, default: null },
     bio: { type: String, required: false, default: null },

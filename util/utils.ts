@@ -66,11 +66,23 @@ function convertMsToRelativeTime(ms: number) {
     return [dayStr, hourStr, minuteStr].filter(Boolean).join(', ');
 }
 
+function formatLocation(city?: string, state?: string, country?: string): string {
+    const formattedLocation = [
+        city?.trim(),    
+        state?.trim(),   
+        country?.trim()  
+    ].filter(Boolean) 
+    .join(', ');      
+
+    return formattedLocation || ""; 
+}
+
 export {
     convertCmToFeetAndInches,
     convertFeetAndInchesToCm,
     generateYoutubeEmbedUrl,
     convertDoBToAge,
     convertVimeoUrlToEmbed,
-    convertMsToRelativeTime
+    convertMsToRelativeTime,
+    formatLocation
 }
