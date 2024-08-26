@@ -41,13 +41,13 @@ const PickYourMembership = ({ role, onBack, onSubmit, excludeFree }) => {
         <p className="text-primary">1 Credit = 1 Throw</p>
       </div>
 
-      <div className="flex justify-center mb-6">
+      <div className="flex justify-center mb-6 relative">
         <Tabs
           value={selectedTab}
           onChange={(e, newValue) => setSelectedTab(newValue)}
           indicatorColor="none"
           aria-label="category tabs"
-          className={`!blueBackground py-2.5 rounded-lg w-fit px-3`}
+          className="!blueBackground py-2.5 rounded-lg w-fit px-3"
           sx={{
             backgroundColor: "#001f3f",
             ".MuiTabs-flexContainer": {
@@ -73,8 +73,12 @@ const PickYourMembership = ({ role, onBack, onSubmit, excludeFree }) => {
           }}
         >
           <Tab label="Monthly" value="monthly" />
-          <Tab label="Anually" value="yearly" />
+          <Tab label="Annually" value="yearly" />
         </Tabs>
+
+        <div className="absolute right-0 top-[-16px] button-danger text-white text-xs font-bold px-2 py-1 rounded-full">
+            5% OFF
+        </div>
       </div>
 
       {loading ? (

@@ -36,7 +36,7 @@ export default function CoachingCall() {
             </div>
             {!calendar ? <CircularProgress /> :
                 <div className='overflow-auto'>
-                    <iframe className='w-full' src={calendar.src} height={800} />
+                    <iframe className='w-full mt-[-4rem]' src={calendar.src} height={800} />
                 </div>}
         </div>
     )
