@@ -62,6 +62,7 @@ const RegisterAccount = ({ user, onClose }) => {
       password: values.password,
       name: user.name,
       city: user.city || undefined,
+      state: user.state || undefined,
       country: user.country || undefined,
       avatarUrl: user.avatarUrl || undefined,
     }).then(async () => {

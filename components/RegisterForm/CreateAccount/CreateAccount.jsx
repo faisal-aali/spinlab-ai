@@ -38,7 +38,7 @@ const trainerAccountSchema = Yup.object().shape({
 const CreateAccount = ({ nextStep, values }) => {
   const [agree, setAgree] = useState(false)
   const [error, setError] = useState('')
-  const countries = getNames();
+  const countries = getNames().sort((a, b) => a.localeCompare(b));
   const { showSnackbar } = useApp();
 
   const onSubmit = (values) => {
