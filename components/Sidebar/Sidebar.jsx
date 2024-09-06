@@ -175,11 +175,8 @@ const Sidebar = ({ showSidebar, setShowSidebar }) => {
   ];
 
   return (
-    <div className={`bg-gray-900 pt-8 h-screen overflow-auto p-4 ${showSidebar ? 'w-80' : 'w-fit'} lg:w-80 ${showSidebar ? 'pl-12' : 'pl-4'} lg:pl-12 ${showSidebar ? 'absolute' : 'unset'} lg:unset`}>
-      <div className={`${showSidebar ? 'hidden' : 'flex'} lg:hidden`} onClick={() => setShowSidebar(true)}>
-        <Menu sx={{ color: '#ffffff' }} />
-      </div>
-      <div className={`${showSidebar ? 'flex' : 'hidden'} lg:flex`}>
+    <div className={`${showSidebar ? 'bg-gray-900' : 'bg-transparent'} md:bg-gray-900 pt-8 ${showSidebar ? 'absolute' : 'hidden'} md:flex h-screen overflow-auto p-4 ${showSidebar ? 'w-80' : 'w-fit'} md:w-80 ${showSidebar ? 'pl-12' : 'pl-4'} md:pl-12 ${showSidebar ? 'absolute' : 'unset'} md:unset`}>
+      <div className={`${showSidebar ? 'flex' : 'hidden'} md:flex`}>
         <div className="w-62">
           <div className="flex items-center mb-6">
             <img src="/assets/spinlab-log.png" alt="Logo" className="w-48" />

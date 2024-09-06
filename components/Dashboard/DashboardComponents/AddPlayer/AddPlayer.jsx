@@ -101,31 +101,42 @@ const AddPlayer = () => {
 
   return (
     <div className="grid gap-4 py-8 ">
-      <div className="flex flex-col md:flex-row gap-4 justify-between">
-        <div>
-          <h3>{playersMetrics ? 'Players Metrics' : 'Added Players'}</h3>
+      <div className="flex flex-col md:flex-row gap-4 justify-between mb-4">
+        <div className="flex items-center flex-col md:flex-row gap-4 md:gap-8 w-full md:w-[83%]">
+          <div className="w-full md:w-fit">
+            <h3>{playersMetrics ? 'Players Metrics' : 'Added Players'}</h3>
+          </div>
+          <div className="search-bar w-full md:w-2/5">
+            <input
+              placeholder="Search..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-2 py-1 rounded-lg text-white h-12 search-background focus:outline-none focus:ring-1 focus:ring-green-500"
+            />
+          </div>
         </div>
-        <div className="search-bar w-full md:w-2/5">
-          <input
-            placeholder="Search..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-2 py-1 rounded-lg text-white h-12 search-background focus:outline-none focus:ring-1 focus:ring-green-500"
-          />
+        <div className={`flex justify-center`}>
+          <button
+            className="bg-primary dark-blue-color rounded w-44 h-14 flex items-center justify-center text-lg rounded-lg" onClick={() => setShowModal(true)}
+          >
+            ADD PLAYER
+          </button>
         </div>
       </div>
       <div>
         {!players ? <CircularProgress /> :
-          <Grid container gap={2}>
+          <Grid container spacing={2}>
             {filteredPlayers.map(player => (
-              <Grid item key={player.id} width={{ xs: '100%', sm: 'auto' }}>
+              <Grid item key={player.id} xs={12} sm={12} md={12} lg={6} xl={4} >
                 <PlayerCard setSelectedPlayerId={setSelectedPlayerId} setShowUploadModal={setShowUploadModal} player={player} playersMetrics={playersMetrics} />
               </Grid>
             ))}
-            <Grid item onClick={() => setShowModal(true)} className="border primary-border rounded" alignItems={'center'} justifyContent={'center'} display={playersMetrics ? 'none' : 'flex'} sx={{ ':hover': { bgcolor: green[900], cursor: 'pointer' } }} minHeight={175} width={{ xs: '100%', sm: 485 }}>
-              <IconButton>
-                <Add className="text-primary" fontSize="large" />
-              </IconButton>
+            <Grid item paddingTop={2} paddingLeft={2} xs display={'flex'} alignItems={'center'} justifyContent={'center'} >
+              <Grid item height={'100%'} width={'100%'} onClick={() => setShowModal(true)} className="border primary-border rounded" alignItems={'center'} justifyContent={'center'} display={playersMetrics ? 'none' : 'flex'} sx={{ ':hover': { bgcolor: green[900], cursor: 'pointer' } }} >
+                <IconButton>
+                  <Add className="text-primary" fontSize="large" />
+                </IconButton>
+              </Grid>
             </Grid>
           </Grid>}
       </div>

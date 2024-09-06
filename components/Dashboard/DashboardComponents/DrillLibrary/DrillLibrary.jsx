@@ -19,6 +19,7 @@ import PayToWatchDialog from "../../../Common/PayToWatchDialog/PayToWatchDialog"
 import { useSession } from "next-auth/react";
 import { useApp } from "@/components/Context/AppContext";
 import { convertVimeoUrlToEmbed } from "@/util/utils";
+import Pagination from "../../../Common/Pagination/Pagination";
 
 const DrillLibrary = () => {
   const { user } = useApp();
@@ -33,6 +34,9 @@ const DrillLibrary = () => {
   const [selectedVideoData, setSelectedVideoData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const videosPerPage = 12;
 
   const fetchCategoriesAndVideos = async () => {
     setLoading(true);
@@ -61,10 +65,12 @@ const DrillLibrary = () => {
 
   const handleCategoryChange = (event, newValue) => {
     setSelectedCategory(newValue);
+    setCurrentPage(1);
   };
 
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
+    setCurrentPage(1);
   };
 
   const handleEditClick = (videoId) => {
@@ -87,6 +93,24 @@ const DrillLibrary = () => {
     setIsModalOpen(false);
   };
 
+  const handlePageChange = (event, newPage) => {
+    setCurrentPage(newPage);
+    const container = document.querySelector(".videos-container");
+    if (container) {
+      container.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    } else {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }
+  };
+
+
+
   const filteredVideos = videos.filter((v) =>
     selectedCategory && selectedCategory !== 'all' ? v.categoryId === selectedCategory : true
   ).filter((video) => {
@@ -95,11 +119,16 @@ const DrillLibrary = () => {
     const description = video.description ? video.description.toLowerCase() : "";
 
     return title.includes(searchLower) || description.includes(searchLower);
-  }); 1
+  });
+
+  const paginatedVideos = filteredVideos.slice(
+    (currentPage - 1) * videosPerPage,
+    currentPage * videosPerPage
+  );
 
   return (
     <>
-      <div className="flex-1">
+      <div className="flex-1 videos-container">
         <div className="blueBackground p-4 primary-border rounded-lg flex items-center justify-between mb-4 h-32 w-full xl:w-3/5">
           <div className="flex gap-5 items-center">
             <div className="ml-4">
@@ -162,7 +191,7 @@ const DrillLibrary = () => {
                 />
               ))}
             </Tabs>
-            <div className="flex flex-col md:flex-row justify-end gap-[30px]">
+            <div className="flex flex-col md:flex-row w-full md:w-fit justify-end gap-[30px]">
               <div className="flex search-bar w-full md:w-[200px] 4xl:w-[580px] ">
                 <input
                   placeholder="Search..."
@@ -187,8 +216,8 @@ const DrillLibrary = () => {
             </div>
           ) : (
             <Grid container spacing={2} sx={{ marginTop: 2, overflow: "auto" }}>
-              {filteredVideos.length > 0 ? (
-                filteredVideos.map((video, index) => (
+              {paginatedVideos.length > 0 ? (
+                paginatedVideos.map((video, index) => (
                   <Grid item xs={12} sm={6} md={4} lg={4} key={index}>
                     <Card
                       sx={{
@@ -199,39 +228,39 @@ const DrillLibrary = () => {
                       className="relative"
                     >
                       <CardMedia
-                        component={video.videoLink ? "iframe":"img"}
+                        component={video.videoLink ? "iframe" : "img"}
                         height={268}
                         src={
                           video.videoLink ? (video.videoLink.match('vimeo')
-                              ? convertVimeoUrlToEmbed(video.videoLink)
-                              : video.videoLink)
+                            ? convertVimeoUrlToEmbed(video.videoLink)
+                            : video.videoLink)
                             : video.thumbnailUrl
                         }
                         title={video.title}
                         className="rounded-lg "
                         allowFullScreen
                         style={{
-                          filter: !video.videoLink ? "blur(5px)" : "none", 
+                          filter: !video.videoLink ? "blur(5px)" : "none",
                           position: "relative",
                         }}
                       />
-                       {!video.videoLink && (
-                      <div
-                        className="absolute inset-0 flex items-center justify-center cursor-pointer	"
-                        style={{
-                          backgroundColor: "rgba(0, 0, 0, 0.5)", 
-                          borderRadius: "10px", 
-                        }}
-                        onClick={handleOpenPayModal}
-                      >
-                        <img
-                          src="/assets/lock-icon.png" 
-                          alt="Locked"
-                          className="h-12 w-12"
-                        />
-                      </div>
-                    )}
-                      <CardContent className="pl-1 pt-2">
+                      {!video.videoLink && (
+                        <div
+                          className="absolute inset-0 flex items-center justify-center cursor-pointer	"
+                          style={{
+                            backgroundColor: "rgba(0, 0, 0, 0.5)",
+                            borderRadius: "10px",
+                          }}
+                          onClick={handleOpenPayModal}
+                        >
+                          <img
+                            src="/assets/lock-icon.png"
+                            alt="Locked"
+                            className="h-12 w-12"
+                          />
+                        </div>
+                      )}
+                      <CardContent className="!pl-1 md:!pl-3 !pt-2 md:!pt-4 !pr-0 !pb-0 mt-[-1.5rem] md:mt-0">
                         <Grid container gap={1} justifyContent={'space-between'}>
                           <Grid item container flexDirection={'column'} xs={true}>
                             <Grid item>
@@ -278,9 +307,15 @@ const DrillLibrary = () => {
               )}
             </Grid>
           )}
+
+          <Pagination
+            page={currentPage}
+            count={Math.ceil(filteredVideos.length / videosPerPage)}
+            onChange={handlePageChange}
+          />
         </div>
       </div>
-      
+
       {showAddModal && (
         <AddVideoModal
           open={showAddModal}
@@ -308,9 +343,9 @@ const DrillLibrary = () => {
           onSuccess={fetchCategoriesAndVideos}
         />
       )}
-      <PayToWatchDialog  
-      open={isModalOpen}
-      onClose={handleCloseModal}/>
+      <PayToWatchDialog
+        open={isModalOpen}
+        onClose={handleCloseModal} />
     </>
   );
 };

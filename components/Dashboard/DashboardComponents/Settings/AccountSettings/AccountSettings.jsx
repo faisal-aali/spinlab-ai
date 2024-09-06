@@ -472,7 +472,7 @@ const AccountSettings = () => {
                   </div>
                   {response.type === 'profile' && <div className={`flex justify-end col-span-2 ${response.severity === 'success' ? 'text-primary' : 'text-error'}`}>{response.message}</div>}
                   <div></div>
-                  <div className="flex justify-end gap-4 col-span-2">
+                  <div className="flex justify-start md:justify-end gap-4 col-span-2">
                     <button
                       type="button"
                       onClick={() => resetForm()}

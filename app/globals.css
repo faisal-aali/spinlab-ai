@@ -360,3 +360,14 @@ button[disabled] {
 .swiper-pagination {
   bottom: 0 !important;
 }
+
+
+@media (max-width: 599.95px) {
+  .mui-qnvnsl-MuiTabs-root .MuiTabs-flexContainer {
+    justify-content: start !important;
+  }
+}
+
+.videos-container {
+  overflow-y: auto;
+}

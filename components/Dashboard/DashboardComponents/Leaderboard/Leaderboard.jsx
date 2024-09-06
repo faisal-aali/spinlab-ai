@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -11,11 +11,14 @@ import {
   Box,
   Typography,
   CircularProgress,
+  Grid,
+  IconButton,
 } from "@mui/material";
 import Pagination from "../../../Common/Pagination/Pagination";
 import { useSession } from "next-auth/react";
 import axios from 'axios'
 import { convertDoBToAge } from "@/util/utils";
+import { ArrowDropDown, ExpandLess, ExpandMore } from "@mui/icons-material";
 
 const CustomLinearProgress = ({ value, color }) => {
   const progressStyle = {
@@ -47,32 +50,22 @@ const Leaderboard = () => {
 
   const userSession = useSession().data?.user || {}
   const [players, setPlayers] = useState()
+  const [showDetails, setShowDetails] = useState()
 
   useEffect(() => {
     fetchData()
   }, [])
+
+
+  useEffect(() => {
+    console.log(JSON.stringify(players))
+  }, [players])
 
   const fetchData = () => {
     axios.get('/api/users', { params: { role: 'player', includeMetrics: 1 } }).then(res => {
       setPlayers(res.data.filter(p => p.metrics.stats ? true : false).sort((a, b) => b.metrics.stats?.performance?.score3[0] - a.metrics.stats?.performance?.score3[0]).slice(0, userSession.role === 'admin' ? undefined : 20))
     }).catch(console.error)
   }
-
-  // Sample data
-  // const data = Array.from({ length: 100 }).map((_, index) => ({
-  //   id: index + 1,
-  //   name: index % 5 == 0 ? "Anonymous" : "Michael Phillips",
-  //   age: index % 5 == 0 ? '' : 20,
-  //   location: index % 5 == 0 ? '' : "Dallas Texas",
-  //   date: "04/23/2024",
-  //   armSpeed: "78 m/s",
-  //   releaseTime: "1.56 sec",
-  //   kinematicScore: 86,
-  //   accelerationScore: 86,
-  //   decelerationScore: 86,
-  //   velocityScore: 86,
-  //   overallQBRating: 80 - index
-  // })).sort((a, b) => b.overallQBRating - a.overallQBRating).slice(0, userSession.role === 'admin' ? undefined : 20);
 
   const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -106,43 +99,121 @@ const Leaderboard = () => {
                   <TableRow>
                     <TableCell className="!text-white">#</TableCell>
                     <TableCell className="!text-white">Name</TableCell>
-                    <TableCell className="!text-white">Overall QB Rating</TableCell>
-                    <TableCell className="!text-white">Arm Speed</TableCell>
-                    <TableCell className="!text-white">Release Time</TableCell>
-                    <TableCell className="!text-white">Kinematic Sequence Score</TableCell>
-                    <TableCell className="!text-white">Acceleration Score</TableCell>
-                    <TableCell className="!text-white">Deceleration Score</TableCell>
-                    <TableCell className="!text-white">Velocity Efficiency Score</TableCell>
+                    <TableCell className="!text-white" sx={{ display: { xs: 'none', sm: 'none', md: 'table-cell' } }}>Overall QB Rating</TableCell>
+                    <TableCell className="!text-white" sx={{ display: { xs: 'none', sm: 'none', md: 'table-cell' } }}>Arm Speed</TableCell>
+                    <TableCell className="!text-white" sx={{ display: { xs: 'none', sm: 'none', md: 'table-cell' } }}>Release Time</TableCell>
+                    <TableCell className="!text-white" sx={{ display: { xs: 'none', sm: 'none', md: 'table-cell' } }}>Kinematic Sequence Score</TableCell>
+                    <TableCell className="!text-white" sx={{ display: { xs: 'none', sm: 'none', md: 'table-cell' } }}>Acceleration Score</TableCell>
+                    <TableCell className="!text-white" sx={{ display: { xs: 'none', sm: 'none', md: 'table-cell' } }}>Deceleration Score</TableCell>
+                    <TableCell className="!text-white" sx={{ display: { xs: 'none', sm: 'none', md: 'table-cell' } }}>Velocity Efficiency Score</TableCell>
+                    <TableCell className="!text-white" sx={{ display: { xs: 'table-cell', sm: 'table-cell', md: 'none' } }}>Details</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody className="leaderboard-table-body">
                   {paginatedData.map((row, index) => (
-                    <TableRow key={row.id}>
-                      <TableCell className="!text-white">{index + 1}</TableCell>
-                      <TableCell className="!text-white text-base">
-                        {row.roleData.anonymous ? 'Anonymous' : row.name}
-                        <div className={`text-primary text-xs ${row.roleData.anonymous && 'hidden'}`}>
-                          {`${convertDoBToAge(row.roleData.dob) || ''} ${(row.roleData.dob && (row.city || row.country) && '|') || ''} ${`${row.city || ''}${row.city && row.country ? ',' : ''} ${row.country || ''}`.trim() || ""}`.trim()}
-                        </div>
-                      </TableCell>
-                      <TableCell className="!text-white flex-col-reverse min-w-40">
-                        <CustomLinearProgress value={row.metrics.stats.performance.score3[0]} color="#FF4500" />
-                      </TableCell>
-                      <TableCell className="!text-white min-w-24">{row.metrics.stats.metrics.hand_speed} mph</TableCell>
-                      <TableCell className="!text-white min-w-28">{row.metrics.stats.metrics.release_time} msec</TableCell>
-                      <TableCell className="!text-white min-w-48">
-                        <CustomLinearProgress value={row.metrics.stats.performance.score3[0]} color="#00FF00" />
-                      </TableCell>
-                      <TableCell className="!text-white min-w-40">
-                        <CustomLinearProgress value={row.accelerationScore} color="#00BFFF" />
-                      </TableCell>
-                      <TableCell className="!text-white min-w-40">
-                        <CustomLinearProgress value={row.decelerationScore} color="#8A2BE2" />
-                      </TableCell>
-                      <TableCell className="!text-white flex-col-reverse min-w-52">
-                        <CustomLinearProgress value={row.velocityScore} color="#FF4500" />
-                      </TableCell>
-                    </TableRow>
+                    <Fragment key={index}>
+                      <TableRow>
+                        <TableCell className="!text-white">{index + 1}</TableCell>
+                        <TableCell className="!text-white text-base">
+                          {row.roleData.anonymous ? 'Anonymous' : row.name}
+                          <div className={`text-primary text-xs ${row.roleData.anonymous && 'hidden'}`}>
+                            {`${convertDoBToAge(row.roleData.dob) || ''} ${(row.roleData.dob && (row.city || row.country) && '|') || ''} ${`${row.city || ''}${row.city && row.country ? ',' : ''} ${row.country || ''}`.trim() || ""}`.trim()}
+                          </div>
+                        </TableCell>
+                        <TableCell sx={{ display: { xs: 'none', sm: 'none', md: 'table-cell' } }} className="!text-white flex-col-reverse min-w-40" >
+                          <CustomLinearProgress value={row.metrics.stats.performance.score3[0]} color="#FF4500" />
+                        </TableCell>
+                        <TableCell sx={{ display: { xs: 'none', sm: 'none', md: 'table-cell' } }} className="!text-white min-w-24">{row.metrics.stats.metrics.hand_speed} mph</TableCell>
+                        <TableCell sx={{ display: { xs: 'none', sm: 'none', md: 'table-cell' } }} className="!text-white min-w-28">{row.metrics.stats.metrics.release_time} msec</TableCell>
+                        <TableCell sx={{ display: { xs: 'none', sm: 'none', md: 'table-cell' } }} className="!text-white min-w-48">
+                          <CustomLinearProgress value={row.metrics.stats.performance.score3[0]} color="#00FF00" />
+                        </TableCell>
+                        <TableCell sx={{ display: { xs: 'none', sm: 'none', md: 'table-cell' } }} className="!text-white min-w-40">
+                          <CustomLinearProgress value={row.accelerationScore} color="#00BFFF" />
+                        </TableCell>
+                        <TableCell sx={{ display: { xs: 'none', sm: 'none', md: 'table-cell' } }} className="!text-white min-w-40">
+                          <CustomLinearProgress value={row.decelerationScore} color="#8A2BE2" />
+                        </TableCell>
+                        <TableCell sx={{ display: { xs: 'none', sm: 'none', md: 'table-cell' } }} className="!text-white flex-col-reverse min-w-52">
+                          <CustomLinearProgress value={row.velocityScore} color="#FF4500" />
+                        </TableCell>
+                        <TableCell sx={{ display: { xs: 'table-cell', sm: 'table-cell', md: 'none' } }} className="!text-white">
+                          <IconButton onClick={() => setShowDetails(v => v === index ? null : index)}>
+                            {index === showDetails ? <ExpandLess sx={{ color: 'white' }} /> : <ExpandMore sx={{ color: 'white' }} />}
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                      <TableRow sx={{ display: showDetails === index ? { xs: 'table-row', sm: 'table-row', md: 'none' } : 'none' }}>
+                        <TableCell colSpan={3} sx={{ padding: 0 }}>
+                          <Grid container gap={2} padding={2} className="blueBackground" justifyContent={'space-between'}>
+                            <Grid item container gap={2}>
+                              <Grid item container gap={1} xs justifyContent={'space-evenly'}>
+                                <Grid item container flexDirection={'column'} xs>
+                                  <Grid item>
+                                    <Typography className="!text-sm !font-bold">Arm Speed</Typography>
+                                  </Grid>
+                                  <Grid item>
+                                    <Typography className="!text-sm">{row.metrics.stats.metrics.hand_speed} mph</Typography>
+                                  </Grid>
+                                </Grid>
+                                <Grid item container flexDirection={'column'} xs>
+                                  <Grid item>
+                                    <Typography className="!text-sm !font-bold">Release Time</Typography>
+                                  </Grid>
+                                  <Grid item>
+                                    <Typography className="!text-sm">{row.metrics.stats.metrics.release_time} msec</Typography>
+                                  </Grid>
+                                </Grid>
+                              </Grid>
+                              <Grid item container flexDirection={'column'} xs>
+                                <Grid item>
+                                  <Typography className="!text-sm !font-bold">Overall QB Rating</Typography>
+                                </Grid>
+                                <Grid item>
+                                  <CustomLinearProgress value={row.metrics.stats.performance.score3[0]} color="#FF4500" />
+                                </Grid>
+                              </Grid>
+                            </Grid>
+                            <Grid item container gap={2}>
+                              <Grid item container flexDirection={'column'} xs>
+                                <Grid item>
+                                  <Typography className="!text-sm !font-bold">Kinematic Sequence Score</Typography>
+                                </Grid>
+                                <Grid item>
+                                  <CustomLinearProgress value={row.metrics.stats.metrics.sequence_score} color="#00FF00" />
+                                </Grid>
+                              </Grid>
+                              <Grid item container flexDirection={'column'} xs>
+                                <Grid item>
+                                  <Typography className="!text-sm !font-bold">Acceleration Score</Typography>
+                                </Grid>
+                                <Grid item>
+                                  <CustomLinearProgress value={row.metrics.stats.metrics.acceleration_score} color="#00BFFF" />
+                                </Grid>
+                              </Grid>
+                            </Grid>
+                            <Grid item container gap={2}>
+                              <Grid item container flexDirection={'column'} xs>
+                                <Grid item>
+                                  <Typography className="!text-sm !font-bold">Deceleration Score</Typography>
+                                </Grid>
+                                <Grid item>
+                                  <CustomLinearProgress value={row.metrics.stats.metrics.deceleration_score} color="#8A2BE2" />
+                                </Grid>
+                              </Grid>
+                              <Grid item container flexDirection={'column'} xs>
+                                <Grid item>
+                                  <Typography className="!text-sm !font-bold">Velocity Efficiency Score</Typography>
+                                </Grid>
+                                <Grid item>
+                                  <CustomLinearProgress value={row.metrics.stats.metrics.efficiency_score} color="#FF4500" />
+                                </Grid>
+                              </Grid>
+                            </Grid>
+                          </Grid>
+                        </TableCell>
+                      </TableRow>
+                    </Fragment>
                   ))}
                 </TableBody>
               </Table>
@@ -154,7 +225,7 @@ const Leaderboard = () => {
             />
           </div>}
       </div>
-    </div>
+    </div >
   );
 };
 

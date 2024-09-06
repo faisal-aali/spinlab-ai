@@ -21,10 +21,10 @@ const PlayerProfile = ({ setGiftUserId, setShowEditModal, setShowDeleteModal, se
 
     return (
         <div>
-            <div className="flex-col lg:flex-row max-w-4xl gap-4 p-8 rounded-2xl flex items-start" style={{ background: "linear-gradient(115.84deg, #32E100 -127.95%, #090F21 66.31%)", }} >
+            <div className="flex-col lg:flex-row max-w-4xl gap-4 p-8 rounded-2xl flex items-center md:items-start" style={{ background: "linear-gradient(115.84deg, #32E100 -127.95%, #090F21 66.31%)", }} >
                 <div>
                     <img
-                        className="w-[304px] h-[180px] md:h-[429px] rounded-lg"
+                        className="w-[304px] h-auto md:h-[429px] rounded-lg"
                         src={userData.avatarUrl || "/assets/player-large.png"}
                         alt={userData.name}
                         style={{ objectFit: 'cover' }}
@@ -75,7 +75,7 @@ const PlayerProfile = ({ setGiftUserId, setShowEditModal, setShowDeleteModal, se
                     <p className="text-base mb-2 pb-4 pt-2 font-bold	">
                         Subscription Plan: <span className="text-primary">{userData.subscription.package?.name || "Free"}</span>
                     </p>
-                    <div className={`flex justify-end ${user?.role !== 'admin' && 'hidden'}`}>
+                    <div className={`flex justify-center md:justify-end ${user?.role !== 'admin' && 'hidden'}`}>
                         <button onClick={() => {
                             setGiftUserId(userData._id)
                             setShowGiftModal(true)
@@ -101,7 +101,7 @@ const TrainerProfile = ({ setGiftUserId, setShowEditModal, setShowDeleteModal, s
             <div className="flex flex-col lg:flex-row max-w-4xl gap-4 p-8 rounded-2xl items-start" style={{ background: "linear-gradient(115.84deg, #32E100 -127.95%, #090F21 66.31%)", }} >
                 <div>
                     <img
-                        className="w-[304px] h-[180px] md:h-[429px] rounded-lg"
+                        className="w-[304px] h-auto md:h-[429px] rounded-lg"
                         src={userData.avatarUrl || "/assets/player-large.png"}
                         alt={userData.name}
                         style={{ objectFit: 'cover' }}
@@ -137,7 +137,7 @@ const TrainerProfile = ({ setGiftUserId, setShowEditModal, setShowDeleteModal, s
                     <p className="text-base mb-2 pb-4 pt-2 font-bold	">
                         Subscription Plan: <span className="text-primary">{userData.subscription.package?.name || 'Free'}</span>
                     </p>
-                    <div className={`flex justify-end ${user?.role !== 'admin' && 'hidden'}`}>
+                    <div className={`flex justify-center md:justify-end ${user?.role !== 'admin' && 'hidden'}`}>
                         <button onClick={() => {
                             setGiftUserId(userData._id)
                             setShowGiftModal(true)

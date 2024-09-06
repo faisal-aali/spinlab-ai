@@ -109,8 +109,10 @@ export async function GET(req: NextRequest) {
                     try {
                         const videos = await Video.find({ userId: user._id, 'assessmentDetails.statusCode': 1 }, { assessmentDetails: { stats: { ARR: 0, ANG: 0, VEL: 0 } } })
 
-                        for (const video of videos) {
-                            if (!video.assessmentDetails.fileUrl) continue;
+                        if (videos.length === 0) {
+                            user.metrics = {}
+                        } else {
+                            let video = videos.filter(v => v.assessmentDetails?.fileUrl).reduce((max, video) => video.assessmentDetails?.stats?.performance?.score3[0] > max.assessmentDetails?.stats?.performance?.score3[0] ? video : max)
                             const url = new URL(video.assessmentDetails.fileUrl)
                             const signatureExpiry = url.searchParams.get('se')
                             console.log('signatureExpiry', signatureExpiry)
@@ -120,11 +122,9 @@ export async function GET(req: NextRequest) {
                                 video.assessmentDetails = assessmentDetails
                                 video.save().then(() => console.log('updated assessmentDetails for', video.taskId))
                             }
+                            user.metrics = video.assessmentDetails
                         }
 
-                        if (videos.length === 0) user.metrics = {}
-                        else user.metrics = videos.reduce((max, video) => video.assessmentDetails?.stats?.performance?.score3[0] > max.assessmentDetails?.stats?.performance?.score3[0] ? video : max).assessmentDetails
-                        console.log(user.metrics)
                         resolve(true)
                     } catch (err) {
                         reject(err)

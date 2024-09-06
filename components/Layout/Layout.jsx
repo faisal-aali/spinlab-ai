@@ -23,7 +23,7 @@ import {
   CircularProgress,
   Badge
 } from "@mui/material";
-import { Person, VideoCameraBack } from "@mui/icons-material";
+import { Add, Person, VideoCameraBack } from "@mui/icons-material";
 import UploadModal from "../Dashboard/DashboardComponents/UploadVideoModal/UploadModal";
 import UpdateEmailModal from "../Dashboard/DashboardComponents/UpdateEmailModal/UpdateEmailModal";
 import {
@@ -36,6 +36,7 @@ import axios from 'axios';
 import * as Yup from 'yup'
 import { Field, Form, Formik } from "formik";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import MenuIcon from "@mui/icons-material/Menu"
 
 const style = {
   position: "absolute",
@@ -475,10 +476,15 @@ const Layout = ({ children }) => {
           className={`bg-black opacity-50 absolute w-screen h-screen z-10 top-0 left-0 right-0 bottom-0`}
         ></div>
       )}
-      <div className="flex-1 px-4 py-8 md:px-8 dashboard-background w-4/5 h-screen overflow-auto">
-        <div className="flex justify-end">
-          <div className="flex justify-between items-center mb-8 right-10 top-12 ml-auto z-10">
-            <div className="flex space-x-4 items-center">
+      <div className="flex-1 px-0 py-0 md:py-8 md:px-8 dashboard-background w-4/5 h-screen overflow-auto">
+        <div className={`${showSidebar ? 'bg-transparent' : 'bg-gray-900'} md:bg-transparent flex justify-between md:justify-end align-center mb-2 md:mb-8 sticky md:relative top-0 px-4 md:px-0 py-2 md:py-0 z-10`}>
+          <div className={`${showSidebar ? 'hidden' : 'flex'} md:hidden item-center items-center`}>
+            <IconButton disableRipple onClick={() => setShowSidebar(true)} sx={{ margin: 0, padding: 0.5 }}>
+              <MenuIcon sx={{ color: '#ffffff' }} />
+            </IconButton>
+          </div>
+          <div className="flex justify-between items-center gap-2 md:gap-4">
+            <div>
               <button
                 disabled={!user.emailVerified}
                 onClick={() => setShowUploadModal(true)}
@@ -486,6 +492,8 @@ const Layout = ({ children }) => {
               >
                 UPLOAD
               </button>
+            </div>
+            <div>
               <button
                 disabled={!user.emailVerified}
                 onClick={() => router.push('/purchases')}
@@ -493,18 +501,16 @@ const Layout = ({ children }) => {
               >
                 PURCHASE
               </button>
-              <div className="flex items-center gap-4">
-                <div>
-                  <NotificationsMenu />
-                </div>
-                <div>
-                  <ProfileMenu key={"ProfileMenu"} />
-                </div>
-              </div>
+            </div>
+            <div>
+              <NotificationsMenu />
+            </div>
+            <div>
+              <ProfileMenu key={"ProfileMenu"} />
             </div>
           </div>
         </div>
-        <div className="-mt-0 lg:-mt-[65px]">
+        <div className="-mt-0 lg:-mt-[65px] px-4 md:px-0">
           {((user.role === "trainer" &&
             [
               "/dashboard",

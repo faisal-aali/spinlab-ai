@@ -56,7 +56,7 @@ const Dashboard = () => {
 
   return (
     videoSubmitted ? <VideoSubmittedScreen /> :
-      <div className="flex-1 py-8">
+      <div className="flex-1 py-4 md:py-8">
         <div className="flex flex-col bg-transparent primary-border py-16 px-8 rounded-lg text-center gap-8">
           <div>
             <h2 className="text-2xl md:text-5xl font-normal">Ready to enter the lab?</h2>

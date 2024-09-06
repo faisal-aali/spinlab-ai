@@ -94,8 +94,7 @@ export default function Recorder({ onSubmit }) {
                             <small>Audio: {recording.audioLabel}</small>
                         </div>
                         <div className={`${recording.previewRef.current?.src.startsWith('blob:') ? 'hidden' : 'visible'}`}>
-
-                            <video ref={recording.webcamRef} loop autoPlay playsInline />
+                            <video ref={recording.webcamRef} loop autoPlay playsInline style={{ maxHeight: 500 }} />
                             <div className="space-x-1 space-y-1 my-2">
                                 <Button
                                     // inverted
@@ -143,7 +142,7 @@ export default function Recorder({ onSubmit }) {
                                 }`}
                         >
                             <p>Preview</p>
-                            <video ref={recording.previewRef} autoPlay loop playsInline onLoadedMetadata={() => {
+                            <video ref={recording.previewRef} autoPlay loop playsInline style={{ maxHeight: 500 }} onLoadedMetadata={() => {
                                 if (recording.previewRef.current) {
                                     recording.previewRef.current.playbackRate = 0.5; // Set playback rate to slow-motion
                                 }

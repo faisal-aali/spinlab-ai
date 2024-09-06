@@ -77,7 +77,7 @@ const PickYourMembership = ({ role, onBack, onSubmit, excludeFree }) => {
         </Tabs>
 
         <div className="absolute right-0 top-[-16px] button-danger text-white text-xs font-bold px-2 py-1 rounded-full">
-            5% OFF
+          5% OFF
         </div>
       </div>
 
@@ -90,7 +90,7 @@ const PickYourMembership = ({ role, onBack, onSubmit, excludeFree }) => {
           {filteredPackages.map((_package, index) => (
             <div
               key={index}
-              className={`max-w-[250px] relative blueBackground flex flex-col items-center text-center cursor-pointer rounded-lg transition-all ${selectedPackage === _package._id
+              className={` max-w-full md:max-w-[250px] relative blueBackground flex flex-col items-center text-center cursor-pointer rounded-lg transition-all ${selectedPackage === _package._id
                 ? styles.selectedPlan
                 : styles.planCard
                 } ${user?.subscription?.status === "active" &&

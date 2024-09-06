@@ -1,6 +1,6 @@
 // src/components/History/History.js
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import {
     Table,
     TableBody,
@@ -13,11 +13,14 @@ import {
     Typography,
     LinearProgress,
     CircularProgress,
+    IconButton,
+    Grid,
 } from "@mui/material";
 import Pagination from '../../../Common/Pagination/Pagination'
 import axios from 'axios'
 import { useSession } from "next-auth/react";
 import VideoPlayer from "@/components/Common/VideoPlayer/VideoPlayer";
+import { ExpandLess, ExpandMore } from "@mui/icons-material";
 
 const CustomLinearProgress = ({ value, color }) => {
     return (
@@ -47,6 +50,8 @@ const PlayersHistory = (props) => {
     const [searchQuery, setSearchQuery] = useState('')
     const [players, setPlayers] = useState()
     const [videoSrc, setVideoSrc] = useState('')
+
+    const [showDetails, setShowDetails] = useState()
 
     useEffect(() => {
         fetchData()
@@ -90,48 +95,97 @@ const PlayersHistory = (props) => {
                                 <TableRow>
                                     <TableCell className="!text-white"></TableCell>
                                     <TableCell className="!text-white">Name</TableCell>
-                                    <TableCell className="!text-white">Joining Date</TableCell>
-                                    <TableCell className="!text-white">Overall QB Rating</TableCell>
-                                    <TableCell className="!text-white">Reports</TableCell>
+                                    <TableCell sx={{ display: { xs: 'none', sm: 'none', md: 'table-cell' } }} className="!text-white">Joining Date</TableCell>
+                                    <TableCell sx={{ display: { xs: 'none', sm: 'none', md: 'table-cell' } }} className="!text-white">Overall QB Rating</TableCell>
+                                    <TableCell sx={{ display: { xs: 'none', sm: 'none', md: 'table-cell' } }} className="!text-white">Reports</TableCell>
+                                    <TableCell sx={{ display: { xs: 'table-cell', sm: 'table-cell', md: 'none' } }} className="!text-white">Details</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody className="!leaderboard-table-body">
-                                {paginatedData.map((player) => (
-                                    <TableRow key={player._id}>
-                                        <TableCell className="!text-white min-w-40">
-                                            <img
-                                                src={player.avatarUrl || '/assets/player.png'}
-                                                alt={player.name}
-                                                style={{ width: 50, height: 50, objectFit: 'cover' }}
-                                            />
-                                        </TableCell>
-                                        <TableCell>
-                                            <Typography variant="body2" className="!text-white !text-lg" fontWeight={'bold'}>
-                                                {player.name}
-                                            </Typography>
-                                        </TableCell>
-                                        <TableCell>
-                                            <Typography variant="caption" className="!text-white !text-lg">
-                                                {new Date(player.creationDate).toLocaleDateString()}
-                                            </Typography>
-                                        </TableCell>
-                                        <TableCell className="!text-white min-w-60">
-                                            <CustomLinearProgress
-                                                value={player.metrics.stats?.performance.score3[0] || 0}
-                                                color="#00FF00"
-                                            />
-                                        </TableCell>
-                                        <TableCell className="!text-white min-w-60">
-                                            <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-4">
-                                                <button onClick={() => window.open(player.metrics.reportPdfUrl)} className={`bg-white text-black px-5 py-3 rounded-lg ${!player.metrics.reportPdfUrl && 'hidden'}`}>
-                                                    DOWNLOAD PDF
-                                                </button>
-                                                <button onClick={() => setVideoSrc(player.metrics.overlayVideoUrl)} className={`bg-white text-black px-5 py-3 rounded-lg ${!player.metrics.overlayVideoUrl && 'hidden'}`}>
-                                                    OVERLAY VIDEO
-                                                </button>
-                                            </div>
-                                        </TableCell>
-                                    </TableRow>
+                                {paginatedData.map((player, index) => (
+                                    <Fragment key={index}>
+                                        <TableRow>
+                                            <TableCell className="!text-white min-w-28 md:min-w-40" sx={{ minWidth: 50 }}>
+                                                <img
+                                                    src={player.avatarUrl || '/assets/player.png'}
+                                                    alt={player.name}
+                                                    style={{ width: 50, height: 50, objectFit: 'cover' }}
+                                                />
+                                            </TableCell>
+                                            <TableCell>
+                                                <Typography variant="body2" className="!text-white !text-lg" fontWeight={'bold'}>
+                                                    {player.name}
+                                                </Typography>
+                                            </TableCell>
+                                            <TableCell sx={{ display: { xs: 'none', sm: 'none', md: 'table-cell' } }}>
+                                                <Typography variant="caption" className="!text-white !text-lg">
+                                                    {new Date(player.creationDate).toLocaleDateString()}
+                                                </Typography>
+                                            </TableCell>
+                                            <TableCell sx={{ display: { xs: 'none', sm: 'none', md: 'table-cell' } }} className="!text-white min-w-60">
+                                                <CustomLinearProgress
+                                                    value={player.metrics.stats?.performance.score3[0] || 0}
+                                                    color="#00FF00"
+                                                />
+                                            </TableCell>
+                                            <TableCell sx={{ display: { xs: 'none', sm: 'none', md: 'table-cell' } }} className="!text-white min-w-60">
+                                                <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-4">
+                                                    <button onClick={() => window.open(player.metrics.reportPdfUrl)} className={`bg-white text-black px-5 py-3 rounded-lg ${!player.metrics.reportPdfUrl && 'hidden'}`}>
+                                                        DOWNLOAD PDF
+                                                    </button>
+                                                    <button onClick={() => setVideoSrc(player.metrics.overlayVideoUrl)} className={`bg-white text-black px-5 py-3 rounded-lg ${!player.metrics.overlayVideoUrl && 'hidden'}`}>
+                                                        OVERLAY VIDEO
+                                                    </button>
+                                                </div>
+                                            </TableCell>
+                                            <TableCell sx={{ display: { xs: 'table-cell', sm: 'table-cell', md: 'none' } }} className="!text-white">
+                                                <IconButton onClick={() => setShowDetails(v => v === index ? null : index)}>
+                                                    {index === showDetails ? <ExpandLess sx={{ color: 'white' }} /> : <ExpandMore sx={{ color: 'white' }} />}
+                                                </IconButton>
+                                            </TableCell>
+                                        </TableRow>
+                                        <TableRow sx={{ display: showDetails === index ? { xs: 'table-row', sm: 'table-row', md: 'none' } : 'none' }}>
+                                            <TableCell colSpan={3} sx={{ padding: 0 }}>
+                                                <Grid container gap={2} padding={2} className="blueBackground" justifyContent={'space-between'} flexDirection={'column'}>
+                                                    <Grid item container gap={1} justifyContent={'space-evenly'}>
+                                                        <Grid item container flexDirection={'column'} xs>
+                                                            <Grid item>
+                                                                <Typography className="!text-sm !font-bold">Joining Date</Typography>
+                                                            </Grid>
+                                                            <Grid item>
+                                                                <Typography variant="caption" className="!text-white !text-lg">
+                                                                    {new Date(player.creationDate).toLocaleDateString()}
+                                                                </Typography>
+                                                            </Grid>
+                                                        </Grid>
+                                                        <Grid item container flexDirection={'column'} xs>
+                                                            <Grid item>
+                                                                <Typography className="!text-sm !font-bold">Overall QB Rating</Typography>
+                                                            </Grid>
+                                                            <Grid item>
+                                                                <CustomLinearProgress
+                                                                    value={player.metrics.stats?.performance.score3[0] || 0}
+                                                                    color="#00FF00"
+                                                                />
+                                                            </Grid>
+                                                        </Grid>
+                                                    </Grid>
+                                                    <Grid item container gap={1} justifyContent={'space-evenly'}>
+                                                        <Grid item flexDirection={'column'} xs>
+                                                            <button onClick={() => window.open(player.metrics.reportPdfUrl)} className={`bg-white w-full text-black text-sm px-5 py-3 rounded-lg ${!player.metrics.reportPdfUrl && 'hidden'}`}>
+                                                                DOWNLOAD PDF
+                                                            </button>
+                                                        </Grid>
+                                                        <Grid item flexDirection={'column'} xs>
+                                                            <button onClick={() => setVideoSrc(player.metrics.overlayVideoUrl)} className={`bg-white w-full text-black text-sm px-5 py-3 rounded-lg ${!player.metrics.overlayVideoUrl && 'hidden'}`}>
+                                                                OVERLAY VIDEO
+                                                            </button>
+                                                        </Grid>
+                                                    </Grid>
+                                                </Grid>
+                                            </TableCell>
+                                        </TableRow>
+                                    </Fragment>
                                 ))}
                             </TableBody>
                         </Table>

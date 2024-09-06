@@ -161,9 +161,17 @@ const EfficiencyGraph = ({ videos }) => {
             y: {
                 beginAtZero: true,
                 min: 0,
-                max: 100,
+                max: 110,
+                ticks: {
+                    callback: function (value) {
+                        if (value === 110) {
+                            return ''; // Hide the value 50 on the y-axis
+                        }
+                        return value; // Show all other values
+                    },
+                },
             }
-        }
+        },
     };
 
     return (
