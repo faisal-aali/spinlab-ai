@@ -14,7 +14,7 @@ import axios from "axios";
 import { useApp } from "@/components/Context/AppContext";
 import Recorder from './Recorder'
 import { useRouter } from "next/navigation";
-
+import SlowMotionCamera from './SlowMotionCamera'
 
 const style = {
   position: "absolute",
@@ -323,12 +323,19 @@ const UploadModal = ({ open, onClose, onSuccess, type, playerId }) => {
                     Upload Video
                   </button> */}
                         <button
-                          className="bg-primary text-black rounded w-36 h-8 flex items-center justify-center text-base uppercase hover-button-shadow"
+                          className="bg-primary text-black block md:block rounded w-36 h-8 flex items-center justify-center text-base uppercase hover-button-shadow"
                           onClick={() => setRecordVideo(true)}
                         >
                           Record Now
                         </button>
+                        {/* <input
+                          className="block md:hidden"
+                          capture='environment'
+                          type='file'
+                          accept='image/*,video/*'
+                        /> */}
                       </div>
+                      {/* <SlowMotionCamera /> */}
                     </div>
                   </div>}
                 {recordVideo && <Recorder onSubmit={(blob) => {
