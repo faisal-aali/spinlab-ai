@@ -307,12 +307,13 @@ const DrillLibrary = () => {
               )}
             </Grid>
           )}
-
-          <Pagination
-            page={currentPage}
-            count={Math.ceil(filteredVideos.length / videosPerPage)}
-            onChange={handlePageChange}
-          />
+          <div className="mt-4 mb-4">
+            <Pagination
+              page={currentPage}
+              count={Math.ceil(filteredVideos.length / videosPerPage)}
+              onChange={handlePageChange}
+            />
+          </div>
         </div>
       </div>
 
