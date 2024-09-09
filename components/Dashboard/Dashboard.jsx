@@ -72,7 +72,7 @@ const Dashboard = () => {
             >
               UPLOAD VIDEO
             </button>
-            <button
+            {/* <button
               className="bg-primary text-black rounded w-36 h-8 flex items-center justify-center text-base hover-button-shadow"
               onClick={() => {
                 setUploadType('record')
@@ -81,7 +81,7 @@ const Dashboard = () => {
               style={{ display: user.role === 'player' ? 'block' : 'none' }}
             >
               RECORD VIDEO
-            </button>
+            </button> */}
             <button
               className="bg-primary text-black rounded w-48 h-8 flex items-center justify-center text-base ml-4 hover-button-shadow"
               style={{ display: user.role === 'trainer' ? 'block' : 'none' }}

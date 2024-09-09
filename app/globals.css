@@ -363,7 +363,7 @@ button[disabled] {
 
 
 @media (max-width: 599.95px) {
-  .mui-qnvnsl-MuiTabs-root .MuiTabs-flexContainer {
+  .MuiTabs-flexContainer {
     justify-content: start !important;
   }
 }
