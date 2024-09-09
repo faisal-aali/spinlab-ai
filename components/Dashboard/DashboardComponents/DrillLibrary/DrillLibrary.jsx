@@ -307,7 +307,7 @@ const DrillLibrary = () => {
               )}
             </Grid>
           )}
-          <div className="mt-4 mb-4">
+          <div className="mt-8 mb-8">
             <Pagination
               page={currentPage}
               count={Math.ceil(filteredVideos.length / videosPerPage)}
