@@ -75,12 +75,12 @@ async function PostVideoUpload(videoId: string) {
             if (qbScore === undefined) return reject({ message: 'Unable to determine qbScore' })
             const user = await getUserObject(video.userId)
             const data = {
-                ...video,
                 qbScore,
+                ...video.toObject(),
                 user
             }
             console.log('[Zapier] PostVideoUpload', data)
-            axios.post(ZAPIER_WEBHOOK_SUBSCRIPTION_UPDATE, data).then(() => resolve({ message: 'Success' })).catch(reject)
+            axios.post(ZAPIER_WEBHOOK_VIDEO_UPLOAD, data).then(() => resolve({ message: 'Success' })).catch(reject)
         } catch (err) {
             reject(err)
         }
