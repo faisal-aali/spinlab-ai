@@ -1,3 +1,6 @@
+const defaultValues = {
+    supportedVideoExtensions: ['ogm', 'wmv', 'mpg', 'webm', 'ogv', 'mov', 'asx', 'mpeg', 'mp4', 'm4v', 'avi']
+}
 
 const convertCmToFeetAndInches = (cm: number) => {
     if (!cm) return { feet: "", inches: "", string: "N/A" };
@@ -68,13 +71,21 @@ function convertMsToRelativeTime(ms: number) {
 
 function formatLocation(city?: string, state?: string, country?: string): string {
     const formattedLocation = [
-        city?.trim(),    
-        state?.trim(),   
-        country?.trim()  
-    ].filter(Boolean) 
-    .join(', ');      
+        city?.trim(),
+        state?.trim(),
+        country?.trim()
+    ].filter(Boolean)
+        .join(', ');
 
-    return formattedLocation || ""; 
+    return formattedLocation || "";
+}
+
+function getFileExtension(fileName: string) {
+    const parts = fileName.split('.');
+    if (parts && parts.length > 1) {
+        return parts.pop()?.toLowerCase();  // Get the extension and convert to lowercase
+    }
+    return '';  // Return empty string if there's no extension
 }
 
 export {
@@ -84,5 +95,7 @@ export {
     convertDoBToAge,
     convertVimeoUrlToEmbed,
     convertMsToRelativeTime,
-    formatLocation
+    formatLocation,
+    getFileExtension,
+    defaultValues
 }

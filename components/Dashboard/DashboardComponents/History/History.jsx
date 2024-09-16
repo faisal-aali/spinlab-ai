@@ -112,7 +112,7 @@ const History = (props) => {
                   </TableHead>
                   <TableBody className="leaderboard-table-body">
                     {paginatedData.map((row, index) => {
-                      const qbRating = row.assessmentDetails?.stats?.performance?.score3[0]
+                      const qbRating = row.assessmentDetails?.stats?.metrics?.overall_score
                       const fileUrl = row.assessmentDetails?.fileUrl
                       const pdfUrl = row.assessmentDetails?.reportPdfUrl
                       const overlayVideoUrl = row.assessmentDetails?.overlayVideoUrl

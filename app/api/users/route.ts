@@ -112,7 +112,7 @@ export async function GET(req: NextRequest) {
                         if (videos.length === 0) {
                             user.metrics = {}
                         } else {
-                            let video = videos.filter(v => v.assessmentDetails?.fileUrl).reduce((max, video) => video.assessmentDetails?.stats?.performance?.score3[0] > max.assessmentDetails?.stats?.performance?.score3[0] ? video : max)
+                            let video = videos.filter(v => v.assessmentDetails?.fileUrl).reduce((max, video) => video.assessmentDetails?.stats?.metrics?.overall_score > max.assessmentDetails?.stats?.metrics?.overall_score ? video : max)
                             const url = new URL(video.assessmentDetails.fileUrl)
                             const signatureExpiry = url.searchParams.get('se')
                             console.log('signatureExpiry', signatureExpiry)

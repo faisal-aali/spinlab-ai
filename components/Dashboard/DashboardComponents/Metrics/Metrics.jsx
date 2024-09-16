@@ -123,7 +123,7 @@ const EfficiencyGraph = ({ videos }) => {
             },
             {
                 label: 'Deceleration Score',
-                data: 0,
+                data: _videos.map(video => video.assessmentDetails.stats.metrics.deceleration_score),
                 fill: false,
                 borderColor: '#AD00FF',
                 tension: 0.1,
@@ -132,7 +132,7 @@ const EfficiencyGraph = ({ videos }) => {
             },
             {
                 label: 'Velocity Efficiency Score',
-                data: 0,
+                data: _videos.map(video => video.assessmentDetails.stats.metrics.efficiency_score),
                 fill: false,
                 borderColor: '#F52323',
                 tension: 0.1,
@@ -214,7 +214,7 @@ export default function Metrics(props) {
         color: '#32E100'
     }, {
         text: 'Acceleration Score',
-        percentage: player?.metrics?.stats?.metrics.acceleration_sequence_score || 0,
+        percentage: player?.metrics?.stats?.metrics.acceleration_score || 0,
         icon: '/assets/metrics/acceleration.svg',
         color: '#00B2FF'
     }, {
@@ -224,19 +224,19 @@ export default function Metrics(props) {
         color: '#D9D9D9'
     }, {
         text: 'Deceleration Score',
-        percentage: 0,
+        percentage: player?.metrics?.stats?.metrics.deceleration_score || 0,
         icon: '/assets/metrics/deceleration.svg',
         color: '#AD00FF'
     }, {
         text: 'Velocity Efficiency Score',
-        percentage: 0,
+        percentage: player?.metrics?.stats?.metrics.efficiency_score || 0,
         icon: '/assets/metrics/efficiency.svg',
         color: '#F52323'
     },]
 
     return (
         loading ? <CircularProgress /> :
-            <div className="flex flex-col gap-6 mt-14">
+            <div className="flex flex-col gap-6 mt-20">
                 {user.role === 'trainer' &&
                     <div>
                         <IconButton className="!border !primary-border-parrot !rounded" onClick={() => router.replace('/players-metrics')}>

@@ -124,7 +124,7 @@ const PlayersHistory = (props) => {
                                             </TableCell>
                                             <TableCell sx={{ display: { xs: 'none', sm: 'none', md: 'table-cell' } }} className="!text-white min-w-60">
                                                 <CustomLinearProgress
-                                                    value={player.metrics.stats?.performance.score3[0] || 0}
+                                                    value={player.metrics.stats?.metrics?.overall_score || 0}
                                                     color="#00FF00"
                                                 />
                                             </TableCell>
@@ -164,7 +164,7 @@ const PlayersHistory = (props) => {
                                                             </Grid>
                                                             <Grid item>
                                                                 <CustomLinearProgress
-                                                                    value={player.metrics.stats?.performance.score3[0] || 0}
+                                                                    value={player.metrics.stats?.metrics?.overall_score || 0}
                                                                     color="#00FF00"
                                                                 />
                                                             </Grid>

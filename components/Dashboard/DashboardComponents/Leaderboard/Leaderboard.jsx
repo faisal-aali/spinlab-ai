@@ -63,7 +63,7 @@ const Leaderboard = () => {
 
   const fetchData = () => {
     axios.get('/api/users', { params: { role: 'player', includeMetrics: 1 } }).then(res => {
-      setPlayers(res.data.filter(p => p.metrics.stats ? true : false).sort((a, b) => b.metrics.stats?.performance?.score3[0] - a.metrics.stats?.performance?.score3[0]).slice(0, userSession.role === 'admin' ? undefined : 20))
+      setPlayers(res.data.filter(p => p.metrics.stats ? true : false).sort((a, b) => b.metrics.stats?.metrics?.overall_score - a.metrics.stats?.metrics?.overall_score).slice(0, userSession.role === 'admin' ? undefined : 20))
     }).catch(console.error)
   }
 
@@ -121,21 +121,21 @@ const Leaderboard = () => {
                           </div>
                         </TableCell>
                         <TableCell sx={{ display: { xs: 'none', sm: 'none', md: 'table-cell' } }} className="!text-white flex-col-reverse min-w-40" >
-                          <CustomLinearProgress value={row.metrics.stats.performance.score3[0]} color="#FF4500" />
+                          <CustomLinearProgress value={row.metrics.stats.metrics.overall_score} color="#FF4500" />
                         </TableCell>
                         <TableCell sx={{ display: { xs: 'none', sm: 'none', md: 'table-cell' } }} className="!text-white min-w-24">{row.metrics.stats.metrics.hand_speed} mph</TableCell>
                         <TableCell sx={{ display: { xs: 'none', sm: 'none', md: 'table-cell' } }} className="!text-white min-w-28">{row.metrics.stats.metrics.release_time} msec</TableCell>
                         <TableCell sx={{ display: { xs: 'none', sm: 'none', md: 'table-cell' } }} className="!text-white min-w-48">
-                          <CustomLinearProgress value={row.metrics.stats.performance.score3[0]} color="#00FF00" />
+                          <CustomLinearProgress value={row.metrics.stats.metrics.overall_score} color="#00FF00" />
                         </TableCell>
                         <TableCell sx={{ display: { xs: 'none', sm: 'none', md: 'table-cell' } }} className="!text-white min-w-40">
-                          <CustomLinearProgress value={row.accelerationScore} color="#00BFFF" />
+                          <CustomLinearProgress value={row.metrics.stats.metrics.acceleration_score} color="#00BFFF" />
                         </TableCell>
                         <TableCell sx={{ display: { xs: 'none', sm: 'none', md: 'table-cell' } }} className="!text-white min-w-40">
-                          <CustomLinearProgress value={row.decelerationScore} color="#8A2BE2" />
+                          <CustomLinearProgress value={row.metrics.stats.metrics.deceleration_score} color="#8A2BE2" />
                         </TableCell>
                         <TableCell sx={{ display: { xs: 'none', sm: 'none', md: 'table-cell' } }} className="!text-white flex-col-reverse min-w-52">
-                          <CustomLinearProgress value={row.velocityScore} color="#FF4500" />
+                          <CustomLinearProgress value={row.metrics.stats.metrics.efficiency_score} color="#FF4500" />
                         </TableCell>
                         <TableCell sx={{ display: { xs: 'table-cell', sm: 'table-cell', md: 'none' } }} className="!text-white">
                           <IconButton onClick={() => setShowDetails(v => v === index ? null : index)}>
@@ -170,7 +170,7 @@ const Leaderboard = () => {
                                   <Typography className="!text-sm !font-bold">Overall QB Rating</Typography>
                                 </Grid>
                                 <Grid item>
-                                  <CustomLinearProgress value={row.metrics.stats.performance.score3[0]} color="#FF4500" />
+                                  <CustomLinearProgress value={row.metrics.stats.metrics.overall_score} color="#FF4500" />
                                 </Grid>
                               </Grid>
                             </Grid>

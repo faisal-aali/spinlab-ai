@@ -14,6 +14,7 @@ import axios from "axios";
 import { useApp } from "@/components/Context/AppContext";
 import Recorder from './Recorder'
 import { useRouter } from "next/navigation";
+import { defaultValues, getFileExtension } from "@/util/utils";
 
 const style = {
   position: "absolute",
@@ -53,6 +54,8 @@ const UploadModal = ({ open, onClose, onSuccess, type, playerId }) => {
   // Function to convert data URL to Blob
   const dataURLToBlob = (dataURL) => {
     const arr = dataURL.split(',');
+    console.log('dataURLToBlob arr', arr)
+    console.log('dataURLToBlob dataURL', arr)
     const mime = arr[0].match(/:(.*?);/)[1];
     const bstr = atob(arr[1]);
     let n = bstr.length;
@@ -73,6 +76,7 @@ const UploadModal = ({ open, onClose, onSuccess, type, playerId }) => {
       video.muted = true; // Ensure no audio plays
       video.playsInline = true; // For compatibility with some devices
       video.play();
+      video.preload = 'metadata';       // Load metadata to get dimensions
 
       // Return a promise that resolves when the video is loaded
       video.addEventListener('canplay', () => {
@@ -81,8 +85,8 @@ const UploadModal = ({ open, onClose, onSuccess, type, playerId }) => {
         const context = canvas.getContext('2d');
 
         // Set canvas dimensions to match the video
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
+        canvas.width = video.videoWidth || 1280;
+        canvas.height = video.videoHeight || 720;
 
         console.log('video', video.videoWidth, video.videoHeight)
 
@@ -104,16 +108,32 @@ const UploadModal = ({ open, onClose, onSuccess, type, playerId }) => {
     e.preventDefault();
     setIsDragging(false);
     const droppedFile = e.dataTransfer.files[0];
-    if (droppedFile && droppedFile.type.startsWith("video/")) {
-      handleUploadVideo(droppedFile)
+    if (!droppedFile) return showSnackbar("Please drop a valid video file.", "error");
+    if (droppedFile.type) {
+      if (!droppedFile.type.startsWith("video/")) {
+        return showSnackbar("Please drop a valid video file.", "error");
+      }
     } else {
-      showSnackbar("Please drop a valid video file.", "error");
+      if (!defaultValues.supportedVideoExtensions.includes(getFileExtension(droppedFile.name))) {
+        return showSnackbar("Please drop a valid video file.", "error");
+      }
     }
+    handleUploadVideo(droppedFile)
   };
 
   const handleUploadVideo = async (file) => {
+    console.error('selected file', file)
     if (!file) return console.error('no file selected')
-    if (!file.type.startsWith("video/")) return showSnackbar("Please drop a valid video file.", "error");
+    if (file.type) {
+      if (!file.type.startsWith("video/")) {
+        console.error('video file not supported', file)
+        return showSnackbar("Please drop a valid video file.", "error");
+      }
+    } else {
+      if (!defaultValues.supportedVideoExtensions.includes(getFileExtension(file.name))) {
+        return showSnackbar("Please drop a valid video file.", "error");
+      }
+    }
     setIsUploading(true);
     setUploadProgress(0);
 
