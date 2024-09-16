@@ -52,8 +52,10 @@ function calculateCredits(userId: string): Promise<ICredit> {
                 credits.purchased += purchase.credits
             })
             videos.forEach(video => {
-                if (video.uploadedBy?.toString() === userId?.toString())
-                    credits.used += 1
+                if (video.uploadedBy?.toString() === userId?.toString()) {
+                    if ([undefined, 0, 1].includes(video.assessmentDetails?.statusCode))
+                        credits.used += 1
+                }
             })
             credits.remaining = credits.purchased - credits.used
             // console.log('calculateCredits', credits)

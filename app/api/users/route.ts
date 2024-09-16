@@ -118,7 +118,7 @@ export async function GET(req: NextRequest) {
                             console.log('signatureExpiry', signatureExpiry)
                             if (new Date(signatureExpiry as string).getTime() < new Date().getTime()) {
                                 const assessmentDetails = await _3Motion.getAssessmentDetails({ taskId: video.taskId, taskType: video.taskType })
-                                if (assessmentDetails.dataJsonUrl) assessmentDetails.stats = await axios.get(assessmentDetails.dataJsonUrl).then(res => res.data);
+                                if (assessmentDetails.dataJsonUrl) assessmentDetails.stats = await axios.get(assessmentDetails.dataJsonUrl).then(({ data }) => ({ ...data, ARR: {}, ANG: {}, VEL: {} }))
                                 video.assessmentDetails = assessmentDetails
                                 video.save().then(() => console.log('updated assessmentDetails for', video.taskId))
                             }

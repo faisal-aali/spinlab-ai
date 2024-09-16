@@ -5,6 +5,7 @@ import _3Motion from "@/app/lib/3motion";
 import axios from 'axios'
 import { IVideo } from "@/app/lib/interfaces/video";
 import { sendEmail } from "@/app/lib/sendEmail";
+import { PostVideoUpload } from "@/app/lib/zapier";
 
 export async function POST(req: NextRequest) {
     try {
@@ -47,7 +48,7 @@ export async function POST(req: NextRequest) {
 
         if (assessmentDetails) {
             if (assessmentDetails.dataJsonUrl) {
-                assessmentDetails.stats = await axios.get(assessmentDetails.dataJsonUrl).then(res => res.data);
+                assessmentDetails.stats = await axios.get(assessmentDetails.dataJsonUrl).then(({ data }) => ({ ...data, ARR: {}, ANG: {}, VEL: {} }));
             } else {
                 console.warn(new Date(), '[/api/3motion/webhook] dataJsonUrl is empty')
             }
@@ -58,6 +59,10 @@ export async function POST(req: NextRequest) {
         }
 
         await video.save()
+
+        if (assessmentDetails.statusCode === 1) {
+            PostVideoUpload(video._id).catch(err => console.error('[Zapier] FATAL ERROR:', err))
+        }
 
         console.log(new Date(), '[/api/3motion/webhook] assessmentDetails updated')
 
@@ -73,6 +78,7 @@ export async function POST(req: NextRequest) {
 
 const sendNotification = async (_video: IVideo, statusCode: Number) => {
     try {
+        if (!statusCode) return console.error('[sendNotification] Invalid status code', statusCode)
         const video = await Video.findOne({ _id: _video._id })
         if (!video) return console.error('[sendNotification] error: could not find video')
 
@@ -117,10 +123,10 @@ const sendNotification = async (_video: IVideo, statusCode: Number) => {
     }
 }
 
-// update pending assessment every 5 minutes
+// update pending assessment every 1 hour
 setInterval(() => {
     updateAssessments()
-}, 300000);
+}, 3600000);
 // 3600000  
 
 const updateAssessments = async () => {
@@ -132,17 +138,21 @@ const updateAssessments = async () => {
         const assessmentDetails = await _3Motion.getAssessmentDetails({ taskId: video.taskId, taskType: video.taskType });
         console.log(new Date(), 'assessmentDetails', assessmentDetails)
 
-        if (!assessmentDetails) return console.error('Invalid response for for', video.taskId)
+        if (!assessmentDetails) return console.error('Invalid response for', video.taskId)
 
         sendNotification(video, assessmentDetails.statusCode)
 
         if (assessmentDetails.dataJsonUrl) {
-            assessmentDetails.stats = await axios.get(assessmentDetails.dataJsonUrl).then(res => res.data);
+            assessmentDetails.stats = await axios.get(assessmentDetails.dataJsonUrl).then(({ data }) => ({ ...data, ARR: {}, ANG: {}, VEL: {} }));
         }
 
         video.assessmentDetails = assessmentDetails
 
         await video.save()
+
+        if (assessmentDetails.statusCode === 1) {
+            PostVideoUpload(video._id).catch(err => console.error('[Zapier] FATAL ERROR:', err))
+        }
 
         console.log(new Date(), 'updated assessment details for', video.taskId)
     })

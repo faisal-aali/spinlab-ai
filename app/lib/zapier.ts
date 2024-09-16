@@ -1,8 +1,9 @@
 import axios from 'axios'
-import { Package, Subscription, User } from './models'
+import { Package, Subscription, User, Video } from './models'
 
 const ZAPIER_WEBHOOK_ACCOUNT_CREATION = process.env.ZAPIER_WEBHOOK_ACCOUNT_CREATION || ""
 const ZAPIER_WEBHOOK_SUBSCRIPTION_UPDATE = process.env.ZAPIER_WEBHOOK_SUBSCRIPTION_UPDATE || ""
+const ZAPIER_WEBHOOK_VIDEO_UPLOAD = process.env.ZAPIER_WEBHOOK_VIDEO_UPLOAD || ""
 
 async function getUserObject(userId: string) {
     return new Promise(async (resolve, reject) => {
@@ -64,7 +65,30 @@ async function PostSubscriptionUpdate(userId: string) {
     })
 }
 
+async function PostVideoUpload(videoId: string) {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const video = await Video.findOne({ _id: videoId })
+            if (!video) return reject({ message: 'Video not found' })
+            if (video.assessmentDetails.statusCode !== 1) return reject({ message: 'Video had failed to process' })
+            const qbScore = video.assessmentDetails?.stats?.metrics?.overall_score
+            if (qbScore === undefined) return reject({ message: 'Unable to determine qbScore' })
+            const user = await getUserObject(video.userId)
+            const data = {
+                ...video,
+                qbScore,
+                user
+            }
+            console.log('[Zapier] PostVideoUpload', data)
+            axios.post(ZAPIER_WEBHOOK_SUBSCRIPTION_UPDATE, data).then(() => resolve({ message: 'Success' })).catch(reject)
+        } catch (err) {
+            reject(err)
+        }
+    })
+}
+
 export {
     PostAccountCreation,
-    PostSubscriptionUpdate
+    PostSubscriptionUpdate,
+    PostVideoUpload
 }
