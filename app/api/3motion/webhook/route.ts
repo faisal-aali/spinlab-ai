@@ -17,55 +17,49 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ message: `Invalid Request` }, { status: 400 })
         }
 
-        const updateAssessment = async () => {
-            const auth = _3Motion.getAuth()
-            if (!auth) {
-                console.log(new Date(), '[/api/3motion/webhook] Auth token not found')
-                return NextResponse.json({ message: `INTERNAL ERROR` }, { status: 500 })
-            }
-            if (auth.tenantId !== data.TenantId) {
-                console.log(new Date(), '[/api/3motion/webhook] Invalid TenantId')
-                return NextResponse.json({ message: `Invalid TenantId` }, { status: 404 })
-            }
-
-            const video = await Video.findOne({
-                $or: [{
-                    taskId: data.TaskId.toString()
-                }, {
-                    assessmentMappingId: data.TaskId.toString()
-                }]
-            })
-            if (!video) {
-                console.log(new Date(), '[/api/3motion/webhook] Invalid TaskId')
-                return NextResponse.json({ message: `Invalid TaskId` }, { status: 404 })
-            }
-
-            const assessmentDetails = await _3Motion.getAssessmentDetails({ taskId: video.taskId, taskType: video.taskType });
-
-            console.log(new Date(), '[/api/3motion/webhook] assessmentDetails', assessmentDetails)
-
-            if (assessmentDetails.statusCode) {
-                sendNotification(video)
-            }
-
-            if (assessmentDetails) {
-                if (assessmentDetails.dataJsonUrl) {
-                    assessmentDetails.stats = await axios.get(assessmentDetails.dataJsonUrl).then(res => res.data);
-                } else {
-                    console.log(new Date(), '[/api/3motion/webhook] dataJsonUrl is empty')
-                }
-
-                video.assessmentDetails = assessmentDetails
-            } else {
-                video.assessmentDetails = data
-            }
-
-            await video.save()
-
-            console.log(new Date(), '[/api/3motion/webhook] assessmentDetails updated')
+        const auth = _3Motion.getAuth()
+        if (!auth) {
+            console.log(new Date(), '[/api/3motion/webhook] Auth token not found')
+            return NextResponse.json({ message: `INTERNAL ERROR` }, { status: 500 })
+        }
+        if (auth.tenantId !== data.TenantId) {
+            console.log(new Date(), '[/api/3motion/webhook] Invalid TenantId')
+            return NextResponse.json({ message: `Invalid TenantId` }, { status: 404 })
         }
 
-        setTimeout(updateAssessment, 5000);
+        const video = await Video.findOne({
+            $or: [{
+                taskId: data.TaskId.toString()
+            }, {
+                assessmentMappingId: data.TaskId.toString()
+            }]
+        })
+        if (!video) {
+            console.log(new Date(), '[/api/3motion/webhook] Invalid TaskId')
+            return NextResponse.json({ message: `Invalid TaskId` }, { status: 404 })
+        }
+
+        const assessmentDetails = await _3Motion.getAssessmentDetails({ taskId: video.taskId, taskType: video.taskType });
+
+        console.log(new Date(), '[/api/3motion/webhook] assessmentDetails', assessmentDetails)
+
+        sendNotification(video, assessmentDetails.statusCode)
+
+        if (assessmentDetails) {
+            if (assessmentDetails.dataJsonUrl) {
+                assessmentDetails.stats = await axios.get(assessmentDetails.dataJsonUrl).then(res => res.data);
+            } else {
+                console.warn(new Date(), '[/api/3motion/webhook] dataJsonUrl is empty')
+            }
+
+            video.assessmentDetails = assessmentDetails
+        } else {
+            video.assessmentDetails = data
+        }
+
+        await video.save()
+
+        console.log(new Date(), '[/api/3motion/webhook] assessmentDetails updated')
 
         return NextResponse.json({ message: `OK` }, { status: 200 })
 
@@ -77,7 +71,7 @@ export async function POST(req: NextRequest) {
     }
 }
 
-const sendNotification = async (_video: IVideo) => {
+const sendNotification = async (_video: IVideo, statusCode: Number) => {
     try {
         const video = await Video.findOne({ _id: _video._id })
         if (!video) return console.error('[sendNotification] error: could not find video')
@@ -92,27 +86,29 @@ const sendNotification = async (_video: IVideo) => {
             if (!trainer) return console.error('[sendNotification] error: could not find trainer')
         }
 
-        Notification.create({ message: 'Your video has been processed!', userId: user._id, type: 'video' })
-        if (trainer) Notification.create({ message: 'Your player\'s video has been processed!', userId: trainer._id, type: 'video' })
+        const success = statusCode === 1;
+
+        Notification.create({ message: success ? 'Your video has been processed!' : 'Sorry, your video has failed to process', userId: user._id, type: 'video' })
+        if (trainer) Notification.create({ message: success ? 'Your player\'s video has been processed!' : 'Sorry, your player\'s video has failed to process', userId: trainer._id, type: 'video' })
+
+        const email = {
+            subject: success ? 'Processing Completed' : 'Processing Failed',
+            html: `
+                    <p>Hello, ${user.name}!</p>
+                    <p>${success ? 'Your video processing has been finished.' : 'Something went wrong, your video has failed to process.'}</p>
+                `
+        }
 
         sendEmail({
             to: user.email,
-            subject: 'Processing Completed',
-            html: `
-                <p>Hello, ${user.name}!</p>
-                <p>Your video processing has been finished</p>
-            `
+            ...email
         }).catch(console.error)
 
 
         if (trainer) {
             sendEmail({
                 to: trainer.email,
-                subject: 'Processing Completed',
-                html: `
-                    <p>Hello, ${trainer.name}!</p>
-                    <p>Your video processing has been finished</p>
-                `
+                ...email
             }).catch(console.error)
         }
 
@@ -138,9 +134,7 @@ const updateAssessments = async () => {
 
         if (!assessmentDetails) return console.error('Invalid response for for', video.taskId)
 
-        if (assessmentDetails.statusCode) {
-            sendNotification(video)
-        }
+        sendNotification(video, assessmentDetails.statusCode)
 
         if (assessmentDetails.dataJsonUrl) {
             assessmentDetails.stats = await axios.get(assessmentDetails.dataJsonUrl).then(res => res.data);
