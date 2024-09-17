@@ -126,7 +126,7 @@ const Leaderboard = () => {
                         <TableCell sx={{ display: { xs: 'none', sm: 'none', md: 'table-cell' } }} className="!text-white min-w-24">{row.metrics.stats.metrics.hand_speed} mph</TableCell>
                         <TableCell sx={{ display: { xs: 'none', sm: 'none', md: 'table-cell' } }} className="!text-white min-w-28">{row.metrics.stats.metrics.release_time} msec</TableCell>
                         <TableCell sx={{ display: { xs: 'none', sm: 'none', md: 'table-cell' } }} className="!text-white min-w-48">
-                          <CustomLinearProgress value={row.metrics.stats.metrics.overall_score} color="#00FF00" />
+                          <CustomLinearProgress value={row.metrics.stats.metrics.sequence_score} color="#00FF00" />
                         </TableCell>
                         <TableCell sx={{ display: { xs: 'none', sm: 'none', md: 'table-cell' } }} className="!text-white min-w-40">
                           <CustomLinearProgress value={row.metrics.stats.metrics.acceleration_score} color="#00BFFF" />
