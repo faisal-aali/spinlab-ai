@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Sidebar from "../Sidebar/Sidebar";
 import { signOut, useSession, signIn } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
@@ -8,35 +8,32 @@ import { FiLogOut } from "react-icons/fi";
 import { IoNotificationsOutline } from "react-icons/io5";
 import HeaderProfile from "../Common/HeaderProfile/HeaderProfile";
 import PromoCodesPopup from './PromoCodesPopup';
-import {
-  Box,
-  Button,
-  Grid,
-  IconButton,
-  Menu,
-  MenuItem,
-  Snackbar,
-  SnackbarContent,
-  Tooltip,
-  Typography,
-  Modal,
-  CircularProgress,
-  Badge
-} from "@mui/material";
-import { Add, Person, VideoCameraBack } from "@mui/icons-material";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Grid from "@mui/material/Grid";
+import IconButton from "@mui/material/IconButton";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import Snackbar from "@mui/material/Snackbar";
+import SnackbarContent from "@mui/material/SnackbarContent";
+import Tooltip from "@mui/material/Tooltip";
+import Typography from "@mui/material/Typography";
+import Modal from "@mui/material/Modal";
+import CircularProgress from "@mui/material/CircularProgress";
+import Badge from "@mui/material/Badge";
+import Person from "@mui/icons-material/Person";
+import VideoCameraBack from "@mui/icons-material/VideoCameraBack";
 import UploadModal from "../Dashboard/DashboardComponents/UploadVideoModal/UploadModal";
 import UpdateEmailModal from "../Dashboard/DashboardComponents/UpdateEmailModal/UpdateEmailModal";
-import {
-  Warning as WarningIcon,
-  Close as CloseIcon,
-  ArrowForward as ArrowForwardIcon,
-} from "@mui/icons-material";
+import WarningIcon from "@mui/icons-material/Warning";
+import CloseIcon from "@mui/icons-material/Close";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import MenuIcon from "@mui/icons-material/Menu";
 import { useApp } from "../Context/AppContext";
 import axios from 'axios';
 import * as Yup from 'yup'
 import { Field, Form, Formik } from "formik";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import MenuIcon from "@mui/icons-material/Menu"
 
 const style = {
   position: "absolute",
@@ -383,7 +380,7 @@ const NotificationsMenu = () => {
     axios.patch('/api/notifications/isRead').catch(console.error)
   }
 
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
 
   const handleClick = (event) => {
     markAsRead()

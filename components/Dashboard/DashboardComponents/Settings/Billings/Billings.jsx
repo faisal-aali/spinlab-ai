@@ -1,25 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Formik, Form, Field } from "formik";
-import * as Yup from "yup";
-import { Button, CircularProgress } from "@mui/material";
+import { useEffect, useState } from "react";
+import CircularProgress from "@mui/material/CircularProgress";
 import UpdateCardDetails from "@/components/Common/UpdateCardDetails/UpdateCardDetails";
-import { loadStripe } from "@stripe/stripe-js";
-import { Elements } from "@stripe/react-stripe-js";
-import axios, { AxiosError } from 'axios'
+import axios from 'axios'
 import { useApp } from "@/components/Context/AppContext";
-import  RefundCancellationPolicyDialog  from "../../../../Refund&Cancellation/Refund&Cancellation"
-
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
-
-const BillingSchema = Yup.object().shape({
-  firstName: Yup.string().required("First Name is required"),
-  lastName: Yup.string().required("Last Name is required"),
-  address: Yup.string().required("Address is required"),
-  creditCardNumber: Yup.string().required("Credit Card Number is required"),
-  cvv: Yup.string().required("CVV is required"),
-  expiryDate: Yup.string().required("Expiry Date is required"),
-  postalCode: Yup.string().required("Postal Code is required"),
-});
+import RefundCancellationPolicyDialog from "../../../../Refund&Cancellation/Refund&Cancellation"
 
 const BillingTab = () => {
   const { user } = useApp()
@@ -30,9 +14,6 @@ const BillingTab = () => {
   const [updateDetailsSucess, setUpdateDetailsSucess] = useState(false)
   const [downloading, setDownloading] = useState(false)
 
-  const [paymentSuccess, setPaymentSuccess] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const formikRef = useRef();
   const [openModal, setOpenModal] = useState(false);
 
   const defaultPaymentMethod = (customer && paymentMethods && paymentMethods.find(pm => pm.id === customer.invoice_settings.default_payment_method))
@@ -79,39 +60,6 @@ const BillingTab = () => {
   return (
     (!customer || !paymentMethods) && !profileError ? <CircularProgress /> :
       <>
-        {/* {!paymentSuccess ? (
-        <div className="p-8 border primary-border mt-8 rounded-lg">
-          <div className="flex items-center gap-14">
-            <div className="mb-4 basis-1/3 pl-16">
-              <div>
-                <h2 className="text-white font-bold mb-4 text-2xl">
-                  Billing Details
-                </h2>
-                <p className="text-white">
-                  Data is protected under the PCI DSS standard. We do not store
-                  your data and do not share it with the merchant.
-                </p>
-              </div>
-            </div>
-            <div className="flex flex-col basis-2/3">
-              <div>
-                <Elements stripe={stripePromise}>
-                  <PaymentForm onPaymentSuccess={() => setPaymentSuccess(true)} formikRef={formikRef} setIsSubmitting={setIsSubmitting} />
-                </Elements>
-              </div>
-              <div className="w-full justify-end flex -mt-8">
-                <button
-                  onClick={() => formikRef.current.handleSubmit()}
-                  disabled={isSubmitting}
-                  className="bg-primary dark-blue-color px-4 py-1 rounded font-bold uppercase text-sm hover-button-shadow"
-                >
-                  Pay
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      ) : ( */}
         {updateDetails ? <UpdateCardDetails onUpdateSuccess={() => {
           setUpdateDetails(false)
           setUpdateDetailsSucess(true)
@@ -193,7 +141,7 @@ const BillingTab = () => {
                 </p>
               </div>
             </div>}
-            <RefundCancellationPolicyDialog openModal={openModal} handleCloseModal={handleCloseModal} />
+        <RefundCancellationPolicyDialog openModal={openModal} handleCloseModal={handleCloseModal} />
       </>
   );
 };

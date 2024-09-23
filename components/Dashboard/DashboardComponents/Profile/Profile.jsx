@@ -1,8 +1,7 @@
 "use client"
 
 import { useApp } from "@/components/Context/AppContext";
-import { CircularProgress } from "@mui/material";
-import { useSession } from "next-auth/react";
+import CircularProgress from "@mui/material/CircularProgress";
 import { useRouter } from "next/navigation";
 import { formatLocation } from "@/util/utils";
 

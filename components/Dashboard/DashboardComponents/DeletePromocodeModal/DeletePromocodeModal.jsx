@@ -1,5 +1,6 @@
-import React, { useEffect } from "react";
-import { Modal, Box, Typography, Button, IconButton } from "@mui/material";
+import { useEffect } from "react";
+import Modal from "@mui/material/Modal";
+import Box from "@mui/material/Box";
 import axios from 'axios';
 import { useApp } from '../../../Context/AppContext';
 

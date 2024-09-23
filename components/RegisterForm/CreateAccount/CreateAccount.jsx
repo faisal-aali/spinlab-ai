@@ -2,9 +2,12 @@
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { getNames } from "country-list";
-import { MenuItem, TextField, Autocomplete, Checkbox } from "@mui/material";
+import MenuItem from "@mui/material/MenuItem";
+import TextField from "@mui/material/TextField";
+import Autocomplete from "@mui/material/Autocomplete";
+import Checkbox from "@mui/material/Checkbox";
 import { useState } from "react";
-import axios, { AxiosError } from 'axios'
+import axios from 'axios'
 import { convertFeetAndInchesToCm } from "@/util/utils";
 import { signIn, signOut } from "next-auth/react";
 import { useApp } from '../../Context/AppContext';

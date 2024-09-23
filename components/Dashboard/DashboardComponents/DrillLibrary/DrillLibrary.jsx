@@ -1,22 +1,18 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
-import {
-  Tabs,
-  Tab,
-  Grid,
-  Card,
-  CardMedia,
-  CardContent,
-  Typography,
-  CircularProgress
-} from "@mui/material";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import Grid from "@mui/material/Grid";
+import Card from "@mui/material/Card";
+import CardMedia from "@mui/material/CardMedia";
+import CardContent from "@mui/material/CardContent";
+import CircularProgress from "@mui/material/CircularProgress";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import AddVideoModal from "../AddVideoModal/AddVideoModal";
 import EditVideoModal from "../EditVideoModal/EditVideoModal";
 import DeleteVideoModal from "../DeleteVideoModal/DeleteVideoModal";
 import PayToWatchDialog from "../../../Common/PayToWatchDialog/PayToWatchDialog";
-import { useSession } from "next-auth/react";
 import { useApp } from "@/components/Context/AppContext";
 import { convertVimeoUrlToEmbed } from "@/util/utils";
 import Pagination from "../../../Common/Pagination/Pagination";

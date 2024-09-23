@@ -1,6 +1,7 @@
-import React from "react";
-import { Modal, Box, IconButton } from "@mui/material";
-import { Close as CloseIcon } from "@mui/icons-material";
+import Modal from "@mui/material/Modal";
+import Box from "@mui/material/Box";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
 
 const style = {
   position: "absolute",

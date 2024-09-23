@@ -1,17 +1,11 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
-import {
-    Box,
-    Button,
-    IconButton,
-    Modal,
-} from "@mui/material";
-import {
-    Warning as WarningIcon,
-    Close as CloseIcon,
-    ArrowForward as ArrowForwardIcon,
-} from "@mui/icons-material";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import Modal from "@mui/material/Modal";
+import CloseIcon from "@mui/icons-material/Close";
 import { Formik, Field, Form } from "formik";
 import * as Yup from "yup";
 import axios from 'axios';

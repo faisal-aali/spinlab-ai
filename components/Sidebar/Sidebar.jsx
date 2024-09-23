@@ -4,7 +4,6 @@ import Link from "next/link";
 import profileStyle from './sidebar.module.css';
 import { useSession } from "next-auth/react";
 import { useApp } from "../Context/AppContext";
-import { Menu } from "@mui/icons-material";
 
 const Sidebar = ({ showSidebar, setShowSidebar }) => {
   const userSession = useSession().data?.user || {};

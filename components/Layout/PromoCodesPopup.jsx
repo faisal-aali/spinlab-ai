@@ -1,19 +1,18 @@
 // components/EditUserModal.js
-import React, { useEffect, useState } from "react";
-import { Modal, Box, IconButton, TextField, MenuItem, Snackbar, MobileStepper } from "@mui/material";
+import { useEffect, useState } from "react";
+import Modal from "@mui/material/Modal";
+import Box from "@mui/material/Box";
+import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
-import { Formik, Form, Field } from "formik";
-import * as Yup from "yup";
 import axios from "axios";
-import { convertCmToFeetAndInches, convertFeetAndInchesToCm, convertMsToRelativeTime } from "@/util/utils";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { convertMsToRelativeTime } from "@/util/utils";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination, Navigation } from "swiper/modules";
+import { useApp } from "../Context/AppContext";
 import 'swiper/css';
 import "swiper/css/pagination";
 import "swiper/css/autoplay";
 import "swiper/css/navigation";
-import { useApp } from "../Context/AppContext";
 
 const style = {
     position: "absolute",

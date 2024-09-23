@@ -1,10 +1,9 @@
 "use client";
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import PickCredits from '@/components/Common/PickCredits/PickCredits'
 import PaymentForm from "@/components/Common/PaymentForm/PaymentForm";
-import { CircularProgress } from "@mui/material";
-import axios from 'axios'
+import CircularProgress from "@mui/material/CircularProgress";
 import { useApp } from "@/components/Context/AppContext";
 
 const Purchases = () => {

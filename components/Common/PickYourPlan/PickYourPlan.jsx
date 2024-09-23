@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@mui/material";
+import Button from "@mui/material/Button";
 import styles from "./PickYourPlan.module.css";
 
 const PickYourPlan = ({ onSubmit }) => {

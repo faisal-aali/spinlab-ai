@@ -1,19 +1,13 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import {
-  Tabs,
-  Tab,
-  Grid,
-  Card,
-  CardMedia,
-  CardContent,
-  Typography,
-  Button,
-  IconButton,
-  CircularProgress,
-} from "@mui/material";
-import YouTubeIcon from "@mui/icons-material/YouTube";
-import { Add } from "@mui/icons-material";
+import { useEffect, useState } from "react";
+import Grid from "@mui/material/Grid";
+import Card from "@mui/material/Card";
+import CardMedia from "@mui/material/CardMedia";
+import CardContent from "@mui/material/CardContent";
+import Typography from "@mui/material/Typography";
+import IconButton from "@mui/material/IconButton";
+import CircularProgress from "@mui/material/CircularProgress";
+import Add from "@mui/icons-material/Add";
 import { green } from "@mui/material/colors";
 import AddNewPlayerModal from "../AddNewPlayerModal/AddNewPlayerModal";
 import { usePathname, useRouter } from "next/navigation";

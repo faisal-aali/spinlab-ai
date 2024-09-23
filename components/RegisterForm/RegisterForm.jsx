@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import SelectRole from "../../components/RegisterForm/SelectRole/SelectRole";
 import CreateAccount from "../../components/RegisterForm/CreateAccount/CreateAccount";
 import OpenDashboard from "../../components/RegisterForm/OpenDashboard/OpenDashboard";

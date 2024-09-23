@@ -1,5 +1,5 @@
-import React from "react";
-import { Pagination, Box } from "@mui/material";
+import Pagination from "@mui/material/Pagination";
+import Box from "@mui/material/Box";
 
 const CustomPagination = ({ page, count, onChange }) => {
   return (

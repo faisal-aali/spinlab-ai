@@ -1,4 +1,6 @@
-import { Button, MenuItem, TextField } from '@mui/material';
+import Button from "@mui/material/Button";
+import MenuItem from "@mui/material/MenuItem";
+import TextField from "@mui/material/TextField";
 import { useEffect, useState } from 'react';
 import { useRecordWebcam } from 'react-record-webcam';
 

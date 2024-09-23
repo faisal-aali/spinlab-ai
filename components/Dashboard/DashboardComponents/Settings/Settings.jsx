@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Tabs, Tab } from "@mui/material";
+import { useState } from "react";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
 import AccountSettings from "./AccountSettings/AccountSettings";
 import BillingTab from "./Billings/Billings";
 import { useSession } from "next-auth/react";

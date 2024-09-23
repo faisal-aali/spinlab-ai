@@ -1,8 +1,9 @@
 "use client"
 
-import { CircularProgress, IconButton } from "@mui/material";
+import CircularProgress from "@mui/material/CircularProgress";
+import IconButton from "@mui/material/IconButton";
 import { useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import EditUserModal from "../EditUserModal/EditUserModal";
 import DeleteUserModal from "../DeleteUserModal/DeleteUserModal";

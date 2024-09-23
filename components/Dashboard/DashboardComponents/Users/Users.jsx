@@ -1,17 +1,15 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Typography,
-  IconButton,
-  CircularProgress,
-} from "@mui/material";
+import { useState, useEffect } from "react";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
+import Typography from "@mui/material/Typography";
+import IconButton from "@mui/material/IconButton";
+import CircularProgress from "@mui/material/CircularProgress";
 import Pagination from '../../../Common/Pagination/Pagination';
 import DeleteUserModal from '../DeleteUserModal/DeleteUserModal';
 import AddUserModal from '../AddUserModal/AddUserModal';
@@ -65,26 +63,26 @@ const Users = () => {
     setShowDeleteModal(true);
   };
 
-const handleSearchChange = (e) => {  
-  setSearchQuery(e.target.value);  
-  setPage(1); 
-};  
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+    setPage(1);
+  };
 
-const filteredData = data.filter((u) =>  
-  u.name.toLowerCase().includes(searchQuery.toLowerCase())  ||
-  u.email.toLowerCase().includes(searchQuery.toLowerCase())
-);  
+  const filteredData = data.filter((u) =>
+    u.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    u.email.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
-const totalPages = Math.ceil(filteredData.length / rowsPerPage);  
+  const totalPages = Math.ceil(filteredData.length / rowsPerPage);
 
-if (page > totalPages && totalPages > 0) {  
-  setPage(totalPages);  
-}  
+  if (page > totalPages && totalPages > 0) {
+    setPage(totalPages);
+  }
 
-const paginatedData = filteredData.slice(  
-  (page - 1) * rowsPerPage,  
-  page * rowsPerPage  
-);  
+  const paginatedData = filteredData.slice(
+    (page - 1) * rowsPerPage,
+    page * rowsPerPage
+  );
 
   return (
     <>
@@ -98,7 +96,7 @@ const paginatedData = filteredData.slice(
               <input
                 placeholder="Search..."
                 value={searchQuery}
-                onChange={ handleSearchChange}
+                onChange={handleSearchChange}
                 className="w-full pl-2 py-1 rounded-lg h-full text-white search-background focus:outline-none focus:ring-1 focus:ring-green-500"
               />
             </div>
@@ -184,9 +182,9 @@ const paginatedData = filteredData.slice(
           )}
           <Pagination
             page={page}
-            count={totalPages}  
-            onChange={(event, value) => setPage(value)} 
-            />
+            count={totalPages}
+            onChange={(event, value) => setPage(value)}
+          />
           {showAddModal && <AddUserModal open={showAddModal} onClose={() => setShowAddModal(false)} role={role} onSuccess={fetchData} />}
           <DeleteUserModal
             open={showDeleteModal}

@@ -1,27 +1,8 @@
 // src/components/History/History.js
 "use client";
-import React, { useEffect, useState } from "react";
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    Paper,
-    Box,
-    Typography,
-    LinearProgress,
-    IconButton,
-    CircularProgress,
-} from "@mui/material";
-import Pagination from '../../../Common/Pagination/Pagination'
-import DeleteUserModal from '../DeleteUserModal/DeleteUserModal'
-import AddUserModal from '../AddUserModal/AddUserModal'
-import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import CircularProgress from "@mui/material/CircularProgress";
 import axios from 'axios'
-
-
 
 const UpdateCalendar = () => {
     const [calendar, setCalendar] = useState()
@@ -80,8 +61,8 @@ const UpdateCalendar = () => {
                     </div>
                 </div>
                 <div className='overflow-auto'>
-                <iframe className='w-full' src={calendar.src} height={800} />
-            </div>
+                    <iframe className='w-full' src={calendar.src} height={800} />
+                </div>
             </div>
     );
 };

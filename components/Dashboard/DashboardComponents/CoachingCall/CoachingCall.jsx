@@ -1,14 +1,9 @@
 "use client"
 
-import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
-import { StaticDateTimePicker } from '@mui/x-date-pickers/StaticDateTimePicker';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import dayjs from 'dayjs';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import axios from 'axios'
-import { CircularProgress } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
 
 export default function CoachingCall() {
     const user = useSession().data?.user || {}

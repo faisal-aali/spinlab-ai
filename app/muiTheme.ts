@@ -1,8 +1,6 @@
 'use client';
 import { createTheme } from '@mui/material/styles';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import { Edit, KeyboardArrowDown } from '@mui/icons-material';
-
+import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
 
 const theme = createTheme({
     palette: {

@@ -1,5 +1,5 @@
-import React from "react";
-import { Modal, Box } from "@mui/material";
+import Modal from "@mui/material/Modal";
+import Box from "@mui/material/Box";
 import { useRouter } from "next/navigation";
 
 const style = {
@@ -15,10 +15,10 @@ const style = {
 };
 
 const PayToWatchDialog = ({ open, onClose }) => {
-  const router = useRouter(); 
+  const router = useRouter();
 
   const handlePurchaseClick = () => {
-    router.push("/subscriptions"); 
+    router.push("/subscriptions");
   };
 
   return (
@@ -40,7 +40,7 @@ const PayToWatchDialog = ({ open, onClose }) => {
             </div>
             <div className="flex justify-center">
               <button
-                onClick={handlePurchaseClick} 
+                onClick={handlePurchaseClick}
                 className="bg-primary dark-blue-color rounded-lg w-48 h-11 flex items-center justify-center text-lg font-bold hover-button-shadow"
               >
                 PURCHASE

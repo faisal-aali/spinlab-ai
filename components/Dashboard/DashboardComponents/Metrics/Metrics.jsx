@@ -1,7 +1,11 @@
 'use client'
 
-import { East } from "@mui/icons-material";
-import { Card, CardContent, CardMedia, Grid, LinearProgress, Typography, Box, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, IconButton, SvgIcon, CircularProgress } from "@mui/material"
+import Card from "@mui/material/Card";
+import Grid from "@mui/material/Grid";
+import LinearProgress from "@mui/material/LinearProgress";
+import Typography from "@mui/material/Typography";
+import IconButton from "@mui/material/IconButton";
+import CircularProgress from "@mui/material/CircularProgress";
 import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";

@@ -4,11 +4,11 @@ import { useState, useEffect } from "react";
 import PickYourMembership from '../../../Common/PickYourMembership/PickYourMembership';
 import PaymentForm from "@/components/Common/PaymentForm/PaymentForm";
 import axios from 'axios';
-import { useSession } from "next-auth/react";
-import { CircularProgress, Modal, Box } from "@mui/material";
+import CircularProgress from "@mui/material/CircularProgress";
+import Modal from "@mui/material/Modal";
+import Box from "@mui/material/Box";
 import { useApp } from "@/components/Context/AppContext";
 import ReportProblemIcon from '@mui/icons-material/ReportProblem';
-
 
 const style = {
   position: "absolute",

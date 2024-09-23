@@ -1,11 +1,9 @@
 // components/UploadModal.js
-import React, { useEffect } from "react";
-import { Modal, Box, Typography, Button, IconButton } from "@mui/material";
-import {
-  Close as CloseIcon,
-  CloudUpload as CloudUploadIcon,
-} from "@mui/icons-material";
-import { blueGrey } from "@mui/material/colors";
+import { useEffect } from "react";
+import Modal from "@mui/material/Modal";
+import Box from "@mui/material/Box";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
 import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import axios from 'axios'

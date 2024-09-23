@@ -1,9 +1,9 @@
 "use client"
 // components/Context/AppContext.jsx
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import { createContext, useState, useContext, useEffect } from 'react';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
-import Slide from '@mui/material/Slide'; // Import Slide component
+import Slide from '@mui/material/Slide';
 import axios from 'axios'
 import { useSession } from 'next-auth/react';
 

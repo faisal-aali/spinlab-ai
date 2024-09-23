@@ -1,13 +1,5 @@
 "use client"
 
-import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
-import { StaticDateTimePicker } from '@mui/x-date-pickers/StaticDateTimePicker';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import dayjs from 'dayjs';
-import { IconButton } from '@mui/material';
-import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 
 export default function Calender() {

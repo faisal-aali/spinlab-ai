@@ -1,12 +1,16 @@
-import React, { useEffect, useRef } from "react";
-import { Modal, Box, IconButton, MenuItem, TextField, Checkbox, Tooltip } from "@mui/material";
-import { Close as CloseIcon, Info } from "@mui/icons-material";
+import { useEffect } from "react";
+import Modal from "@mui/material/Modal";
+import Box from "@mui/material/Box";
+import IconButton from "@mui/material/IconButton";
+import MenuItem from "@mui/material/MenuItem";
+import TextField from "@mui/material/TextField";
+import Tooltip from "@mui/material/Tooltip";
+import Info from "@mui/icons-material/Info";
+import CloseIcon from "@mui/icons-material/Close";
 import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import axios from 'axios';
 import { useApp } from '../../../Context/AppContext';
-import { generateYoutubeEmbedUrl } from "@/util/utils";
-
 
 const style = {
   position: "absolute",

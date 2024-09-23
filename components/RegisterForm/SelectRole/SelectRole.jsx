@@ -1,5 +1,4 @@
 "use client";
-import { Checkbox } from "@mui/material";
 import axios from "axios";
 import { Formik, Form, Field } from "formik";
 import { signOut } from "next-auth/react";
@@ -50,7 +49,7 @@ const SelectRole = ({ nextStep, handleChange, values }) => {
       <Formik
         initialValues={values}
         validationSchema={roleSchema}
-        onSubmit={(values, {setSubmitting}) => {
+        onSubmit={(values, { setSubmitting }) => {
           console.log("selectrole submit", values);
           handleChange("role")({ target: { value: values.role } });
           handleChange("email")({ target: { value: values.email } });
@@ -74,11 +73,10 @@ const SelectRole = ({ nextStep, handleChange, values }) => {
                 <button
                   type="button"
                   name="role"
-                  className={`w-full py-2 mr-4 px-4 rounded-md ${
-                    values.role === "player"
+                  className={`w-full py-2 mr-4 px-4 rounded-md ${values.role === "player"
                       ? "bg-primary text-black"
                       : "backgroundDisabledColor text-white"
-                  }`}
+                    }`}
                   onClick={() => setFieldValue("role", "player")}
                 >
                   Player
@@ -86,11 +84,10 @@ const SelectRole = ({ nextStep, handleChange, values }) => {
                 <button
                   type="button"
                   name="role"
-                  className={`w-full py-2 mr-4 px-4 rounded-md ${
-                    values.role === "trainer"
+                  className={`w-full py-2 mr-4 px-4 rounded-md ${values.role === "trainer"
                       ? "bg-primary text-black"
                       : "backgroundDisabledColor text-white"
-                  }`}
+                    }`}
                   onClick={() => setFieldValue("role", "trainer")}
                 >
                   Trainer
@@ -134,9 +131,8 @@ const SelectRole = ({ nextStep, handleChange, values }) => {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className={`w-full bg-green-500 bg-primary rounded-lg text-black font-normal py-3 rounded hover-shadow focus:outline-none ${
-                  isSubmitting ? "opacity-50 cursor-not-allowed" : ""
-                }`}
+                className={`w-full bg-green-500 bg-primary rounded-lg text-black font-normal py-3 rounded hover-shadow focus:outline-none ${isSubmitting ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
               >
                 CONTINUE
               </button>

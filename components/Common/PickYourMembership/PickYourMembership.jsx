@@ -1,7 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { CircularProgress, Tab, Tabs } from "@mui/material";
+import CircularProgress from "@mui/material/CircularProgress";
+import Tab from "@mui/material/Tab";
+import Tabs from "@mui/material/Tabs";
 import { useApp } from "../../Context/AppContext";
 import styles from "./PickYourMembership.module.css";
 

@@ -2,7 +2,7 @@ import { useSession, } from "next-auth/react"
 import axios from 'axios'
 import { useState, useEffect } from "react"
 import { convertCmToFeetAndInches } from "@/util/utils"
-import { CircularProgress } from "@mui/material"
+import CircularProgress from "@mui/material/CircularProgress"
 import { useApp } from "@/components/Context/AppContext"
 
 export default function HeaderProfile() {

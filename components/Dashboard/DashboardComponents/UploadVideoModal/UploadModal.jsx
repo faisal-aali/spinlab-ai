@@ -1,15 +1,11 @@
 // components/UploadModal.js
-import React, { useState, useEffect, useRef } from "react";
-import {
-  Modal,
-  Box,
-  Typography,
-  Button,
-  IconButton,
-  LinearProgress,
-  CircularProgress,
-} from "@mui/material";
-import { Close as CloseIcon } from "@mui/icons-material";
+import { useState, useEffect } from "react";
+import Modal from "@mui/material/Modal";
+import Box from "@mui/material/Box";
+import IconButton from "@mui/material/IconButton";
+import LinearProgress from "@mui/material/LinearProgress";
+import CircularProgress from "@mui/material/CircularProgress";
+import CloseIcon from "@mui/icons-material/Close";
 import axios from "axios";
 import { useApp } from "@/components/Context/AppContext";
 import Recorder from './Recorder'

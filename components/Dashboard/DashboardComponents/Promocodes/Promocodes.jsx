@@ -1,11 +1,12 @@
 "use client"
 
-import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import axios from 'axios'
-import { Checkbox, CircularProgress, IconButton, Tab, Tabs } from '@mui/material';
+import Checkbox from "@mui/material/Checkbox";
+import CircularProgress from "@mui/material/CircularProgress";
+import Tab from "@mui/material/Tab";
+import Tabs from "@mui/material/Tabs";
 import AddPromocodeModal from '../AddPromocodeModal/AddPromocodeModal';
-import { Delete } from '@mui/icons-material';
 import DeletePromocodeModal from '../DeletePromocodeModal/DeletePromocodeModal';
 import { useApp } from '@/components/Context/AppContext';
 
