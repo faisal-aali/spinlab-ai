@@ -36,15 +36,12 @@ const RefundCancellationPolicyDialog = ({ openModal, handleCloseModal }) => {
           </p>
           <h3 className="font-bold mt-4 text-primary">1. Refunds</h3>
           <p>
-            We offer refunds for certain types of purchases based on specific
-            criteria. To be eligible for a refund, you must request it within 30
-            days of the purchase date and meet our refund conditions.
+            SpinLabAi has a strict no-refund policy for membership credits and subscription fees. Refunds are unavailable once a payment is processed, credits are allocated, or a subscription is activated. Users are encouraged to review their purchase decisions carefully before completing transactions to ensure satisfaction with their membership.
           </p>
           <h3 className="font-bold mt-4 text-primary">2. Cancellations</h3>
           <p>
             If you wish to cancel your subscription, you may do so at any time
-            before the next billing cycle. Cancellations must be requested
-            through our support team.
+            before the next billing cycle.
           </p>
           <h3 className="font-bold mt-4 text-primary">
             3. Contact Information

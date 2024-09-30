@@ -55,14 +55,9 @@ const Leaderboard = () => {
     fetchData()
   }, [])
 
-
-  useEffect(() => {
-    console.log(JSON.stringify(players))
-  }, [players])
-
   const fetchData = () => {
     axios.get('/api/users', { params: { role: 'player', includeMetrics: 1 } }).then(res => {
-      setPlayers(res.data.filter(p => p.metrics.stats ? true : false).sort((a, b) => b.metrics.stats?.metrics?.overall_score - a.metrics.stats?.metrics?.overall_score).slice(0, userSession.role === 'admin' ? undefined : 20))
+      setPlayers(res.data.filter(p => p.metrics.stats ? true : false).sort((a, b) => b.metrics.stats?.metrics?.overall_score - a.metrics.stats?.metrics?.overall_score).slice(0, userSession.role === 'admin' ? undefined : 20).map((p, i) => ({ serial: i + 1, ...p })))
     }).catch(console.error)
   }
 
@@ -112,7 +107,7 @@ const Leaderboard = () => {
                   {paginatedData.map((row, index) => (
                     <Fragment key={index}>
                       <TableRow>
-                        <TableCell className="!text-white">{index + 1}</TableCell>
+                        <TableCell className="!text-white">{row.serial}</TableCell>
                         <TableCell className="!text-white text-base">
                           {row.roleData.anonymous ? 'Anonymous' : row.name}
                           <div className={`text-primary text-xs ${row.roleData.anonymous && 'hidden'}`}>

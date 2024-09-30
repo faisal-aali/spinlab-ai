@@ -296,7 +296,15 @@ const CreateAccount = ({ nextStep, values }) => {
                   />
                 </div>
                 <div className="opacity-45">
-                  <label>I agree to the <span className="text-primary font-bold underline cursor-pointer">Terms of Service</span> and <span className="text-primary font-bold underline cursor-pointer">Privacy Policy</span></label>
+                  <label>I agree to the <span className="text-primary font-bold underline cursor-pointer">
+                    <a href="http://www.spinlabai.com/terms-of-service" target="_blank">
+                      Terms of Service
+                    </a>
+                  </span> and <span className="text-primary font-bold underline cursor-pointer">
+                      <a href="http://www.spinlabai.com/privacy-policy" target="_blank">
+                        Privacy Policy
+                      </a>
+                    </span></label>
                 </div>
               </div>
               <div className={`text-error ${!error && 'hidden'}`}>

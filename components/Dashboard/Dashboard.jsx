@@ -102,7 +102,7 @@ const Dashboard = () => {
               Discover essential formats and metrics for optimal video results
               before uploading/recording.
             </p>
-            <a href="/drill-library" className="text-primary underline">
+            <a href="http://www.spinlabai.com/resources/how-to-record" target="_blank" className="text-primary underline">
               Click here!
             </a>
           </div>
