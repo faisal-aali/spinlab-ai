@@ -7,6 +7,8 @@ import { IPurchase } from './interfaces/purchase';
 import { Purchase, User, Video } from './models';
 import mongoose from './mongodb';
 import crypto from 'crypto'
+import ffmpeg from 'fluent-ffmpeg';
+import { PassThrough } from 'stream';
 
 function validateError(err: any) {
     if (err instanceof Yup.ValidationError) {
@@ -81,8 +83,52 @@ function calculatePlayerMetrics(playerId: string) {
     })
 }
 
+async function extractVideoFramerate(video: File): Promise<number> {
+    return new Promise(async (resolve, reject) => {
+        try {
+            // Convert the file to a buffer
+            const videoBuffer = Buffer.from(await video.arrayBuffer())
+
+            // Create a PassThrough stream from the buffer
+            const stream = new PassThrough();
+            stream.end(videoBuffer);
+
+            // Extract video metadata and calculate the framerate
+            ffmpeg(stream)
+                .ffprobe((err, metadata) => {
+                    if (err) {
+                        console.error('Error reading video metadata:', err);
+                        throw new Error('Error: Unable to read video metadata')
+                    }
+
+                    const videoStream = metadata.streams.find((stream) => stream.codec_type === 'video');
+
+                    if (!videoStream) throw new Error('Error: No video stream found')
+                    if (!videoStream.avg_frame_rate) throw new Error('Error: Failed to determine fps')
+                    return resolve(eval(videoStream.avg_frame_rate))
+                    // videoStream.frame
+                    // const frameCount = videoStream.nb_frames ? parseInt(videoStream.nb_frames, 10) : null;
+                    // const duration = videoStream.duration ? parseFloat(videoStream.duration) : null;
+
+                    // if (frameCount && duration) {
+                    //     const calculatedFramerate = frameCount / duration;
+                    //     console.log(`Calculated Framerate: ${calculatedFramerate} fps`);
+
+                    //     // Respond with the calculated framerate
+                    //     Promise.resolve(calculatedFramerate)
+                    // } else {
+                    //     throw new Error('Unable to determine framerate')
+                    // }
+                });
+        } catch (err) {
+            return reject(err)
+        }
+    })
+}
+
 export {
     validateError,
     calculateCredits,
     calculatePlayerMetrics,
+    extractVideoFramerate
 }

@@ -157,12 +157,14 @@ class MotionAPI {
         height,
         weight,
         uploadfile,
+        frameRate
     }: {
         individualId?: number;
         taskType: string;
         height: number;
         weight: number;
         uploadfile: File;
+        frameRate: number;
     }): Promise<{ assessmentId: number; assessmentMappingId: number; }> {
 
         if (!taskType || !height || !weight || !uploadfile) {
@@ -175,6 +177,7 @@ class MotionAPI {
         formData.append('height', height.toString());
         formData.append('weight', weight.toString());
         formData.append('uploadfile', uploadfile);
+        formData.append('framerate', frameRate.toString());
 
         try {
             if (!this.auth) await this.authorize()

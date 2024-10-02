@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import * as Yup from "yup";
-import { calculateCredits, validateError } from "@/app/lib/functions";
+import { calculateCredits, extractVideoFramerate, validateError } from "@/app/lib/functions";
 import { authOption } from "../auth/[...nextauth]/route";
 import { getServerSession } from "next-auth";
 import { User, Video } from "@/app/lib/models";
@@ -53,7 +53,6 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-    // return NextResponse.json({ message: `OK` }, { status: 200 });
     try {
         const session = await getServerSession(authOption);
         if (!session || !session.user) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
@@ -63,6 +62,9 @@ export async function POST(req: NextRequest) {
 
         const uploadfile = formData.get('file') as File
         if (!uploadfile) return NextResponse.json({ message: 'File is required' }, { status: 400 });
+
+        const frameRate = await extractVideoFramerate(uploadfile)
+        console.log('frameRate is', frameRate)
 
         let userId = session.user._id
         if (['trainer', 'staff'].includes(session.user.role)) {
@@ -87,6 +89,7 @@ export async function POST(req: NextRequest) {
             weight,
             taskType,
             uploadfile,
+            frameRate
         })
 
         const newVideo = await Video.create({
