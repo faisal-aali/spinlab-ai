@@ -60,6 +60,7 @@ const videoSchema = new mongoose.Schema({
     deliveryDate: { type: Date, required: true },
     creationDate: { type: Date, required: false, default: () => new Date().toISOString() },
     assessmentDetails: { type: mongoose.Schema.Types.Mixed, required: false, default: {} },
+    framerate: { type: Number, required: true },
 }, { minimize: false });
 
 const packageSchema = new mongoose.Schema({

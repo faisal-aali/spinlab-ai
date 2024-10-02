@@ -100,6 +100,7 @@ export async function POST(req: NextRequest) {
             assessmentMappingId: task.assessmentMappingId,
             taskType: taskType,
             deliveryDate: new Date().getTime() + 600000,
+            framerate: frameRate
         });
 
         return NextResponse.json({ message: `Video has been queued with id ${newVideo._id}` }, { status: 200 });

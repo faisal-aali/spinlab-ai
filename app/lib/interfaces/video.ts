@@ -11,4 +11,5 @@ export interface IVideo {
     deliveryDate: Date,
     creationDate: Date,
     assessmentDetails: IAssessmentDetails,
+    framerate: number
 }
