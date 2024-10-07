@@ -24,7 +24,7 @@ export default function Recorder({ onSubmit }) {
         startRecording,
         stopRecording,
     } = useRecordWebcam({
-        mediaTrackConstraints: { video: true, audio: false, frameRate: 120 }
+        mediaTrackConstraints: { video: true, audio: false, frameRate: 240 }
     });
 
     const [videoDeviceId, setVideoDeviceId] = useState('');
@@ -146,7 +146,7 @@ export default function Recorder({ onSubmit }) {
                             <p>Preview</p>
                             <video ref={recording.previewRef} autoPlay loop playsInline style={{ maxHeight: 500 }} onLoadedMetadata={() => {
                                 if (recording.previewRef.current) {
-                                    recording.previewRef.current.playbackRate = 0.5; // Set playback rate to slow-motion
+                                    recording.previewRef.current.playbackRate = 1; // Set playback rate to slow-motion
                                 }
                             }} />
                             <div className="space-x-2 my-2">

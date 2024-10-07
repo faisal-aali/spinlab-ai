@@ -179,6 +179,8 @@ class MotionAPI {
         formData.append('uploadfile', uploadfile);
         formData.append('framerate', frameRate.toString());
 
+        console.log('createAssessment', formData)
+
         try {
             if (!this.auth) await this.authorize()
             if (!this.auth) throw new Error('Unauthorized');

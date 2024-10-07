@@ -66,6 +66,8 @@ export async function POST(req: NextRequest) {
         const frameRate = await extractVideoFramerate(uploadfile)
         console.log('frameRate is', frameRate)
 
+        return NextResponse.json({ message: 'FPS has been extracted' });
+
         let userId = session.user._id
         if (['trainer', 'staff'].includes(session.user.role)) {
             userId = formData.get('playerId') as string
