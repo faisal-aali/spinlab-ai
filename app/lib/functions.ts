@@ -105,6 +105,7 @@ async function extractVideoFramerate(video: File): Promise<number> {
 
                     if (!videoStream) throw new Error('Error: No video stream found')
                     if (!videoStream.avg_frame_rate) throw new Error('Error: Failed to determine fps')
+                    console.log('framerates', videoStream.avg_frame_rate, videoStream.r_frame_rate)
                     return resolve(eval(videoStream.avg_frame_rate))
                     // videoStream.frame
                     // const frameCount = videoStream.nb_frames ? parseInt(videoStream.nb_frames, 10) : null;
