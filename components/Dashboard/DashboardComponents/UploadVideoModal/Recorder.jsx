@@ -24,7 +24,7 @@ export default function Recorder({ onSubmit }) {
         startRecording,
         stopRecording,
     } = useRecordWebcam({
-        mediaTrackConstraints: { video: true, audio: false, frameRate: 240 }
+        mediaTrackConstraints: { video: true, audio: false, frameRate: { ideal: 240, max: 240 } }
     });
 
     const [videoDeviceId, setVideoDeviceId] = useState('');
