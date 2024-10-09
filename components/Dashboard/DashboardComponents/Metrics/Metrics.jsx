@@ -196,6 +196,15 @@ const EfficiencyGraph = ({ videos, selectedVideo, setSelectedVideo, setMetricsVi
                 // Example: alert(`You clicked on the video created on ${clickedVideo.creationDate}`);
             }
         },
+        onHover: (event, elements) => {
+            const chartElement = event.native.target; // Get the canvas element
+
+            if (elements.length > 0) {
+                chartElement.style.cursor = 'pointer'; // Set cursor to pointer when hovering over a datapoint
+            } else {
+                chartElement.style.cursor = 'default'; // Revert back to default cursor when not hovering over a datapoint
+            }
+        },
     };
 
     return (
