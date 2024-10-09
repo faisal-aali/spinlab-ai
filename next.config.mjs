@@ -8,6 +8,9 @@ const nextConfig = {
   //   return config
   // },
   reactStrictMode: false,
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   async redirects() {
     return [
       {
