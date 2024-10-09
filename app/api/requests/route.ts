@@ -8,17 +8,43 @@ import { getServerSession } from "next-auth";
 export async function GET(req: NextRequest) {
     try {
         const session = await getServerSession(authOption);
-        if (!session || !session.user || session.user.role !== 'admin') return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
+        if (!session || !session.user) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
 
         const { searchParams } = new URL(req.url);
         const isViewed = searchParams.get('isViewed')
         console.log('isViewed is', isViewed)
-        const query: { isViewed?: boolean } = {};
+        const query: { isViewed?: boolean, userId?: string } = {};
+        if (session.user.role !== 'admin') query.userId = session.user._id;
         if (isViewed) query.isViewed = (isViewed === 'true' ? true : isViewed === 'false' ? false : undefined);
 
         console.log('query is', query)
 
-        const requests = await Request.find(query);
+        const requests = await Request.aggregate([
+            { $match: query },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "userId",
+                    foreignField: "_id",
+                    as: "user"
+                }
+            },
+            {
+                $unwind: {
+                    path: '$user',
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+            {
+                $project: {
+                    'user.password': 0,
+                    'user.stripeCustomerId': 0
+                }
+            },
+            {
+                $sort: { creationDate: -1 }
+            }
+        ])
 
         return NextResponse.json(requests)
     } catch (err: unknown) {

@@ -24,6 +24,7 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import DeleteVideoModal from "../DeleteVideoModal/DeleteVideoModal";
 import RequestDeleteModal from './modal/RequestVideoDeleteModal'; // Adjust the import path accordingly
+import { useApp } from "@/components/Context/AppContext";
 
 
 const CustomLinearProgress = ({ value, color }) => {
@@ -50,26 +51,27 @@ const CustomLinearProgress = ({ value, color }) => {
 
 const History = (props) => {
   const user = useSession().data?.user || {}
+  const { showSnackbar } = useApp();
 
   const [videoSrc, setVideoSrc] = useState('')
 
   const [data, setData] = useState()
   const [page, setPage] = useState(1);
 
+  const [requests, setRequests] = useState([])
+
   const [showDetails, setShowDetails] = useState();
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedVideoId, setSelectedVideoId] = useState(null);
-  const [requestedVideos, setRequestedVideos] = useState({}); 
   const [showRequestDeleteModal, setShowRequestDeleteModal] = useState(false);
-  const [requestedReason, setRequestedReason] = useState(''); 
-
 
   const rowsPerPage = 10;
 
   useEffect(() => {
     console.log('History mounted')
     fetchVideos()
+    fetchRequests()
   }, [])
 
   const handlePageChange = (event, newPage) => {
@@ -82,9 +84,14 @@ const History = (props) => {
   );
 
   const fetchVideos = () => {
-    console.log('fetchVideos called', props)
     axios.get('/api/videos', { params: { userId: props.playerId || user._id, trainerId: props.trainerId } }).then(res => {
       setData(res.data)
+    }).catch(console.error)
+  }
+
+  const fetchRequests = () => {
+    axios.get('/api/requests').then(res => {
+      setRequests(res.data)
     }).catch(console.error)
   }
 
@@ -99,12 +106,18 @@ const History = (props) => {
   };
 
   const handleConfirmDelete = () => {
-    // Update requestedVideos state
-    setRequestedVideos((prev) => ({ ...prev, [selectedVideoId]: true }));
-    console.log(`Delete requested for video ID: ${selectedVideoId}`);
-    // Here you can also call an API to handle the actual delete request if needed
     setShowDeleteModal(false); // Close the modal
   };
+
+  const requestVideoDeletion = async (reason) => {
+    try {
+      await axios.post('/api/requests/videoDeletion', { reason, videoId: selectedVideoId })
+      showSnackbar('Your request has been submitted', 'success');
+      fetchRequests()
+    } catch (err) {
+      showSnackbar(err.response?.data?.message || err.message, 'error');
+    }
+  }
 
   return (
     <>
@@ -190,19 +203,21 @@ const History = (props) => {
                                   <PlayArrowIcon />
                                   OVERLAY VIDEO
                                 </button>
-                              <button
+                                <button
                                   onClick={() => handleDeleteClick(row._id)}
                                   className={`button-danger flex justify-center items-center w-8 h-8 rounded p-2 focus:outline-none ${user?.role !== "admin" && "hidden"}`}
                                 >
                                   <img src="/assets/delete-icon-white.svg" alt="" />
                                 </button>
-                                <button onClick={() => handleRequestDelete(row._id)} className={`bg-white flex justify-center items-center gap-2 text-black px-0 md:px-5 py-2 md:py-3 rounded-lg ${user?.role == "admin" && "hidden"} ${!overlayVideoUrl && 'hidden'}`}
-                                style={{
-                                  color: requestedVideos[row._id] ? '#FA9C02' : 'red',
-                                }}
-                                  >
-  
-                                {requestedVideos[row._id] ? "REQUESTED" : "REQUEST DELETE"}
+                                <button
+                                  disabled={requests.find(r => r.entityId === row._id) ? true : false}
+                                  onClick={() => handleRequestDelete(row._id)} className={`bg-white flex justify-center items-center gap-2 text-black px-0 md:px-5 py-2 md:py-3 rounded-lg ${user?.role !== "player" && user?.role !== "trainer" && "hidden"} ${!overlayVideoUrl && 'hidden'}`}
+                                  style={{
+                                    color: requests.find(r => r.entityId === row._id) ? '#FA9C02' : 'red',
+                                  }}
+                                >
+
+                                  {requests.find(r => r.entityId === row._id) ? "REQUESTED" : "REQUEST DELETE"}
                                 </button>
                               </div>
                             </TableCell>
@@ -266,20 +281,19 @@ const History = (props) => {
           </div>
         </div>
 
-        <DeleteVideoModal 
-        open={showDeleteModal} 
-        onClose={() => setShowDeleteModal(false)} 
-        onConfirm={handleConfirmDelete} 
-        videoId={selectedVideoId} 
-      />
+        <DeleteVideoModal
+          open={showDeleteModal}
+          onClose={() => setShowDeleteModal(false)}
+          onConfirm={handleConfirmDelete}
+          videoId={selectedVideoId}
+          onSuccess={fetchVideos}
+        />
 
-      <RequestDeleteModal 
-        open={showRequestDeleteModal} 
-        onClose={() => setShowRequestDeleteModal(false)} 
-        videoId={selectedVideoId} 
-        requestedReason={requestedReason} 
-        setRequestedReason={setRequestedReason} 
-      />
+        <RequestDeleteModal
+          open={showRequestDeleteModal}
+          onClose={() => setShowRequestDeleteModal(false)}
+          onConfirm={requestVideoDeletion}
+        />
         <VideoPlayer open={videoSrc ? true : false} onClose={() => setVideoSrc('')} src={videoSrc} />
       </div >
     </>

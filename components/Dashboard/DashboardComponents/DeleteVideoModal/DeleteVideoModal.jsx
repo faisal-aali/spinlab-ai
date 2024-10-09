@@ -34,7 +34,7 @@ const DeleteVideoModal = ({ open, onClose, videoId, onSuccess }) => {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`/api/drills/${videoId}`);
+      await axios.delete(`/api/videos/${videoId}`);
       showSnackbar('Video has been deleted', 'success');
       onSuccess && onSuccess()
       onClose();
