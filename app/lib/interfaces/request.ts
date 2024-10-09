@@ -5,6 +5,7 @@ export interface IRequest {
     userId: mongoose.Schema.Types.ObjectId,
     requestType: string,
     entityId: string,
+    reason: string,
     isViewed: boolean,
     action: string,
     creationDate: Date

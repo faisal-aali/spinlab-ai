@@ -134,6 +134,7 @@ const requestSchema = new mongoose.Schema({
     userId: { type: mongoose.Schema.Types.ObjectId, required: true },
     requestType: { type: String, required: true, enum: ['video_deletion'] },
     entityId: { type: mongoose.Schema.Types.ObjectId, required: true },
+    reason: { type: String, required: true },
     isViewed: { type: Boolean, required: false, default: false },
     action: { type: String, required: true, enum: ['pending', 'rejected', 'accepted'], default: 'pending' },
     creationDate: { type: Date, required: false, default: () => new Date().toISOString() },

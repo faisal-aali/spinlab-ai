@@ -11,6 +11,7 @@ export async function POST(req: NextRequest) {
         if (!session || !session.user) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
 
         const data = await req.json()
+        if (!data.reason) return NextResponse.json({ message: 'Reason is required' }, { status: 400 })
         if (!data.videoId) return NextResponse.json({ message: 'Video ID is required' }, { status: 400 })
         if (!mongoose.isValidObjectId(data.videoId)) return NextResponse.json({ message: 'Video ID must be a valid Object ID' }, { status: 400 })
 
@@ -23,7 +24,7 @@ export async function POST(req: NextRequest) {
             userId: session.user._id,
             entityId: data.videoId,
             requestType: 'video_deletion',
-
+            reason: data.reason
         })
 
         return NextResponse.json({ message: `Request has been created with id ${request._id}` }, { status: 200 })
