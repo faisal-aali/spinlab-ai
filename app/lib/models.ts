@@ -9,6 +9,7 @@ import { IPurchase } from './interfaces/purchase';
 import { ICalendar } from './interfaces/calendar';
 import { INotification } from './interfaces/notification';
 import { IPromocode } from './interfaces/promocode';
+import { IRequest } from './interfaces/request';
 
 // const roleDataSchema = new mongoose.Schema({
 //     age: { type: Number, required: false, default: null },
@@ -61,6 +62,7 @@ const videoSchema = new mongoose.Schema({
     creationDate: { type: Date, required: false, default: () => new Date().toISOString() },
     assessmentDetails: { type: mongoose.Schema.Types.Mixed, required: false, default: {} },
     framerate: { type: Number, required: true },
+    isDeleted: { type: Boolean, required: false, default: false },
 }, { minimize: false });
 
 const packageSchema = new mongoose.Schema({
@@ -128,6 +130,15 @@ const promocodeSchema = new mongoose.Schema({
     isDeleted: { type: Boolean, required: false, default: false },
 });
 
+const requestSchema = new mongoose.Schema({
+    userId: { type: mongoose.Schema.Types.ObjectId, required: true },
+    requestType: { type: String, required: true, enum: ['video_deletion'] },
+    entityId: { type: mongoose.Schema.Types.ObjectId, required: true },
+    isViewed: { type: Boolean, required: false, default: false },
+    action: { type: String, required: true, enum: ['pending', 'rejected', 'accepted'], default: 'pending' },
+    creationDate: { type: Date, required: false, default: () => new Date().toISOString() },
+});
+
 export const User: mongoose.Model<IUser> = mongoose.models.user || mongoose.model<IUser>('user', userSchema, 'users');
 
 export const Drill: mongoose.Model<IDrill> = mongoose.models.drill || mongoose.model<IDrill>('drill', drillSchema, 'drills');
@@ -147,3 +158,5 @@ export const Calendar: mongoose.Model<ICalendar> = mongoose.models.calendar || m
 export const Notification: mongoose.Model<INotification> = mongoose.models.notification || mongoose.model<INotification>('notification', notificationSchema, 'notifications');
 
 export const Promocode: mongoose.Model<IPromocode> = mongoose.models.promocode || mongoose.model<IPromocode>('promocode', promocodeSchema, 'promocodes');
+
+export const Request: mongoose.Model<IRequest> = mongoose.models.request || mongoose.model<IRequest>('request', requestSchema, 'requests');

@@ -107,7 +107,7 @@ export async function GET(req: NextRequest) {
             await Promise.all(users.map((user) => {
                 return new Promise(async (resolve, reject) => {
                     try {
-                        const videos = await Video.find({ userId: user._id, 'assessmentDetails.statusCode': 1 }, { assessmentDetails: { stats: { ARR: 0, ANG: 0, VEL: 0 } } })
+                        const videos = await Video.find({ userId: user._id, 'assessmentDetails.statusCode': 1, isDeleted: false }, { assessmentDetails: { stats: { ARR: 0, ANG: 0, VEL: 0 } } })
 
                         if (videos.length === 0) {
                             user.metrics = {}

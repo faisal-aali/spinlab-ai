@@ -68,21 +68,6 @@ function calculateCredits(userId: string): Promise<ICredit> {
     })
 }
 
-function calculatePlayerMetrics(playerId: string) {
-    return new Promise(async (resolve, reject) => {
-        try {
-            const player = await User.findOne({ _id: playerId })
-            if (!player) return reject('Player not found')
-
-            const videos = await Video.find({ userId: playerId })
-
-
-        } catch (err) {
-            reject(err)
-        }
-    })
-}
-
 async function extractVideoFramerate(video: File): Promise<number> {
     return new Promise(async (resolve, reject) => {
         try {
@@ -129,6 +114,5 @@ async function extractVideoFramerate(video: File): Promise<number> {
 export {
     validateError,
     calculateCredits,
-    calculatePlayerMetrics,
     extractVideoFramerate
 }

@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
         const userId = searchParams.get('userId');
         const trainerId = searchParams.get('trainerId');
 
-        const query: { _id?: string, userId?: string | object } = {};
+        const query: { _id?: string, userId?: string | object, isDeleted: boolean } = { isDeleted: false };
 
         if (id) query._id = id;
         if (userId) query.userId = userId;
