@@ -82,11 +82,11 @@ const Requests = () => {
             </div>
           </div>
         </div>
-        <div className="flex flex-grow gap-4 request-wrapper">
-          <Paper className="w-2/5 flex-grow !bg-transparent p-4 requested-users">
-            <Typography variant="h3" className="text-white ">
+        <div className="block md:flex flex-grow gap-4 request-wrapper">
+          <Paper className="w-full md:w-2/5 flex-grow !bg-transparent p-4 requested-users">
+            <h3 className="text-white text-2xl md:text-5xl">
               Messages
-            </Typography>
+            </h3>
             <List className="!mt-6 !bg-slate-900 !pt-0">
               {messagesData.map((message) => (
                 <ListItemButton
@@ -97,8 +97,8 @@ const Requests = () => {
                   <ListItemText
                     primary={
                       <span className="flex">
-                        <span className="w-1/3">{message.name}</span>
-                        <span className="text-gray-400 w-1/5">{message.email}</span>
+                        <span className="w-full md:w-1/3">{message.name}</span>
+                        <span className="text-gray-400 w-full md:w-1/5">{message.email}</span>
                       </span>
                     }
                     className="text-white"
@@ -111,12 +111,12 @@ const Requests = () => {
             </List>
           </Paper>
 
-          <Paper className="w-3/5 flex-none !bg-transparent p-4">
+          <Paper className="w-full md:w-3/5 flex-none !bg-transparent p-4">
             <div className="flex items-center justify-between">
-              <Typography variant="h3" className="text-white">
+              <h3 className="text-white text-2xl md:text-5xl">
                 Details
-              </Typography>
-              <button className="w-60 h-[42px] dark-blue-color bg-white border rounded-lg flex items-center justify-center text-lg"
+              </h3>
+              <button className="w-44 md:w-60 h-[42px] dark-blue-color bg-white border rounded-lg flex items-center justify-center text-sm	md:text-lg"
                onClick={handleShowDetails}>
                 SEE VIDEO & DETAILS
               </button>
@@ -129,11 +129,11 @@ const Requests = () => {
                   className="w-full h-[240px] bg-transparent text-white opacity-45 border rounded-lg p-4 focus:outline-none resize-none"
                   style={{ height: '200px' }}
                 />
-                <div className="mt-4 flex justify-center gap-4">
-                  <button className="w-72 h-[44px] text-white border rounded flex items-center justify-center text-lg font-bold">
+                <div className="mt-4 block md:flex justify-center gap-4">
+                  <button className="w-full md:w-72 mb-4 md:mb-0 h-[44px] text-white border rounded flex items-center justify-center text-lg font-bold">
                     Reject Delete Request
                   </button>
-                  <button className="w-72 h-[44px] bg-primary dark-blue-color rounded flex items-center justify-center text-lg font-bold">
+                  <button className="w-full md:w-72 h-[44px] bg-primary dark-blue-color rounded flex items-center justify-center text-lg font-bold">
                     Accept Delete Request
                   </button>
                 </div>
