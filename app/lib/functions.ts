@@ -40,8 +40,7 @@ function calculateCredits(userId: string): Promise<ICredit> {
                 // console.log('playerIds', playerIds)
             }
 
-            const videos = await Video.find({ userId: { $in: playerIds } })
-            // console.log(videos)
+            const videos = await Video.find({ userId: { $in: playerIds } }, { _id: 1, uploadedBy: 1, assessmentDetails: { statusCode: 1 } })
             const purchases = await Purchase.find({ userId: userId })
             var credits = {
                 purchased: 0,

@@ -29,7 +29,7 @@ export async function GET(req: NextRequest) {
 
         console.log(query)
 
-        const videos = await Video.find(query, { assessmentDetails: { stats: { ARR: 0, ANG: 0, VEL: 0 } } }, { sort: { creationDate: -1 } });
+        const videos = await Video.find(query, {}, { sort: { creationDate: -1 } });
 
         for (const video of videos) {
             if (!video.assessmentDetails.fileUrl) continue;
@@ -38,7 +38,13 @@ export async function GET(req: NextRequest) {
             console.log('signatureExpiry', signatureExpiry)
             if (new Date(signatureExpiry as string).getTime() < new Date().getTime()) {
                 const assessmentDetails = await _3Motion.getAssessmentDetails({ taskId: video.taskId, taskType: video.taskType })
-                if (assessmentDetails.dataJsonUrl) assessmentDetails.stats = await axios.get(assessmentDetails.dataJsonUrl).then(({ data }) => ({ ...data, ARR: {}, ANG: {}, VEL: {} }));
+                if (assessmentDetails.dataJsonUrl) {
+                    assessmentDetails.stats = await axios.get(assessmentDetails.dataJsonUrl);
+                    delete assessmentDetails.stats.info.mask;
+                    delete assessmentDetails.stats.ARR;
+                    delete assessmentDetails.stats.ANG;
+                    delete assessmentDetails.stats.VEL;
+                }
                 video.assessmentDetails = assessmentDetails
                 video.save().then(() => console.log('updated assessmentDetails for', video.taskId))
             }

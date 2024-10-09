@@ -107,7 +107,7 @@ export async function GET(req: NextRequest) {
             await Promise.all(users.map((user) => {
                 return new Promise(async (resolve, reject) => {
                     try {
-                        const videos = await Video.find({ userId: user._id, 'assessmentDetails.statusCode': 1, isDeleted: false }, { assessmentDetails: { stats: { ARR: 0, ANG: 0, VEL: 0 } } })
+                        const videos = await Video.find({ userId: user._id, 'assessmentDetails.statusCode': 1, isDeleted: false })
 
                         if (videos.length === 0) {
                             user.metrics = {}
@@ -118,7 +118,13 @@ export async function GET(req: NextRequest) {
                             console.log('signatureExpiry', signatureExpiry)
                             if (new Date(signatureExpiry as string).getTime() < new Date().getTime()) {
                                 const assessmentDetails = await _3Motion.getAssessmentDetails({ taskId: video.taskId, taskType: video.taskType })
-                                if (assessmentDetails.dataJsonUrl) assessmentDetails.stats = await axios.get(assessmentDetails.dataJsonUrl).then(({ data }) => ({ ...data, ARR: {}, ANG: {}, VEL: {} }))
+                                if (assessmentDetails.dataJsonUrl) {
+                                    assessmentDetails.stats = await axios.get(assessmentDetails.dataJsonUrl)
+                                    delete assessmentDetails.stats.info.mask;
+                                    delete assessmentDetails.stats.ARR;
+                                    delete assessmentDetails.stats.ANG;
+                                    delete assessmentDetails.stats.VEL;
+                                }
                                 video.assessmentDetails = assessmentDetails
                                 video.save().then(() => console.log('updated assessmentDetails for', video.taskId))
                             }

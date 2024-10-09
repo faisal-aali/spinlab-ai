@@ -48,7 +48,11 @@ export async function POST(req: NextRequest) {
 
         if (assessmentDetails) {
             if (assessmentDetails.dataJsonUrl) {
-                assessmentDetails.stats = await axios.get(assessmentDetails.dataJsonUrl).then(({ data }) => ({ ...data, ARR: {}, ANG: {}, VEL: {} }));
+                assessmentDetails.stats = await axios.get(assessmentDetails.dataJsonUrl);
+                delete assessmentDetails.stats.info.mask;
+                delete assessmentDetails.stats.ARR;
+                delete assessmentDetails.stats.ANG;
+                delete assessmentDetails.stats.VEL;
             } else {
                 console.warn(new Date(), '[/api/3motion/webhook] dataJsonUrl is empty')
             }
@@ -131,7 +135,7 @@ setInterval(() => {
 
 const updateAssessments = async () => {
     console.log(new Date(), 'updateAssessments timer called')
-    const videos = await Video.find({}, { assessmentDetails: { stats: { ARR: 0, ANG: 0, VEL: 0 } } });
+    const videos = await Video.find();
     videos.forEach(async video => {
         if (video.assessmentDetails.statusCode) return
         console.log(new Date(), 'updating pending assessment details for', video.taskId)
@@ -143,7 +147,11 @@ const updateAssessments = async () => {
         sendNotification(video, assessmentDetails.statusCode)
 
         if (assessmentDetails.dataJsonUrl) {
-            assessmentDetails.stats = await axios.get(assessmentDetails.dataJsonUrl).then(({ data }) => ({ ...data, ARR: {}, ANG: {}, VEL: {} }));
+            assessmentDetails.stats = await axios.get(assessmentDetails.dataJsonUrl);
+            delete assessmentDetails.stats.info.mask;
+            delete assessmentDetails.stats.ARR;
+            delete assessmentDetails.stats.ANG;
+            delete assessmentDetails.stats.VEL;
         }
 
         video.assessmentDetails = assessmentDetails
