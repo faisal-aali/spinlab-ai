@@ -144,8 +144,17 @@ class MotionAPI {
             if (!res.data.success) {
                 throw new Error(res.data.message || 'Unexpected error');
             }
+            const assessmentDetails = res.data.result;
+            if (assessmentDetails.dataJsonUrl) {
+                assessmentDetails.stats = ((await axios.get(assessmentDetails.dataJsonUrl)).data) || {}
+                // console.log(assessmentDetails.stats)
+                if (assessmentDetails.stats.info?.mask) assessmentDetails.stats.info.mask = {}
+                if (assessmentDetails.stats.ARR) assessmentDetails.stats.ARR = {}
+                if (assessmentDetails.stats.ANG) assessmentDetails.stats.ANG = {}
+                if (assessmentDetails.stats.VEL) assessmentDetails.stats.VEL = {}
+            }
 
-            return res.data.result;
+            return assessmentDetails;
         } catch (err: any) {
             throw new Error(err.response?.data?.message || err.message || 'INTERNAL ERROR');
         }

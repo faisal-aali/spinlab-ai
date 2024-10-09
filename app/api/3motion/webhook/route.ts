@@ -47,16 +47,6 @@ export async function POST(req: NextRequest) {
         sendNotification(video, assessmentDetails.statusCode)
 
         if (assessmentDetails) {
-            if (assessmentDetails.dataJsonUrl) {
-                assessmentDetails.stats = await axios.get(assessmentDetails.dataJsonUrl);
-                delete assessmentDetails.stats.info.mask;
-                delete assessmentDetails.stats.ARR;
-                delete assessmentDetails.stats.ANG;
-                delete assessmentDetails.stats.VEL;
-            } else {
-                console.warn(new Date(), '[/api/3motion/webhook] dataJsonUrl is empty')
-            }
-
             video.assessmentDetails = assessmentDetails
         } else {
             video.assessmentDetails = data
@@ -145,14 +135,6 @@ const updateAssessments = async () => {
         if (!assessmentDetails) return console.error('Invalid response for', video.taskId)
 
         sendNotification(video, assessmentDetails.statusCode)
-
-        if (assessmentDetails.dataJsonUrl) {
-            assessmentDetails.stats = await axios.get(assessmentDetails.dataJsonUrl);
-            delete assessmentDetails.stats.info.mask;
-            delete assessmentDetails.stats.ARR;
-            delete assessmentDetails.stats.ANG;
-            delete assessmentDetails.stats.VEL;
-        }
 
         video.assessmentDetails = assessmentDetails
 

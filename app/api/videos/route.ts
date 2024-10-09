@@ -38,13 +38,6 @@ export async function GET(req: NextRequest) {
             console.log('signatureExpiry', signatureExpiry)
             if (new Date(signatureExpiry as string).getTime() < new Date().getTime()) {
                 const assessmentDetails = await _3Motion.getAssessmentDetails({ taskId: video.taskId, taskType: video.taskType })
-                if (assessmentDetails.dataJsonUrl) {
-                    assessmentDetails.stats = await axios.get(assessmentDetails.dataJsonUrl);
-                    delete assessmentDetails.stats.info.mask;
-                    delete assessmentDetails.stats.ARR;
-                    delete assessmentDetails.stats.ANG;
-                    delete assessmentDetails.stats.VEL;
-                }
                 video.assessmentDetails = assessmentDetails
                 video.save().then(() => console.log('updated assessmentDetails for', video.taskId))
             }
