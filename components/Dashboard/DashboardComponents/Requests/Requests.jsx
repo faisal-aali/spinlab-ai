@@ -11,6 +11,8 @@ import {
 } from "@mui/material";
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { useApp } from "@/components/Context/AppContext";
+import PlayerVideoDetailsModal from "./modal/PlayerVideoDetailsModal";
+
 
 const messagesData = [
   {
@@ -38,10 +40,31 @@ const messagesData = [
 
 const Requests = () => {
   const [selectedMessage, setSelectedMessage] = useState(messagesData[0] || null);
+  const [showDetails, setShowDetails] = useState(false);
   const { user } = useApp();
 
   const handleMessageClick = (message) => {
     setSelectedMessage(message);
+  };
+
+  const handleShowDetails = () => {
+    setShowDetails(true);
+  };
+
+  const handleCloseDetails = () => {
+    setShowDetails(false);
+  };
+
+  const playerDetails = {
+    name: "Micheal Phillips",
+    location: "Dallas, Texas",
+    armSpeed: 7.6,
+    releaseTime: 458,
+    qbRating: 100,
+    kinematicSequence: 100,
+    acceleration: 100,
+    deceleration: 100,
+    velocityEfficiency: 100,
   };
 
   return (
@@ -93,7 +116,8 @@ const Requests = () => {
               <Typography variant="h3" className="text-white">
                 Details
               </Typography>
-              <button className="w-60 h-[42px] dark-blue-color bg-white border rounded-lg flex items-center justify-center text-lg">
+              <button className="w-60 h-[42px] dark-blue-color bg-white border rounded-lg flex items-center justify-center text-lg"
+               onClick={handleShowDetails}>
                 SEE VIDEO & DETAILS
               </button>
             </div>
@@ -122,6 +146,12 @@ const Requests = () => {
           </Paper>
         </div>
       </div>
+
+      <PlayerVideoDetailsModal
+        open={showDetails}
+        onClose={handleCloseDetails}
+        player={playerDetails}
+      />
     </div>
   );
 };
