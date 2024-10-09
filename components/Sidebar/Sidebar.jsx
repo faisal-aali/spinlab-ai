@@ -165,6 +165,13 @@ const Sidebar = ({ showSidebar, setShowSidebar }) => {
       needVerification: true
     },
     {
+      url: '/requests',
+      icon: '/assets/requests.svg',
+      label: 'Requests',
+      roles: ['admin'],
+      needVerification: true
+    },
+    {
       url: '/settings',
       icon: '/assets/setting-icon.svg',
       label: 'Settings',

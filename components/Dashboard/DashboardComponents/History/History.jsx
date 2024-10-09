@@ -22,6 +22,9 @@ import DownloadIcon from '@mui/icons-material/Download';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import ExpandLess from "@mui/icons-material/ExpandLess";
+import DeleteVideoModal from "../DeleteVideoModal/DeleteVideoModal";
+import RequestDeleteModal from './modal/RequestVideoDeleteModal'; // Adjust the import path accordingly
+
 
 const CustomLinearProgress = ({ value, color }) => {
   return (
@@ -53,7 +56,14 @@ const History = (props) => {
   const [data, setData] = useState()
   const [page, setPage] = useState(1);
 
-  const [showDetails, setShowDetails] = useState()
+  const [showDetails, setShowDetails] = useState();
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedVideoId, setSelectedVideoId] = useState(null);
+  const [requestedVideos, setRequestedVideos] = useState({}); 
+  const [showRequestDeleteModal, setShowRequestDeleteModal] = useState(false);
+  const [requestedReason, setRequestedReason] = useState(''); 
+
 
   const rowsPerPage = 10;
 
@@ -77,6 +87,24 @@ const History = (props) => {
       setData(res.data)
     }).catch(console.error)
   }
+
+  const handleDeleteClick = (videoId) => {
+    setSelectedVideoId(videoId);
+    setShowDeleteModal(true);
+  };
+
+  const handleRequestDelete = (videoId) => {
+    setSelectedVideoId(videoId);
+    setShowRequestDeleteModal(true);
+  };
+
+  const handleConfirmDelete = () => {
+    // Update requestedVideos state
+    setRequestedVideos((prev) => ({ ...prev, [selectedVideoId]: true }));
+    console.log(`Delete requested for video ID: ${selectedVideoId}`);
+    // Here you can also call an API to handle the actual delete request if needed
+    setShowDeleteModal(false); // Close the modal
+  };
 
   return (
     <>
@@ -153,7 +181,7 @@ const History = (props) => {
                                 />}
                             </TableCell>
                             <TableCell sx={{ display: { xs: 'none', sm: 'none', md: 'table-cell' } }} className="text-white min-w-96">
-                              <div className="grid grid-cols-2 md:grid-cols-2 items-center gap-4">
+                              <div className="grid grid-cols-2 md:grid-cols-3 items-center gap-4">
                                 <button onClick={() => window.open(pdfUrl)} className={`bg-white flex justify-center items-center gap-2 text-black px-0 md:px-5 py-2 md:py-3 rounded-lg ${!pdfUrl && 'hidden'}`}>
                                   <DownloadIcon />
                                   DOWNLOAD PDF
@@ -161,6 +189,20 @@ const History = (props) => {
                                 <button onClick={() => setVideoSrc(overlayVideoUrl)} className={`bg-white flex justify-center items-center gap-2 text-black px-0 md:px-5 py-2 md:py-3 rounded-lg ${!overlayVideoUrl && 'hidden'}`}>
                                   <PlayArrowIcon />
                                   OVERLAY VIDEO
+                                </button>
+                              <button
+                                  onClick={() => handleDeleteClick(row._id)}
+                                  className={`button-danger flex justify-center items-center w-8 h-8 rounded p-2 focus:outline-none ${user?.role !== "admin" && "hidden"}`}
+                                >
+                                  <img src="/assets/delete-icon-white.svg" alt="" />
+                                </button>
+                                <button onClick={() => handleRequestDelete(row._id)} className={`bg-white flex justify-center items-center gap-2 text-black px-0 md:px-5 py-2 md:py-3 rounded-lg ${user?.role == "admin" && "hidden"} ${!overlayVideoUrl && 'hidden'}`}
+                                style={{
+                                  color: requestedVideos[row._id] ? '#FA9C02' : 'red',
+                                }}
+                                  >
+  
+                                {requestedVideos[row._id] ? "REQUESTED" : "REQUEST DELETE"}
                                 </button>
                               </div>
                             </TableCell>
@@ -223,6 +265,21 @@ const History = (props) => {
             />
           </div>
         </div>
+
+        <DeleteVideoModal 
+        open={showDeleteModal} 
+        onClose={() => setShowDeleteModal(false)} 
+        onConfirm={handleConfirmDelete} 
+        videoId={selectedVideoId} 
+      />
+
+      <RequestDeleteModal 
+        open={showRequestDeleteModal} 
+        onClose={() => setShowRequestDeleteModal(false)} 
+        videoId={selectedVideoId} 
+        requestedReason={requestedReason} 
+        setRequestedReason={setRequestedReason} 
+      />
         <VideoPlayer open={videoSrc ? true : false} onClose={() => setVideoSrc('')} src={videoSrc} />
       </div >
     </>

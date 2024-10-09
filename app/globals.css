@@ -371,3 +371,12 @@ button[disabled] {
 .videos-container {
   overflow-y: auto;
 }
+
+.requested-users .MuiButtonBase-root-MuiListItemButton-root:hover {
+  text-decoration: none;
+  background-color: rgb(18 255 23 / 15%);
+}
+
+.request-wrapper .MuiPaper-root{
+  box-shadow: none;
+}
