@@ -5,15 +5,18 @@ import Grid from "@mui/material/Grid";
 import LinearProgress from "@mui/material/LinearProgress";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
+import Divider from "@mui/material/Divider";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import axios from 'axios'
 import { convertCmToFeetAndInches } from "@/util/utils";
 import History from "../History/History";
 import UploadModal from "../UploadVideoModal/UploadModal";
 import LineGraph from "@/components/Common/LineGraph/LineGraph";
+import ArrowBackIos from '@mui/icons-material/ArrowBackIos';
+import ArrowForwardIos from '@mui/icons-material/ArrowForwardIos';
 
 const CustomLinearProgress = ({ value, color, textSize }) => {
     return (
@@ -99,10 +102,9 @@ const KPICard = ({ icon, text, value, percentage, color }) => {
     )
 }
 
-const EfficiencyGraph = ({ videos }) => {
+const EfficiencyGraph = ({ videos, selectedVideo, setSelectedVideo, setMetricsView }) => {
 
-    var _videos = videos.filter(video => video.assessmentDetails.statusCode === 1).sort((a, b) => new Date(a.creationDate).getTime() - new Date(b.creationDate).getTime())
-    _videos = _videos
+    const _videos = videos
 
     const data = {
         labels: _videos.map(video => new Date(video.creationDate).toLocaleDateString()),
@@ -113,8 +115,9 @@ const EfficiencyGraph = ({ videos }) => {
                 fill: false,
                 borderColor: '#32E100',
                 tension: 0.1,
-                pointRadius: 7,
                 pointHoverRadius: 10,
+                pointRadius: _videos.map(({ _id }) => selectedVideo._id === _id ? 9 : 7),
+                pointBackgroundColor: _videos.map(({ _id }) => selectedVideo._id === _id ? '#32E100' : 'transparent'), // Set color for selected points
             },
             {
                 label: 'Acceleration Score',
@@ -122,8 +125,9 @@ const EfficiencyGraph = ({ videos }) => {
                 fill: false,
                 borderColor: '#00B2FF',
                 tension: 0.1,
-                pointRadius: 7,
                 pointHoverRadius: 10,
+                pointRadius: _videos.map(({ _id }) => selectedVideo._id === _id ? 9 : 7),
+                pointBackgroundColor: _videos.map(({ _id }) => selectedVideo._id === _id ? '#00B2FF' : 'transparent'), // Set color for selected points
             },
             {
                 label: 'Deceleration Score',
@@ -131,8 +135,9 @@ const EfficiencyGraph = ({ videos }) => {
                 fill: false,
                 borderColor: '#AD00FF',
                 tension: 0.1,
-                pointRadius: 7,
                 pointHoverRadius: 10,
+                pointRadius: _videos.map(({ _id }) => selectedVideo._id === _id ? 9 : 7),
+                pointBackgroundColor: _videos.map(({ _id }) => selectedVideo._id === _id ? '#AD00FF' : 'transparent'), // Set color for selected points
             },
             {
                 label: 'Velocity Efficiency Score',
@@ -140,8 +145,9 @@ const EfficiencyGraph = ({ videos }) => {
                 fill: false,
                 borderColor: '#F52323',
                 tension: 0.1,
-                pointRadius: 7,
                 pointHoverRadius: 10,
+                pointRadius: _videos.map(({ _id }) => selectedVideo._id === _id ? 9 : 7),
+                pointBackgroundColor: _videos.map(({ _id }) => selectedVideo._id === _id ? '#F52323' : 'transparent'), // Set color for selected points
             },
         ],
     };
@@ -176,6 +182,29 @@ const EfficiencyGraph = ({ videos }) => {
                 },
             }
         },
+        onClick: (event, elements) => {
+            if (elements.length > 0) {
+                const dataIndex = elements[0].index; // Index of the datapoint
+                const clickedVideo = _videos[dataIndex]; // Video corresponding to the clicked point
+
+                console.log('Clicked video data:', clickedVideo);
+
+                setSelectedVideo(clickedVideo)
+                setMetricsView('previous')
+
+                // Perform any action here, e.g., navigate to a video detail page
+                // Example: alert(`You clicked on the video created on ${clickedVideo.creationDate}`);
+            }
+        },
+        onHover: (event, elements) => {
+            const chartElement = event.native.target; // Get the canvas element
+
+            if (elements.length > 0) {
+                chartElement.style.cursor = 'pointer'; // Set cursor to pointer when hovering over a datapoint
+            } else {
+                chartElement.style.cursor = 'default'; // Revert back to default cursor when not hovering over a datapoint
+            }
+        },
     };
 
     return (
@@ -192,51 +221,94 @@ export default function Metrics(props) {
     const [player, setPlayer] = useState()
     const [loading, setLoading] = useState(true)
     const [videos, setVideos] = useState()
+    const [selectedVideo, setSelectedVideo] = useState()
 
     const searchParams = useSearchParams();
     const playerId = props.playerId || searchParams.get('playerId') || (user.role === 'player' && user._id)
+    const [datesCount, setDatesCount] = useState({});
+    const [metricsView, setMetricsView] = useState('latest')
 
     useEffect(() => {
         if (!playerId) return
         axios.get('/api/users', { params: { id: playerId, includeMetrics: 1 } }).then(res => {
             setPlayer(res.data[0])
             axios.get('/api/videos', { params: { userId: playerId } }).then(res => {
+                res.data = res.data.filter(video => video.assessmentDetails.statusCode === 1).sort((a, b) => new Date(a.creationDate).getTime() - new Date(b.creationDate).getTime())
                 setVideos(res.data)
+                setSelectedVideo(res.data[res.data.length - 1])
                 setLoading(false)
             })
         }).catch(console.error)
     }, [])
 
-    const KPIs = [{
+    useEffect(() => {
+        if (!videos || videos.length === 0) return
+        const datesCount = {}
+        videos.forEach(video => {
+            const date = new Date(video.creationDate).toDateString()
+            if (!datesCount[date]) datesCount[date] = 0
+            datesCount[date]++
+        })
+        setDatesCount(datesCount)
+    }, [videos])
+
+    const KPIs = useMemo(() => ([{
         text: 'Arm Speed',
-        value: `${player?.metrics?.stats?.metrics.hand_speed || 0} mph`,
+        value: `${selectedVideo?.assessmentDetails.stats.metrics.hand_speed || 0} mph`,
         icon: '/assets/metrics/arm-speed.svg'
     }, {
         text: 'Kinematic Sequence Score',
-        percentage: player?.metrics?.stats?.metrics.sequence_score || 0,
+        percentage: selectedVideo?.assessmentDetails.stats.metrics.sequence_score || 0,
         icon: '/assets/metrics/sequence.svg',
         color: '#32E100'
     }, {
         text: 'Acceleration Score',
-        percentage: player?.metrics?.stats?.metrics.acceleration_score || 0,
+        percentage: selectedVideo?.assessmentDetails.stats.metrics.acceleration_score || 0,
         icon: '/assets/metrics/acceleration.svg',
         color: '#00B2FF'
     }, {
         text: 'Release Time',
-        value: `${player?.metrics?.stats?.metrics.release_time || 0} msec`,
+        value: `${selectedVideo?.assessmentDetails.stats.metrics.release_time || 0} msec`,
         icon: '/assets/metrics/release-time.svg',
         color: '#D9D9D9'
     }, {
         text: 'Deceleration Score',
-        percentage: player?.metrics?.stats?.metrics.deceleration_score || 0,
+        percentage: selectedVideo?.assessmentDetails.stats.metrics.deceleration_score || 0,
         icon: '/assets/metrics/deceleration.svg',
         color: '#AD00FF'
     }, {
         text: 'Velocity Efficiency Score',
-        percentage: player?.metrics?.stats?.metrics.efficiency_score || 0,
+        percentage: selectedVideo?.assessmentDetails.stats.metrics.efficiency_score || 0,
         icon: '/assets/metrics/efficiency.svg',
         color: '#F52323'
-    },]
+    }]), [selectedVideo])
+
+    const changeSelectedVideo = (action) => {
+        setSelectedVideo(selectedVideo => {
+            let currentIndex = videos.findIndex(el => el._id === selectedVideo._id);
+            console.log('prevIndex', currentIndex, videos.length)
+
+            if (action === 'increment') {
+                if (currentIndex < videos.length - 1) {
+                    currentIndex++;
+                }
+            } else if (action === 'decrement') {
+                if (currentIndex > 0) {
+                    currentIndex--;
+                }
+            }
+
+            console.log('currIndex', currentIndex)
+
+            return videos[currentIndex]
+        })
+    }
+
+    const toggleMetricsView = () => {
+        if (metricsView === 'previous') setSelectedVideo(videos[videos.length - 1])
+        if (metricsView === 'latest') setSelectedVideo(videos[0])
+        setMetricsView(v => v === 'latest' ? 'previous' : 'latest')
+    }
 
     return (
         loading ? <CircularProgress /> :
@@ -251,6 +323,34 @@ export default function Metrics(props) {
                 <div className={`${props.omitPlayerCard && 'hidden'}`}>
                     <PlayerCard player={player} />
                 </div>
+                <div className={`flex justify-between flex-col lg:flex-row gap-4`}>
+                    <div className="flex gap-2">
+                        <div>
+                            <p className="text-2xl lg:text-4xl font-bold capitalize">{metricsView} Metrics</p>
+                        </div>
+                        <div className={`flex items-end ${videos.length === 0 && 'hidden'}`} onClick={toggleMetricsView}>
+                            <p className="text-sm lg:text-lg text-primary underline cursor-pointer">View {metricsView === 'latest' ? 'Previous' : 'Latest'} Stats</p>
+                        </div>
+                    </div>
+                    <div className={`flex ${metricsView === 'latest' && 'hidden'}`}>
+                        <div>
+                            <IconButton disabled={selectedVideo._id === videos[0]._id} onClick={() => changeSelectedVideo('decrement')}>
+                                <ArrowBackIos fontSize="small" className={`text-primary ${selectedVideo._id === videos[0]._id && 'text-disabled'}`} />
+                            </IconButton>
+                        </div>
+                        <div className="items-center flex">
+                            <p className="text-primary text-base md:text-xl">
+                                {new Date(selectedVideo.creationDate).toDateString()} {new Date(selectedVideo.creationDate).toLocaleTimeString()}
+                                {/* {datesCount[new Date(selectedVideo.creationDate).toDateString()] !== 1 && new Date(selectedVideo.creationDate).toLocaleTimeString()} */}
+                            </p>
+                        </div>
+                        <div>
+                            <IconButton color="success" disabled={selectedVideo._id === videos[videos.length - 1]._id} onClick={() => changeSelectedVideo('increment')}>
+                                <ArrowForwardIos fontSize="small" className={`text-primary ${selectedVideo._id === videos[videos.length - 1]._id && 'text-disabled'}`} />
+                            </IconButton>
+                        </div>
+                    </div>
+                </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
                     {KPIs.map((kpi, index) => (
                         <div key={index}>
@@ -259,7 +359,7 @@ export default function Metrics(props) {
                     ))}
                 </div>
                 <div className="blueBackground border primary-border rounded-lg p-6 overflow-auto">
-                    <EfficiencyGraph videos={videos} />
+                    <EfficiencyGraph videos={videos} selectedVideo={selectedVideo} setSelectedVideo={setSelectedVideo} setMetricsView={setMetricsView} />
                 </div>
                 <div>
                     <History playerId={playerId} omitHeader={true} />
