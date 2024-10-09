@@ -4,6 +4,9 @@ import * as Yup from 'yup'
 import { validateError } from "@/app/lib/functions";
 import { authOption } from "../auth/[...nextauth]/route";
 import { getServerSession } from "next-auth";
+import mongoose from "mongoose";
+
+export const dynamic = 'force-dynamic';
 
 export async function GET(req: NextRequest) {
     try {
@@ -13,8 +16,8 @@ export async function GET(req: NextRequest) {
         const { searchParams } = new URL(req.url);
         const isViewed = searchParams.get('isViewed')
         console.log('isViewed is', isViewed)
-        const query: { isViewed?: boolean, userId?: string } = {};
-        if (session.user.role !== 'admin') query.userId = session.user._id;
+        const query: { isViewed?: boolean, userId?: mongoose.Types.ObjectId } = {};
+        if (session.user.role !== 'admin') query.userId = new mongoose.Types.ObjectId(session.user._id);
         if (isViewed) query.isViewed = (isViewed === 'true' ? true : isViewed === 'false' ? false : undefined);
 
         console.log('query is', query)
